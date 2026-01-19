@@ -1,6 +1,7 @@
 // src/_data/moviesCalendar.js
 const fs = require('fs');
 const path = require('path');
+const { getDateInCentralTime, formatDateCentral } = require('./timezoneUtils');
 
 module.exports = async function() {
   // Load movies data
@@ -18,12 +19,9 @@ module.exports = async function() {
     console.warn('No custom quotes file found');
   }
 
-  // Helper: Format date as YYYY-MM-DD
+  // Helper: Format date as YYYY-MM-DD in Central Time
   function formatDate(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+    return formatDateCentral(date);
   }
 
   // Helper: Get day of week (0 = Monday, 6 = Sunday)
@@ -48,7 +46,7 @@ module.exports = async function() {
       moviesByDate[dateStr] = [];
     }
     moviesByDate[dateStr].push(movie);
-    yearsSet.add(movie.date.getFullYear());
+    yearsSet.add(getDateInCentralTime(movie.date).year);
   });
 
   // Sort years descending (most recent first)

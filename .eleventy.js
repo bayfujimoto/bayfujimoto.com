@@ -1,4 +1,5 @@
 require('dotenv').config();
+const { getDateInCentralTime } = require('./src/_data/timezoneUtils');
 
 module.exports = function(eleventyConfig) {
 
@@ -8,15 +9,14 @@ module.exports = function(eleventyConfig) {
   // Watch for CSS changes
   eleventyConfig.addWatchTarget("src/assets/css/");
 
-  // Add date filter
+  // Add date filter (Central Time)
   eleventyConfig.addFilter("date", function(date, format) {
     if (!date) return '';
     const d = new Date(date);
+    const { year, month, day } = getDateInCentralTime(d);
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    const month = months[d.getMonth()];
-    const day = d.getDate();
-    const year = d.getFullYear();
-    return `${month} ${day}, ${year}`;
+    const monthName = months[month]; // month is already 0-indexed from helper
+    return `${monthName} ${day}, ${year}`;
   });
 
   // Set directories
