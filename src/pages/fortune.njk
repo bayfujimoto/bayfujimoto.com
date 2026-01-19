@@ -1,0 +1,36 @@
+---
+layout: layouts/page.njk
+title: Fortune
+permalink: /fortune/
+---
+
+<div class="fortune-page">
+  <h1>Fortune</h1>
+
+  <p>This section serves as a secret door with a secret code that leads to more content specifically designed to share with friends and family.</p>
+
+  <div class="fortune-input">
+    <label for="secret-code">Enter the secret code:</label>
+    <input type="text" id="secret-code" placeholder="Enter code...">
+    <button id="submit-code">Submit</button>
+  </div>
+
+  <div id="fortune-content" style="display: none;">
+    <h2>Welcome!</h2>
+    <p>[Add your exclusive content here for friends and family]</p>
+  </div>
+</div>
+
+<script>
+  document.getElementById('submit-code').addEventListener('click', function() {
+    const code = document.getElementById('secret-code').value;
+    const fortuneContent = document.getElementById('fortune-content');
+
+    // Replace 'YOUR_SECRET_CODE' with your actual secret code
+    if (code === 'YOUR_SECRET_CODE') {
+      fortuneContent.style.display = 'block';
+    } else {
+      alert('Incorrect code. Try again!');
+    }
+  });
+</script>

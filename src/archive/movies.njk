@@ -1,0 +1,38 @@
+---
+layout: layouts/archive.njk
+title: Movies
+description: Films I've watched, tracked via Letterboxd
+permalink: /archive/movies/
+---
+
+<div class="movies-grid">
+  {% for movie in movies %}
+    <article class="movie-item">
+      <a href="{{ movie.link }}" target="_blank" rel="noopener">
+        {% if movie.poster %}
+          <img src="{{ movie.poster }}" alt="{{ movie.title }}" loading="lazy">
+        {% else %}
+          <div class="no-poster">{{ movie.title }}</div>
+        {% endif %}
+      </a>
+      <div class="movie-info">
+        <h3 class="movie-title">{{ movie.title }}</h3>
+        <p class="movie-year">{{ movie.year }}</p>
+        {% if movie.rating > 0 %}
+          <p class="rating">
+            {% for i in range(0, movie.rating) %}★{% endfor %}
+          </p>
+        {% endif %}
+        <p class="movie-date">
+          <time datetime="{{ movie.date | date }}">
+            {{ movie.date | date: "%B %d, %Y" }}
+          </time>
+        </p>
+      </div>
+    </article>
+  {% endfor %}
+</div>
+
+{% if movies.length === 0 %}
+  <p>No movies found. Check back later!</p>
+{% endif %}

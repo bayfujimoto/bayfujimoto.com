@@ -1,0 +1,69 @@
+---
+layout: layouts/archive.njk
+title: Videos
+description: Video collection and visual content
+permalink: /archive/videos/
+---
+
+<div class="videos-collection">
+  <h1>Video Collection</h1>
+
+  <p>A collection of videos and visual content.</p>
+
+  <div class="video-grid">
+    {# Add your videos here #}
+    {# Example:
+    <div class="video-item">
+      <video controls poster="/assets/images/video-poster.jpg">
+        <source src="/assets/videos/video1.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+      <p class="video-caption">Video caption</p>
+    </div>
+    #}
+
+    {# Or embed from YouTube/Vimeo:
+    <div class="video-item">
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/VIDEO_ID" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      <p class="video-caption">Video caption</p>
+    </div>
+    #}
+
+    <p style="opacity: 0.5; text-align: center; margin-top: 2rem;">
+      Video collection coming soon. Add videos to /assets/videos/ or embed from YouTube/Vimeo.
+    </p>
+  </div>
+</div>
+
+<style>
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--spacing-large);
+  margin-top: var(--spacing-xl);
+}
+
+.video-item {
+  position: relative;
+}
+
+.video-item video,
+.video-item iframe {
+  width: 100%;
+  height: auto;
+  display: block;
+  aspect-ratio: 16 / 9;
+}
+
+.video-caption {
+  margin-top: var(--spacing-small);
+  font-size: var(--font-size-small);
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .video-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>

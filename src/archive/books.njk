@@ -1,0 +1,38 @@
+---
+layout: layouts/archive.njk
+title: Books
+description: Books I've read, tracked via Goodreads
+permalink: /archive/books/
+---
+
+<div class="books-grid">
+  {% for book in books %}
+    <article class="book-item">
+      <a href="{{ book.link }}" target="_blank" rel="noopener">
+        {% if book.cover %}
+          <img src="{{ book.cover }}" alt="{{ book.title }}" loading="lazy">
+        {% else %}
+          <div class="no-cover">{{ book.title }}</div>
+        {% endif %}
+      </a>
+      <div class="book-info">
+        <h3 class="book-title">{{ book.title }}</h3>
+        <p class="book-author">by {{ book.author }}</p>
+        {% if book.rating > 0 %}
+          <p class="rating">
+            {% for i in range(0, book.rating) %}★{% endfor %}
+          </p>
+        {% endif %}
+        <p class="book-date">
+          <time datetime="{{ book.dateRead | date }}">
+            {{ book.dateRead | date: "%B %d, %Y" }}
+          </time>
+        </p>
+      </div>
+    </article>
+  {% endfor %}
+</div>
+
+{% if books.length === 0 %}
+  <p>No books found. Check back later!</p>
+{% endif %}
