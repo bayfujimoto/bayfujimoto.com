@@ -20,12 +20,12 @@ permalink: /archive/books/
         <p class="book-author">by {{ book.author }}</p>
         {% if book.rating > 0 %}
           <p class="rating">
-            {% for i in range(0, book.rating) %}★{% endfor %}
+            {% for i in range(book.rating) %}★{% endfor %}
           </p>
         {% endif %}
         <p class="book-date">
           <time datetime="{{ book.dateRead | date }}">
-            {{ book.dateRead | date: "%B %d, %Y" }}
+            {{ book.dateRead | date("MMMM DD, YYYY") }}
           </time>
         </p>
       </div>
@@ -33,6 +33,6 @@ permalink: /archive/books/
   {% endfor %}
 </div>
 
-{% if books.length === 0 %}
+{% if books.length == 0 %}
   <p>No books found. Check back later!</p>
 {% endif %}

@@ -20,12 +20,12 @@ permalink: /archive/movies/
         <p class="movie-year">{{ movie.year }}</p>
         {% if movie.rating > 0 %}
           <p class="rating">
-            {% for i in range(0, movie.rating) %}★{% endfor %}
+            {% for i in range(movie.rating) %}★{% endfor %}
           </p>
         {% endif %}
         <p class="movie-date">
           <time datetime="{{ movie.date | date }}">
-            {{ movie.date | date: "%B %d, %Y" }}
+            {{ movie.date | date("MMMM DD, YYYY") }}
           </time>
         </p>
       </div>
@@ -33,6 +33,6 @@ permalink: /archive/movies/
   {% endfor %}
 </div>
 
-{% if movies.length === 0 %}
+{% if movies.length == 0 %}
   <p>No movies found. Check back later!</p>
 {% endif %}
