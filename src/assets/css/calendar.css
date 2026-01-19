@@ -45,10 +45,17 @@
   display: block;
 }
 
-/* Calendar Container - match site width */
+/* Calendar Container - 80vw on desktop */
 .archive-content {
+  width: 80vw;
   max-width: 1200px;
   margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .archive-content {
+    width: 100%;
+  }
 }
 
 /* Calendar Month */
@@ -69,15 +76,13 @@
 .calendar-day-headers {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 1px;
-  background: var(--color-accent-5);
-  margin-bottom: 1px;
+  gap: 0;
+  margin-bottom: var(--spacing-small);
 }
 
 .calendar-day-headers span {
-  background: var(--color-base);
   padding: var(--spacing-small);
-  text-align: center;
+  text-align: left;
   font-size: var(--font-size-small);
   color: var(--color-accent-6);
   font-weight: 400;
@@ -87,8 +92,7 @@
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 1px;
-  background: var(--color-accent-5);
+  gap: 0;
 }
 
 /* Calendar Day Cell */
@@ -99,6 +103,7 @@
   flex-direction: column;
   cursor: pointer;
   min-height: 120px;
+  overflow: hidden;
 }
 
 /* Empty Days */
@@ -108,45 +113,54 @@
   min-height: 0;
 }
 
-/* Day Number */
+/* Day Number - positioned at top */
 .calendar-day-number {
-  position: absolute;
-  top: 4px;
-  left: 6px;
+  padding: 4px 6px;
   font-size: var(--font-size-small);
   color: var(--color-accent-6);
-  z-index: 2;
   font-weight: 400;
+  background: var(--color-base);
+  z-index: 2;
+  position: relative;
 }
 
-/* Movie Image - 16:9 aspect ratio, full brightness */
+/* Movie Image - 16:9 aspect ratio, full brightness, positioned below number */
 .calendar-day-image {
   width: 100%;
   aspect-ratio: 16 / 9;
   object-fit: cover;
   display: block;
   opacity: 1;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.5s ease;
 }
 
 .calendar-day:hover .calendar-day-image {
   opacity: 0.9;
 }
 
-/* Info Container - hidden by default, shown on hover */
+/* Info Container - hidden by default, shown on hover with fade */
 .calendar-day-info {
-  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
   flex-direction: column;
-  padding: 6px;
-  padding-top: 8px;
+  padding: 24px 6px 6px 6px;
   gap: 4px;
-  flex-grow: 1;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.85);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 /* Show info on hover */
 .calendar-day:hover .calendar-day-info {
-  display: flex;
+  opacity: 1;
+  pointer-events: auto;
 }
 
 /* Empty days: make square */
@@ -237,18 +251,12 @@
 /* Mobile */
 @media (max-width: 480px) {
   .calendar-grid {
-    gap: 0.5px;
+    gap: 0;
   }
 
-  /* Show info by default on mobile (no hover) */
-  .calendar-day-info {
-    opacity: 0.8;
-    background: rgba(0, 0, 0, 0.75);
-  }
-
+  /* Show info on tap (active) on mobile */
   .calendar-day:active .calendar-day-info {
     opacity: 1;
-    background: rgba(0, 0, 0, 0.9);
   }
 
   .calendar-day-number {
