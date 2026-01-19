@@ -9,10 +9,10 @@ permalink: /archive/movies/
   {% for movie in movies %}
     <article class="movie-item">
       <a href="{{ movie.link }}" target="_blank" rel="noopener">
-        {% if movie.poster %}
-          <img src="{{ movie.poster }}" alt="{{ movie.title }}" loading="lazy">
+        {% if movie.image %}
+          <img src="{{ movie.image }}" alt="{{ movie.title }}" loading="lazy">
         {% else %}
-          <div class="no-poster">{{ movie.title }}</div>
+          <div class="no-image">{{ movie.title }}</div>
         {% endif %}
       </a>
       <div class="movie-info">
@@ -24,8 +24,8 @@ permalink: /archive/movies/
           </p>
         {% endif %}
         <p class="movie-date">
-          <time datetime="{{ movie.date | date }}">
-            {{ movie.date | date("MMMM DD, YYYY") }}
+          <time datetime="{{ movie.date }}">
+            {{ movie.date | date }}
           </time>
         </p>
       </div>

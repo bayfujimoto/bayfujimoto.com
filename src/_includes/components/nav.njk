@@ -1,60 +1,81 @@
-<nav class="main-nav">
-  <div class="nav-container">
+{# Icon-based navigation (homepage only) #}
+{% if page.url === '/' %}
+  <nav class="main-nav icon-nav">
+    <div class="nav-container">
 
-    {# Logo / Home #}
-    <a href="/" class="nav-item">
-      <img src="/assets/images/logo.png" alt="Home" width="140" height="251">
-    </a>
-
-    {# Fortune #}
-    <a href="/fortune/" class="nav-item">
-      <img src="/assets/images/fortune.png" alt="Fortune" width="40" height="158">
-    </a>
-
-    {# About #}
-    <a href="/about/" class="nav-item">
-      <img src="/assets/images/polaroid.png" alt="About" width="126" height="154">
-    </a>
-
-    {# Resume #}
-    <a href="/resume/" class="nav-item">
-      <img src="/assets/images/resume.png" alt="Resume" width="227" height="322">
-    </a>
-
-    {# Archive #}
-    <a href="/archive/" class="nav-item">
-      <img src="/assets/images/manila-folder.png" alt="Archive" width="312" height="241">
-    </a>
-
-  </div>
-
-  {# Bottom row #}
-  <div class="nav-container-bottom">
-
-    {# Contact #}
-    <a href="/contact/" class="nav-item">
-      <img src="/assets/images/contact.png" alt="Contact" width="196" height="108">
-    </a>
-
-    {# Portfolio #}
-    <a href="/portfolio/" class="nav-item">
-      <img src="/assets/images/portfolio.png" alt="Portfolio" width="443" height="310">
-    </a>
-
-    {# Quick links to photos/videos #}
-    <div class="nav-group">
-      <a href="/archive/photos/" class="nav-item">
-        <img src="/assets/images/sdcard.png" alt="Photos" width="75" height="100">
+      {# Logo / Home #}
+      <a href="/" class="nav-item">
+        <img src="/assets/images/logo.png" alt="Home" width="140" height="251">
       </a>
-      <a href="/archive/videos/" class="nav-item">
-        <img src="/assets/images/videotape.png" alt="Videos" width="75" height="200">
+
+      {# Fortune #}
+      <a href="/fortune/" class="nav-item">
+        <img src="/assets/images/fortune.png" alt="Fortune" width="40" height="158">
       </a>
+
+      {# About #}
+      <a href="/about/" class="nav-item">
+        <img src="/assets/images/polaroid.png" alt="About" width="126" height="154">
+      </a>
+
+      {# Resume #}
+      <a href="/resume/" class="nav-item">
+        <img src="/assets/images/resume.png" alt="Resume" width="227" height="322">
+      </a>
+
+      {# Archive #}
+      <a href="/archive/" class="nav-item">
+        <img src="/assets/images/manila-folder.png" alt="Archive" width="312" height="241">
+      </a>
+
     </div>
 
-    {# Sitemap #}
-    <div class="nav-item">
-      <img src="/assets/images/sitemap.png" alt="Sitemap" width="152" height="270">
-    </div>
+    {# Bottom row #}
+    <div class="nav-container-bottom">
 
-  </div>
-</nav>
+      {# Contact #}
+      <a href="/contact/" class="nav-item">
+        <img src="/assets/images/contact.png" alt="Contact" width="196" height="108">
+      </a>
+
+      {# Portfolio #}
+      <a href="/portfolio/" class="nav-item">
+        <img src="/assets/images/portfolio.png" alt="Portfolio" width="443" height="310">
+      </a>
+
+      {# Quick links to photos/videos #}
+      <div class="nav-group">
+        <a href="/archive/photos/" class="nav-item">
+          <img src="/assets/images/sdcard.png" alt="Photos" width="75" height="100">
+        </a>
+        <a href="/archive/videos/" class="nav-item">
+          <img src="/assets/images/videotape.png" alt="Videos" width="75" height="200">
+        </a>
+      </div>
+
+      {# Sitemap #}
+      <div class="nav-item">
+        <img src="/assets/images/sitemap.png" alt="Sitemap" width="152" height="270">
+      </div>
+
+    </div>
+  </nav>
+
+{# Traditional top navigation bar (all other pages) #}
+{% else %}
+  <nav class="main-nav top-nav">
+    <div class="nav-top-container">
+      <a href="/" class="nav-logo">
+        <img src="/assets/images/logo.png" alt="Bay Fujimoto" class="logo-small">
+      </a>
+
+      <div class="nav-links">
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+        <a href="/resume/">Resume</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/archive/">Archive</a>
+      </div>
+    </div>
+  </nav>
+{% endif %}

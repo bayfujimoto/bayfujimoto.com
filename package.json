@@ -25,5 +25,8 @@
     "@11ty/eleventy-fetch": "^5.1.1",
     "@11ty/eleventy-img": "^6.0.4",
     "rss-parser": "^3.13.0"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3"
   }
 }
