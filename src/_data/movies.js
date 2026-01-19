@@ -1,6 +1,17 @@
 // src/_data/movies.js
 const Parser = require('rss-parser');
-const parser = new Parser();
+// Configure parser to extract Letterboxd custom fields
+const parser = new Parser({
+  customFields: {
+    item: [
+      ['letterboxd:watchedDate', 'watchedDate'],
+      ['letterboxd:filmTitle', 'filmTitle'],
+      ['letterboxd:filmYear', 'filmYear'],
+      ['letterboxd:memberRating', 'memberRating'],
+      ['letterboxd:rewatch', 'rewatch']
+    ]
+  }
+});
 const EleventyFetch = require("@11ty/eleventy-fetch");
 const fs = require('fs');
 const path = require('path');
@@ -117,12 +128,19 @@ module.exports = async function() {
         // Use backdrop if available, otherwise use poster
         const imageUrl = backdropUrl || poster;
 
+        // Use watchedDate from Letterboxd (YYYY-MM-DD format) instead of pubDate
+        // watchedDate is the actual date you watched the movie
+        // pubDate is when you logged/reviewed it (can be different timezone)
+        const watchedDate = item.watchedDate
+          ? new Date(item.watchedDate + 'T12:00:00')  // Parse as noon to avoid timezone issues
+          : new Date(item.pubDate);  // Fallback to pubDate if watchedDate not available
+
         return {
           title: title,
           year: year,
           rating: rating,
           link: item.link,
-          date: new Date(item.pubDate),
+          date: watchedDate,
           image: imageUrl,
           poster: poster,
           backdrop: backdropUrl,
