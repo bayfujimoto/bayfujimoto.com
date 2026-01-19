@@ -49,10 +49,10 @@ permalink: /archive/movies/
                 <div class="calendar-day
                             {% if day.movies.length === 0 and not day.quote %}empty{% endif %}">
 
-                  {# Day number - positioned above image #}
+                  {# Day number - positioned at top #}
                   <span class="calendar-day-number">{{ day.dayNum }}</span>
 
-                  {# Movie image (if exists) #}
+                  {# Movie image (only first movie) #}
                   {% if day.movies.length > 0 %}
                     <img class="calendar-day-image"
                          src="{{ day.movies[0].image }}"
@@ -60,34 +60,32 @@ permalink: /archive/movies/
                          loading="lazy">
                   {% endif %}
 
-                  {# Info overlay (hidden by default, shows on hover) #}
-                  <div class="calendar-day-info">
-
-                    {# Custom quote takes precedence #}
-                    {% if day.quote %}
-                      <div class="calendar-day-quote">{{ day.quote }}</div>
-                    {% endif %}
-
-                    {# Movie info #}
-                    {% if day.movies.length > 0 %}
-                      {% for movie in day.movies %}
-                        <div class="calendar-movie">
-                          <a href="{{ movie.link }}"
-                             target="_blank"
-                             rel="noopener"
-                             class="calendar-day-title">
-                            {{ movie.title }} ({{ movie.year }})
-                          </a>
-                          {% if movie.rating > 0 %}
-                            <div class="calendar-day-rating">
-                              {% for i in range(movie.rating) %}★{% endfor %}
-                            </div>
-                          {% endif %}
-                        </div>
-                      {% endfor %}
-                    {% endif %}
-
-                  </div>
+                  {# Movie info below image (hidden by default, shows on hover) #}
+                  {% if day.movies.length > 0 %}
+                    <div class="calendar-day-info">
+                      {# Custom quote takes precedence #}
+                      {% if day.quote %}
+                        <div class="calendar-day-quote">{{ day.quote }}</div>
+                      {% else %}
+                        {# Show all movies watched that day #}
+                        {% for movie in day.movies %}
+                          <div class="calendar-movie">
+                            <a href="{{ movie.link }}"
+                               target="_blank"
+                               rel="noopener"
+                               class="calendar-day-title">
+                              {{ movie.title }} ({{ movie.year }})
+                            </a>
+                            {% if movie.rating > 0 %}
+                              <div class="calendar-day-rating">
+                                {% for i in range(movie.rating) %}★{% endfor %}
+                              </div>
+                            {% endif %}
+                          </div>
+                        {% endfor %}
+                      {% endif %}
+                    </div>
+                  {% endif %}
                 </div>
               {% endif %}
             {% endfor %}

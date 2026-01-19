@@ -45,16 +45,22 @@
   display: block;
 }
 
-/* Calendar Container - 80vw on desktop */
+/* Calendar Container - 80vw on desktop, centered */
 .archive-content {
   width: 80vw;
   max-width: 1200px;
-  margin: 0 auto;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 @media (max-width: 768px) {
   .archive-content {
     width: 100%;
+    left: 0;
+    transform: none;
   }
 }
 
@@ -104,6 +110,7 @@
   cursor: pointer;
   min-height: 120px;
   overflow: hidden;
+  gap: 0;
 }
 
 /* Empty Days */
@@ -124,11 +131,12 @@
   position: relative;
 }
 
-/* Movie Image - 16:9 aspect ratio, full brightness, positioned below number */
+/* Movie Image - 16:9 aspect ratio on desktop, progressively cropped to portrait on mobile */
 .calendar-day-image {
   width: 100%;
   aspect-ratio: 16 / 9;
   object-fit: cover;
+  object-position: center;
   display: block;
   opacity: 1;
   transition: opacity 0.5s ease;
@@ -138,26 +146,34 @@
   opacity: 0.9;
 }
 
-/* Info Container - hidden by default, shown on hover with fade */
+/* Tablet: shift towards portrait crop */
+@media (max-width: 768px) {
+  .calendar-day-image {
+    aspect-ratio: 2 / 3;
+  }
+}
+
+/* Mobile: full portrait aspect ratio */
+@media (max-width: 480px) {
+  .calendar-day-image {
+    aspect-ratio: 2 / 3;
+  }
+}
+
+/* Info Container - below image, hidden by default on desktop */
 .calendar-day-info {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
   flex-direction: column;
-  padding: 24px 6px 6px 6px;
+  padding: 6px;
   gap: 4px;
-  background: rgba(0, 0, 0, 0.85);
+  background: var(--color-base);
+  overflow-y: auto;
+  overflow-x: hidden;
   opacity: 0;
   transition: opacity 0.5s ease;
   pointer-events: none;
-  overflow-y: auto;
-  overflow-x: hidden;
 }
 
-/* Show info on hover */
+/* Show info on hover with smooth fade (desktop only) */
 .calendar-day:hover .calendar-day-info {
   opacity: 1;
   pointer-events: auto;
@@ -254,8 +270,14 @@
     gap: 0;
   }
 
-  /* Show info on tap (active) on mobile */
-  .calendar-day:active .calendar-day-info {
+  /* Make info persistent on mobile (always visible) */
+  .calendar-day-info {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Remove hover state on mobile */
+  .calendar-day:hover .calendar-day-info {
     opacity: 1;
   }
 
