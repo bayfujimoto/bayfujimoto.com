@@ -1,0 +1,204 @@
+/* src/assets/css/main.css */
+
+/* CSS Variables */
+:root {
+  --color-base: #000000;
+  --color-contrast: #dadad7;
+  --color-accent-1: #dfdccb;
+  --color-accent-2: #c19876;
+  --color-accent-3: #5d90a3;
+  --color-accent-4: #e83c3a;
+  --color-accent-5: #353535;
+  --color-accent-6: #888888;
+
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-sans: 'Manrope', sans-serif;
+
+  --font-size-small: 0.5rem;
+  --font-size-medium: 0.8rem;
+  --font-size-large: clamp(1.125rem, 1.125rem + ((1vw - 0.2rem) * 0.392), 1.375rem);
+  --font-size-xl: clamp(1.75rem, 1.75rem + ((1vw - 0.2rem) * 0.392), 2rem);
+  --font-size-xxl: clamp(2.15rem, 2.15rem + ((1vw - 0.2rem) * 0.392), 2.4rem);
+
+  --spacing-small: 10px;
+  --spacing-medium: 20px;
+  --spacing-large: 30px;
+  --spacing-xl: clamp(30px, 5vw, 50px);
+  --spacing-xxl: clamp(70px, 10vw, 140px);
+}
+
+/* Reset & Base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--color-base);
+  color: var(--color-contrast);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-small);
+  font-weight: 300;
+  line-height: 1.4;
+  padding: 0 var(--spacing-xxl);
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--color-contrast);
+  font-family: var(--font-sans);
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+  margin-bottom: 1.2rem;
+}
+
+h1 { font-size: var(--font-size-xxl); }
+h2 { font-size: var(--font-size-xl); }
+h3 { font-size: var(--font-size-large); }
+h4 { font-size: var(--font-size-medium); }
+
+p {
+  font-size: var(--font-size-medium);
+  margin-bottom: 1.2rem;
+}
+
+a {
+  color: var(--color-accent-3);
+  text-decoration: underline;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+/* Navigation */
+.main-nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: var(--color-base);
+  padding: var(--spacing-medium) 0;
+}
+
+.nav-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-large);
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--spacing-large);
+}
+
+.nav-container-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-large);
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-item {
+  display: inline-block;
+  transition: opacity 0.3s ease;
+}
+
+.nav-item:hover {
+  opacity: 0.7;
+}
+
+.nav-item img {
+  display: block;
+  height: auto;
+}
+
+.nav-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+/* Main Content */
+main {
+  min-height: 100vh;
+  padding: var(--spacing-xl) 0;
+}
+
+.page-content,
+.archive-page {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Archive Grids */
+.movies-grid,
+.books-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--spacing-medium);
+  margin-top: var(--spacing-xl);
+}
+
+.movie-item,
+.book-item {
+  position: relative;
+  transition: transform 0.2s ease;
+}
+
+.movie-item:hover,
+.book-item:hover {
+  transform: scale(1.05);
+}
+
+.movie-item img,
+.book-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.movie-info,
+.book-info {
+  margin-top: var(--spacing-small);
+}
+
+.movie-title,
+.book-title {
+  font-size: var(--font-size-medium);
+  font-weight: 400;
+  margin-bottom: 0.25rem;
+}
+
+.movie-year,
+.book-author {
+  font-size: var(--font-size-small);
+  color: var(--color-accent-6);
+}
+
+.rating {
+  color: var(--color-accent-4);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  body {
+    padding: 0 var(--spacing-large);
+  }
+
+  .nav-container,
+  .nav-container-bottom {
+    flex-direction: column;
+    gap: var(--spacing-medium);
+  }
+
+  .nav-item img {
+    max-width: 200px;
+  }
+
+  .movies-grid,
+  .books-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: var(--spacing-small);
+  }
+}

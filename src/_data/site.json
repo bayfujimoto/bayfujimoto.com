@@ -1,0 +1,19 @@
+{
+  "name": "Bay Fujimoto",
+  "url": "https://www.bayfujimoto.com",
+  "description": "Personal website of Bay Fujimoto",
+  "author": {
+    "name": "Bay Fujimoto",
+    "email": "bayfujimoto@gmail.com"
+  },
+  "colors": {
+    "base": "#000000",
+    "contrast": "#dadad7",
+    "accent1": "#dfdccb",
+    "accent2": "#c19876",
+    "accent3": "#5d90a3",
+    "accent4": "#e83c3a",
+    "accent5": "#353535",
+    "accent6": "#888888"
+  }
+}
