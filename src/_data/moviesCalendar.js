@@ -24,10 +24,20 @@ module.exports = async function() {
     return formatDateCentral(date);
   }
 
-  // Helper: Get day of week (0 = Monday, 6 = Sunday)
-  function getDayOfWeek(date) {
-    const day = date.getDay();
-    return day === 0 ? 6 : day - 1; // Convert Sunday from 0 to 6
+  // Helper: Get day of week (0 = Monday, 6 = Sunday) in Central Time
+  function getDayOfWeek(dateStr) {
+    const date = new Date(dateStr + 'T12:00:00');
+    const { year, month, day } = getDateInCentralTime(date);
+    const centralDate = new Date(year, month, day);
+    const dayOfWeek = centralDate.getDay();
+    return dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+  }
+
+  // Helper: Add days to a date string in Central Time
+  function addDays(dateStr, days) {
+    const date = new Date(dateStr + 'T12:00:00');
+    date.setDate(date.getDate() + days);
+    return formatDateCentral(date);
   }
 
   // Helper: Get month name
@@ -59,37 +69,39 @@ module.exports = async function() {
     const months = [];
 
     for (let monthNum = 0; monthNum < 12; monthNum++) {
-      const firstDayOfMonth = new Date(year, monthNum, 1);
-      const lastDayOfMonth = new Date(year, monthNum + 1, 0);
+      // Get first day of month as YYYY-MM-DD string in Central Time
+      const firstDayStr = `${year}-${String(monthNum + 1).padStart(2, '0')}-01`;
 
-      // Get day of week for first day (0 = Monday)
-      const firstDayOfWeek = getDayOfWeek(firstDayOfMonth);
+      // Get day of week for first day (0 = Monday, 6 = Sunday)
+      const firstDayOfWeek = getDayOfWeek(firstDayStr);
 
       // Calculate start date (may be in previous month)
-      const startDate = new Date(firstDayOfMonth);
-      startDate.setDate(startDate.getDate() - firstDayOfWeek);
+      let currentDateStr = addDays(firstDayStr, -firstDayOfWeek);
 
       // Build 6 weeks (42 days) for the month
       const weeks = [];
-      let currentDate = new Date(startDate);
 
       for (let week = 0; week < 6; week++) {
         const weekDays = [];
 
         for (let dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++) {
-          const dateStr = formatDate(currentDate);
-          const isCurrentMonth = currentDate.getMonth() === monthNum;
+          // Parse the date string to get components in Central Time
+          const dateObj = new Date(currentDateStr + 'T12:00:00');
+          const { year: dateYear, month: dateMonth, day: dateDay } = getDateInCentralTime(dateObj);
+
+          const isCurrentMonth = dateMonth === monthNum && dateYear === year;
 
           weekDays.push({
-            date: dateStr,
-            dayNum: currentDate.getDate(),
+            date: currentDateStr,
+            dayNum: dateDay,
             dayOfWeek: dayOfWeek,
-            movies: moviesByDate[dateStr] || [],
-            quote: customQuotes[dateStr] || null,
+            movies: moviesByDate[currentDateStr] || [],
+            quote: customQuotes[currentDateStr] || null,
             isCurrentMonth: isCurrentMonth
           });
 
-          currentDate.setDate(currentDate.getDate() + 1);
+          // Move to next day
+          currentDateStr = addDays(currentDateStr, 1);
         }
 
         weeks.push(weekDays);
