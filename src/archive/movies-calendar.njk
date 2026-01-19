@@ -1,0 +1,101 @@
+---
+layout: layouts/archive.njk
+title: Movies
+description: Film tracking by date
+permalink: /archive/movies/
+---
+
+<link rel="stylesheet" href="/assets/css/calendar.css">
+
+{# Year Tabs #}
+<div class="year-tabs">
+  {% for year in moviesCalendar.years %}
+    <a href="#year-{{ year }}"
+       class="year-tab{% if loop.first %} active{% endif %}"
+       data-year="{{ year }}">
+      {{ year }}
+    </a>
+  {% endfor %}
+</div>
+
+{# Calendar Years #}
+{% for year in moviesCalendar.years %}
+  <div id="year-{{ year }}"
+       class="calendar-year{% if loop.first %} active{% endif %}">
+
+    {# Iterate through 12 months #}
+    {% for month in moviesCalendar.calendarsByYear[year].months %}
+      <div class="calendar-month">
+
+        {# Month header #}
+        <h2 class="month-name">{{ month.name }} {{ year }}</h2>
+
+        {# Day headers (Mon-Sun) #}
+        <div class="calendar-day-headers">
+          <span>Mon</span>
+          <span>Tue</span>
+          <span>Wed</span>
+          <span>Thu</span>
+          <span>Fri</span>
+          <span>Sat</span>
+          <span>Sun</span>
+        </div>
+
+        {# Calendar grid #}
+        <div class="calendar-grid">
+          {% for week in month.weeks %}
+            {% for day in week %}
+              <div class="calendar-day
+                          {% if not day.isCurrentMonth %}other-month{% endif %}
+                          {% if day.movies.length === 0 and not day.quote %}empty{% endif %}">
+
+                {# Day number #}
+                <span class="calendar-day-number">{{ day.dayNum }}</span>
+
+                {# Movie image (if exists) #}
+                {% if day.movies.length > 0 %}
+                  <img class="calendar-day-image"
+                       src="{{ day.movies[0].image }}"
+                       alt="{{ day.movies[0].title }}"
+                       loading="lazy">
+                {% endif %}
+
+                {# Info overlay (fades in on hover) #}
+                <div class="calendar-day-info">
+
+                  {# Custom quote takes precedence #}
+                  {% if day.quote %}
+                    <div class="calendar-day-quote">{{ day.quote }}</div>
+                  {% endif %}
+
+                  {# Movie info #}
+                  {% if day.movies.length > 0 %}
+                    {% for movie in day.movies %}
+                      <div class="calendar-movie">
+                        <a href="{{ movie.link }}"
+                           target="_blank"
+                           rel="noopener"
+                           class="calendar-day-title">
+                          {{ movie.title }} ({{ movie.year }})
+                        </a>
+                        {% if movie.rating > 0 %}
+                          <div class="calendar-day-rating">
+                            {% for i in range(movie.rating) %}★{% endfor %}
+                          </div>
+                        {% endif %}
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+
+                </div>
+              </div>
+            {% endfor %}
+          {% endfor %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endfor %}
+
+{# Enhanced tab switching with JavaScript #}
+<script src="/assets/js/calendar.js"></script>
