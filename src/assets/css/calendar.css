@@ -98,13 +98,7 @@
   display: flex;
   flex-direction: column;
   cursor: pointer;
-  transition: transform 0.2s ease;
   min-height: 120px;
-}
-
-.calendar-day:hover {
-  transform: scale(1.02);
-  z-index: 1;
 }
 
 /* Empty Days */
@@ -112,21 +106,6 @@
   cursor: default;
   aspect-ratio: 1;
   min-height: 0;
-}
-
-.calendar-day.empty:hover {
-  transform: none;
-}
-
-/* Other Month Days (greyed out) */
-.calendar-day.other-month .calendar-day-number {
-  color: var(--color-accent-5);
-  opacity: 0.5;
-}
-
-.calendar-day.other-month {
-  cursor: default;
-  pointer-events: none;
 }
 
 /* Day Number */
@@ -154,14 +133,20 @@
   opacity: 0.9;
 }
 
-/* Info Container - below image */
+/* Info Container - hidden by default, shown on hover */
 .calendar-day-info {
-  display: flex;
+  display: none;
   flex-direction: column;
   padding: 6px;
   padding-top: 8px;
   gap: 4px;
   flex-grow: 1;
+  background: rgba(0, 0, 0, 0.8);
+}
+
+/* Show info on hover */
+.calendar-day:hover .calendar-day-info {
+  display: flex;
 }
 
 /* Empty days: make square */

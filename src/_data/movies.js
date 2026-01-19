@@ -77,56 +77,58 @@ module.exports = async function() {
 
     const feed = await parser.parseString(response);
 
-    return Promise.all(feed.items.map(async (item) => {
-      // Extract data from content
-      const content = item.content || item['content:encoded'] || '';
+    return Promise.all(feed.items
+      .filter(item => item.link && item.link.includes('/film/')) // Only include actual film watches, not lists
+      .map(async (item) => {
+        // Extract data from content
+        const content = item.content || item['content:encoded'] || '';
 
-      // Extract rating (stars)
-      const ratingMatch = content.match(/★/g);
-      const rating = ratingMatch ? ratingMatch.length : 0;
+        // Extract rating (stars)
+        const ratingMatch = content.match(/★/g);
+        const rating = ratingMatch ? ratingMatch.length : 0;
 
-      // Extract year from title (format: "Film Title, Year - ★★★")
-      const yearMatch = item.title.match(/,\s*(\d{4})/);
-      const year = yearMatch ? yearMatch[1] : '';
+        // Extract year from title (format: "Film Title, Year - ★★★")
+        const yearMatch = item.title.match(/,\s*(\d{4})/);
+        const year = yearMatch ? yearMatch[1] : '';
 
-      // Extract poster image (fallback)
-      const imgMatch = content.match(/<img[^>]+src="([^">]+)"/);
-      const poster = imgMatch ? imgMatch[1] : '';
+        // Extract poster image (fallback)
+        const imgMatch = content.match(/<img[^>]+src="([^">]+)"/);
+        const poster = imgMatch ? imgMatch[1] : '';
 
-      // Clean title (remove year and rating from end)
-      const title = item.title.replace(/,\s*\d{4}.*$/, '').trim();
+        // Clean title (remove year and rating from end)
+        const title = item.title.replace(/,\s*\d{4}.*$/, '').trim();
 
-      // Extract Letterboxd film slug from URL
-      const filmSlug = item.link.split('/film/')[1]?.replace(/\/$/, '') || '';
+        // Extract Letterboxd film slug from URL
+        const filmSlug = item.link.split('/film/')[1]?.replace(/\/$/, '') || '';
 
-      // Check for custom backdrop first
-      let backdropUrl = '';
-      if (filmSlug && customBackdrops[filmSlug]) {
-        backdropUrl = customBackdrops[filmSlug];
-        console.log(`Using custom backdrop for: ${title}`);
-      } else {
-        // Fallback to TMDb
-        const tmdbData = await fetchTMDbBackdrop(title, year);
-        if (tmdbData && tmdbData.backdrop_path) {
-          backdropUrl = `https://image.tmdb.org/t/p/w1280${tmdbData.backdrop_path}`;
+        // Check for custom backdrop first
+        let backdropUrl = '';
+        if (filmSlug && customBackdrops[filmSlug]) {
+          backdropUrl = customBackdrops[filmSlug];
+          console.log(`Using custom backdrop for: ${title}`);
+        } else {
+          // Fallback to TMDb
+          const tmdbData = await fetchTMDbBackdrop(title, year);
+          if (tmdbData && tmdbData.backdrop_path) {
+            backdropUrl = `https://image.tmdb.org/t/p/w1280${tmdbData.backdrop_path}`;
+          }
         }
-      }
 
-      // Use backdrop if available, otherwise use poster
-      const imageUrl = backdropUrl || poster;
+        // Use backdrop if available, otherwise use poster
+        const imageUrl = backdropUrl || poster;
 
-      return {
-        title: title,
-        year: year,
-        rating: rating,
-        link: item.link,
-        date: new Date(item.pubDate),
-        image: imageUrl,
-        poster: poster,
-        backdrop: backdropUrl,
-        description: content.replace(/<[^>]*>/g, '').substring(0, 200)
-      };
-    })).then(movies => movies.slice(0, 100)); // Latest 100 films
+        return {
+          title: title,
+          year: year,
+          rating: rating,
+          link: item.link,
+          date: new Date(item.pubDate),
+          image: imageUrl,
+          poster: poster,
+          backdrop: backdropUrl,
+          description: content.replace(/<[^>]*>/g, '').substring(0, 200)
+        };
+      })).then(movies => movies.slice(0, 300)); // Show 300 films (approximately 2.5 years)
 
   } catch (error) {
     console.error('Error fetching Letterboxd RSS:', error);
