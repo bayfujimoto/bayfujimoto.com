@@ -86,11 +86,36 @@ module.exports = async function() {
   try {
     const historicalPath = path.join(__dirname, 'moviesHistorical.json');
     if (fs.existsSync(historicalPath)) {
-      historicalMovies = require('./moviesHistorical.json');
-      console.log(`Loaded ${historicalMovies.length} movies from historical data`);
+      const rawHistorical = JSON.parse(fs.readFileSync(historicalPath, 'utf-8'));
+      console.log(`Loaded ${rawHistorical.length} movies from historical data`);
+
+      // Enrich historical movies with TMDb backdrops if they don't have images
+      console.log(`Enriching historical movies with TMDb backdrops...`);
+      historicalMovies = await Promise.all(rawHistorical.map(async (movie) => {
+        // Skip if already has an image or backdrop
+        if ((movie.image && movie.image !== '') || (movie.backdrop && movie.backdrop !== '')) {
+          return movie;
+        }
+
+        // Fetch TMDb backdrop
+        const tmdbData = await fetchTMDbBackdrop(movie.title, movie.year);
+        if (tmdbData && tmdbData.backdrop_path) {
+          const backdropUrl = `https://image.tmdb.org/t/p/w1280${tmdbData.backdrop_path}`;
+          return {
+            ...movie,
+            backdrop: backdropUrl,
+            image: backdropUrl
+          };
+        }
+
+        return movie;
+      }));
+
+      const enrichedCount = historicalMovies.filter(m => m.backdrop && m.backdrop !== '').length;
+      console.log(`Enriched ${enrichedCount} historical movies with backdrops`);
     } else {
       console.log('No historical movie data found - using RSS only');
-      console.log('To add full movie history: Export from Letterboxd and run scripts/convertLetterboxdCSV.js');
+      console.log('To add full movie history: Export from Letterboxd and run scripts/parseLetterboxdExport.js');
     }
   } catch (error) {
     console.warn('Error loading historical movie data:', error.message);

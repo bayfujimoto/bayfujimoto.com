@@ -288,8 +288,69 @@ async function main() {
       process.exit(1);
     }
 
-    // Convert Map to array and sort by date descending (most recent first)
-    const movies = Array.from(movieMap.values()).sort((a, b) =>
+    // Convert Map to array
+    let movies = Array.from(movieMap.values());
+
+    // DEDUPLICATION: Remove entries within 1 day of each other (same title+year)
+    console.log(`\n🔍 Deduplicating movies...`);
+    const titleGroups = new Map();
+
+    // Group by title+year
+    movies.forEach(movie => {
+      const titleKey = `${movie.title}|${movie.year}`;
+      if (!titleGroups.has(titleKey)) {
+        titleGroups.set(titleKey, []);
+      }
+      titleGroups.get(titleKey).push(movie);
+    });
+
+    // Process each group and remove near-duplicates
+    const dedupedMovies = [];
+    let duplicatesRemoved = 0;
+
+    titleGroups.forEach((groupMovies, titleKey) => {
+      // Sort by date (earliest first)
+      groupMovies.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+      const processed = new Set();
+
+      for (let i = 0; i < groupMovies.length; i++) {
+        if (processed.has(i)) continue;
+
+        const movie = groupMovies[i];
+        let bestMatch = movie;
+
+        // Look ahead for potential duplicates within 1 day
+        for (let j = i + 1; j < groupMovies.length; j++) {
+          if (processed.has(j)) continue;
+
+          const nextMovie = groupMovies[j];
+          const daysDiff = (new Date(nextMovie.date) - new Date(movie.date)) / (1000 * 60 * 60 * 24);
+
+          if (daysDiff <= 1) {
+            // Found a duplicate within 1 day - prefer one with review text
+            duplicatesRemoved++;
+            processed.add(j);
+
+            if (nextMovie.reviewText && nextMovie.reviewText.trim() !== '') {
+              bestMatch = nextMovie;
+            }
+          } else {
+            break; // Dates are more than 1 day apart
+          }
+        }
+
+        processed.add(i);
+        dedupedMovies.push(bestMatch);
+      }
+    });
+
+    if (duplicatesRemoved > 0) {
+      console.log(`  Removed ${duplicatesRemoved} near-duplicate entries (±1 day)`);
+    }
+
+    // Sort by date descending (most recent first)
+    movies = dedupedMovies.sort((a, b) =>
       new Date(b.date) - new Date(a.date)
     );
 
