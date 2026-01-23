@@ -1,21 +1,25 @@
 ---
 layout: layouts/archive.njk
-title: Movies
-description: Film tracking by date
+title: Film Log
 permalink: /archive/movies/
+hideHeader: true
 ---
 
 <link rel="stylesheet" href="/assets/css/calendar.css">
 
-{# Year Tabs #}
-<div class="year-tabs">
-  {% for year in moviesCalendar.years %}
-    <a href="#year-{{ year }}"
-       class="year-tab{% if loop.first %} active{% endif %}"
-       data-year="{{ year }}">
-      {{ year }}
-    </a>
-  {% endfor %}
+{# Calendar Header - Sticky #}
+<div class="calendar-header-sticky">
+  <div class="calendar-header-container">
+    <h2 class="calendar-page-title">Film Log</h2>
+    <div class="calendar-header-controls">
+      <span class="calendar-current-month" id="current-month">January</span>
+      <select class="calendar-year-selector" id="year-selector">
+        {% for year in moviesCalendar.years %}
+          <option value="{{ year }}"{% if loop.first %} selected{% endif %}>{{ year }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
 </div>
 
 {# Calendar Years #}
@@ -25,10 +29,7 @@ permalink: /archive/movies/
 
     {# Iterate through 12 months #}
     {% for month in moviesCalendar.calendarsByYear[year].months %}
-      <div class="calendar-month">
-
-        {# Month header #}
-        <h2 class="month-name">{{ month.name }} {{ year }}</h2>
+      <div class="calendar-month" data-month-name="{{ month.name }}">
 
         {# Day headers (Mon-Sun) #}
         <div class="calendar-day-headers">
@@ -87,6 +88,9 @@ permalink: /archive/movies/
                     </div>
                   {% endif %}
                 </div>
+              {% else %}
+                {# Empty cell for days outside current month - maintains grid alignment #}
+                <div class="calendar-day-empty"></div>
               {% endif %}
             {% endfor %}
           {% endfor %}

@@ -1,34 +1,67 @@
 /* Calendar Styles */
 
-/* Year Tabs */
-.year-tabs {
-  display: flex;
-  gap: var(--spacing-large);
+/* Calendar Header - Sticky below main nav */
+.calendar-header-sticky {
+  position: sticky;
+  /* Position below the main nav - calculated based on nav height */
+  /* Logo height (90px) + top/bottom padding (20px each) + border (1px) = ~131px */
+  top: 131px;
+  z-index: 9;
+  background: var(--color-base);
+  padding: var(--spacing-medium) 0;
   margin-bottom: var(--spacing-xl);
   border-bottom: 1px solid var(--color-accent-5);
-  padding-bottom: var(--spacing-small);
-  justify-content: center;
-  flex-wrap: wrap;
 }
 
-.year-tab {
-  padding: var(--spacing-small) var(--spacing-medium);
-  color: var(--color-accent-6);
-  text-decoration: none;
-  border-bottom: 2px solid transparent;
-  transition: all 0.3s ease;
+.calendar-header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 80vw;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.calendar-page-title {
+  font-size: var(--font-size-xl);
   font-family: var(--font-sans);
   font-weight: 700;
-  font-size: var(--font-size-large);
+  color: var(--color-contrast);
+  margin: 0;
 }
 
-.year-tab:hover {
+.calendar-header-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-medium);
+}
+
+.calendar-current-month {
+  font-size: var(--font-size-medium);
+  font-family: var(--font-sans);
+  font-weight: 700;
   color: var(--color-contrast);
 }
 
-.year-tab.active {
+.calendar-year-selector {
+  background: var(--color-base);
   color: var(--color-contrast);
-  border-bottom-color: var(--color-accent-3);
+  border: 1px solid var(--color-accent-5);
+  padding: 6px 12px;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-medium);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.calendar-year-selector:hover {
+  border-color: var(--color-accent-3);
+}
+
+.calendar-year-selector:focus {
+  outline: 2px solid var(--color-accent-3);
+  outline-offset: 2px;
 }
 
 /* Calendar Year Container */
@@ -69,15 +102,6 @@
   margin-bottom: var(--spacing-xxl);
 }
 
-.month-name {
-  font-size: var(--font-size-xl);
-  font-family: var(--font-sans);
-  font-weight: 700;
-  margin-bottom: var(--spacing-medium);
-  text-align: center;
-  color: var(--color-contrast);
-}
-
 /* Day of Week Headers */
 .calendar-day-headers {
   display: grid;
@@ -113,9 +137,15 @@
   gap: 0;
 }
 
-/* Empty Days */
+/* Empty Days (within current month) */
 .calendar-day.empty {
   cursor: default;
+  aspect-ratio: 1;
+  min-height: 0;
+}
+
+/* Empty cells for days outside current month - maintains grid alignment */
+.calendar-day-empty {
   aspect-ratio: 1;
   min-height: 0;
 }
@@ -235,13 +265,29 @@
 
 /* Tablet */
 @media (max-width: 768px) {
-  .year-tabs {
-    gap: var(--spacing-medium);
+  /* Adjust sticky position for smaller nav on mobile */
+  .calendar-header-sticky {
+    /* Mobile nav is stacked vertically, approximately 200px */
+    top: 200px;
   }
 
-  .year-tab {
-    padding: var(--spacing-small);
-    font-size: var(--font-size-medium);
+  .calendar-header-container {
+    width: 100%;
+    flex-direction: row;
+    gap: var(--spacing-small);
+  }
+
+  .calendar-page-title {
+    font-size: var(--font-size-large);
+  }
+
+  .calendar-current-month {
+    font-size: var(--font-size-small);
+  }
+
+  .calendar-year-selector {
+    font-size: var(--font-size-small);
+    padding: 4px 8px;
   }
 
   .calendar-day-number {
@@ -266,6 +312,21 @@
 
 /* Mobile */
 @media (max-width: 480px) {
+  .calendar-header-container {
+    flex-wrap: wrap;
+  }
+
+  .calendar-page-title {
+    font-size: var(--font-size-medium);
+    width: 100%;
+    margin-bottom: var(--spacing-small);
+  }
+
+  .calendar-header-controls {
+    width: 100%;
+    justify-content: space-between;
+  }
+
   .calendar-grid {
     gap: 0;
   }
@@ -290,10 +351,6 @@
   .calendar-day-quote {
     font-size: 0.35rem;
   }
-
-  .month-name {
-    font-size: var(--font-size-large);
-  }
 }
 
 /* Accessibility */
@@ -305,8 +362,8 @@
 
 /* Print styles */
 @media print {
-  .year-tabs {
-    display: none;
+  .calendar-header-sticky {
+    position: relative;
   }
 
   .calendar-year {
