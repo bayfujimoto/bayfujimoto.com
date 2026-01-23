@@ -76,6 +76,26 @@ async function fetchTMDbBackdrop(title, year) {
 }
 
 module.exports = async function() {
+  // HYBRID DATA SOURCE: Merges historical movie data with RSS feed
+  // - Historical data: Full movie history from Letterboxd CSV export (moviesHistorical.json)
+  // - RSS data: Last ~60 movies from Letterboxd RSS (auto-updates daily)
+  // - RSS entries take precedence over historical entries (for updated ratings/reviews)
+
+  // Load historical movie data if available
+  let historicalMovies = [];
+  try {
+    const historicalPath = path.join(__dirname, 'moviesHistorical.json');
+    if (fs.existsSync(historicalPath)) {
+      historicalMovies = require('./moviesHistorical.json');
+      console.log(`Loaded ${historicalMovies.length} movies from historical data`);
+    } else {
+      console.log('No historical movie data found - using RSS only');
+      console.log('To add full movie history: Export from Letterboxd and run scripts/convertLetterboxdCSV.js');
+    }
+  } catch (error) {
+    console.warn('Error loading historical movie data:', error.message);
+  }
+
   const username = process.env.LETTERBOXD_USERNAME || "bayf";
   const url = `https://letterboxd.com/${username}/rss/`;
 
@@ -88,7 +108,8 @@ module.exports = async function() {
 
     const feed = await parser.parseString(response);
 
-    return Promise.all(feed.items
+    // Process all movies from the RSS feed
+    const rssMovies = await Promise.all(feed.items
       .filter(item => item.link && item.link.includes('/film/')) // Only include actual film watches, not lists
       .map(async (item) => {
         // Extract data from content
@@ -146,7 +167,38 @@ module.exports = async function() {
           backdrop: backdropUrl,
           description: content.replace(/<[^>]*>/g, '').substring(0, 200)
         };
-      })).then(movies => movies.slice(0, 300)); // Show 300 films (approximately 2.5 years)
+      }));
+
+    console.log(`Fetched ${rssMovies.length} movies from RSS feed`);
+
+    // MERGE LOGIC: Combine historical and RSS data
+    // Use a Map to deduplicate by Letterboxd link (unique identifier)
+    // RSS entries override historical entries (more recent/updated data)
+    const movieMap = new Map();
+
+    // First, add all historical movies
+    historicalMovies.forEach(movie => {
+      const key = movie.link || `${movie.title}-${movie.date}`;
+      movieMap.set(key, movie);
+    });
+
+    // Then, add/override with RSS movies (takes precedence)
+    rssMovies.forEach(movie => {
+      const key = movie.link || `${movie.title}-${movie.date}`;
+      movieMap.set(key, movie);
+    });
+
+    // Convert Map to array and sort by date descending (most recent first)
+    const mergedMovies = Array.from(movieMap.values()).sort((a, b) =>
+      new Date(b.date) - new Date(a.date)
+    );
+
+    console.log(`Total movies after merge: ${mergedMovies.length}`);
+
+    // Show all movies from merged data
+    // To limit the number of movies displayed (for faster builds), uncomment and adjust the line below:
+    // return mergedMovies.slice(0, 600);  // Replace 600 with desired limit (e.g., 300 ≈ 2.5 years, 600 ≈ 5 years)
+    return mergedMovies;
 
   } catch (error) {
     console.error('Error fetching Letterboxd RSS:', error);

@@ -7,6 +7,14 @@ const CENTRAL_TIMEZONE = 'America/Chicago';
  * @returns {Object} - { year, month (0-11), day, dateString (YYYY-MM-DD) }
  */
 function getDateInCentralTime(date) {
+  // Convert string dates to Date objects
+  const dateObj = date instanceof Date ? date : new Date(date);
+
+  // Validate date
+  if (isNaN(dateObj.getTime())) {
+    throw new Error(`Invalid date: ${date}`);
+  }
+
   // Use Intl.DateTimeFormat to get date parts in Central Time
   const formatter = new Intl.DateTimeFormat('en-US', {
     timeZone: CENTRAL_TIMEZONE,
@@ -15,7 +23,7 @@ function getDateInCentralTime(date) {
     day: '2-digit'
   });
 
-  const parts = formatter.formatToParts(date);
+  const parts = formatter.formatToParts(dateObj);
   const year = parseInt(parts.find(p => p.type === 'year').value);
   const month = parseInt(parts.find(p => p.type === 'month').value) - 1; // 0-indexed
   const day = parseInt(parts.find(p => p.type === 'day').value);

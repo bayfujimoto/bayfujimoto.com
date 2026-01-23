@@ -13,11 +13,29 @@ hideHeader: true
     <h2 class="calendar-page-title">Film Log</h2>
     <div class="calendar-header-controls">
       <span class="calendar-current-month" id="current-month">January</span>
-      <select class="calendar-year-selector" id="year-selector">
-        {% for year in moviesCalendar.years %}
-          <option value="{{ year }}"{% if loop.first %} selected{% endif %}>{{ year }}</option>
-        {% endfor %}
-      </select>
+      <div class="calendar-year-selector-custom">
+        <button class="year-selector-button"
+                id="year-selector-button"
+                aria-haspopup="true"
+                aria-expanded="false"
+                aria-label="Select year">
+          <span id="selected-year">{{ moviesCalendar.years[0] }}</span>
+          <span class="year-selector-arrow" aria-hidden="true">▼</span>
+        </button>
+        <div class="year-selector-dropdown"
+             id="year-selector-dropdown"
+             role="menu"
+             hidden>
+          {% for year in moviesCalendar.years %}
+            <button class="year-option{% if loop.first %} active{% endif %}"
+                    data-year="{{ year }}"
+                    role="menuitem"
+                    tabindex="{% if loop.first %}0{% else %}-1{% endif %}">
+              {{ year }}
+            </button>
+          {% endfor %}
+        </div>
+      </div>
     </div>
   </div>
 </div>

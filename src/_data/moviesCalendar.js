@@ -51,12 +51,22 @@ module.exports = async function() {
   const yearsSet = new Set();
 
   moviesData.forEach(movie => {
-    const dateStr = formatDate(movie.date);
-    if (!moviesByDate[dateStr]) {
-      moviesByDate[dateStr] = [];
+    // Skip movies with invalid dates
+    if (!movie.date || isNaN(new Date(movie.date).getTime())) {
+      console.warn(`Skipping movie with invalid date: ${movie.title}, date value: ${movie.date}`);
+      return;
     }
-    moviesByDate[dateStr].push(movie);
-    yearsSet.add(getDateInCentralTime(movie.date).year);
+
+    try {
+      const dateStr = formatDate(movie.date);
+      if (!moviesByDate[dateStr]) {
+        moviesByDate[dateStr] = [];
+      }
+      moviesByDate[dateStr].push(movie);
+      yearsSet.add(getDateInCentralTime(movie.date).year);
+    } catch (error) {
+      console.warn(`Error processing movie ${movie.title} with date ${movie.date}:`, error.message);
+    }
   });
 
   // Sort years descending (most recent first)
