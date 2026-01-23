@@ -81,8 +81,9 @@ function parseTags(tagsString) {
 // Helper function: Parse date with timezone handling
 function parseDate(dateString) {
   if (!dateString) return null;
-  // Add noon time to avoid timezone issues (matching existing RSS behavior)
-  return new Date(dateString + 'T12:00:00').toISOString();
+  // Parse as noon Central Time to avoid timezone issues
+  // Letterboxd dates are YYYY-MM-DD in your local time
+  return new Date(dateString + 'T12:00:00-06:00').toISOString();
 }
 
 // Step 1: Parse diary.csv (primary source - most complete data)

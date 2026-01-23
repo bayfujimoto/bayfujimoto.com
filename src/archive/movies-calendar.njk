@@ -95,11 +95,6 @@ hideHeader: true
                                class="calendar-day-title">
                               {{ movie.title }} ({{ movie.year }})
                             </a>
-                            {% if movie.rating > 0 %}
-                              <div class="calendar-day-rating">
-                                {% for i in range(movie.rating) %}★{% endfor %}
-                              </div>
-                            {% endif %}
                           </div>
                         {% endfor %}
                       {% endif %}
