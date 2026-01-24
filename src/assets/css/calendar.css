@@ -3,9 +3,9 @@
 /* Calendar Header - Sticky below main nav */
 .calendar-header-sticky {
   position: sticky;
-  /* Position below the main nav - calculated based on nav height */
-  /* Logo height (90px) + top/bottom padding (20px each) + border (1px) = ~131px */
-  top: 131px;
+  /* Position directly below the fixed main nav */
+  /* Main nav height: spacing-small (10px) + logo (90px) + spacing-small (10px) + border (1px) = 111px */
+  top: 111px;
   z-index: 9;
   background: var(--color-base);
   padding: var(--spacing-medium) 0;

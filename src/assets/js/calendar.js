@@ -192,13 +192,9 @@
     }
   }
 
-  // Throttle scroll events for performance
-  let scrollTimeout;
+  // Update month label immediately on scroll
   window.addEventListener('scroll', () => {
-    if (scrollTimeout) {
-      clearTimeout(scrollTimeout);
-    }
-    scrollTimeout = setTimeout(updateCurrentMonth, 100);
+    updateCurrentMonth();
   }, { passive: true });
 
   // Initial month update
