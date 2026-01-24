@@ -269,14 +269,21 @@
   opacity: 0.9;
 }
 
-/* Tablet: shift towards portrait crop */
-@media (max-width: 768px) {
+/* Large tablet (769px - 1024px): Square crop */
+@media (max-width: 1024px) {
   .calendar-day-image {
-    aspect-ratio: 2 / 3;
+    aspect-ratio: 1 / 1;
   }
 }
 
-/* Mobile: full portrait aspect ratio */
+/* Tablet (481px - 768px): Slightly portrait crop */
+@media (max-width: 768px) {
+  .calendar-day-image {
+    aspect-ratio: 3 / 4;
+  }
+}
+
+/* Mobile (≤480px): Full portrait aspect ratio */
 @media (max-width: 480px) {
   .calendar-day-image {
     aspect-ratio: 2 / 3;
@@ -300,6 +307,18 @@
 .calendar-day:hover .calendar-day-info {
   opacity: 1;
   pointer-events: auto;
+}
+
+/* Tablet and below: always show info (no hover on touch devices) */
+@media (max-width: 1024px) {
+  .calendar-day-info {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .calendar-day:hover .calendar-day-info {
+    opacity: 1;
+  }
 }
 
 /* Empty days: make square */
@@ -428,17 +447,6 @@
 
   .calendar-grid {
     gap: 0;
-  }
-
-  /* Make info persistent on mobile (always visible) */
-  .calendar-day-info {
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  /* Remove hover state on mobile */
-  .calendar-day:hover .calendar-day-info {
-    opacity: 1;
   }
 
   .calendar-day-number {
