@@ -389,6 +389,11 @@
     gap: var(--spacing-small);
   }
 
+  /* Reduce min-height to prevent grid column width issues */
+  .calendar-day {
+    min-height: 80px;
+  }
+
   .calendar-page-title {
     font-size: var(--font-size-large);
   }
@@ -447,6 +452,11 @@
 
   .calendar-grid {
     gap: 0;
+  }
+
+  /* Remove min-height constraint to allow grid to control sizing */
+  .calendar-day {
+    min-height: 0;
   }
 
   .calendar-day-number {
