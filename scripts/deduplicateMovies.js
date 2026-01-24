@@ -23,12 +23,43 @@ const movies = require(filePath);
 
 console.log(`\n📊 Processing ${movies.length} movies from historical data...\n`);
 
-// Group by title+year and deduplicate within each group
-const dedupedMovies = [];
+// PHASE 1: Deduplicate by exact title+year+date (consolidate diary.csv + reviews.csv)
+console.log('Phase 1: Consolidating diary and review entries...');
+const exactDupeMap = new Map();
+
+movies.forEach(movie => {
+  const dateStr = movie.date.split('T')[0]; // YYYY-MM-DD
+  const key = `${movie.title}|${movie.year}|${dateStr}`;
+
+  if (!exactDupeMap.has(key)) {
+    exactDupeMap.set(key, movie);
+  } else {
+    // Duplicate found - merge data, preferring review entry
+    const existing = exactDupeMap.get(key);
+
+    // Prefer entry with review text (more complete)
+    if (movie.reviewText && movie.reviewText.trim() !== '') {
+      console.log(`  ✓ Merging review for: "${movie.title}" (${dateStr})`);
+      exactDupeMap.set(key, {
+        ...existing,
+        ...movie, // Review entry takes precedence
+        reviewText: movie.reviewText,
+        link: movie.link // Use review link
+      });
+    } else {
+      console.log(`  ✗ Skipping diary-only duplicate: "${movie.title}" (${dateStr})`);
+    }
+  }
+});
+
+const phase1Movies = Array.from(exactDupeMap.values());
+console.log(`Removed ${movies.length - phase1Movies.length} exact-date duplicates\n`);
+
+// PHASE 2: Fuzzy deduplication (±1 day for timezone issues)
+console.log('Phase 2: Fuzzy deduplication (±1 day)...');
 const titleGroups = new Map();
 
-// Group movies by title+year
-movies.forEach(movie => {
+phase1Movies.forEach(movie => {
   const titleKey = `${movie.title}|${movie.year}`;
   if (!titleGroups.has(titleKey)) {
     titleGroups.set(titleKey, []);
@@ -36,15 +67,11 @@ movies.forEach(movie => {
   titleGroups.get(titleKey).push(movie);
 });
 
-let duplicatesFound = 0;
 let fuzzyDuplicates = 0;
+const dedupedMovies = [];
 
-// Process each group
 titleGroups.forEach((groupMovies, titleKey) => {
-  // Sort by date (earliest first)
   groupMovies.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-  // Track which movies we've already processed
   const processed = new Set();
 
   for (let i = 0; i < groupMovies.length; i++) {
@@ -53,7 +80,6 @@ titleGroups.forEach((groupMovies, titleKey) => {
     const movie = groupMovies[i];
     let bestMatch = movie;
 
-    // Look ahead for potential duplicates within 1 day
     for (let j = i + 1; j < groupMovies.length; j++) {
       if (processed.has(j)) continue;
 
@@ -61,20 +87,16 @@ titleGroups.forEach((groupMovies, titleKey) => {
       const daysDiff = (new Date(nextMovie.date) - new Date(movie.date)) / (1000 * 60 * 60 * 24);
 
       if (daysDiff <= 1) {
-        // Found a duplicate within 1 day
-        duplicatesFound++;
         fuzzyDuplicates++;
         processed.add(j);
 
-        // Choose the better entry: prefer one with review text
         if (nextMovie.reviewText && nextMovie.reviewText.trim() !== '') {
-          console.log(`  ✓ Keeping review entry: "${nextMovie.title}" (${nextMovie.date.split('T')[0]}) over (${movie.date.split('T')[0]})`);
+          console.log(`  ✓ Keeping review entry: "${nextMovie.title}" (${nextMovie.date.split('T')[0]})`);
           bestMatch = nextMovie;
         } else {
           console.log(`  ✗ Skipping near-duplicate: "${nextMovie.title}" (${nextMovie.date.split('T')[0]})`);
         }
       } else {
-        // Dates are more than 1 day apart, stop looking
         break;
       }
     }
@@ -84,20 +106,17 @@ titleGroups.forEach((groupMovies, titleKey) => {
   }
 });
 
-// Sort by date (most recent first)
-const deduplicated = dedupedMovies.sort((a, b) =>
-  new Date(b.date) - new Date(a.date)
-);
+const deduplicated = dedupedMovies.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-// Print summary
 console.log(`\n${'='.repeat(60)}`);
 console.log(`📈 Deduplication Summary:`);
 console.log(`${'='.repeat(60)}`);
 console.log(`  Original movie count:       ${movies.length}`);
-console.log(`  Deduplicated movie count:   ${deduplicated.length}`);
-console.log(`  Duplicates removed:         ${movies.length - deduplicated.length}`);
+console.log(`  After exact dedup:          ${phase1Movies.length}`);
+console.log(`  After fuzzy dedup:          ${deduplicated.length}`);
+console.log(`  Total duplicates removed:   ${movies.length - deduplicated.length}`);
+console.log(`  - Exact same-day:           ${movies.length - phase1Movies.length}`);
 console.log(`  - Fuzzy (±1 day):           ${fuzzyDuplicates}`);
-console.log(`  - Exact same-day:           ${duplicatesFound - fuzzyDuplicates}`);
 console.log(`  Reduction:                  ${((movies.length - deduplicated.length) / movies.length * 100).toFixed(1)}%`);
 console.log(`${'='.repeat(60)}\n`);
 

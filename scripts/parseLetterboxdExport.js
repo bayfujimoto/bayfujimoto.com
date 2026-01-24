@@ -291,12 +291,37 @@ async function main() {
     // Convert Map to array
     let movies = Array.from(movieMap.values());
 
-    // DEDUPLICATION: Remove entries within 1 day of each other (same title+year)
+    // DEDUPLICATION: Two-phase approach to remove duplicates
     console.log(`\n🔍 Deduplicating movies...`);
-    const titleGroups = new Map();
 
-    // Group by title+year
+    // PHASE 1: Exact date matching (consolidate diary.csv + reviews.csv)
+    const exactDupeMap = new Map();
     movies.forEach(movie => {
+      const dateStr = movie.date.split('T')[0];
+      const key = `${movie.title}|${movie.year}|${dateStr}`;
+
+      if (!exactDupeMap.has(key)) {
+        exactDupeMap.set(key, movie);
+      } else {
+        const existing = exactDupeMap.get(key);
+        if (movie.reviewText && movie.reviewText.trim() !== '') {
+          // Merge data, preferring review entry
+          exactDupeMap.set(key, {
+            ...existing,
+            ...movie,
+            reviewText: movie.reviewText,
+            link: movie.link
+          });
+        }
+      }
+    });
+
+    let phase1Movies = Array.from(exactDupeMap.values());
+    const exactDupesRemoved = movies.length - phase1Movies.length;
+
+    // PHASE 2: Fuzzy matching (±1 day for timezone issues)
+    const titleGroups = new Map();
+    phase1Movies.forEach(movie => {
       const titleKey = `${movie.title}|${movie.year}`;
       if (!titleGroups.has(titleKey)) {
         titleGroups.set(titleKey, []);
@@ -304,39 +329,31 @@ async function main() {
       titleGroups.get(titleKey).push(movie);
     });
 
-    // Process each group and remove near-duplicates
     const dedupedMovies = [];
-    let duplicatesRemoved = 0;
+    let fuzzyDupesRemoved = 0;
 
     titleGroups.forEach((groupMovies, titleKey) => {
-      // Sort by date (earliest first)
       groupMovies.sort((a, b) => new Date(a.date) - new Date(b.date));
-
       const processed = new Set();
 
       for (let i = 0; i < groupMovies.length; i++) {
         if (processed.has(i)) continue;
-
         const movie = groupMovies[i];
         let bestMatch = movie;
 
-        // Look ahead for potential duplicates within 1 day
         for (let j = i + 1; j < groupMovies.length; j++) {
           if (processed.has(j)) continue;
-
           const nextMovie = groupMovies[j];
           const daysDiff = (new Date(nextMovie.date) - new Date(movie.date)) / (1000 * 60 * 60 * 24);
 
           if (daysDiff <= 1) {
-            // Found a duplicate within 1 day - prefer one with review text
-            duplicatesRemoved++;
+            fuzzyDupesRemoved++;
             processed.add(j);
-
             if (nextMovie.reviewText && nextMovie.reviewText.trim() !== '') {
               bestMatch = nextMovie;
             }
           } else {
-            break; // Dates are more than 1 day apart
+            break;
           }
         }
 
@@ -345,8 +362,9 @@ async function main() {
       }
     });
 
-    if (duplicatesRemoved > 0) {
-      console.log(`  Removed ${duplicatesRemoved} near-duplicate entries (±1 day)`);
+    if (exactDupesRemoved > 0 || fuzzyDupesRemoved > 0) {
+      console.log(`  Removed ${exactDupesRemoved} exact-date duplicates`);
+      console.log(`  Removed ${fuzzyDupesRemoved} fuzzy (±1 day) duplicates`);
     }
 
     // Sort by date descending (most recent first)

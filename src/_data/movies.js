@@ -89,15 +89,29 @@ module.exports = async function() {
       const rawHistorical = JSON.parse(fs.readFileSync(historicalPath, 'utf-8'));
       console.log(`Loaded ${rawHistorical.length} movies from historical data`);
 
-      // Enrich historical movies with TMDb backdrops if they don't have images
-      console.log(`Enriching historical movies with TMDb backdrops...`);
+      // Enrich historical movies with backdrops (custom first, then TMDb)
+      console.log(`Enriching historical movies with backdrops...`);
       historicalMovies = await Promise.all(rawHistorical.map(async (movie) => {
         // Skip if already has an image or backdrop
         if ((movie.image && movie.image !== '') || (movie.backdrop && movie.backdrop !== '')) {
           return movie;
         }
 
-        // Fetch TMDb backdrop
+        // Extract Letterboxd film slug from link
+        const filmSlug = movie.link?.split('/film/')[1]?.replace(/\/$/, '') || '';
+
+        // Check for custom backdrop first
+        if (filmSlug && customBackdrops[filmSlug]) {
+          const customBackdrop = customBackdrops[filmSlug];
+          console.log(`Using custom backdrop for: ${movie.title}`);
+          return {
+            ...movie,
+            backdrop: customBackdrop,
+            image: customBackdrop
+          };
+        }
+
+        // Fallback to TMDb
         const tmdbData = await fetchTMDbBackdrop(movie.title, movie.year);
         if (tmdbData && tmdbData.backdrop_path) {
           const backdropUrl = `https://image.tmdb.org/t/p/w1280${tmdbData.backdrop_path}`;
@@ -197,20 +211,34 @@ module.exports = async function() {
     console.log(`Fetched ${rssMovies.length} movies from RSS feed`);
 
     // MERGE LOGIC: Combine historical and RSS data
-    // Use a Map to deduplicate by Letterboxd link (unique identifier)
+    // Use title+year+date as deduplication key (not link, as diary and reviews have different links)
     // RSS entries override historical entries (more recent/updated data)
     const movieMap = new Map();
 
     // First, add all historical movies
     historicalMovies.forEach(movie => {
-      const key = movie.link || `${movie.title}-${movie.date}`;
+      const dateStr = movie.date ? new Date(movie.date).toISOString().split('T')[0] : '';
+      const key = `${movie.title}|${movie.year}|${dateStr}`;
       movieMap.set(key, movie);
     });
 
     // Then, add/override with RSS movies (takes precedence)
     rssMovies.forEach(movie => {
-      const key = movie.link || `${movie.title}-${movie.date}`;
-      movieMap.set(key, movie);
+      const dateStr = movie.date ? new Date(movie.date).toISOString().split('T')[0] : '';
+      const key = `${movie.title}|${movie.year}|${dateStr}`;
+
+      if (movieMap.has(key)) {
+        // Merge data from both entries, preferring RSS (more complete/recent)
+        const existing = movieMap.get(key);
+        movieMap.set(key, {
+          ...existing,
+          ...movie, // RSS data takes precedence
+          reviewText: movie.reviewText || existing.reviewText, // Keep review from either source
+          rating: movie.rating || existing.rating // Keep rating from either source
+        });
+      } else {
+        movieMap.set(key, movie);
+      }
     });
 
     // Convert Map to array and sort by date descending (most recent first)
