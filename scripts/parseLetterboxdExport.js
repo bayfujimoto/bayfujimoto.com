@@ -135,7 +135,7 @@ async function parseDiary() {
           description: '',
           rewatch: row['Rewatch'] === 'Yes',
           tags: parseTags(row['Tags']),
-          reviewText: ''
+          reviewText: row['Review'] || ''  // Get review text from diary.csv if present
         };
 
         movieMap.set(uri, movie);
@@ -154,223 +154,28 @@ async function parseDiary() {
   });
 }
 
-// Step 2: Parse reviews.csv (add review text if available)
-async function parseReviews() {
-  const filePath = path.join(exportFolder, 'reviews.csv');
+// NOTE: We ONLY parse diary.csv now. It contains all data: ratings, reviews, tags, rewatch status.
+// Previous approach parsed reviews.csv and ratings.csv separately, which created duplicates.
 
-  if (!fs.existsSync(filePath)) {
-    console.warn('⚠️  reviews.csv not found in export folder, skipping');
-    return;
-  }
-
-  return new Promise((resolve, reject) => {
-    let reviewsAdded = 0;
-
-    fs.createReadStream(filePath)
-      .pipe(csv())
-      .on('data', (row) => {
-        const uri = row['Letterboxd URI'];
-        if (!uri) return;
-
-        const reviewText = row['Review'] || '';
-
-        // Update existing movie or create new entry
-        if (movieMap.has(uri)) {
-          const movie = movieMap.get(uri);
-          movie.reviewText = reviewText;
-          reviewsAdded++;
-        } else {
-          // Film was reviewed but not in diary (rare case)
-          const watchedDate = row['Watched Date'] || row['Date'];
-          if (!watchedDate) return;
-
-          const title = row['Name']?.trim();
-          if (!title) return;
-
-          const movie = {
-            title: title,
-            year: row['Year']?.trim() || '',
-            rating: parseFloat(row['Rating']) || 0,
-            link: uri,
-            reviewLink: constructReviewLink(uri),
-            date: parseDate(watchedDate),
-            image: '',
-            poster: '',
-            backdrop: '',
-            description: '',
-            rewatch: row['Rewatch'] === 'Yes',
-            tags: parseTags(row['Tags']),
-            reviewText: reviewText
-          };
-
-          movieMap.set(uri, movie);
-          reviewsAdded++;
-        }
-      })
-      .on('end', () => {
-        console.log(`✓ Parsed reviews.csv: ${reviewsAdded} reviews added`);
-        resolve();
-      })
-      .on('error', (error) => {
-        console.error('Error parsing reviews.csv:', error.message);
-        reject(error);
-      });
-  });
-}
-
-// Step 3: Parse ratings.csv (fallback for films not in diary)
-async function parseRatings() {
-  const filePath = path.join(exportFolder, 'ratings.csv');
-
-  if (!fs.existsSync(filePath)) {
-    console.warn('⚠️  ratings.csv not found in export folder, skipping');
-    return;
-  }
-
-  return new Promise((resolve, reject) => {
-    let ratingsAdded = 0;
-
-    fs.createReadStream(filePath)
-      .pipe(csv())
-      .on('data', (row) => {
-        const uri = row['Letterboxd URI'];
-        if (!uri || movieMap.has(uri)) return; // Skip if already have this film
-
-        const date = row['Date'];
-        if (!date) return;
-
-        const title = row['Name']?.trim();
-        if (!title) return;
-
-        const movie = {
-          title: title,
-          year: row['Year']?.trim() || '',
-          rating: parseFloat(row['Rating']) || 0,
-          link: uri,
-          reviewLink: constructReviewLink(uri),
-          date: parseDate(date),
-          image: '',
-          poster: '',
-          backdrop: '',
-          description: '',
-          rewatch: false,
-          tags: [],
-          reviewText: ''
-        };
-
-        movieMap.set(uri, movie);
-        ratingsAdded++;
-      })
-      .on('end', () => {
-        console.log(`✓ Parsed ratings.csv: ${ratingsAdded} additional films added`);
-        resolve();
-      })
-      .on('error', (error) => {
-        console.error('Error parsing ratings.csv:', error.message);
-        reject(error);
-      });
-  });
-}
+// (parseReviews and parseRatings functions removed - diary.csv contains all data)
 
 // Main execution
 async function main() {
   try {
-    // Parse all CSV files in sequence
+    // Parse only diary.csv (contains all data: ratings, reviews, tags, rewatch status)
     await parseDiary();
-    await parseReviews();
-    await parseRatings();
 
     console.log(`\n📊 Total films parsed: ${movieMap.size}`);
 
     if (movieMap.size === 0) {
       console.error('\n❌ Error: No movies found in export folder');
-      console.error('Make sure the folder contains at least one of: diary.csv, ratings.csv, or watched.csv');
+      console.error('Make sure the folder contains diary.csv');
       process.exit(1);
     }
 
-    // Convert Map to array
+    // Convert Map to array and sort by date descending (most recent first)
     let movies = Array.from(movieMap.values());
-
-    // DEDUPLICATION: Two-phase approach to remove duplicates
-    console.log(`\n🔍 Deduplicating movies...`);
-
-    // PHASE 1: Exact date matching (consolidate diary.csv + reviews.csv)
-    const exactDupeMap = new Map();
-    movies.forEach(movie => {
-      const dateStr = movie.date.split('T')[0];
-      const key = `${movie.title}|${movie.year}|${dateStr}`;
-
-      if (!exactDupeMap.has(key)) {
-        exactDupeMap.set(key, movie);
-      } else {
-        const existing = exactDupeMap.get(key);
-        if (movie.reviewText && movie.reviewText.trim() !== '') {
-          // Merge data, preferring review entry
-          exactDupeMap.set(key, {
-            ...existing,
-            ...movie,
-            reviewText: movie.reviewText,
-            link: movie.link
-          });
-        }
-      }
-    });
-
-    let phase1Movies = Array.from(exactDupeMap.values());
-    const exactDupesRemoved = movies.length - phase1Movies.length;
-
-    // PHASE 2: Fuzzy matching (±1 day for timezone issues)
-    const titleGroups = new Map();
-    phase1Movies.forEach(movie => {
-      const titleKey = `${movie.title}|${movie.year}`;
-      if (!titleGroups.has(titleKey)) {
-        titleGroups.set(titleKey, []);
-      }
-      titleGroups.get(titleKey).push(movie);
-    });
-
-    const dedupedMovies = [];
-    let fuzzyDupesRemoved = 0;
-
-    titleGroups.forEach((groupMovies, titleKey) => {
-      groupMovies.sort((a, b) => new Date(a.date) - new Date(b.date));
-      const processed = new Set();
-
-      for (let i = 0; i < groupMovies.length; i++) {
-        if (processed.has(i)) continue;
-        const movie = groupMovies[i];
-        let bestMatch = movie;
-
-        for (let j = i + 1; j < groupMovies.length; j++) {
-          if (processed.has(j)) continue;
-          const nextMovie = groupMovies[j];
-          const daysDiff = (new Date(nextMovie.date) - new Date(movie.date)) / (1000 * 60 * 60 * 24);
-
-          if (daysDiff <= 1) {
-            fuzzyDupesRemoved++;
-            processed.add(j);
-            if (nextMovie.reviewText && nextMovie.reviewText.trim() !== '') {
-              bestMatch = nextMovie;
-            }
-          } else {
-            break;
-          }
-        }
-
-        processed.add(i);
-        dedupedMovies.push(bestMatch);
-      }
-    });
-
-    if (exactDupesRemoved > 0 || fuzzyDupesRemoved > 0) {
-      console.log(`  Removed ${exactDupesRemoved} exact-date duplicates`);
-      console.log(`  Removed ${fuzzyDupesRemoved} fuzzy (±1 day) duplicates`);
-    }
-
-    // Sort by date descending (most recent first)
-    movies = dedupedMovies.sort((a, b) =>
-      new Date(b.date) - new Date(a.date)
-    );
+    movies = movies.sort((a, b) => new Date(b.date) - new Date(a.date));
 
     // Show date range
     const oldestDate = new Date(movies[movies.length - 1].date);
@@ -399,15 +204,14 @@ async function main() {
     const outputPath = path.join(__dirname, '..', 'src', '_data', 'moviesHistorical.json');
     fs.writeFileSync(outputPath, JSON.stringify(movies, null, 2));
 
-    console.log(`\n✅ Success! Created ${outputPath}`);
-    console.log('\n📋 Next steps:');
-    console.log(`  1. Delete export folder: rm -rf ${exportFolder}`);
-    console.log('  2. Commit moviesHistorical.json: git add src/_data/moviesHistorical.json');
-    console.log('  3. Build the site: npm run build');
-    console.log('  4. Test the calendar: npm start');
+    console.log(`\n✅ Successfully saved ${movies.length} movies to:`);
+    console.log(`   ${outputPath}`);
+    console.log('\n💡 Next steps:');
+    console.log(`  1. Run 'npm run build' to regenerate the site with updated movie data`);
+    console.log(`  2. Delete the export folder: rm -rf ${exportFolder}`);
 
   } catch (error) {
-    console.error('\n❌ Error during parsing:', error.message);
+    console.error('\n❌ Error:', error.message);
     process.exit(1);
   }
 }
