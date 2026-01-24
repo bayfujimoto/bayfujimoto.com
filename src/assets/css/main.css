@@ -45,7 +45,7 @@ body {
 }
 
 body:has(.top-nav) {
-  padding-top: var(--spacing-large);
+  padding-top: 80px;
 }
 
 /* Typography */
@@ -124,17 +124,23 @@ a:hover {
 
 /* Top Navigation (Other Pages) */
 .main-nav.top-nav {
-  border-bottom: 1px solid var(--color-accent-5);
-  padding: 0;
+  padding: var(--spacing-small) var(--spacing-xxl);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .nav-top-container {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--spacing-medium) var(--spacing-large);
   max-width: 1200px;
   margin: 0 auto;
+  padding-bottom: var(--spacing-small);
+  border-bottom: 1px solid var(--color-accent-5);
 }
 
 .nav-logo {
@@ -182,7 +188,7 @@ a:hover {
 /* Main Content */
 main {
   min-height: 100vh;
-  padding: var(--spacing-xl) 0;
+  padding: var(--spacing-xxl) 0;
 }
 
 body:has(.icon-nav) {
