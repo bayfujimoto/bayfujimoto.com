@@ -18,7 +18,7 @@ body:has(.resume-container) .main-nav.top-nav {
 
 /* Container for resume content */
 .resume-container {
-  padding: var(--spacing-xxxl);
+  padding: var(--spacing-xxl);
   margin: 0 auto;
   max-width: 100%;
   min-height: 100vh;
