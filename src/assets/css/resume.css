@@ -2,18 +2,23 @@
    Resume Page Styles
    ================================================ */
 
+/* Apply blue background to entire page on resume */
+body:has(.resume-container) {
+  background-color: var(--color-accent-3);
+  color: var(--color-contrast);
+}
+
 /* Navigation bar with blue background on resume page */
 body:has(.resume-container) .main-nav.top-nav {
   background-color: var(--color-accent-3); /* Match resume blue */
   padding: var(--spacing-xl) var(--spacing-xxl);
 }
 
-/* Container with blue background that breaks out of page max-width */
+/* Container for resume content */
 .resume-container {
-  background-color: var(--color-accent-3); /* #5d90a3 blue */
-  color: var(--color-contrast); /* White text */
   padding: var(--spacing-xxxl);
-  margin: calc(var(--spacing-xxl) * -1) calc(var(--spacing-xxl) * -2);
+  margin: 0 auto;
+  max-width: 100%;
   min-height: 100vh;
 }
 
@@ -240,6 +245,11 @@ body:has(.resume-container) .main-nav.top-nav {
    ================================================ */
 
 @media print {
+  body:has(.resume-container) {
+    background: white;
+    color: black;
+  }
+
   .resume-container {
     background: white;
     color: black;
@@ -307,7 +317,7 @@ body:has(.resume-container) .main-nav.top-nav {
 @media (max-width: 768px) {
   .resume-container {
     padding: var(--spacing-xl) var(--spacing-medium);
-    margin: calc(var(--spacing-xl) * -1) 0;
+    margin: 0;
   }
 
   .resume-grid {
@@ -356,7 +366,7 @@ body:has(.resume-container) .main-nav.top-nav {
 @media (max-width: 480px) {
   .resume-container {
     padding: var(--spacing-large) var(--spacing-small);
-    margin: calc(var(--spacing-large) * -1) 0;
+    margin: 0;
   }
 
   .resume-grid {
