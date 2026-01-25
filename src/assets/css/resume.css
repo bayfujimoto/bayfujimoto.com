@@ -1,0 +1,390 @@
+/* ================================================
+   Resume Page Styles
+   ================================================ */
+
+/* Navigation bar with blue background on resume page */
+body:has(.resume-container) .main-nav.top-nav {
+  background-color: var(--color-accent-3); /* Match resume blue */
+  padding: var(--spacing-xl) var(--spacing-xxl);
+}
+
+/* Container with blue background that breaks out of page max-width */
+.resume-container {
+  background-color: var(--color-accent-3); /* #5d90a3 blue */
+  color: var(--color-contrast); /* White text */
+  padding: var(--spacing-xxl) var(--spacing-xl);
+  margin: calc(var(--spacing-xxl) * -1) calc(var(--spacing-xxl) * -2);
+  min-height: 100vh;
+}
+
+/* 2-column grid layout: 1/3 sidebar, 2/3 main */
+.resume-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: var(--spacing-xxl);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ================================================
+   Typography Overrides (white text on blue)
+   ================================================ */
+
+.resume-container h1,
+.resume-container h2,
+.resume-container h3,
+.resume-container p,
+.resume-container a {
+  color: var(--color-contrast); /* White */
+}
+
+.resume-container a {
+  color: var(--color-contrast);
+  text-decoration: underline;
+}
+
+.resume-container a:hover {
+  opacity: 0.8;
+}
+
+/* ================================================
+   Header (Name and Title)
+   ================================================ */
+
+.resume-header {
+  margin-bottom: var(--spacing-xl);
+}
+
+.resume-name {
+  font-family: var(--font-sans);
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: var(--spacing-small);
+}
+
+.resume-title {
+  font-size: var(--font-size-medium);
+  font-weight: 300;
+  opacity: 0.9;
+}
+
+/* ================================================
+   Sections
+   ================================================ */
+
+.resume-section {
+  margin-bottom: var(--spacing-xl);
+}
+
+.resume-section-title {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-large);
+  font-weight: 700;
+  margin-bottom: var(--spacing-medium);
+  padding-bottom: var(--spacing-small);
+  border-bottom: 2px solid var(--color-contrast);
+  text-transform: capitalize;
+}
+
+/* ================================================
+   Contact Section
+   ================================================ */
+
+.resume-contact {
+  margin-bottom: var(--spacing-xl);
+  font-size: var(--font-size-medium);
+}
+
+.resume-contact-item {
+  margin-bottom: var(--spacing-small);
+}
+
+.resume-contact-item:last-child {
+  margin-bottom: 0;
+}
+
+/* ================================================
+   Education Section
+   ================================================ */
+
+.resume-education-item {
+  margin-bottom: var(--spacing-medium);
+}
+
+.resume-education-item:last-child {
+  margin-bottom: 0;
+}
+
+.resume-institution {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-medium);
+  font-weight: 700;
+  margin-bottom: var(--spacing-small);
+}
+
+.resume-degree {
+  font-size: var(--font-size-base);
+  margin-bottom: 0.25rem;
+}
+
+.resume-year {
+  font-size: var(--font-size-small);
+  opacity: 0.8;
+}
+
+/* ================================================
+   Skills Section
+   ================================================ */
+
+.resume-skills-category {
+  margin-bottom: var(--spacing-medium);
+}
+
+.resume-skills-category:last-child {
+  margin-bottom: 0;
+}
+
+.resume-skills-label {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.resume-skills-list {
+  font-size: var(--font-size-small);
+  line-height: 1.6;
+}
+
+/* ================================================
+   Experience Section
+   ================================================ */
+
+.resume-experience-item {
+  margin-bottom: var(--spacing-large);
+  padding-bottom: var(--spacing-large);
+  border-bottom: 1px solid rgba(218, 218, 215, 0.2);
+}
+
+.resume-experience-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.resume-experience-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: var(--spacing-small);
+  gap: var(--spacing-medium);
+}
+
+.resume-company {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-large);
+  font-weight: 700;
+}
+
+.resume-dates {
+  font-size: var(--font-size-small);
+  opacity: 0.8;
+  white-space: nowrap;
+}
+
+.resume-job-title {
+  font-size: var(--font-size-medium);
+  font-weight: 400;
+  margin-bottom: var(--spacing-small);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.resume-description {
+  font-size: var(--font-size-base);
+  line-height: 1.6;
+}
+
+/* ================================================
+   Philosophy/Statement Section
+   ================================================ */
+
+.resume-philosophy {
+  font-size: var(--font-size-base);
+  line-height: 1.7;
+  font-style: italic;
+  margin-bottom: var(--spacing-medium);
+  padding-left: var(--spacing-medium);
+  border-left: 3px solid var(--color-contrast);
+}
+
+.resume-philosophy:last-child {
+  margin-bottom: 0;
+}
+
+.resume-statement {
+  font-size: var(--font-size-base);
+  line-height: 1.7;
+  font-style: italic;
+}
+
+/* ================================================
+   Print Styles
+   ================================================ */
+
+@media print {
+  .resume-container {
+    background: white;
+    color: black;
+    padding: 0;
+    margin: 0;
+    min-height: auto;
+  }
+
+  .resume-grid {
+    gap: var(--spacing-large);
+  }
+
+  .resume-container h1,
+  .resume-container h2,
+  .resume-container h3,
+  .resume-container p,
+  .resume-container a {
+    color: black;
+  }
+
+  .resume-section-title {
+    border-bottom-color: black;
+  }
+
+  .resume-philosophy {
+    border-left-color: black;
+  }
+
+  .resume-experience-item {
+    border-bottom-color: rgba(0, 0, 0, 0.2);
+  }
+
+  /* Hide navigation */
+  .main-nav,
+  .top-nav {
+    display: none !important;
+  }
+
+  /* Prevent page breaks inside sections */
+  .resume-section,
+  .resume-experience-item,
+  .resume-education-item {
+    page-break-inside: avoid;
+  }
+}
+
+/* ================================================
+   Tablet (769px - 1023px)
+   ================================================ */
+
+@media (max-width: 1023px) {
+  .resume-container {
+    padding: var(--spacing-xl) var(--spacing-medium);
+    margin: calc(var(--spacing-xl) * -1) calc(var(--spacing-medium) * -1);
+  }
+
+  .resume-grid {
+    gap: var(--spacing-xl);
+  }
+
+  .resume-name {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+  }
+}
+
+/* ================================================
+   Mobile (≤768px) - Single Column with Reordering
+   ================================================ */
+
+@media (max-width: 768px) {
+  .resume-container {
+    padding: var(--spacing-xl) var(--spacing-medium);
+    margin: calc(var(--spacing-xl) * -1) calc(var(--spacing-medium) * -1);
+  }
+
+  .resume-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-large);
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Logical mobile order:
+     1. Name/Title
+     2. Contact
+     3. Experience
+     4. Education
+     5. Skills
+     6. Additional sections */
+
+  .resume-header {
+    order: 1;
+  }
+
+  .resume-contact {
+    order: 2;
+    margin-bottom: var(--spacing-large);
+  }
+
+  .resume-main > .resume-section:nth-of-type(1) {
+    order: 3; /* Experience section */
+  }
+
+  .resume-sidebar > .resume-section:nth-of-type(1) {
+    order: 4; /* Education section */
+  }
+
+  .resume-sidebar > .resume-section:nth-of-type(2) {
+    order: 5; /* Skills section */
+  }
+
+  .resume-sidebar > .resume-section:nth-of-type(3) {
+    order: 6; /* Additional sidebar section */
+  }
+
+  .resume-main > .resume-section:nth-of-type(2) {
+    order: 7; /* Philosophy section */
+  }
+
+  .resume-name {
+    font-size: clamp(1.5rem, 8vw, 2rem);
+  }
+
+  .resume-experience-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  .resume-dates {
+    white-space: normal;
+  }
+}
+
+/* ================================================
+   Very Small Mobile (≤480px)
+   ================================================ */
+
+@media (max-width: 480px) {
+  .resume-container {
+    padding: var(--spacing-large) var(--spacing-small);
+    margin: calc(var(--spacing-large) * -1) calc(var(--spacing-small) * -1);
+  }
+
+  .resume-grid {
+    gap: var(--spacing-medium);
+  }
+
+  .resume-section {
+    margin-bottom: var(--spacing-large);
+  }
+}
