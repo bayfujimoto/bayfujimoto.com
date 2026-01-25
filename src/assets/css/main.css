@@ -372,7 +372,12 @@ body:has(.icon-nav) main {
 /* Mobile - Scattered Polaroid Wall (≤768px) */
 @media (max-width: 768px) {
   body {
-    padding: 0 var(--spacing-large);
+    padding: 0;
+  }
+
+  /* Add padding to page content to maintain inner spacing */
+  .page-content {
+    padding: 0 var(--spacing-medium);
   }
 
   /* Enable scrolling on homepage */
@@ -466,22 +471,45 @@ body:has(.icon-nav) main {
     grid-column: span 2;
   }
 
+  /* Top navigation - full-width */
+  .main-nav.top-nav {
+    padding: var(--spacing-small) var(--spacing-medium);
+  }
+
   /* Other pages navigation */
   .nav-top-container {
     flex-direction: column;
-    gap: var(--spacing-medium);
     padding: var(--spacing-medium);
   }
 
+  /* Mobile navigation - hidden by default */
   .nav-links {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.4s ease, opacity 0.3s ease;
     flex-direction: column;
     gap: var(--spacing-medium);
     width: 100%;
     text-align: center;
   }
 
+  /* Menu open state */
+  .nav-links.menu-open {
+    max-height: 400px;
+    opacity: 1;
+    padding-top: var(--spacing-medium);
+  }
+
   .nav-links a {
     display: block;
+    padding: var(--spacing-small) 0;
+  }
+
+  /* Logo becomes clickable toggle on mobile */
+  .nav-logo {
+    cursor: pointer;
+    user-select: none;
   }
 
   /* Archive grids */
@@ -489,5 +517,14 @@ body:has(.icon-nav) main {
   .books-grid {
     grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
     gap: var(--spacing-small);
+  }
+}
+
+/* Desktop - always show links */
+@media (min-width: 769px) {
+  .nav-links {
+    opacity: 1;
+    max-height: none;
+    overflow: visible;
   }
 }

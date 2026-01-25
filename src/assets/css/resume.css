@@ -293,6 +293,11 @@ body:has(.resume-container) .main-nav.top-nav {
   .resume-name {
     font-size: clamp(1.75rem, 4vw, 2.5rem);
   }
+
+  /* Resume navigation - ensure blue background extends full-width */
+  body:has(.resume-container) .main-nav.top-nav {
+    padding: var(--spacing-small) var(--spacing-medium);
+  }
 }
 
 /* ================================================
@@ -302,7 +307,7 @@ body:has(.resume-container) .main-nav.top-nav {
 @media (max-width: 768px) {
   .resume-container {
     padding: var(--spacing-xl) var(--spacing-medium);
-    margin: calc(var(--spacing-xl) * -1) calc(var(--spacing-medium) * -1);
+    margin: calc(var(--spacing-xl) * -1) 0;
   }
 
   .resume-grid {
@@ -337,6 +342,11 @@ body:has(.resume-container) .main-nav.top-nav {
   .resume-dates {
     white-space: normal;
   }
+
+  /* Resume navigation - ensure blue background extends full-width */
+  body:has(.resume-container) .main-nav.top-nav {
+    padding: var(--spacing-small) var(--spacing-medium);
+  }
 }
 
 /* ================================================
@@ -346,7 +356,7 @@ body:has(.resume-container) .main-nav.top-nav {
 @media (max-width: 480px) {
   .resume-container {
     padding: var(--spacing-large) var(--spacing-small);
-    margin: calc(var(--spacing-large) * -1) calc(var(--spacing-small) * -1);
+    margin: calc(var(--spacing-large) * -1) 0;
   }
 
   .resume-grid {
