@@ -233,7 +233,7 @@
 /* Empty Days (within current month) */
 .calendar-day.empty {
   cursor: default;
-  min-height: 0;
+  /* min-height removed - inherits 120px from .calendar-day for consistent row heights */
 }
 
 /* Empty cells for days outside current month - maintains grid alignment */
