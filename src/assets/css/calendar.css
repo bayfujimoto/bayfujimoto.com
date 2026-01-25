@@ -233,13 +233,11 @@
 /* Empty Days (within current month) */
 .calendar-day.empty {
   cursor: default;
-  aspect-ratio: 16 / 9;
   min-height: 0;
 }
 
 /* Empty cells for days outside current month - maintains grid alignment */
 .calendar-day-empty {
-  aspect-ratio: 16 / 9;
   min-height: 0;
 }
 
@@ -274,11 +272,6 @@
   .calendar-day-image {
     aspect-ratio: 1 / 1;
   }
-
-  .calendar-day.empty,
-  .calendar-day-empty {
-    aspect-ratio: 1 / 1;
-  }
 }
 
 /* Tablet (481px - 768px): Slightly portrait crop */
@@ -286,21 +279,11 @@
   .calendar-day-image {
     aspect-ratio: 3 / 4;
   }
-
-  .calendar-day.empty,
-  .calendar-day-empty {
-    aspect-ratio: 3 / 4;
-  }
 }
 
 /* Mobile (≤480px): Full portrait aspect ratio */
 @media (max-width: 480px) {
   .calendar-day-image {
-    aspect-ratio: 2 / 3;
-  }
-
-  .calendar-day.empty,
-  .calendar-day-empty {
     aspect-ratio: 2 / 3;
   }
 }
