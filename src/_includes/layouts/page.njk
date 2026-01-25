@@ -3,6 +3,8 @@ layout: layouts/base.njk
 ---
 
 <article class="page-content">
+  {% if showTitle != false %}
   <h1>{{ title }}</h1>
+  {% endif %}
   {{ content | safe }}
 </article>

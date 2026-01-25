@@ -25,6 +25,7 @@
   --spacing-large: 30px;
   --spacing-xl: clamp(30px, 5vw, 50px);
   --spacing-xxl: clamp(70px, 10vw, 140px);
+  --spacing-xxxl: clamp(140px, 15vw, 200px);
 }
 
 /* Reset & Base */

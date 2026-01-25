@@ -12,7 +12,7 @@ body:has(.resume-container) .main-nav.top-nav {
 .resume-container {
   background-color: var(--color-accent-3); /* #5d90a3 blue */
   color: var(--color-contrast); /* White text */
-  padding: var(--spacing-xxl) var(--spacing-xl);
+  padding: var(--spacing-xxxl);
   margin: calc(var(--spacing-xxl) * -1) calc(var(--spacing-xxl) * -2);
   min-height: 100vh;
 }
