@@ -6,6 +6,8 @@
 body:has(.resume-container) {
   background-color: var(--color-accent-3);
   color: var(--color-contrast);
+  padding: 0; /* Remove body padding - container handles its own padding */
+  padding-top: 80px; /* Maintain top padding for fixed navigation */
 }
 
 /* Navigation bar with blue background on resume page */
