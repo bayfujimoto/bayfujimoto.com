@@ -9,11 +9,11 @@ showTitle: false
   <div class="resume-grid">
 
 <header class="resume-top">
-<h1 class="resume-name">[Your Name]</h1>
+<h1 class="resume-name">Bay Fujimoto</h1>
 <div class="resume-contact">
-<span>[email@example.com]</span>
-<span>[yourwebsite.com]</span>
-<span>[@yourusername]</span>
+<span>bayfujimoto@gmail.com</span>
+<span>[bayfujimoto.com]</span>
+<span>[@bayfujimoto]</span>
 </div>
 </header>
 
@@ -23,24 +23,24 @@ showTitle: false
 <h2 class="resume-section-title">Education</h2>
 
 <div class="resume-education-item">
-<p class="resume-degree">[Degree Name]</p>
-<p class="resume-institution">[Institution Name]</p>
-<p class="resume-location">[City, State/Country]</p>
-<p class="resume-year">[Start Year] – [End Year]</p>
+<p class="resume-degree">Bachelor of Architecture</p>
+<p class="resume-institution">Rice University</p>
+<p class="resume-location">Houston, Texas, USA</p>
+<p class="resume-year">2024 - 2025</p>
 </div>
 
 <div class="resume-education-item">
-<p class="resume-degree">[Degree Name]</p>
-<p class="resume-institution">[Institution Name]</p>
-<p class="resume-location">[City, State/Country]</p>
-<p class="resume-year">[Start Year] – [End Year]</p>
+<p class="resume-degree">Bachelor of Arts in Architecture</p>
+<p class="resume-institution">Rice University</p>
+<p class="resume-location">Houston, Texas, USA</p>
+<p class="resume-year">2019 - 2023</p>
 </div>
 
 <div class="resume-education-item">
-<p class="resume-degree">[Program Name]</p>
-<p class="resume-institution">[Institution Name]</p>
-<p class="resume-location">[City, State/Country]</p>
-<p class="resume-year">[Year]</p>
+<p class="resume-degree">RSAP Study Abroad</p>
+<p class="resume-institution">Rice School of Architecture Paris</p>
+<p class="resume-location">Paris, France</p>
+<p class="resume-year">2024</p>
 </div>
 
 </section>
@@ -71,53 +71,51 @@ showTitle: false
 
 <article class="resume-experience-item">
 
-<div class="resume-experience-header">
+<div class="resume-experience-info">
 <h3 class="resume-company">[Company Name]</h3>
+<p class="resume-job-title">[Job Title]</p>
+<p class="resume-location">[City, State/Country]</p>
 <p class="resume-dates">[Start Date] – [End Date]</p>
 </div>
 
-<p class="resume-job-title">[Job Title]</p>
-<p class="resume-location">[City, State/Country]</p>
-<p class="resume-duration">[Duration, e.g., "9 months"]</p>
-<p class="resume-date-range">[Month Year] – [Month Year]</p>
-
+<div class="resume-experience-details">
 <p class="resume-description">[First key responsibility or achievement in this role.]</p>
 <p class="resume-description">[Second key responsibility or achievement.]</p>
 <p class="resume-description">[Third key responsibility or achievement.]</p>
+</div>
 
 </article>
 
 <article class="resume-experience-item">
 
-<div class="resume-experience-header">
+<div class="resume-experience-info">
 <h3 class="resume-company">[Company Name]</h3>
+<p class="resume-job-title">[Job Title]</p>
+<p class="resume-location">[City, State/Country]</p>
 <p class="resume-dates">[Start Date] – [End Date]</p>
 </div>
 
-<p class="resume-job-title">[Job Title]</p>
-<p class="resume-location">[City, State/Country]</p>
-<p class="resume-duration">[Duration]</p>
-<p class="resume-date-range">[Month Year] – [Month Year]</p>
-
+<div class="resume-experience-details">
 <p class="resume-description">[Key responsibility or achievement.]</p>
 <p class="resume-description">[Key responsibility or achievement.]</p>
 <p class="resume-description">[Key responsibility or achievement.]</p>
+</div>
 
 </article>
 
 <article class="resume-experience-item">
 
-<div class="resume-experience-header">
+<div class="resume-experience-info">
 <h3 class="resume-company">[Company Name]</h3>
+<p class="resume-job-title">[Job Title]</p>
+<p class="resume-location">[City, State/Country]</p>
 <p class="resume-dates">[Start Date] – [End Date]</p>
 </div>
 
-<p class="resume-job-title">[Job Title]</p>
-<p class="resume-location">[City, State/Country]</p>
-<p class="resume-date-range">[Month Year] – [Month Year]</p>
-
+<div class="resume-experience-details">
 <p class="resume-description">[Key responsibility or achievement.]</p>
 <p class="resume-description">[Key responsibility or achievement.]</p>
+</div>
 
 </article>
 
