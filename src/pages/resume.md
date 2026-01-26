@@ -1,0 +1,129 @@
+---
+layout: layouts/page.njk
+title: Resume
+permalink: /resume/
+showTitle: false
+---
+
+<div class="resume-container">
+  <div class="resume-grid">
+
+<header class="resume-top">
+<h1 class="resume-name">[Your Name]</h1>
+<div class="resume-contact">
+<span>[email@example.com]</span>
+<span>[yourwebsite.com]</span>
+<span>[@yourusername]</span>
+</div>
+</header>
+
+<aside class="resume-sidebar">
+
+<section class="resume-section">
+<h2 class="resume-section-title">Education</h2>
+
+<div class="resume-education-item">
+<p class="resume-degree">[Degree Name]</p>
+<p class="resume-institution">[Institution Name]</p>
+<p class="resume-location">[City, State/Country]</p>
+<p class="resume-year">[Start Year] – [End Year]</p>
+</div>
+
+<div class="resume-education-item">
+<p class="resume-degree">[Degree Name]</p>
+<p class="resume-institution">[Institution Name]</p>
+<p class="resume-location">[City, State/Country]</p>
+<p class="resume-year">[Start Year] – [End Year]</p>
+</div>
+
+<div class="resume-education-item">
+<p class="resume-degree">[Program Name]</p>
+<p class="resume-institution">[Institution Name]</p>
+<p class="resume-location">[City, State/Country]</p>
+<p class="resume-year">[Year]</p>
+</div>
+
+</section>
+
+<section class="resume-section">
+<h2 class="resume-section-title">Skills</h2>
+
+<div class="resume-skills-list">
+<p>[Skill or Tool 1]</p>
+<p>[Skill or Tool 2]</p>
+<p>[Skill or Tool 3, Multiple items, Comma separated]</p>
+<p>[Skill or Tool 4, Multiple items]</p>
+<p>[Skill or Tool 5]</p>
+<p>[Skill or Tool 6]</p>
+<p>[Skill or Tool 7]</p>
+</div>
+
+</section>
+
+</aside>
+
+<main class="resume-main">
+
+<p class="resume-intro">[Your introduction paragraph. Describe your background, expertise, passions, and what makes you unique as a professional. This should be 2-4 sentences that give readers a sense of who you are and what you do.]</p>
+
+<section class="resume-section">
+<h2 class="resume-section-title">Experience</h2>
+
+<article class="resume-experience-item">
+
+<div class="resume-experience-header">
+<h3 class="resume-company">[Company Name]</h3>
+<p class="resume-dates">[Start Date] – [End Date]</p>
+</div>
+
+<p class="resume-job-title">[Job Title]</p>
+<p class="resume-location">[City, State/Country]</p>
+<p class="resume-duration">[Duration, e.g., "9 months"]</p>
+<p class="resume-date-range">[Month Year] – [Month Year]</p>
+
+<p class="resume-description">[First key responsibility or achievement in this role.]</p>
+<p class="resume-description">[Second key responsibility or achievement.]</p>
+<p class="resume-description">[Third key responsibility or achievement.]</p>
+
+</article>
+
+<article class="resume-experience-item">
+
+<div class="resume-experience-header">
+<h3 class="resume-company">[Company Name]</h3>
+<p class="resume-dates">[Start Date] – [End Date]</p>
+</div>
+
+<p class="resume-job-title">[Job Title]</p>
+<p class="resume-location">[City, State/Country]</p>
+<p class="resume-duration">[Duration]</p>
+<p class="resume-date-range">[Month Year] – [Month Year]</p>
+
+<p class="resume-description">[Key responsibility or achievement.]</p>
+<p class="resume-description">[Key responsibility or achievement.]</p>
+<p class="resume-description">[Key responsibility or achievement.]</p>
+
+</article>
+
+<article class="resume-experience-item">
+
+<div class="resume-experience-header">
+<h3 class="resume-company">[Company Name]</h3>
+<p class="resume-dates">[Start Date] – [End Date]</p>
+</div>
+
+<p class="resume-job-title">[Job Title]</p>
+<p class="resume-location">[City, State/Country]</p>
+<p class="resume-date-range">[Month Year] – [Month Year]</p>
+
+<p class="resume-description">[Key responsibility or achievement.]</p>
+<p class="resume-description">[Key responsibility or achievement.]</p>
+
+</article>
+
+</section>
+
+</main>
+
+  </div>
+</div>
