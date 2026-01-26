@@ -7,6 +7,11 @@ body:has(.resume-container) {
   background-color: var(--color-accent-3); /* #5d90a3 blue */
 }
 
+/* Override page-content max-width for full-width resume layout */
+.page-content:has(.resume-container) {
+  max-width: none;
+}
+
 /* Navigation bar with blue background on resume page */
 body:has(.resume-container) .main-nav.top-nav {
   background-color: var(--color-accent-3); /* Match resume blue */

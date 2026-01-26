@@ -57,21 +57,21 @@ showTitle: false
 <h2 class="resume-section-title">Skills</h2>
 
 <div class="resume-skills-list">
-<p>**Autodesk** Revit</p>
-<p>**Rhino3D** Grasshopper</p>
-<p>**Adobe** Photoshop, Illustrator, InDesign, Lightroom</p>
-<p>**Affinity**</p>
-<p>**Microsoft** Office</p>
-<p>**Rendering** Enscape, V-Ray, Twinmotion</p>
-<p>**AI** Claude Code, Midjourney, Stable Diffusion</p>
-<p>**3D Printing** FDM, Resin<p>
+<p><strong>Autodesk</strong> Revit</p>
+<p><strong>Rhino3D</strong> Grasshopper</p>
+<p><strong>Adobe</strong> Photoshop, Illustrator, InDesign, Lightroom</p>
+<p><strong>Affinity</strong></p>
+<p><strong>Microsoft</strong> Office</p>
+<p><strong>Rendering</strong> Enscape, V-Ray, Twinmotion</p>
+<p><strong>AI</strong> Claude Code, Midjourney, Stable Diffusion</p>
+<p><strong>3D Printing</strong> FDM, Resin</p>
 </div>
 
 </section>
 
 </aside>
 
-<main class="resume-main">
+<div class="resume-main">
 
 <section class="resume-section">
 <h2 class="resume-section-title">Experience</h2>
@@ -131,7 +131,7 @@ showTitle: false
 
 </section>
 
-</main>
+</div>
 
   </div>
 </div>
