@@ -76,7 +76,7 @@ body:has(.resume-container) .main-nav.top-nav {
 
 .resume-header-right {
   display: flex;
-  align-items: flex-start;
+  align-items: flex-end;
 }
 
 .resume-name {
