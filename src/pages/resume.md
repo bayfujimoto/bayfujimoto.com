@@ -9,12 +9,20 @@ showTitle: false
   <div class="resume-grid">
 
 <header class="resume-top">
+
+<div class="resume-header-left">
 <h1 class="resume-name">Bay Fujimoto</h1>
 <div class="resume-contact">
 <span>bayfujimoto@gmail.com</span>
 <span>[bayfujimoto.com]</span>
 <span>[@bayfujimoto]</span>
 </div>
+</div>
+
+<div class="resume-header-right">
+<p class="resume-intro">Recent graduate from Rice University with a Bachelor of Architecture and a strong foundation in design, model-making, and digital fabrication. Passionate about thoughtful, materially grounded architecture and adept at translating conceptual ideas into compelling visual and spatial narratives.</p>
+</div>
+
 </header>
 
 <aside class="resume-sidebar">
@@ -49,13 +57,14 @@ showTitle: false
 <h2 class="resume-section-title">Skills</h2>
 
 <div class="resume-skills-list">
-<p>[Skill or Tool 1]</p>
-<p>[Skill or Tool 2]</p>
-<p>[Skill or Tool 3, Multiple items, Comma separated]</p>
-<p>[Skill or Tool 4, Multiple items]</p>
-<p>[Skill or Tool 5]</p>
-<p>[Skill or Tool 6]</p>
-<p>[Skill or Tool 7]</p>
+<p>**Autodesk** Revit</p>
+<p>**Rhino3D** Grasshopper</p>
+<p>**Adobe** Photoshop, Illustrator, InDesign, Lightroom</p>
+<p>**Affinity**</p>
+<p>**Microsoft** Office</p>
+<p>**Rendering** Enscape, V-Ray, Twinmotion</p>
+<p>**AI** Claude Code, Midjourney, Stable Diffusion</p>
+<p>**3D Printing** FDM, Resin<p>
 </div>
 
 </section>
@@ -64,18 +73,16 @@ showTitle: false
 
 <main class="resume-main">
 
-<p class="resume-intro">[Your introduction paragraph. Describe your background, expertise, passions, and what makes you unique as a professional. This should be 2-4 sentences that give readers a sense of who you are and what you do.]</p>
-
 <section class="resume-section">
 <h2 class="resume-section-title">Experience</h2>
 
 <article class="resume-experience-item">
 
 <div class="resume-experience-info">
-<h3 class="resume-company">[Company Name]</h3>
-<p class="resume-job-title">[Job Title]</p>
-<p class="resume-location">[City, State/Country]</p>
-<p class="resume-dates">[Start Date] – [End Date]</p>
+<h3 class="resume-company">Low Design Office</h3>
+<p class="resume-job-title">Junior Designer</p>
+<p class="resume-location">Austin, Texas, USA</p>
+<p class="resume-dates">Aug 2025 - Now</p>
 </div>
 
 <div class="resume-experience-details">
@@ -89,16 +96,17 @@ showTitle: false
 <article class="resume-experience-item">
 
 <div class="resume-experience-info">
-<h3 class="resume-company">[Company Name]</h3>
-<p class="resume-job-title">[Job Title]</p>
-<p class="resume-location">[City, State/Country]</p>
-<p class="resume-dates">[Start Date] – [End Date]</p>
+<h3 class="resume-company">SHoP Architects</h3>
+<p class="resume-job-title">Junior Designer</p>
+<p class="resume-location">New York, New York, USA</p>
+<p class="resume-dates">Sep 2023 - June 2024</p>
 </div>
 
 <div class="resume-experience-details">
-<p class="resume-description">[Key responsibility or achievement.]</p>
-<p class="resume-description">[Key responsibility or achievement.]</p>
-<p class="resume-description">[Key responsibility or achievement.]</p>
+<p class="resume-description">Supported project team through the schematic and design development phases for high-end residential projects. Completed sheets for the finished design development package in Revit.</p>
+<p class="resume-description">Created design studies for facade iterations and worked with consultants on coordinating facade details.</p>
+<p class="resume-description">Participated in consultant meetings for landscape, MEP, civil, facade, and structure.</p>
+<p class="resume-description">Assisted the fabrication team with developing physical models.</p>
 </div>
 
 </article>
@@ -106,15 +114,17 @@ showTitle: false
 <article class="resume-experience-item">
 
 <div class="resume-experience-info">
-<h3 class="resume-company">[Company Name]</h3>
-<p class="resume-job-title">[Job Title]</p>
-<p class="resume-location">[City, State/Country]</p>
-<p class="resume-dates">[Start Date] – [End Date]</p>
+<h3 class="resume-company">Weiss Architecture</h3>
+<p class="resume-job-title">Design Intern</p>
+<p class="resume-location">Austin, Texas, USA</p>
+<p class="resume-dates">May - July 2023</p>
+<p class="resume-dates">May - August 2022</p>
+<p class="resume-dates">May - August 2021</p>
 </div>
 
 <div class="resume-experience-details">
-<p class="resume-description">[Key responsibility or achievement.]</p>
-<p class="resume-description">[Key responsibility or achievement.]</p>
+<p class="resume-description">Independently translated 2D AutoCAD drawings into a detailed 3D model and produced high-quality renderings to support design visualization and client presentations.</p>
+<p class="resume-description">Participated in site visits and client presentations.</p>
 </div>
 
 </article>
