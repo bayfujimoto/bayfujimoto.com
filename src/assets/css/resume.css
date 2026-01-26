@@ -22,7 +22,7 @@ body:has(.resume-container) .main-nav.top-nav {
 .resume-container {
   background-color: transparent;
   color: var(--color-contrast); /* White text */
-  padding: var(--spacing-xxl);
+  padding: var(--spacing-xl);
   margin: 0 auto;
   min-height: 100vh;
 }
