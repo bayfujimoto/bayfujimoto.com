@@ -22,8 +22,8 @@ body:has(.resume-container) .main-nav.top-nav {
 .resume-container {
   background-color: transparent;
   color: var(--color-contrast); /* White text */
-  padding: var(--spacing-xxxl);
-  margin: calc(var(--spacing-xxxl) * -1) calc(var(--spacing-xxxl) * -2);
+  padding: var(--spacing-xxl);
+  margin: 0 auto;
   min-height: 100vh;
 }
 
