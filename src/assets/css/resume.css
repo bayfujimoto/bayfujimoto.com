@@ -33,6 +33,7 @@ body:has(.resume-container) .main-nav.top-nav {
   column-gap: var(--spacing-xxl);
   max-width: 1200px;
   margin: 0 auto;
+  align-items: start;
 }
 
 /* ================================================
@@ -139,7 +140,7 @@ body:has(.resume-container) .main-nav.top-nav {
 .resume-intro {
   font-size: var(--font-size-medium);
   line-height: 1.6;
-  margin-bottom: var(--spacing-large);
+  margin-bottom: 0;
 }
 
 /* ================================================
