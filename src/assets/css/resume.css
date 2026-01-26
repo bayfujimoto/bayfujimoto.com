@@ -2,15 +2,20 @@
    Resume Page Styles
    ================================================ */
 
+/* Apply blue background to body on resume page */
+body:has(.resume-container) {
+  background-color: var(--color-accent-3); /* #5d90a3 blue */
+}
+
 /* Navigation bar with blue background on resume page */
 body:has(.resume-container) .main-nav.top-nav {
   background-color: var(--color-accent-3); /* Match resume blue */
   padding: var(--spacing-xl) var(--spacing-xxl);
 }
 
-/* Container with blue background that breaks out of page max-width */
+/* Container with transparent background (uses body background) */
 .resume-container {
-  background-color: var(--color-accent-3); /* #5d90a3 blue */
+  background-color: transparent;
   color: var(--color-contrast); /* White text */
   padding: var(--spacing-xxxl);
   margin: calc(var(--spacing-xxl) * -1) calc(var(--spacing-xxl) * -2);
@@ -76,7 +81,7 @@ body:has(.resume-container) .main-nav.top-nav {
   flex-direction: column;
   align-items: flex-end;
   gap: 0.25rem;
-  font-size: var(--font-size-small);
+  font-size: var(--font-size-medium);
 }
 
 .resume-contact span {
@@ -110,7 +115,7 @@ body:has(.resume-container) .main-nav.top-nav {
 .resume-section-title {
   font-family: var(--font-sans);
   font-size: var(--font-size-medium);
-  font-weight: 400;
+  font-weight: 700;
   font-style: italic;
   margin-bottom: var(--spacing-medium);
   text-transform: capitalize;
@@ -305,9 +310,8 @@ body:has(.resume-container) .main-nav.top-nav {
    ================================================ */
 
 @media (max-width: 768px) {
-  /* Apply blue background to body on mobile for full-width coverage */
+  /* Reset body padding on mobile for full-width coverage */
   body:has(.resume-container) {
-    background-color: var(--color-accent-3);
     padding: 0;
     padding-top: 80px;
   }
@@ -315,7 +319,6 @@ body:has(.resume-container) .main-nav.top-nav {
   .resume-container {
     padding: var(--spacing-xl) var(--spacing-medium);
     margin: 0;
-    background-color: transparent; /* Remove container background, use body background */
   }
 
   .resume-grid {
