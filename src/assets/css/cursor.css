@@ -1,0 +1,90 @@
+/* Custom Cursor Styles */
+
+/* Hide default cursor on mouse-enabled devices */
+@media (hover: hover) and (pointer: fine) {
+  body,
+  a,
+  button,
+  .clickable,
+  .nav-item,
+  .archive-section,
+  .calendar-day,
+  .year-option,
+  .year-selector-button,
+  .movie-item,
+  .book-item {
+    cursor: none !important;
+  }
+}
+
+/* Outer cursor - inversion layer */
+.custom-cursor-outer {
+  position: fixed;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  mix-blend-mode: difference;
+  background-color: #ffffff;
+  will-change: transform, border-radius;
+  transition:
+    border-radius 0.25s ease-out,
+    width 0.25s ease-out,
+    height 0.25s ease-out;
+}
+
+/* Inner cursor - color overlay layer */
+.custom-cursor-inner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background-color: transparent;
+  transform: translate(-50%, -50%);
+  transition: background-color 0.25s ease-out;
+}
+
+/* Hover state - rounded square with red tint */
+.custom-cursor-outer.hover {
+  width: 35px;
+  height: 35px;
+  border-radius: 20%;
+}
+
+.custom-cursor-outer.hover .custom-cursor-inner {
+  background-color: rgba(232, 60, 58, 0.4);
+}
+
+/* Click pulse animation */
+@keyframes cursor-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.5);
+  }
+}
+
+.custom-cursor-outer.clicking {
+  animation: cursor-pulse 0.3s ease-out;
+}
+
+/* Hidden state */
+.custom-cursor-outer.hidden {
+  opacity: 0;
+  transition: opacity 0.2s ease-out;
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .custom-cursor-outer {
+    transition: none;
+  }
+
+  .custom-cursor-outer.clicking {
+    animation: none;
+  }
+}
