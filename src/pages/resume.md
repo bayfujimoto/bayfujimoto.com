@@ -14,8 +14,8 @@ showTitle: false
 <h1 class="resume-name">Bay Fujimoto</h1>
 <div class="resume-contact">
 <span>bayfujimoto@gmail.com</span>
-<span>[bayfujimoto.com]</span>
-<span>[@bayfujimoto]</span>
+<span>bayfujimoto.com</span>
+<span>@bayfujimoto</span>
 </div>
 </div>
 
@@ -86,9 +86,9 @@ showTitle: false
 </div>
 
 <div class="resume-experience-details">
-<p class="resume-description">[First key responsibility or achievement in this role.]</p>
-<p class="resume-description">[Second key responsibility or achievement.]</p>
-<p class="resume-description">[Third key responsibility or achievement.]</p>
+<p class="resume-description">Conducted daily on-site construction observations for a single-family residence, learning directly from the architect-builder and various subcontractors about project management, client relations, financial coordination, and efficient building practices; gained practical skills in producing clear, constructible drawings and providing informed design feedback.</p>
+<p class="resume-description">Designed an affordable housing scheme optimized for a typical Austin parcel, focusing on spatial efficiency and construction feasibility.</p>
+<p class="resume-description">Developed and implemented a unified graphic syntax used across project representations, client communications, internal documentation, and the firm’s redesigned website.</p>
 </div>
 
 </article>
