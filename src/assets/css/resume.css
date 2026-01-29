@@ -1,0 +1,397 @@
+/* ================================================
+   Resume Page Styles
+   ================================================ */
+
+/* Apply blue background to body on resume page */
+body:has(.resume-container) {
+  background-color: var(--color-accent-3); /* #5d90a3 blue */
+}
+
+/* Override page-content max-width for full-width resume layout */
+.page-content:has(.resume-container) {
+  max-width: none;
+}
+
+/* Navigation bar with blue background on resume page */
+body:has(.resume-container) .main-nav.top-nav {
+  background-color: var(--color-accent-3); /* Match resume blue */
+  padding: var(--spacing-xl) var(--spacing-xxl);
+}
+
+/* Container with transparent background (uses body background) */
+.resume-container {
+  background-color: transparent;
+  color: var(--color-contrast); /* White text */
+  padding: var(--spacing-xl);
+  margin: 0 auto;
+  min-height: 100vh;
+}
+
+/* Grid layout with header row + 2 columns */
+.resume-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  grid-template-areas:
+    "header header"
+    "sidebar main";
+  gap: var(--spacing-large);
+  column-gap: var(--spacing-xxl);
+  max-width: 1200px;
+  margin: 0 auto;
+  align-items: start;
+}
+
+/* ================================================
+   Typography Overrides (white text on blue)
+   ================================================ */
+
+.resume-container h1,
+.resume-container h2,
+.resume-container h3,
+.resume-container p,
+.resume-container a,
+.resume-container span {
+  color: var(--color-contrast); /* White */
+}
+
+.resume-container a {
+  text-decoration: none;
+}
+
+.resume-container a:hover {
+  opacity: 0.8;
+}
+
+/* ================================================
+   Header Row (Name + Contact + Intro)
+   ================================================ */
+
+.resume-top {
+  grid-area: header;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: var(--spacing-xl);
+  margin-bottom: var(--spacing-large);
+}
+
+.resume-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+.resume-header-right {
+  display: flex;
+  align-items: flex-end;
+}
+
+.resume-name {
+  font-family: var(--font-sans);
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 0;
+}
+
+.resume-contact {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+  font-size: var(--font-size-medium);
+}
+
+.resume-contact span {
+  display: block;
+}
+
+/* ================================================
+   Sidebar and Main Layout
+   ================================================ */
+
+.resume-sidebar {
+  grid-area: sidebar;
+}
+
+.resume-main {
+  grid-area: main;
+}
+
+/* ================================================
+   Sections
+   ================================================ */
+
+.resume-section {
+  margin-bottom: var(--spacing-large);
+}
+
+.resume-section:last-child {
+  margin-bottom: 0;
+}
+
+.resume-section-title {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-medium);
+  font-weight: 700;
+  font-style: italic;
+  margin-bottom: var(--spacing-medium);
+  text-transform: capitalize;
+}
+
+/* ================================================
+   Introduction Paragraph
+   ================================================ */
+
+.resume-intro {
+  font-size: var(--font-size-medium);
+  line-height: 1.6;
+  margin-bottom: 0;
+}
+
+/* ================================================
+   Education Section
+   ================================================ */
+
+.resume-education-item {
+  margin-bottom: var(--spacing-medium);
+}
+
+.resume-education-item:last-child {
+  margin-bottom: 0;
+}
+
+.resume-degree {
+  font-size: var(--font-size-medium);
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.resume-institution {
+  font-size: var(--font-size-medium);
+  font-weight: 400;
+  margin-bottom: 0.25rem;
+}
+
+.resume-location {
+  font-size: var(--font-size-medium);
+  font-weight: 400;
+  margin-bottom: 0.25rem;
+}
+
+.resume-year {
+  font-size: var(--font-size-medium);
+  font-weight: 400;
+  opacity: 0.8;
+}
+
+/* ================================================
+   Skills Section
+   ================================================ */
+
+.resume-skills-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.resume-skills-list p {
+  font-size: var(--font-size-medium);
+  line-height: 1.4;
+  margin-bottom: 0;
+}
+
+/* ================================================
+   Experience Section
+   ================================================ */
+
+.resume-experience-item {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: var(--spacing-xl);
+  margin-bottom: var(--spacing-large);
+}
+
+.resume-experience-item:last-child {
+  margin-bottom: 0;
+}
+
+.resume-experience-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.resume-experience-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.resume-company {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-medium);
+  font-weight: 700;
+  margin-bottom: 0;
+}
+
+.resume-dates {
+  font-size: var(--font-size-medium);
+  font-weight: 400;
+  margin-bottom: 0;
+}
+
+.resume-job-title {
+  font-size: var(--font-size-medium);
+  font-weight: 700;
+  margin-bottom: 0;
+}
+
+.resume-location {
+  font-size: var(--font-size-medium);
+  font-weight: 400;
+  margin-bottom: 0;
+}
+
+.resume-description {
+  font-size: var(--font-size-medium);
+  line-height: 1.6;
+  margin-bottom: 0;
+}
+
+.resume-description:last-child {
+  margin-bottom: 0;
+}
+
+/* ================================================
+   Print Styles
+   ================================================ */
+
+@media print {
+  .resume-container {
+    background: white;
+    color: black;
+    padding: 0;
+    margin: 0;
+    min-height: auto;
+  }
+
+  .resume-grid {
+    gap: var(--spacing-large);
+  }
+
+  .resume-container h1,
+  .resume-container h2,
+  .resume-container h3,
+  .resume-container p,
+  .resume-container a,
+  .resume-container span {
+    color: black;
+  }
+
+  /* Hide navigation */
+  .main-nav,
+  .top-nav {
+    display: none !important;
+  }
+
+  /* Prevent page breaks inside sections */
+  .resume-section,
+  .resume-experience-item,
+  .resume-education-item {
+    page-break-inside: avoid;
+  }
+}
+
+/* ================================================
+   Tablet (769px - 1023px)
+   ================================================ */
+
+@media (max-width: 1023px) {
+  .resume-container {
+    padding: var(--spacing-xl) var(--spacing-medium);
+    margin: calc(var(--spacing-xl) * -1) calc(var(--spacing-medium) * -1);
+  }
+
+  .resume-grid {
+    gap: var(--spacing-medium);
+    column-gap: var(--spacing-xl);
+  }
+
+  .resume-name {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+  }
+
+  /* Resume navigation - ensure blue background extends full-width */
+  body:has(.resume-container) .main-nav.top-nav {
+    padding: var(--spacing-small) var(--spacing-medium);
+  }
+}
+
+/* ================================================
+   Mobile (≤768px) - Single Column with Reordering
+   ================================================ */
+
+@media (max-width: 768px) {
+  /* Reset body padding on mobile for full-width coverage */
+  body:has(.resume-container) {
+    padding: 0;
+    padding-top: 80px;
+  }
+
+  .resume-container {
+    padding: var(--spacing-xl) var(--spacing-medium);
+    margin: 0;
+  }
+
+  .resume-grid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "header"
+      "main"
+      "sidebar";
+    gap: var(--spacing-large);
+  }
+
+  .resume-top {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-medium);
+  }
+
+  .resume-name {
+    font-size: clamp(1.5rem, 8vw, 2rem);
+  }
+
+  .resume-experience-item {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-medium);
+  }
+
+  /* Resume navigation - ensure blue background extends full-width */
+  body:has(.resume-container) .main-nav.top-nav {
+    padding: var(--spacing-small) var(--spacing-medium);
+  }
+}
+
+/* ================================================
+   Very Small Mobile (≤480px)
+   ================================================ */
+
+@media (max-width: 480px) {
+  body:has(.resume-container) {
+    padding: 0;
+    padding-top: 80px;
+  }
+
+  .resume-container {
+    padding: var(--spacing-large) var(--spacing-small);
+    margin: 0;
+  }
+
+  .resume-grid {
+    gap: var(--spacing-medium);
+  }
+
+  .resume-section {
+    margin-bottom: var(--spacing-medium);
+  }
+}

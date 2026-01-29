@@ -35,6 +35,8 @@ src/
 
 ## Workflow
 
+- Always push, commit, create a PR, and update a local dev server after making any edits.
+
 1. **Create a feature branch** — Never commit directly to main. Use `feature/description` or `fix/description` naming.
 
 2. **Start the dev server** — After switching to your branch, run `npm start` and keep it running while you work.
@@ -60,6 +62,7 @@ src/
 - Icon-based navigation (no traditional text menu)
 - Responsive: Desktop > Tablet > Mobile breakpoints at 1024px, 768px, 480px
 - Use CSS variables defined in `main.css` for colors, fonts, and spacing
+- Always search for a simpler approach. Look for solutions in higher-level files rather than patchwork fixes.
 
 ## Content Updates
 
@@ -98,3 +101,7 @@ src/
 - **Videos** (`src/archive/videos.njk`) — Video collection
 
 - **Builds** (`src/archive/builds.md`) — Design projects and builds
+
+## Wishlist
+- **Custom cursor** - Small circle that inverts and greyscales its overlay. With different behavior or shape when hovering over a link.
+- **Full screen footer** - Footer that appears on non-home pages that mimc the look of movie credits.

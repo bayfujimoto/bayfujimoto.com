@@ -6,22 +6,10 @@ permalink: /about/
 
 # About Me
 
-[Add your bio content here]
+I'm Bay Fujimoto, an architectural designer based in Austin, Texas, USA.
 
-I'm Bay Fujimoto, a [your profession/description].
+# About bayfujimoto.com
 
-## Background
+This website serves as a personal archive and digital playground. Changes are made whenever I feel like it, and site functionality might change. The site repository is held [here](https://github.com/bayfujimoto/bayfujimoto.com).
 
-[Add background information]
-
-## Interests
-
-- Film & Cinema
-- Literature
-- Coffee
-- Photography
-- [Other interests]
-
-## Contact
-
-For inquiries, visit my [contact page](/contact/).
+Scroll down to see the sitemap. (WIP!)

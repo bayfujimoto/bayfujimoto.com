@@ -2,43 +2,136 @@
 layout: layouts/page.njk
 title: Resume
 permalink: /resume/
+showTitle: false
 ---
 
-# Resume
+<div class="resume-container">
+  <div class="resume-grid">
 
-## Bay Fujimoto
+<header class="resume-top">
 
-[Add your professional summary here]
+<div class="resume-header-left">
+<h1 class="resume-name">Bay Fujimoto</h1>
+<div class="resume-contact">
+<span>bayfujimoto@gmail.com</span>
+<span>bayfujimoto.com</span>
+<span>@bayfujimoto</span>
+</div>
+</div>
 
-## Experience
+<div class="resume-header-right">
+<p class="resume-intro">Recent graduate from Rice University with a Bachelor of Architecture and a strong foundation in design, model-making, and digital fabrication. Passionate about thoughtful, materially grounded architecture and adept at translating conceptual ideas into compelling visual and spatial narratives.</p>
+</div>
 
-### [Job Title] - [Company Name]
-**[Start Date] - [End Date]**
+</header>
 
-- [Responsibility or achievement]
-- [Responsibility or achievement]
-- [Responsibility or achievement]
+<aside class="resume-sidebar">
 
-### [Job Title] - [Company Name]
-**[Start Date] - [End Date]**
+<section class="resume-section">
+<h2 class="resume-section-title">Education</h2>
 
-- [Responsibility or achievement]
-- [Responsibility or achievement]
-- [Responsibility or achievement]
+<div class="resume-education-item">
+<p class="resume-degree">Bachelor of Architecture</p>
+<p class="resume-institution">Rice University</p>
+<p class="resume-location">Houston, Texas, USA</p>
+<p class="resume-year">2024 - 2025</p>
+</div>
 
-## Education
+<div class="resume-education-item">
+<p class="resume-degree">Bachelor of Arts in Architecture</p>
+<p class="resume-institution">Rice University</p>
+<p class="resume-location">Houston, Texas, USA</p>
+<p class="resume-year">2019 - 2023</p>
+</div>
 
-### [Degree] - [Institution]
-**[Year]**
+<div class="resume-education-item">
+<p class="resume-degree">RSAP Study Abroad</p>
+<p class="resume-institution">Rice School of Architecture Paris</p>
+<p class="resume-location">Paris, France</p>
+<p class="resume-year">2024</p>
+</div>
 
-[Additional details]
+</section>
 
-## Skills
+<section class="resume-section">
+<h2 class="resume-section-title">Skills</h2>
 
-- [Skill category]: [List skills]
-- [Skill category]: [List skills]
-- [Skill category]: [List skills]
+<div class="resume-skills-list">
+<p><strong>Autodesk</strong> Revit</p>
+<p><strong>Rhino3D</strong> Grasshopper</p>
+<p><strong>Adobe</strong> Photoshop, Illustrator, InDesign, Lightroom</p>
+<p><strong>Affinity</strong></p>
+<p><strong>Microsoft</strong> Office</p>
+<p><strong>Rendering</strong> Enscape, V-Ray, Twinmotion</p>
+<p><strong>AI</strong> Claude Code, Midjourney, Stable Diffusion</p>
+<p><strong>3D Printing</strong> FDM, Resin</p>
+</div>
 
-## Contact
+</section>
 
-For more information, please visit my [contact page](/contact/).
+</aside>
+
+<div class="resume-main">
+
+<section class="resume-section">
+<h2 class="resume-section-title">Experience</h2>
+
+<article class="resume-experience-item">
+
+<div class="resume-experience-info">
+<h3 class="resume-company">Low Design Office</h3>
+<p class="resume-job-title">Junior Designer</p>
+<p class="resume-location">Austin, Texas, USA</p>
+<p class="resume-dates">Aug 2025 - Now</p>
+</div>
+
+<div class="resume-experience-details">
+<p class="resume-description">Conducted daily on-site construction observations for a single-family residence, learning directly from the architect-builder and various subcontractors about project management, client relations, financial coordination, and efficient building practices; gained practical skills in producing clear, constructible drawings and providing informed design feedback.</p>
+<p class="resume-description">Designed an affordable housing scheme optimized for a typical Austin parcel, focusing on spatial efficiency and construction feasibility.</p>
+<p class="resume-description">Developed and implemented a unified graphic syntax used across project representations, client communications, internal documentation, and the firm’s redesigned website.</p>
+</div>
+
+</article>
+
+<article class="resume-experience-item">
+
+<div class="resume-experience-info">
+<h3 class="resume-company">SHoP Architects</h3>
+<p class="resume-job-title">Junior Designer</p>
+<p class="resume-location">New York, New York, USA</p>
+<p class="resume-dates">Sep 2023 - June 2024</p>
+</div>
+
+<div class="resume-experience-details">
+<p class="resume-description">Supported project team through the schematic and design development phases for high-end residential projects. Completed sheets for the finished design development package in Revit.</p>
+<p class="resume-description">Created design studies for facade iterations and worked with consultants on coordinating facade details.</p>
+<p class="resume-description">Participated in consultant meetings for landscape, MEP, civil, facade, and structure.</p>
+<p class="resume-description">Assisted the fabrication team with developing physical models.</p>
+</div>
+
+</article>
+
+<article class="resume-experience-item">
+
+<div class="resume-experience-info">
+<h3 class="resume-company">Weiss Architecture</h3>
+<p class="resume-job-title">Design Intern</p>
+<p class="resume-location">Austin, Texas, USA</p>
+<p class="resume-dates">May - July 2023</p>
+<p class="resume-dates">May - August 2022</p>
+<p class="resume-dates">May - August 2021</p>
+</div>
+
+<div class="resume-experience-details">
+<p class="resume-description">Independently translated 2D AutoCAD drawings into a detailed 3D model and produced high-quality renderings to support design visualization and client presentations.</p>
+<p class="resume-description">Participated in site visits and client presentations.</p>
+</div>
+
+</article>
+
+</section>
+
+</div>
+
+  </div>
+</div>
