@@ -1,0 +1,83 @@
+/* src/assets/css/cursor.css */
+/* Custom Cursor - Dual Layer Approach */
+
+/* Hide default cursor */
+html.custom-cursor-enabled,
+html.custom-cursor-enabled * {
+  cursor: none !important;
+}
+
+/* Shared cursor layer styles */
+.cursor-layer {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  background: white;
+  width: 24px;
+  height: 24px;
+  display: none;
+}
+
+/* Show cursors when enabled */
+html.custom-cursor-enabled .cursor-layer {
+  display: block;
+}
+
+/* Layer 1: Invert colors */
+#cursor-difference {
+  z-index: 9999;
+  mix-blend-mode: difference;
+}
+
+/* Layer 2: Remove saturation (greyscale) */
+#cursor-saturation {
+  z-index: 9998;
+  mix-blend-mode: saturation;
+}
+
+/* Hover state: subtle organic breathing/morphing */
+.cursor-layer.is-hovering {
+  animation: cursor-morph 5s linear infinite;
+}
+
+@keyframes cursor-morph {
+  0%, 100% {
+    border-radius: 55% 35% 60% 40% / 45% 60% 40% 55%;
+  }
+  25% {
+    border-radius: 40% 60% 35% 65% / 60% 35% 65% 40%;
+  }
+  50% {
+    border-radius: 65% 35% 55% 45% / 35% 65% 45% 55%;
+  }
+  75% {
+    border-radius: 35% 65% 40% 60% / 55% 45% 60% 40%;
+  }
+}
+
+/* Hide during text selection */
+.cursor-layer.is-selecting {
+  opacity: 0;
+}
+
+/* Disable on touch/mobile */
+@media (max-width: 768px),
+       (hover: none),
+       (pointer: coarse) {
+  html.custom-cursor-enabled,
+  html.custom-cursor-enabled * {
+    cursor: auto !important;
+  }
+
+  .cursor-layer {
+    display: none !important;
+  }
+}
+
+/* Reduced motion - disable morphing animation */
+@media (prefers-reduced-motion: reduce) {
+  .cursor-layer.is-hovering {
+    animation: none;
+  }
+}
