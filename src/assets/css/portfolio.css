@@ -1,0 +1,436 @@
+/* ================================================
+   Portfolio Page Styles
+   ================================================ */
+
+/* Override page-content max-width for full-width portfolio layout */
+.page-content:has(.portfolio-container) {
+  max-width: none;
+}
+
+/* ================================================
+   Main Container - Two Column Grid
+   ================================================ */
+
+.portfolio-container {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: var(--spacing-xxl);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-xl);
+}
+
+/* ================================================
+   Table of Contents - Sticky Sidebar
+   ================================================ */
+
+.portfolio-toc {
+  position: sticky;
+  top: 120px;
+  height: fit-content;
+  align-self: start;
+}
+
+.portfolio-toc nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+.portfolio-toc h2 {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-small);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-accent-6);
+  margin-bottom: var(--spacing-small);
+}
+
+.portfolio-toc ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.portfolio-toc li {
+  margin: 0;
+}
+
+.portfolio-toc a {
+  font-size: var(--font-size-medium);
+  color: var(--color-contrast);
+  text-decoration: none;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+  display: block;
+  padding: 0.25rem 0;
+}
+
+.portfolio-toc a:hover {
+  opacity: 1;
+}
+
+.portfolio-toc a.active {
+  opacity: 1;
+  font-weight: 700;
+}
+
+.portfolio-toc .locked {
+  font-size: var(--font-size-medium);
+  color: var(--color-accent-6);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.portfolio-toc .toc-divider {
+  border: none;
+  border-top: 1px solid var(--color-accent-5);
+  margin: var(--spacing-small) 0;
+}
+
+/* ================================================
+   Main Content Area
+   ================================================ */
+
+.portfolio-main {
+  min-width: 0; /* Prevent grid blowout */
+}
+
+/* ================================================
+   Project Sections
+   ================================================ */
+
+.project {
+  margin-bottom: var(--spacing-xxxl);
+  scroll-margin-top: 100px; /* Offset for sticky header */
+}
+
+.project:last-of-type {
+  margin-bottom: var(--spacing-xxl);
+}
+
+.project-header {
+  margin-bottom: var(--spacing-large);
+}
+
+.project-header h2 {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  margin-bottom: var(--spacing-small);
+}
+
+.project-meta {
+  font-size: var(--font-size-medium);
+  color: var(--color-accent-6);
+  margin-bottom: 0;
+}
+
+.project-meta span {
+  color: var(--color-accent-6);
+}
+
+/* ================================================
+   Project Content
+   ================================================ */
+
+.project-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-large);
+}
+
+.project-content p {
+  font-size: var(--font-size-medium);
+  line-height: 1.7;
+  max-width: 65ch;
+}
+
+.project-content p.highlight {
+  color: var(--color-accent-2);
+}
+
+/* ================================================
+   Image Layouts
+   ================================================ */
+
+/* Full-width image */
+.project-image-full {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Two-column image grid */
+.project-images-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-medium);
+}
+
+.project-images-2col img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Three-column image grid */
+.project-images-3col {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-medium);
+}
+
+.project-images-3col img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Image with caption */
+.project-figure {
+  margin: 0;
+}
+
+.project-figure img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.project-figure figcaption {
+  font-size: var(--font-size-small);
+  color: var(--color-accent-6);
+  margin-top: var(--spacing-small);
+  font-style: italic;
+}
+
+/* Side-by-side: image + text */
+.project-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-xl);
+  align-items: start;
+}
+
+.project-row img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.project-row-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+/* Asymmetric layout: 2/3 + 1/3 */
+.project-row-wide-left {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--spacing-xl);
+  align-items: start;
+}
+
+.project-row-wide-right {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: var(--spacing-xl);
+  align-items: start;
+}
+
+.project-row-wide-left img,
+.project-row-wide-right img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Image placeholder (for when images not yet provided) */
+.image-placeholder {
+  background: var(--color-accent-5);
+  aspect-ratio: 16 / 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-accent-6);
+  font-size: var(--font-size-small);
+}
+
+/* ================================================
+   Work Samples Locked Section
+   ================================================ */
+
+.work-samples-locked {
+  background: var(--color-accent-5);
+  padding: var(--spacing-xl);
+  border-radius: 4px;
+  margin-top: var(--spacing-xxl);
+  scroll-margin-top: 100px;
+}
+
+.work-samples-locked h2 {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-large);
+  font-weight: 700;
+  margin-bottom: var(--spacing-medium);
+}
+
+.work-samples-locked p {
+  font-size: var(--font-size-medium);
+  line-height: 1.7;
+  margin-bottom: var(--spacing-medium);
+  max-width: 50ch;
+}
+
+.request-access-btn {
+  display: inline-block;
+  font-size: var(--font-size-medium);
+  color: var(--color-contrast);
+  text-decoration: none;
+  padding: 0.75rem 1.5rem;
+  border: 1px solid var(--color-contrast);
+  border-radius: 4px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.request-access-btn:hover {
+  background-color: var(--color-contrast);
+  color: var(--color-base);
+}
+
+/* ================================================
+   Mobile TOC - Floating Button
+   ================================================ */
+
+.portfolio-toc-mobile {
+  display: none;
+}
+
+.portfolio-toc-toggle {
+  position: fixed;
+  bottom: var(--spacing-large);
+  right: var(--spacing-large);
+  width: 50px;
+  height: 50px;
+  background: var(--color-accent-5);
+  border: 1px solid var(--color-accent-6);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 100;
+  font-size: var(--font-size-medium);
+}
+
+.portfolio-toc-toggle:hover {
+  background: var(--color-accent-6);
+}
+
+.portfolio-toc-dropdown {
+  position: fixed;
+  bottom: calc(var(--spacing-large) + 60px);
+  right: var(--spacing-large);
+  background: var(--color-base);
+  border: 1px solid var(--color-accent-5);
+  border-radius: 4px;
+  padding: var(--spacing-medium);
+  max-height: 60vh;
+  overflow-y: auto;
+  z-index: 100;
+  display: none;
+}
+
+.portfolio-toc-dropdown.open {
+  display: block;
+}
+
+/* ================================================
+   Tablet (769px - 1023px)
+   ================================================ */
+
+@media (max-width: 1023px) {
+  .portfolio-container {
+    grid-template-columns: 160px 1fr;
+    gap: var(--spacing-xl);
+    padding: 0 var(--spacing-medium);
+  }
+
+  .project-row,
+  .project-row-wide-left,
+  .project-row-wide-right {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-large);
+  }
+
+  .project-images-3col {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ================================================
+   Mobile (≤768px)
+   ================================================ */
+
+@media (max-width: 768px) {
+  .portfolio-container {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-large);
+    padding: 0 var(--spacing-medium);
+  }
+
+  /* Hide desktop TOC */
+  .portfolio-toc {
+    display: none;
+  }
+
+  /* Show mobile TOC */
+  .portfolio-toc-mobile {
+    display: block;
+  }
+
+  .project {
+    margin-bottom: var(--spacing-xxl);
+  }
+
+  .project-header h2 {
+    font-size: var(--font-size-large);
+  }
+
+  .project-images-2col,
+  .project-images-3col {
+    grid-template-columns: 1fr;
+  }
+
+  .work-samples-locked {
+    padding: var(--spacing-large);
+  }
+}
+
+/* ================================================
+   Very Small Mobile (≤480px)
+   ================================================ */
+
+@media (max-width: 480px) {
+  .portfolio-container {
+    padding: 0 var(--spacing-small);
+  }
+
+  .portfolio-toc-toggle {
+    bottom: var(--spacing-medium);
+    right: var(--spacing-medium);
+  }
+
+  .portfolio-toc-dropdown {
+    bottom: calc(var(--spacing-medium) + 60px);
+    right: var(--spacing-medium);
+    left: var(--spacing-medium);
+  }
+}
