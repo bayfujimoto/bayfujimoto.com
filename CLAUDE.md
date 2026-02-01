@@ -103,5 +103,4 @@ src/
 - **Builds** (`src/archive/builds.md`) — Design projects and builds
 
 ## Wishlist
-- **Custom cursor** - Small circle that inverts and greyscales its overlay. With different behavior or shape when hovering over a link.
-- **Full screen footer** - Footer that appears on non-home pages that mimc the look of movie credits.
+- **Full screen footer** - Footer that appears on non-home pages that mimics the look of movie credits.
