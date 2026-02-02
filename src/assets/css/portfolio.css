@@ -7,6 +7,12 @@
   max-width: none;
 }
 
+/* Remove body top/bottom padding for portfolio page to allow custom spacing */
+body:has(.portfolio-container) {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
 /* ================================================
    Main Container - Two Column Grid
    ================================================ */
@@ -99,6 +105,7 @@
 
 .portfolio-main {
   min-width: 0; /* Prevent grid blowout */
+  align-self: start; /* Align with TOC sidebar at top of grid */
 }
 
 /* ================================================
