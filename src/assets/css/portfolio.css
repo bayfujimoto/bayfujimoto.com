@@ -14,7 +14,7 @@
 .portfolio-container {
   display: grid;
   grid-template-columns: 180px 1fr;
-  gap: var(--spacing-xxl);
+  gap: var(--spacing-xl);
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 var(--spacing-xl);
@@ -26,7 +26,7 @@
 
 .portfolio-toc {
   position: sticky;
-  top: 120px;
+  top: 150px;
   height: fit-content;
   align-self: start;
 }
@@ -152,7 +152,7 @@
 }
 
 .project-content p.highlight {
-  color: var(--color-accent-2);
+  color: var(--color-accent-3);
 }
 
 /* ================================================
@@ -187,6 +187,20 @@
 }
 
 .project-images-3col img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Six-column image grid */
+.project-images-6col {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: var(--spacing-small);
+}
+
+.project-images-6col img,
+.project-images-6col .image-placeholder {
   width: 100%;
   height: auto;
   display: block;
@@ -373,6 +387,10 @@
   .project-images-3col {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  .project-images-6col {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 /* ================================================
@@ -405,7 +423,8 @@
   }
 
   .project-images-2col,
-  .project-images-3col {
+  .project-images-3col,
+  .project-images-6col {
     grid-template-columns: 1fr;
   }
 
