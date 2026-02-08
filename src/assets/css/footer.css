@@ -1,0 +1,306 @@
+/* ================================================
+   Movie Credits Footer
+   ================================================ */
+
+/* Hide footer on homepage (icon nav page) */
+body:has(.icon-nav) .credits-footer {
+  display: none;
+}
+
+/* Footer container - full viewport height */
+.credits-footer {
+  position: relative;
+  height: 100vh;
+  max-height: 100vh;
+  width: calc(100% + 2 * var(--spacing-xxl));
+  margin-left: calc(-1 * var(--spacing-xxl));
+  margin-right: calc(-1 * var(--spacing-xxl));
+  background-color: var(--color-base);
+  /* Background image set dynamically via inline style in footer.njk */
+  /* background-image: url('/assets/images/footer-background.jpg'); */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: var(--color-contrast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  z-index: 20;
+  box-sizing: border-box;
+}
+
+/* Inner container for content */
+.credits-container {
+  max-width: 1000px;
+  width: 100%;
+  padding: var(--spacing-xxxl) var(--spacing-xxl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+  text-align: center;
+}
+
+/* ================================================
+   Section 1: Main Credits Row (4-column grid)
+   ================================================ */
+
+.credits-main-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--spacing-xl);
+  margin-bottom: 0;
+}
+
+.credit-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+  text-align: center;
+}
+
+.credit-role {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-medium);
+  color: var(--color-accent-6);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.credit-name {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-large);
+  color: var(--color-contrast);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+/* ================================================
+   Section 2: Dense Credits Paragraph
+   ================================================ */
+
+.credits-dense-paragraph {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.credits-dense-paragraph p {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-medium);
+  color: var(--color-contrast);
+  line-height: 2;
+  text-align: justify;
+  margin: 0;
+  hyphens: auto;
+}
+
+.credits-dense-paragraph a {
+  color: var(--color-contrast);
+  text-decoration: none;
+  opacity: 0.8;
+  transition: opacity 0.2s ease, color 0.2s ease;
+}
+
+.credits-dense-paragraph a:hover {
+  opacity: 1;
+  color: var(--color-accent-4);
+}
+
+/* ================================================
+   Section 3: Legal Inline
+   ================================================ */
+
+.credits-legal-inline {
+  margin-bottom: 0;
+}
+
+.credits-legal-inline p {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-medium);
+  color: var(--color-accent-1);
+  text-align: justify;
+  margin: 0;
+  opacity: 0.7;
+  line-height: 1.8;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.credits-legal-inline a {
+  color: var(--color-accent-1);
+  text-decoration: underline;
+  transition: opacity 0.2s ease;
+}
+
+.credits-legal-inline a:hover {
+  opacity: 1;
+}
+
+/* ================================================
+   Section 4: Logo Grid
+   ================================================ */
+
+.credits-logos {
+  margin-top: 0;
+}
+
+.logo-text-grid {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-medium);
+  flex-wrap: nowrap;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.logo-text {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-medium);
+  color: var(--color-accent-6);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.6;
+  transition: opacity 0.3s ease, color 0.3s ease;
+  flex-shrink: 0;
+}
+
+.logo-text:hover {
+  opacity: 1;
+  color: var(--color-contrast);
+}
+
+/* Logo grid for actual images (future use) */
+.logo-grid img {
+  height: 40px;
+  width: auto;
+  opacity: 0.6;
+  filter: grayscale(100%);
+  transition: opacity 0.3s ease, filter 0.3s ease;
+}
+
+.logo-grid img:hover {
+  opacity: 1;
+  filter: grayscale(0%);
+}
+
+/* ================================================
+   Responsive Breakpoints
+   ================================================ */
+
+/* Tablet (769px - 1023px) */
+@media (max-width: 1023px) and (min-width: 769px) {
+  /* Adjust footer to prevent content cutoff on tablet/small desktop */
+  .credits-footer {
+    width: calc(100% + 2 * var(--spacing-xl));
+    margin-left: calc(-1 * var(--spacing-xl));
+    margin-right: calc(-1 * var(--spacing-xl));
+  }
+
+  .credits-container {
+    padding: var(--spacing-xxl) var(--spacing-xl);
+    gap: var(--spacing-large);
+  }
+
+  .credit-name {
+    font-size: var(--font-size-large);
+  }
+
+  .logo-text-grid {
+    gap: var(--spacing-large);
+  }
+
+  .logo-grid img {
+    height: 35px;
+  }
+}
+
+/* Mobile (≤768px) */
+@media (max-width: 768px) {
+  /* Reset footer width and margins on mobile since resume page removes body padding */
+  .credits-footer {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .credits-container {
+    padding: var(--spacing-xl) var(--spacing-large);
+  }
+
+  /* Stack main credits to 2x2 grid on mobile */
+  .credits-main-row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-medium);
+  }
+
+  .credit-name {
+    font-size: var(--font-size-medium);
+  }
+
+  .credits-dense-paragraph {
+    max-width: 100%;
+  }
+
+  .credits-dense-paragraph p {
+    font-size: 0.7rem;
+    line-height: 1.7;
+  }
+
+  .logo-text-grid {
+    gap: var(--spacing-medium);
+  }
+
+  .logo-grid img {
+    height: 30px;
+  }
+}
+
+/* Very Small Mobile (≤480px) */
+@media (max-width: 480px) {
+  /* Ensure footer width and margins remain 0 on very small screens */
+  .credits-footer {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .credits-container {
+    padding: var(--spacing-large) var(--spacing-medium);
+    gap: var(--spacing-medium);
+  }
+
+  /* Stack to single column on very small screens */
+  .credits-main-row {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-medium);
+  }
+
+  .credit-name {
+    font-size: var(--font-size-medium);
+  }
+
+  .credits-dense-paragraph p {
+    font-size: 0.65rem;
+    line-height: 1.6;
+  }
+
+  .credits-legal-inline p {
+    font-size: 0.6rem;
+  }
+
+  .logo-text-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-small);
+  }
+
+  .logo-text {
+    font-size: 0.65rem;
+  }
+
+  .logo-grid img {
+    height: 25px;
+  }
+}

@@ -19,6 +19,11 @@ module.exports = function(eleventyConfig) {
     return `${monthName} ${day}, ${year}`;
   });
 
+  // Add number formatting filter (thousands separator)
+  eleventyConfig.addFilter("number_format", function(num) {
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  });
+
   // Set directories
   return {
     dir: {
