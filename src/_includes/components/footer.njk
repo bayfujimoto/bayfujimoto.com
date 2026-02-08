@@ -1,0 +1,50 @@
+{# Movie Credits Footer - Appears on all pages except homepage #}
+{% if page.url !== '/' %}
+<footer class="credits-footer" style="background-image: url('{{ footerImage.path }}');">
+  <div class="credits-container">
+
+    {# Section 1: Main Credits Row (4 columns) #}
+    <div class="credits-main-row">
+      <div class="credit-item">
+        <span class="credit-role">DESIGNED BY</span>
+        <span class="credit-name">BAY</span>
+      </div>
+      <div class="credit-item">
+        <span class="credit-role">BUILT WITH</span>
+        <span class="credit-name">11TY</span>
+      </div>
+      <div class="credit-item">
+        <span class="credit-role">TEMPLATED BY</span>
+        <span class="credit-name">NUNJUCKS</span>
+      </div>
+      <div class="credit-item">
+        <span class="credit-role">HOSTED BY</span>
+        <span class="credit-name">NETLIFY</span>
+      </div>
+    </div>
+
+    {# Section 2: Dense Credits Paragraph #}
+    <div class="credits-dense-paragraph">
+      <p>MAIN SECTIONS <a href="/about/">About</a> • <a href="/contact/">Contact</a> • <a href="/resume/">Resume</a> • <a href="/portfolio/">Portfolio</a> • <a href="/advance-copy/">Advance Copy</a> • <a href="/fortune/">Fortune</a>  ARCHIVE SECTIONS <a href="/archive/movies/">Movies</a> • <a href="/archive/books/">Books</a> • <a href="/archive/coffee/">Coffee</a> • <a href="/archive/photos/">Photos</a> • <a href="/archive/documents/">Documents</a> • <a href="/archive/videos/">Videos</a> • <a href="/archive/builds/">Builds</a> AUTOMATED BY GitHub Actions  BUILT WITH Claude Code TEMPLATED BY Nunjucks HOSTED BY Netlify TYPED IN JetBrains Mono and Manrope  DATA SOURCED FROM Letterboxd and Goodreads  LAST WATCHED {% if movies and movies.length > 0 %}{{ movies[0].title }}{% if movies[0].year %} ({{ movies[0].year }}){% endif %}{% if movies[0].date %} – {{ movies[0].date | date }}{% endif %}{% else %}None yet{% endif %}  LAST READ {% if books and books.length > 0 %}{{ books[0].title }} by {{ books[0].author }}{% if books[0].dateRead %} – {{ books[0].dateRead | date }}{% endif %}{% else %}None yet{% endif %}  BUILT ON {{ build.dateFormatted }} at {{ build.timeFormatted }} CT  PROJECT SIZE {{ build.linesOfCode | number_format }} lines across {{ build.totalFiles }} files</p>
+    </div>
+
+    {# Section 3: Legal (inline) #}
+    <div class="credits-legal-inline">
+      <p>© 2024-Present Bay Fujimoto  •  Repository on <a href="https://github.com/bayfujimoto/bayfujimoto.com" target="_blank" rel="noopener noreferrer">GitHub</a>  •  No cookies. No tracking.</p>
+    </div>
+
+    {# Section 4: Logo Grid #}
+    <div class="credits-logos">
+      <div class="logo-grid logo-text-grid">
+        <span class="logo-text">11ty</span>
+        <span class="logo-text">Netlify</span>
+        <span class="logo-text">GitHub</span>
+        <span class="logo-text">Nunjucks</span>
+        <span class="logo-text">VSCode</span>
+        <span class="logo-text">Letterboxd</span>
+      </div>
+    </div>
+
+  </div>
+</footer>
+{% endif %}

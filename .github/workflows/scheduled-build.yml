@@ -1,0 +1,22 @@
+name: Scheduled Build
+
+on:
+  schedule:
+    # Runs every week on Monday at 00:00 UTC (adjust as needed)
+    # Cron format: minute hour day month day-of-week
+    - cron: '0 0 * * 1,4'  # Weekly on Monday at midnight UTC
+    # Alternative schedules:
+    # - cron: '0 0 * * *'  # Daily at midnight UTC
+    # - cron: '0 0 * * 0'  # Weekly on Sunday at midnight UTC
+    # - cron: '0 12 * * 1,4'  # Twice weekly: Monday & Thursday at noon UTC
+
+  # Allow manual trigger from GitHub Actions tab
+  workflow_dispatch:
+
+jobs:
+  trigger-netlify-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Netlify Build
+        run: |
+          curl -X POST -d {} https://api.netlify.com/build_hooks/${{ secrets.NETLIFY_BUILD_HOOK }}
