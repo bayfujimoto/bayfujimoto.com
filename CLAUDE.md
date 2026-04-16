@@ -1,106 +1,105 @@
 # CLAUDE.md
 
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
 Personal website for Bay Fujimoto — bayfujimoto.com
-
-## Tech Stack
-
-- **SSG:** 11ty (Eleventy)
-- **Templating:** Nunjucks
-- **Styling:** Custom CSS (no framework)
-- **Hosting:** Netlify
-- **Automation:** GitHub Actions (daily builds) + Netlify
 
 ## Commands
 
 ```bash
-npm start    # Dev server at localhost:8080
-npm run build # Production build to _site/
+npm start        # Dev server at localhost:8080 (auto-reloads on CSS changes)
+npm run build    # Production build to _site/
+npm run debug    # Build with DEBUG=Eleventy* for verbose output
 ```
 
-## Project Structure
-
-```
-src/
-├── _data/          # Data files (movies.js, books.js, site.json)
-├── _includes/
-│   ├── layouts/    # Base templates (base.njk, page.njk, archive.njk)
-│   └── components/ # Reusable components (nav.njk)
-├── assets/
-│   ├── css/        # Stylesheets (main.css, calendar.css)
-│   ├── images/     # Static images
-│   └── js/         # JavaScript files
-├── pages/          # Static pages (about, contact, resume, etc.)
-└── archive/        # Archive section templates
-```
+No test suite. Always start the dev server and verify changes in a browser before opening a PR.
 
 ## Workflow
 
-- Always push, commit, create a PR, and update a local dev server after making any edits.
+Never commit directly to main. Branch naming: `feature/description` or `fix/description`.
 
-1. **Create a feature branch** — Never commit directly to main. Use `feature/description` or `fix/description` naming.
+After any edit: start dev server → verify in browser → commit → push → open PR targeting main → merge (triggers Netlify auto-deploy).
 
-2. **Start the dev server** — After switching to your branch, run `npm start` and keep it running while you work.
+## Architecture
 
-3. **Make changes** — Edit files as needed. The dev server auto-reloads.
+### Data Flow
 
-4. **Commit and push** — Stage changes with `git add`, commit with a clear message, and push to GitHub.
+All files in `src/_data/` are automatically available as global variables in every template. Data sources:
 
-5. **Open a pull request** — Create a PR targeting main with a descriptive title and description of changes.
+- **`site.json`** — site-wide metadata (name, URL, author, colors)
+- **`books.js`** — fetches Goodreads RSS, parses and caches for 1 day
+- **`movies.js`** — hybrid: merges Letterboxd RSS (recent) with `moviesHistorical.json` (full history). Deduplicates on `title|year|date`. Enriches images via `customBackdrops.json` first, then TMDb API as fallback.
+- **`moviesCalendar.js`** — consumes `movies.js`, groups by date, builds per-year calendar structures, injects quotes from `customQuotes.json`
+- **`footerImage.js`** — randomly picks an image from `src/assets/images/footer/` on each build
+- **`build.js`** — captures build timestamp and line/file counts (Central Time)
+- **`timezoneUtils.js`** — shared helper; all dates site-wide convert to `America/Chicago`
 
-6. **Merge and clean up** — After approval/review, merge to main (which auto-deploys) and delete the branch.
+### Layout Inheritance
 
-## Automated Data
+```
+base.njk          ← root HTML shell, nav, footer, JS
+├── page.njk      ← wraps content in <article class="page-content">
+└── archive.njk   ← wraps content in <article class="archive-page">
+```
 
-- **Movies:** Fetched from Letterboxd RSS daily
-- **Books:** Fetched from Goodreads RSS daily
-- Cache duration: 1 day (via eleventy-fetch)
+`base.njk` conditionally loads `resume.css` or `portfolio.css` based on `title`.
+
+### Navigation (Dual Mode)
+
+`nav.njk` checks `page.url === '/'`:
+- **Homepage:** icon-grid layout (PNG/SVG images, no text)
+- **All other pages:** fixed top navbar with mobile hamburger toggle (JS in `main.js`, active on ≤768px)
+
+### Nunjucks in Markdown
+
+`markdownTemplateEngine` is set to `"njk"`, so `.md` files can contain Nunjucks syntax and access global data variables.
+
+### Caching
+
+EleventyFetch caches API responses: RSS feeds for 1 day, TMDb images for 30 days. Cached files live in `.cache/`. Data does not update between scheduled rebuilds (GitHub Actions triggers Netlify rebuild on a schedule via webhook).
+
+### Scheduled Builds
+
+`.github/workflows/scheduled-build.yml` calls the Netlify build hook (env var: `NETLIFY_BUILD_HOOK`) twice weekly. No git operations — it just triggers a Netlify rebuild.
+
+## Design System
+
+CSS variables are defined in `src/assets/css/main.css`. Always use these rather than hardcoded values:
+
+```css
+/* Colors */
+--color-base: #000000
+--color-contrast: #f3f3f3
+--color-accent-1: #dfdccb   /* warm tan */
+--color-accent-3: #5d90a3   /* link color */
+--color-accent-4: #e83c3a   /* red */
+
+/* Typography */
+--font-mono: 'JetBrains Mono', monospace   /* body */
+--font-sans: 'Manrope', sans-serif          /* headings */
+
+/* Spacing — use fluid clamp() values */
+--spacing-small / --spacing-medium / --spacing-large / --spacing-xl / --spacing-xxl / --spacing-xxxl
+```
+
+Responsive breakpoints: 1024px (tablet), 768px (mobile), 480px (small mobile).
+
+Stylesheet split: `main.css` (global), `footer.css`, `calendar.css`, `cursor.css`, `resume.css`, `portfolio.css`.
+
+## Environment Variables
+
+Required in `.env` for local development:
+
+```
+GOODREADS_USER_ID=
+LETTERBOXD_USERNAME=
+TMDB_API_KEY=
+NETLIFY_BUILD_HOOK=
+```
 
 ## Design Guidelines
 
-- Black background (`#000000`), light text (`#dadad7`)
-- Fonts: JetBrains Mono (body), Manrope (headings)
-- Icon-based navigation (no traditional text menu)
-- Responsive: Desktop > Tablet > Mobile breakpoints at 1024px, 768px, 480px
-- Use CSS variables defined in `main.css` for colors, fonts, and spacing
-- Always search for a simpler approach. Look for solutions in higher-level files rather than patchwork fixes.
-
-## Content Updates
-
-- **Movies/Books:** Automatic via RSS feeds on daily build
-- **Static pages:** Edit markdown in `src/pages/` or `src/archive/`, commit and push
-- **Images:** Add to `src/assets/images/`, reference as `/assets/images/filename.png`
-
-## Sitemap
-
-- **Home** (N/A) — Icon-based navigation grid linking to all major sections
-
-- **About** (`src/pages/about.md`) — Personal bio and background
-
-- **Contact** (`src/pages/contact.md`) — Contact info and social links
-
-- **Resume** (`src/pages/resume.md`) — Professional CV/resume
-
-- **Portfolio** (`src/pages/portfolio.md`) — Work samples and projects
-
-- **Advance Copy** (`src/pages/advance-copy.md`) — Current work/projects in progress
-
-- **Fortune** (`src/pages/fortune.njk`) — Secret section (requires code)
-
-- **Movies** (`src/archive/movies.njk`) — Film log with calendar grid view from Letterboxd
-  - Interactive calendar with year selector, movie posters, ratings
-
-- **Books** (`src/archive/books.njk`) — Reading list from Goodreads
-  - Grid layout of book covers with ratings and dates
-
-- **Coffee** (`src/archive/coffee.md`) — Coffee log/tracking
-
-- **Photos** (`src/archive/photos.njk`) — Photo gallery
-
-- **Documents** (`src/archive/documents.md`) — Scanned items (tickets, pamphlets, brochures)
-
-- **Videos** (`src/archive/videos.njk`) — Video collection
-
-- **Builds** (`src/archive/builds.md`) — Design projects and builds
-
-## Wishlist
-- **Full screen footer** - Footer that appears on non-home pages that mimics the look of movie credits.
+- Always look for the simplest fix at the highest level — avoid patchwork changes when a layout or data file can solve it cleanly.
+- Use CSS variables for all colors, fonts, and spacing.
+- Images: add to `src/assets/images/`, reference as `/assets/images/filename`.
+- Footer (`components/footer.njk`) displays on all non-home pages and shows live build metadata (last movie/book, build time, line counts).
