@@ -67,20 +67,64 @@ Its purpose is to prevent drift, repetition, and silent contradictions over time
 - decision: The project should include an admin-facing add-item interface.
 - reason: Routine archive maintenance should not require constant manual repository editing.
 
+### Single-scene navigation model
+- status: confirmed
+- decision: The entire experience — desk, category interior, browse, and item inspection — exists in one continuous spatial scene. There is no page navigation at any layer.
+- reason: Everything should feel like it exists in the same physical space. Page transitions would break the spatial continuity that the desk-object-splitting interaction depends on.
+
+### Desk object interaction
+- status: confirmed
+- decision: Clicking a desk object causes it to lift toward the camera and split into its subcollection parts (e.g., papers separating from a clipboard stack). Subcollections emerge physically from the object.
+- reason: The split reveals the internal structure of the series without leaving the scene. It is the spatial equivalent of opening a container.
+
+### URL and history model
+- status: confirmed
+- decision: The History API (`pushState`) updates the URL at each layer transition. Back/forward and deep links work. No page reloads.
+- reason: Spatial continuity requires no page navigation, but browser history and deep linking must still work. `pushState` gives both.
+  - `/` — desk
+  - `/work/` — Work series open
+  - `/work/projects/` — Projects subcollection open
+  - `/work/projects/?item=PROJ-001` — item inspection
+
+### Rendering model
+- status: confirmed
+- decision: A persistent full-screen WebGL canvas (Three.js) sits as the base layer. HTML panels fade in/out on top of the canvas as the user navigates deeper. All content — browse lists, metadata, labels — lives in the HTML overlay, not in the canvas. The canvas is visual only.
+- reason: Screen readers and keyboard users must be able to access all content. 3D is a progressive enhancement. The HTML overlay is the accessible source of truth.
+
+### Item inspection delivery
+- status: confirmed
+- decision: Item inspection uses a modal overlay, not a routed page.
+- reason: Everything should feel like it exists in the same physical space. The browse view behind dims and blurs heavily. Deep-linking is preserved via URL query param (e.g. `/accumulation/ephemera/?item=EPH-2025-041`).
+
+### Desk realism
+- status: confirmed
+- decision: The homepage desk is a literal scene with wood texture and desk lighting. It should feel like a real physical surface.
+- reason: The desk is the primary framing device and should carry genuine material weight, not be an abstracted background treatment.
+
+### Category interior container metaphors
+- status: confirmed
+- decision: Each series interior uses its object metaphor as a physical container. Subcollections appear as pages, tabs, or sections within that container rather than as tile grids.
+- reason: Preserves the material logic of the archive through the browse layers, not just on the desk and in inspection.
+  - Identity: dossier packet
+  - Work: open binder or folio
+  - Consumption: open ledger with edge tabs per subcollection
+  - Creation: open sketchbook or tray
+  - Accumulation: open flat file or drawer
+
 ---
 
 ## Provisional decisions
 
 ### Tech stack
-- status: provisional
-- decision: Use Eleventy + GitHub + Netlify as the likely base stack.
-- reason: It fits a content-driven static archive and works well with versioned text-based content.
-- revisit_when: implementation planning begins
+- status: confirmed
+- decision: Vite + Three.js + a custom Node data script (`scripts/build-data.js`). Deployed on Netlify. GitHub as source of truth.
+- reason: The site is a single-page spatial app with a persistent WebGL canvas. 11ty's core value is generating HTML pages — suppressing that output to serve an SPA was the wrong fit. Vite handles JS bundling (including Three.js), HMR, and asset pipeline natively. The data script replaces 11ty's collection system with ~50 lines of plain Node that reads Markdown front matter and writes `public/data/archive.json`.
+- supersedes: the earlier provisional decision to use Eleventy + GitHub + Netlify
 
 ### Content format
 - status: provisional
 - decision: Store records primarily as Markdown with front matter, with JSON/YAML data where useful.
-- reason: Markdown is legible, portable, and works well with 11ty.
+- reason: Markdown is legible, portable, and human-editable. `scripts/build-data.js` reads front matter directly via gray-matter and outputs `archive.json`. The format is build-tool-agnostic.
 - revisit_when: content volume and relationships become clearer
 
 ### Admin implementation

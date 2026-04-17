@@ -1,0 +1,12 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# SPA catch-all — all routes serve index.html, JS router handles them
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

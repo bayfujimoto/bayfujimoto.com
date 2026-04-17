@@ -1,0 +1,272 @@
+/* ── Reset ───────────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: monospace;
+  background: #1a1510;
+  color: #e8e0d0;
+  min-height: 100vh;
+}
+
+/* ── Desk ────────────────────────────────────────────────────────────────────── */
+#app {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+.desk {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.desk-objects {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  max-width: 700px;
+  width: 100%;
+  padding: 2rem;
+}
+
+.desk-object {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  background: none;
+  border: 1px solid rgba(232, 224, 208, 0.2);
+  padding: 2.5rem 1.5rem;
+  cursor: pointer;
+  color: inherit;
+  text-align: center;
+  font-family: inherit;
+  font-size: inherit;
+  transition: border-color 0.15s, background 0.15s;
+}
+.desk-object:hover {
+  border-color: rgba(232, 224, 208, 0.5);
+  background: rgba(232, 224, 208, 0.05);
+}
+.desk-object__label { font-size: 0.95rem; letter-spacing: 0.05em; }
+.desk-object__container { font-size: 0.7rem; opacity: 0.4; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 0.2rem; }
+
+/* ── Layer veil — accumulating blur/darkness ─────────────────────────────────── */
+/*
+  Each veil sits at a z-index above the previous layer.
+  --depth is set inline (1, 2, 3) and drives blur + darkness.
+  Three veils deep = desk is nearly unreadable — intentional.
+*/
+.layer-veil {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 8, 5, 0);
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+  z-index: calc(var(--depth, 1) * 10);
+  transition: background 0.35s ease, backdrop-filter 0.35s ease;
+  cursor: pointer;
+}
+
+.layer-veil--visible {
+  background: rgba(10, 8, 5, calc(var(--depth, 1) * 0.25));
+  backdrop-filter: blur(calc(var(--depth, 1) * 8px));
+  -webkit-backdrop-filter: blur(calc(var(--depth, 1) * 8px));
+}
+
+/* ── Layer sheet — floating centered modal ───────────────────────────────────── */
+.layer-sheet {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: min(560px, 92vw);
+  max-height: 85vh;
+  overflow-y: auto;
+  background: #1e1a14;
+  border: 1px solid rgba(232, 224, 208, 0.12);
+  z-index: calc(var(--depth, 1) * 10 + 1);
+  transform: translate(-50%, -46%);
+  opacity: 0;
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease;
+}
+
+.layer-sheet--visible {
+  transform: translate(-50%, -50%);
+  opacity: 1;
+}
+
+.layer-sheet--item {
+  width: min(900px, 92vw);
+}
+
+.layer-sheet__inner {
+  padding: 2rem;
+}
+
+.layer-sheet__inner--item {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 2rem;
+}
+
+/* ── Sheet close button ──────────────────────────────────────────────────────── */
+.sheet-close {
+  display: block;
+  margin-left: auto;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+  font-size: 1rem;
+  opacity: 0.5;
+  padding: 0;
+  transition: opacity 0.15s;
+}
+.sheet-close:hover { opacity: 1; }
+
+/* ── Sheet typography ────────────────────────────────────────────────────────── */
+.sheet-title {
+  margin: 1.5rem 0 0.25rem;
+  font-size: 1.4rem;
+  font-weight: normal;
+  letter-spacing: 0.03em;
+}
+.sheet-subtitle {
+  margin: 0 0 1.5rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0.4;
+}
+
+/* ── Series tabs ─────────────────────────────────────────────────────────────── */
+.series-tabs {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin: 0 0 1.5rem;
+}
+
+.series-tab {
+  background: none;
+  border: 1px solid rgba(232, 224, 208, 0.2);
+  color: inherit;
+  font-family: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 0.3rem 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: background 0.15s, border-color 0.15s;
+}
+.series-tab:hover { border-color: rgba(232, 224, 208, 0.5); }
+.series-tab--active { background: rgba(232, 224, 208, 0.1); border-color: rgba(232, 224, 208, 0.4); }
+.series-tab__count { opacity: 0.4; font-size: 0.7rem; }
+
+/* ── Browse list ─────────────────────────────────────────────────────────────── */
+.browse-header { margin-bottom: 1rem; }
+.browse-count { margin: 0.25rem 0 0; font-size: 0.75rem; opacity: 0.4; }
+.browse-year-divider { margin: 1.5rem 0 0.5rem; font-size: 0.7rem; opacity: 0.35; text-transform: uppercase; letter-spacing: 0.08em; }
+.browse-list { list-style: none; padding: 0; margin: 0; }
+
+.browse-item { border-bottom: 1px solid rgba(232, 224, 208, 0.08); }
+
+.browse-item__trigger {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  padding: 0.65rem 0;
+  width: 100%;
+  text-align: left;
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  transition: background 0.1s;
+}
+.browse-item__trigger:hover { background: rgba(232, 224, 208, 0.04); }
+
+.browse-item__thumb { width: 44px; height: 44px; background: rgba(232, 224, 208, 0.08); flex-shrink: 0; }
+.browse-item__thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+.browse-item__info { display: flex; flex-direction: column; gap: 0.1rem; }
+.browse-item__type { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.4; }
+.browse-item__title { font-size: 0.88rem; }
+.browse-item__date, .browse-item__place { font-size: 0.75rem; opacity: 0.5; }
+
+/* ── Inspection modal internals ──────────────────────────────────────────────── */
+.inspection-modal__content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.inspection-modal__nav {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(232, 224, 208, 0.1);
+}
+
+.inspection-modal__prev,
+.inspection-modal__next {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+  font-family: inherit;
+  font-size: 0.8rem;
+  opacity: 0.6;
+  padding: 0;
+  transition: opacity 0.15s;
+}
+.inspection-modal__prev:hover,
+.inspection-modal__next:hover { opacity: 1; }
+.inspection-modal__prev:disabled,
+.inspection-modal__next:disabled { opacity: 0.2; cursor: default; }
+
+.modal-title { margin: 0 0 1rem; font-size: 1.1rem; font-weight: normal; }
+.modal-fields { display: grid; grid-template-columns: auto 1fr; gap: 0.2rem 1rem; margin: 0 0 1rem; }
+.modal-field { display: contents; }
+.modal-field__label { opacity: 0.4; font-size: 0.75rem; }
+.modal-field__value { font-size: 0.85rem; }
+
+.modal-section { margin-top: 1rem; border-top: 1px solid rgba(232, 224, 208, 0.1); padding-top: 0.75rem; }
+.modal-section__label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.4; margin: 0 0 0.4rem; }
+
+.modal-related { list-style: none; padding: 0; margin: 0; }
+.modal-related__link { background: none; border: none; cursor: pointer; color: inherit; font-family: inherit; text-decoration: underline; padding: 0; font-size: 0.85rem; }
+
+.modal-record { margin-top: 1.5rem; opacity: 0.25; font-size: 0.7rem; }
+
+.modal-image { max-width: 100%; display: block; }
+.modal-image--back { display: none; }
+.modal-image--back[hidden] { display: none; }
+.modal-image--back:not([hidden]) { display: block; }
+
+.modal-flip-btn, .modal-zoom-btn {
+  margin-top: 0.5rem;
+  background: none;
+  border: 1px solid rgba(232, 224, 208, 0.2);
+  cursor: pointer;
+  color: inherit;
+  font-family: inherit;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.75rem;
+}
+.modal-flip-btn:hover, .modal-zoom-btn:hover { border-color: rgba(232, 224, 208, 0.5); }
+
+body.modal-open { overflow: hidden; }
+
+/* ── Reduced motion ──────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .layer-veil,
+  .layer-sheet { transition: none; }
+}

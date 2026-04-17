@@ -130,6 +130,7 @@ Object metaphor:
 - sketchbook
 - workshop folder
 - parts container
+- toy/trinkets box
 
 ### Accumulation
 Ephemera and scanned documents:

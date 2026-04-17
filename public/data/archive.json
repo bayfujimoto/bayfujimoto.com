@@ -1,0 +1,157 @@
+{
+  "series": {
+    "identity": {
+      "label": "Identity",
+      "container": "dossier",
+      "order": 0,
+      "subcollections": {
+        "biography": {
+          "label": "biography",
+          "items": []
+        },
+        "cv": {
+          "label": "cv",
+          "items": []
+        },
+        "contact": {
+          "label": "contact",
+          "items": []
+        }
+      }
+    },
+    "work": {
+      "label": "Work",
+      "container": "binder",
+      "order": 1,
+      "subcollections": {
+        "projects": {
+          "label": "projects",
+          "items": []
+        },
+        "artifacts": {
+          "label": "artifacts",
+          "items": []
+        }
+      }
+    },
+    "consumption": {
+      "label": "Consumption",
+      "container": "ledger",
+      "order": 2,
+      "subcollections": {
+        "films": {
+          "label": "films",
+          "items": []
+        },
+        "books": {
+          "label": "books",
+          "items": []
+        },
+        "coffee": {
+          "label": "coffee",
+          "items": []
+        },
+        "influences": {
+          "label": "influences",
+          "items": []
+        }
+      }
+    },
+    "creation": {
+      "label": "Creation",
+      "container": "sketchbook",
+      "order": 3,
+      "subcollections": {
+        "sketches": {
+          "label": "sketches",
+          "items": []
+        },
+        "photos": {
+          "label": "photos",
+          "items": []
+        },
+        "prototypes": {
+          "label": "prototypes",
+          "items": []
+        },
+        "videos": {
+          "label": "videos",
+          "items": []
+        }
+      }
+    },
+    "accumulation": {
+      "label": "Accumulation",
+      "container": "flat-file",
+      "order": 4,
+      "subcollections": {
+        "ephemera": {
+          "label": "ephemera",
+          "items": [
+            {
+              "id": "EPH-2025-002",
+              "slug": "moma-matisse-brochure-2025-03-12",
+              "title": "MoMA — Matisse Exhibition Brochure",
+              "series": "accumulation",
+              "subcollection": "ephemera",
+              "item_type": "brochure",
+              "status": "published",
+              "display_date": "March 12, 2025",
+              "sort_date": "2025-03-12",
+              "source": "picked up at MoMA gallery entrance",
+              "place": "New York",
+              "event": "MoMA visit",
+              "tags": [
+                "museum",
+                "new york",
+                "matisse",
+                "art"
+              ],
+              "assets": {
+                "front": "/assets/scans/EPH-2025-002-front.jpg",
+                "back": "/assets/scans/EPH-2025-002-back.jpg"
+              },
+              "inspection": "simple",
+              "related_ids": [
+                "EPH-2025-001"
+              ],
+              "context_note": "Folded brochure from the Matisse retrospective. Includes floor plan and plate reproductions.\n"
+            },
+            {
+              "id": "EPH-2025-001",
+              "slug": "moma-admission-ticket-2025-03-12",
+              "title": "MoMA Admission Ticket",
+              "series": "accumulation",
+              "subcollection": "ephemera",
+              "item_type": "ticket",
+              "status": "published",
+              "display_date": "March 12, 2025",
+              "sort_date": "2025-03-12",
+              "source": "purchased at MoMA entrance",
+              "place": "New York",
+              "event": "MoMA visit",
+              "tags": [
+                "museum",
+                "new york",
+                "art"
+              ],
+              "assets": {
+                "front": "/assets/scans/EPH-2025-001-front.jpg",
+                "back": "/assets/scans/EPH-2025-001-back.jpg"
+              },
+              "inspection": "simple",
+              "related_ids": [
+                "EPH-2025-002"
+              ],
+              "context_note": "Visited for the Matisse exhibition. Kept the ticket stub along with the gallery brochure from the same afternoon.\n"
+            }
+          ]
+        },
+        "documents": {
+          "label": "documents",
+          "items": []
+        }
+      }
+    }
+  }
+}
