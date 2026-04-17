@@ -111,6 +111,22 @@ Its purpose is to prevent drift, repetition, and silent contradictions over time
   - Creation: open sketchbook or tray
   - Accumulation: open flat file or drawer
 
+### Accumulation browse model
+- status: confirmed
+- decision: Accumulation uses a single flat ephemera browse with no subcollection tabs. The `ephemera` key is the only subcollection. All item subtypes (tickets, receipts, brochures, documents, handouts) share the ephemera record model, distinguished by `item_type`.
+- reason: The ephemera/documents distinction was weak — "handouts" appeared in both definitions and `documents` was always empty. A flat browse grouped by year, event, place, or type serves the content better.
+- deferred: Grouping/sort UI (year · event · place · type) is deferred to Phase 7.
+
+### Accumulation URL model
+- status: confirmed
+- decision: Accumulation uses a view-based second URL segment rather than a subcollection key.
+  - `/accumulation/all/` — unfiltered browse (default)
+  - `/accumulation/sxsw-2026/` — filtered by event slug (filter logic deferred to Phase 7)
+  - `/accumulation/all/?item=EPH-2025-001` — item inspection, unfiltered context
+  - `/accumulation/sxsw-2026/?item=EPH-2025-001` — item inspection, filter context preserved
+- reason: `/accumulation/ephemera/` exposes the internal data key rather than describing a view. The view segment will later carry the active filter/group, making URLs semantically meaningful and shareable. Back from a filter view goes to `/accumulation/all/`.
+- note: This is Accumulation-specific. All other series keep `/series/subcollection/`. The `subcollection` state field stays `"ephemera"` as the data key; `view` is a separate state field for the URL segment.
+
 ---
 
 ## Provisional decisions

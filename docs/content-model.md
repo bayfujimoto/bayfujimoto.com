@@ -278,22 +278,8 @@ Optional:
 - related items
 - inspection eligibility
 
-### Scanned document
-Required:
-- title
-- document type
-- date
-- scan asset
-
-Optional:
-- page count
-- source
-- transcription
-- note
-- related records
-
-### Ticket / receipt / brochure
-Use the ephemera item model with subtype-specific metadata as needed.
+### Ticket / receipt / brochure / scanned document
+Use the ephemera item model with subtype-specific metadata as needed. All Accumulation record types share one model; `item_type` carries the subtype distinction.
 
 ## Asset types
 Supported asset types:

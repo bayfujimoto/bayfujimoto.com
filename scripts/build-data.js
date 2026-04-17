@@ -18,7 +18,7 @@ const SUBCOLLECTIONS = {
   work:        ["projects", "artifacts"],
   consumption: ["films", "books", "coffee", "influences"],
   creation:    ["sketches", "photos", "prototypes", "videos"],
-  accumulation:["ephemera", "documents"],
+  accumulation:["ephemera"],
 };
 
 function buildArchive() {

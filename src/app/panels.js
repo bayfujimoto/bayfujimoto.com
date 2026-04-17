@@ -65,7 +65,16 @@ function restoreFromState(state) {
 
 function pushLayerForState(state, silent = false) {
   switch (state.layer) {
-    case "series": pushSheet(makeSeriesSheet(state.series)); break;
+    case "series": {
+      const subs = Object.keys(archive.series[state.series]?.subcollections || {});
+      if (subs.length === 1) {
+        if (!silent) navigate({ layer: "browse", series: state.series, subcollection: subs[0], view: "all", item: null });
+        // During silent restore, the caller already handles pushing the browse layer
+        return;
+      }
+      pushSheet(makeSeriesSheet(state.series));
+      break;
+    }
     case "browse": pushSheet(makeBrowseSheet(state.series, state.subcollection, state.item)); break;
     case "item":   pushSheet(makeItemSheet(state.series, state.subcollection, state.item)); break;
   }
@@ -206,6 +215,9 @@ function makeBrowseSheet(seriesKey, subKey, openItemId) {
         <div class="browse-header">
           <h2 class="sheet-title">${activeSub.label}</h2>
           <p class="browse-count">${activeSub.items.length} item${activeSub.items.length !== 1 ? "s" : ""}</p>
+          ${s.subcollections && Object.keys(s.subcollections).length === 1
+            ? `<p class="browse-groupby-stub" aria-label="Sort options coming in a later phase">group by: year · event · place · type</p>`
+            : ""}
         </div>
         <ul class="browse-list">
           ${years.map(({ year, items }) => `

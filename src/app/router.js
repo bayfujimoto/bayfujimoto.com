@@ -7,25 +7,42 @@ function locationToState() {
   const item = params.get("item") || null;
 
   if (parts.length === 0) {
-    return { layer: item ? "item" : "desk", series: null, subcollection: null, item };
+    return { layer: item ? "item" : "desk", series: null, subcollection: null, view: null, item };
   }
 
-  const [series, subcollection] = parts;
+  const [series, second] = parts;
 
   if (!isValidSeries(series)) {
-    return { layer: "desk", series: null, subcollection: null, item: null };
+    return { layer: "desk", series: null, subcollection: null, view: null, item: null };
   }
 
-  if (subcollection) {
-    return { layer: item ? "item" : "browse", series, subcollection, item };
+  // Accumulation uses a view-based second segment, not a subcollection key
+  if (series === "accumulation") {
+    if (second) {
+      return { layer: item ? "item" : "browse", series, subcollection: "ephemera", view: second, item };
+    }
+    return { layer: "series", series, subcollection: "ephemera", view: null, item: null };
   }
 
-  return { layer: item ? "item" : "series", series, subcollection: null, item };
+  if (second) {
+    return { layer: item ? "item" : "browse", series, subcollection: second, view: null, item };
+  }
+
+  return { layer: item ? "item" : "series", series, subcollection: null, view: null, item };
 }
 
 // Derive the URL pathname + search from state
 function stateToURL(s) {
   if (s.layer === "desk") return "/";
+
+  // Accumulation: second segment is view slug, not subcollection key
+  if (s.series === "accumulation") {
+    if (s.layer === "series") return "/accumulation/";
+    const viewSeg = s.view || "all";
+    const search = s.item ? `?item=${encodeURIComponent(s.item)}` : "";
+    return `/accumulation/${viewSeg}/${search}`;
+  }
+
   let path = `/${s.series}/`;
   if (s.subcollection) path += `${s.subcollection}/`;
   const search = s.item ? `?item=${encodeURIComponent(s.item)}` : "";

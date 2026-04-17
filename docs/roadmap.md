@@ -15,32 +15,19 @@ Output:
 - CLAUDE.md ✓
 - docs ✓
 
-## Phase 2: Text-first wireframes ✓
+## Phase 2: Structural prototype ✓
 Goals:
-- outline homepage ✓
-- outline category interiors ✓
-- outline browse systems ✓
-- outline item inspection layout ✓
-- validate hierarchy and user flow before visual polish ✓
+- build working layered navigation: desk → series → browse → item ✓
+- validate hierarchy and user flow with real interactions ✓
+- confirm single-scene model, URL/history model, and sheet stack pattern ✓
 
 Output:
-- low-fidelity text wireframes ✓
-- page-by-page structure ✓
+- working Vite SPA with layered modal architecture ✓
+- desk with five series objects ✓
+- series sheet, browse sheet, item inspection sheet ✓
+- keyboard navigation, flip, related items ✓
 
-## Phase 3: Design system
-Goals:
-- establish typography
-- establish surface/material language
-- establish color restraint
-- establish metadata and label styling
-- establish how tactile cues appear without harming clarity
-
-Output:
-- design tokens
-- component rules
-- visual references
-
-## Phase 4: Content preparation
+## Phase 3: Content preparation
 Goals:
 - gather assets
 - define file structure
@@ -53,7 +40,7 @@ Output:
 - asset folders
 - metadata files
 
-## Phase 5: Admin interface / ingest tools
+## Phase 4: Admin interface / ingest tools
 Goals:
 - design and build a private or protected item-entry interface
 - support quick log and full archival entry modes
@@ -66,6 +53,19 @@ Output:
 - admin item-entry page
 - content creation workflow
 - validated ingest flow for multiple item types
+
+## Phase 5: Design system
+Goals:
+- establish typography
+- establish surface/material language
+- establish color restraint
+- establish metadata and label styling
+- establish how tactile cues appear without harming clarity
+
+Output:
+- design tokens
+- component rules
+- visual references
 
 ## Phase 6: Homepage objects (in progress)
 Goals:

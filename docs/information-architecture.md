@@ -67,13 +67,11 @@ Subcollections:
 - `videos` — video work and experiments
 
 ### Accumulation
-Ephemera and scanned documents.
+Collected physical ephemera: tickets, receipts, brochures, handouts, printed matter.
 
 Object metaphor: archive drawer / flat file / stack of envelopes
 
-Subcollections:
-- `ephemera` — tickets, receipts, brochures, handouts, printed matter
-- `documents` — scanned documents, notes, handouts
+Browse: flat list, no subcollection tabs. Intended grouping options (year, event, place, type) deferred to Phase 7.
 
 ---
 
@@ -151,17 +149,20 @@ Clicking any item opens an inspection modal. The browse view behind dims and blu
 /creation/prototypes/          prototypes browse
 /creation/videos/              videos browse
 
-/accumulation/                 accumulation category interior
-/accumulation/ephemera/        ephemera browse
-/accumulation/documents/       scanned documents browse
+/accumulation/                 accumulation (redirects to /accumulation/all/)
+/accumulation/all/             ephemera browse, unfiltered
+/accumulation/sxsw-2026/      ephemera browse, filtered by event (filter logic Phase 7)
 ```
+
+Note: Accumulation uses a view-based second segment rather than a subcollection key. See decisions.md for rationale.
 
 ### Item inspection deep-links
 
 Item inspection uses URL query params to open a modal from a browse page:
 
 ```
-/accumulation/ephemera/?item=EPH-2025-041
+/accumulation/all/?item=EPH-2025-041
+/accumulation/sxsw-2026/?item=EPH-2025-041
 /work/projects/?item=PROJ-2025-002
 /consumption/films/?item=FILM-2026-001
 ```
