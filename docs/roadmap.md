@@ -2,30 +2,30 @@
 
 This roadmap assumes the archive must be maintainable over time, so ingest and admin tooling are treated as core infrastructure rather than optional polish.
 
-## Phase 1: Documentation
+## Phase 1: Documentation ✓
 Goals:
-- define concept
-- define IA
-- define content model
-- define ingest workflow
-- define rendering strategy
-- define guardrails
+- define concept ✓
+- define IA ✓
+- define content model ✓
+- define ingest workflow ✓
+- define rendering strategy ✓
+- define guardrails ✓
 
 Output:
-- CLAUDE.md
-- docs
+- CLAUDE.md ✓
+- docs ✓
 
-## Phase 2: Text-first wireframes
+## Phase 2: Text-first wireframes ✓
 Goals:
-- outline homepage
-- outline category interiors
-- outline browse systems
-- outline item inspection layout
-- validate hierarchy and user flow before visual polish
+- outline homepage ✓
+- outline category interiors ✓
+- outline browse systems ✓
+- outline item inspection layout ✓
+- validate hierarchy and user flow before visual polish ✓
 
 Output:
-- low-fidelity text wireframes
-- page-by-page structure
+- low-fidelity text wireframes ✓
+- page-by-page structure ✓
 
 ## Phase 3: Design system
 Goals:
@@ -59,7 +59,7 @@ Goals:
 - support quick log and full archival entry modes
 - support drafts, partial records, and published records
 - generate or validate IDs, slugs, metadata, and asset references
-- ensure compatibility with the 11ty + GitHub + Netlify workflow
+- ensure compatibility with the Vite + GitHub + Netlify workflow
 - test the archive with real content entry before public-facing polish
 
 Output:
@@ -67,35 +67,32 @@ Output:
 - content creation workflow
 - validated ingest flow for multiple item types
 
-## Phase 6: Homepage objects
+## Phase 6: Homepage objects (in progress)
 Goals:
-- build sparse desk
+- build sparse desk ✓ (HTML stub with five clickable series objects)
 - define five primary objects
 - make each object clearly represent its series
-- prototype simple interaction states
+- prototype simple interaction states ✓ (click navigates to series layer)
 
 Output:
 - homepage object system
 - first-pass desk interaction
 
-## Phase 7: Browse systems
+## Phase 7: Browse systems (in progress)
 Goals:
-- build category interiors
-- build subcollection views
+- build category interiors ✓ (series sheet with subcollection tabs)
+- build subcollection views ✓ (browse sheet with year-grouped item list)
 - build timelines, grids, folders, ledgers, contact sheets, or logs as needed
 - implement filtering and orientation systems
 
 Output:
 - navigable archive structure
 
-## Phase 8: Item inspection
+## Phase 8: Item inspection (in progress)
 Goals:
-- build focused inspection overlay or page
-- support metadata, notes, and related items
-- support front/back, zoom, and contextual media behaviors
-
-Output:
-- inspection system for key item types
+- build focused inspection overlay or page ✓ (item sheet with modal, flip, related items)
+- support metadata, notes, and related items ✓
+- support front/back, zoom, and contextual media behaviors (flip ✓, zoom stub)
 
 ## Phase 9: Selective 3D enhancement
 Goals:
