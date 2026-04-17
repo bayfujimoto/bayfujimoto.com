@@ -2,3 +2,15 @@ node_modules/
 _site/
 .cache/
 .env
+
+# Asset binaries — stored in Cloudflare R2, not committed to repo
+src/assets/
+public/assets/
+*.jpg
+*.jpeg
+*.png
+*.tif
+*.tiff
+*.webp
+*.glb
+*.gltf

@@ -242,9 +242,9 @@ Its purpose is to prevent drift, repetition, and silent contradictions over time
 - why_it_matters: Affects Netlify setup, editing flow, and implementation complexity.
 
 ### Asset storage
-- status: open
-- question: Where should originals, web derivatives, thumbnails, and possible 3D assets live?
-- why_it_matters: Long-term maintainability depends on predictable asset organization.
+- status: confirmed
+- decision: Originals and web derivatives are stored in Cloudflare R2 and served via public bucket URL. Asset paths in record front matter should be full URLs. The VITE_R2_BASE_URL env variable controls the bucket root. During transition, paths starting with /assets/ are automatically expanded to full R2 URLs by build-data.js.
+- reason: Keeps binary assets out of git history, scales independently of the repo, and separates content from build infrastructure.
 
 ---
 

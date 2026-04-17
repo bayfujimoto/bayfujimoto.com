@@ -21,6 +21,28 @@ const SUBCOLLECTIONS = {
   accumulation:["ephemera"],
 };
 
+function resolveAssetPaths(assets) {
+  if (!assets || typeof assets !== "object") return assets;
+
+  const R2_BASE = process.env.VITE_R2_BASE_URL || "";
+  const resolved = {};
+
+  for (const [key, val] of Object.entries(assets)) {
+    if (typeof val === "string" && val.startsWith("/assets/")) {
+      if (!R2_BASE) {
+        console.warn(`[build-data] VITE_R2_BASE_URL not set — asset path left unresolved: ${val}`);
+        resolved[key] = val;
+      } else {
+        resolved[key] = R2_BASE + val;
+      }
+    } else {
+      resolved[key] = val;
+    }
+  }
+
+  return resolved;
+}
+
 function buildArchive() {
   const files = glob.sync("src/content/**/*.md");
 
@@ -56,6 +78,11 @@ function buildArchive() {
     }
     if (!archive.series[series].subcollections[subcollection]) {
       archive.series[series].subcollections[subcollection] = { label: subcollection, items: [] };
+    }
+
+    // Resolve asset paths from /assets/* to full R2 URLs
+    if (data.assets) {
+      data.assets = resolveAssetPaths(data.assets);
     }
 
     archive.series[series].subcollections[subcollection].items.push(data);

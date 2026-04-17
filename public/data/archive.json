@@ -108,8 +108,8 @@
                 "art"
               ],
               "assets": {
-                "front": "/assets/scans/EPH-2025-002-front.jpg",
-                "back": "/assets/scans/EPH-2025-002-back.jpg"
+                "front": "https://example.r2.dev/assets/scans/EPH-2025-002-front.jpg",
+                "back": "https://example.r2.dev/assets/scans/EPH-2025-002-back.jpg"
               },
               "inspection": "simple",
               "related_ids": [
@@ -136,8 +136,8 @@
                 "art"
               ],
               "assets": {
-                "front": "/assets/scans/EPH-2025-001-front.jpg",
-                "back": "/assets/scans/EPH-2025-001-back.jpg"
+                "front": "https://example.r2.dev/assets/scans/EPH-2025-001-front.jpg",
+                "back": "https://example.r2.dev/assets/scans/EPH-2025-001-back.jpg"
               },
               "inspection": "simple",
               "related_ids": [

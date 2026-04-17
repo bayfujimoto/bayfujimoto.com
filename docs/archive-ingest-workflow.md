@@ -101,15 +101,23 @@ Asset naming:
 - PROJ-2025-002-cover.jpg
 
 ## Asset guidance
-Preserve originals when possible.
-Create web derivatives separately.
 
-Suggested asset groups:
-- originals
-- web
-- thumbnails
-- details
-- models
+Assets are stored in Cloudflare R2, not committed to the repository. The bucket URL is set via the `VITE_R2_BASE_URL` environment variable.
+
+**Bucket folder structure:**
+- `originals/` — unprocessed source files (scans, photos, raw exports)
+- `web/` — screen-optimized derivatives (typically JPEG/WebP at display resolution)
+- `thumbnails/` — small crops or scaled-down previews for grid views
+- `models/` — 3D assets (.glb, .gltf) where applicable
+
+**Front matter asset fields** should use full R2 URLs:
+```yaml
+assets:
+  front: https://pub-xxxx.r2.dev/web/EPH-2025-001-web-front.jpg
+  back:  https://pub-xxxx.r2.dev/web/EPH-2025-001-web-back.jpg
+```
+
+During a transition period, paths starting with `/assets/` will be automatically expanded to full R2 URLs by `build-data.js` using the configured base URL — but full URLs are preferred for new records.
 
 For scans and documents:
 - capture front and back when relevant
