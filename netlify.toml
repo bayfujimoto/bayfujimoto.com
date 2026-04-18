@@ -7,6 +7,11 @@
 
 # API routes — served by Netlify Functions
 [[redirects]]
+  from = "/api/r2-upload-url"
+  to   = "/.netlify/functions/r2-upload-url"
+  status = 200
+
+[[redirects]]
   from = "/api/save-record"
   to   = "/.netlify/functions/save-record"
   status = 200

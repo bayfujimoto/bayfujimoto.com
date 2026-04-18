@@ -36,7 +36,13 @@ function resolveAssetPaths(assets) {
   const resolved = {};
 
   for (const [key, val] of Object.entries(assets)) {
-    if (typeof val === "string" && val.startsWith("/assets/")) {
+    if (typeof val !== "string") {
+      resolved[key] = val;
+    } else if (val.startsWith("http")) {
+      // Already a full URL — pass through (old-style records)
+      resolved[key] = val;
+    } else if (val.startsWith("/assets/")) {
+      // Legacy path — expand to full R2 URL
       if (!R2_BASE) {
         console.warn(`[build-data] VITE_R2_BASE_URL not set — asset path left unresolved: ${val}`);
         resolved[key] = val;
@@ -44,6 +50,7 @@ function resolveAssetPaths(assets) {
         resolved[key] = R2_BASE + val;
       }
     } else {
+      // Bare filename — leave as-is, frontend constructs URL at render time
       resolved[key] = val;
     }
   }
