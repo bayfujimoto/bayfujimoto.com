@@ -1,5 +1,6 @@
 import { navigate, replace } from "./router.js";
 import { subscribe, getState } from "./state.js";
+import { imageUrl } from "./image-url.js";
 
 let archive = null;
 const app = document.getElementById("app");
@@ -517,10 +518,18 @@ function makeSheet(extraClass = "") {
 
 // ── Shared render helpers ─────────────────────────────────────────────────────
 
+function primaryAsset(item) {
+  return item.assets?.front || item.assets?.poster || item.assets?.cover || item.assets?.primary
+    || item.assets?.gallery?.[0]?.file || null;
+}
+
+export function galleryAssets(item) {
+  return item.assets?.gallery ?? [];
+}
+
 function browseItemHTML(item) {
-  const thumb = item.assets?.front
-    ? `<img src="${item.assets.front}" alt="" loading="lazy">`
-    : "";
+  const thumbSrc = imageUrl(item.assets?.thumbnail, "thumbnail") || imageUrl(primaryAsset(item), "original");
+  const thumb = thumbSrc ? `<img src="${thumbSrc}" alt="" loading="lazy">` : "";
   return `
     <li class="browse-item">
       <button class="browse-item__trigger" type="button" data-item-id="${item.id}">
@@ -537,10 +546,13 @@ function browseItemHTML(item) {
 }
 
 function imageHTML(item) {
-  if (!item.assets?.front) return `<div class="browse-item__thumb"></div>`;
-  let html = `<img class="modal-image modal-image--front" src="${item.assets.front}" alt="${item.title}" id="modal-img-front">`;
-  if (item.assets.back) {
-    html += `<img class="modal-image modal-image--back" src="${item.assets.back}" alt="${item.title} (back)" id="modal-img-back" hidden>`;
+  const primary = primaryAsset(item);
+  if (!primary) return `<div class="browse-item__thumb"></div>`;
+  const frontSrc = imageUrl(primary, "original");
+  let html = `<img class="modal-image modal-image--front" src="${frontSrc}" alt="${item.title}" id="modal-img-front">`;
+  if (item.assets?.back) {
+    const backSrc = imageUrl(item.assets.back, "original");
+    html += `<img class="modal-image modal-image--back" src="${backSrc}" alt="${item.title} (back)" id="modal-img-back" hidden>`;
     html += `<button class="modal-flip-btn" id="modal-flip" type="button">↔ flip</button>`;
   }
   html += `<button class="modal-zoom-btn" type="button">zoom</button>`;

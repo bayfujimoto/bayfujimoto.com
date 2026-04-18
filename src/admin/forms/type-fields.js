@@ -4,17 +4,32 @@ function assetGroup(roles) {
     label: "Assets",
     depth: "full",
     fields: roles.map(role => ({
-      id:          `assets.${role}`,
-      label:       role,
-      type:        "text",
-      placeholder: "/assets/...",
-      hint:        role === "thumbnail" ? "Small preview image" : undefined,
+      id:        `assets.${role}`,
+      label:     role,
+      type:      "asset-upload",
+      assetRole: role,
     })),
   };
 }
 
+// Thumbnail is auto-generated from the first role — no separate upload slot needed
 function assetGroupWithThumb(roles) {
-  return assetGroup([...roles, "thumbnail"]);
+  return assetGroup(roles);
+}
+
+function assetGalleryGroup() {
+  return {
+    id: "assets-gallery",
+    label: "Gallery",
+    depth: "full",
+    fields: [
+      {
+        id: "assets.gallery",
+        label: "gallery images",
+        type: "gallery-upload",
+      },
+    ],
+  };
 }
 
 const INSPECTION = {
@@ -126,6 +141,7 @@ export function getTypeGroups(itemType) {
         },
         INSPECTION,
         assetGroupWithThumb(["cover"]),
+        assetGalleryGroup(),
       ];
 
     // ── Creation ─────────────────────────────────────────────
@@ -133,6 +149,12 @@ export function getTypeGroups(itemType) {
     case "sketch":
     case "photo":
     case "prototype":
+      return [
+        INSPECTION,
+        assetGroupWithThumb(["primary"]),
+        assetGalleryGroup(),
+      ];
+
     case "video":
     case "note":
       return [
