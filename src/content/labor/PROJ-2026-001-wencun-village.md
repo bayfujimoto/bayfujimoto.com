@@ -12,12 +12,12 @@ assets:
   gallery:
     - file: PROJ-2026-001-gallery-01.png
       thumbnail: PROJ-2026-001-gallery-01-thumb.jpg
-      caption: ""
-      alt: ""
+      caption: caption 1
+      alt: alt text 1
     - file: PROJ-2026-001-gallery-02.png
       thumbnail: PROJ-2026-001-gallery-02-thumb.jpg
-      caption: ""
-      alt: ""
+      caption: caption 2
+      alt: alt text 2
 title: Wencun Village
 context: academic
 role: Student
