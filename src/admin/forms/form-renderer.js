@@ -1,3 +1,5 @@
+import { INSPECTION_ASSETS_SENTINEL } from "./type-fields.js";
+
 function getNestedValue(obj, dotPath) {
   return dotPath.split(".").reduce((acc, key) => acc?.[key], obj);
 }
@@ -92,8 +94,6 @@ function makeAssetUploadField(field, value, handleChange, getItemId) {
       const result = await uploadImageAsset(file, itemId, field.assetRole);
 
       handleChange(field.id, result.original);
-      // Only auto-set thumbnail if this is the primary (first-listed) role
-      // and no thumbnail has been set yet
       if (!handleChange._thumbSet) {
         handleChange("assets.thumbnail", result.thumbnail);
         handleChange._thumbSet = true;
@@ -111,9 +111,12 @@ function makeAssetUploadField(field, value, handleChange, getItemId) {
   return wrapper;
 }
 
-function makeGalleryUploadField(field, initialValue, handleChange, getItemId) {
-  // initialValue: array of { file, thumbnail, caption, alt } or undefined
-  const gallery = Array.isArray(initialValue) ? initialValue.map(item =>
+// Shared ordered-image-list uploader used by gallery and document modes
+function makeOrderedImageField(opts) {
+  // opts: { fieldId, fieldLabel, uploadFn, handleChange, getItemId, initialValue }
+  const { fieldId, fieldLabel, uploadFn, handleChange, getItemId, initialValue } = opts;
+
+  const items = Array.isArray(initialValue) ? initialValue.map(item =>
     typeof item === "string" ? { file: item, thumbnail: "", caption: "", alt: "" } : { ...item }
   ) : [];
 
@@ -122,7 +125,7 @@ function makeGalleryUploadField(field, initialValue, handleChange, getItemId) {
   wrapper.dataset.depth = "full";
 
   const label = document.createElement("label");
-  label.textContent = field.label;
+  label.textContent = fieldLabel;
   wrapper.appendChild(label);
 
   const list = document.createElement("div");
@@ -131,7 +134,7 @@ function makeGalleryUploadField(field, initialValue, handleChange, getItemId) {
 
   const pickerLabel = document.createElement("label");
   pickerLabel.className = "gallery-upload__add-btn";
-  pickerLabel.textContent = gallery.length === 0 ? "Upload images" : "+ Add more images";
+  pickerLabel.textContent = items.length === 0 ? "Upload images" : "+ Add more images";
 
   const fileInput = document.createElement("input");
   fileInput.type = "file";
@@ -146,16 +149,15 @@ function makeGalleryUploadField(field, initialValue, handleChange, getItemId) {
   wrapper.appendChild(status);
 
   function commit() {
-    handleChange(field.id, gallery.length > 0 ? gallery.map(item => ({ ...item })) : []);
+    handleChange(fieldId, items.length > 0 ? items.map(item => ({ ...item })) : []);
   }
 
   function renderList() {
     list.innerHTML = "";
-    gallery.forEach((item, i) => {
+    items.forEach((item, i) => {
       const row = document.createElement("div");
       row.className = "gallery-upload__row";
 
-      // Reorder buttons
       const reorderDiv = document.createElement("div");
       reorderDiv.className = "gallery-upload__reorder";
 
@@ -165,7 +167,7 @@ function makeGalleryUploadField(field, initialValue, handleChange, getItemId) {
       upBtn.disabled = i === 0;
       upBtn.addEventListener("click", () => {
         if (i === 0) return;
-        [gallery[i - 1], gallery[i]] = [gallery[i], gallery[i - 1]];
+        [items[i - 1], items[i]] = [items[i], items[i - 1]];
         renderList();
         commit();
       });
@@ -173,10 +175,10 @@ function makeGalleryUploadField(field, initialValue, handleChange, getItemId) {
       const downBtn = document.createElement("button");
       downBtn.type = "button";
       downBtn.textContent = "▼";
-      downBtn.disabled = i === gallery.length - 1;
+      downBtn.disabled = i === items.length - 1;
       downBtn.addEventListener("click", () => {
-        if (i === gallery.length - 1) return;
-        [gallery[i], gallery[i + 1]] = [gallery[i + 1], gallery[i]];
+        if (i === items.length - 1) return;
+        [items[i], items[i + 1]] = [items[i + 1], items[i]];
         renderList();
         commit();
       });
@@ -185,19 +187,15 @@ function makeGalleryUploadField(field, initialValue, handleChange, getItemId) {
       reorderDiv.appendChild(downBtn);
       row.appendChild(reorderDiv);
 
-      // Thumbnail preview
       if (item.thumbnail) {
-        const { imageUrl } = window.__imageUrl || {};
+        const base = document.querySelector("meta[name=r2-base]")?.content || "";
         const thumb = document.createElement("img");
         thumb.className = "gallery-upload__thumb";
         thumb.alt = item.alt || item.file;
-        const base = (typeof VITE_R2_BASE_URL !== "undefined" ? VITE_R2_BASE_URL : "")
-          || document.querySelector("meta[name=r2-base]")?.content || "";
         thumb.src = base ? `${base}/thumbnails/${item.thumbnail}` : item.thumbnail;
         row.appendChild(thumb);
       }
 
-      // Info block
       const info = document.createElement("div");
       info.className = "gallery-upload__info";
 
@@ -210,34 +208,27 @@ function makeGalleryUploadField(field, initialValue, handleChange, getItemId) {
       captionInput.type = "text";
       captionInput.placeholder = "caption";
       captionInput.value = item.caption || "";
-      captionInput.addEventListener("input", () => {
-        gallery[i].caption = captionInput.value;
-        commit();
-      });
+      captionInput.addEventListener("input", () => { items[i].caption = captionInput.value; commit(); });
 
       const altInput = document.createElement("input");
       altInput.type = "text";
       altInput.placeholder = "alt text";
       altInput.value = item.alt || "";
-      altInput.addEventListener("input", () => {
-        gallery[i].alt = altInput.value;
-        commit();
-      });
+      altInput.addEventListener("input", () => { items[i].alt = altInput.value; commit(); });
 
       info.appendChild(captionInput);
       info.appendChild(altInput);
       row.appendChild(info);
 
-      // Remove button
       const removeBtn = document.createElement("button");
       removeBtn.type = "button";
       removeBtn.className = "gallery-upload__remove";
       removeBtn.textContent = "×";
       removeBtn.addEventListener("click", () => {
-        gallery.splice(i, 1);
+        items.splice(i, 1);
         renderList();
         commit();
-        pickerLabel.textContent = gallery.length === 0 ? "Upload images" : "+ Add more images";
+        pickerLabel.textContent = items.length === 0 ? "Upload images" : "+ Add more images";
       });
       row.appendChild(removeBtn);
 
@@ -252,23 +243,18 @@ function makeGalleryUploadField(field, initialValue, handleChange, getItemId) {
     if (!files.length) return;
 
     const itemId = getItemId();
-    if (!itemId) {
-      status.textContent = "Save an ID first before uploading.";
-      return;
-    }
+    if (!itemId) { status.textContent = "Save an ID first before uploading."; return; }
 
     fileInput.disabled = true;
     status.textContent = `Uploading 0 / ${files.length}…`;
 
     try {
-      const { uploadGalleryAsset } = await import("../lib/upload.js");
-      let startIndex = gallery.length;
+      const startIndex = items.length;
       for (let i = 0; i < files.length; i++) {
         status.textContent = `Uploading ${i + 1} / ${files.length}…`;
-        const result = await uploadGalleryAsset(files[i], itemId, startIndex + i);
-        gallery.push(result);
+        const result = await uploadFn(files[i], itemId, startIndex + i);
+        items.push(result);
 
-        // Auto-set thumbnail from first gallery image if nothing has set it yet
         if (!handleChange._thumbSet) {
           handleChange("assets.thumbnail", result.thumbnail);
           handleChange._thumbSet = true;
@@ -287,6 +273,208 @@ function makeGalleryUploadField(field, initialValue, handleChange, getItemId) {
   });
 
   return wrapper;
+}
+
+function makeGalleryUploadField(field, initialValue, handleChange, getItemId) {
+  return makeOrderedImageField({
+    fieldId: field.id,
+    fieldLabel: field.label,
+    uploadFn: async (file, itemId, index) => {
+      const { uploadGalleryAsset } = await import("../lib/upload.js");
+      return uploadGalleryAsset(file, itemId, index);
+    },
+    handleChange,
+    getItemId,
+    initialValue,
+  });
+}
+
+// Renders the correct asset upload UI for the chosen inspection mode
+function makeInspectionAwareAssets(mode, currentData, handleChange, getItemId) {
+  const container = document.createElement("div");
+  container.className = "inspection-assets";
+
+  if (!mode || mode === "none") {
+    return container;
+  }
+
+  if (mode === "card") {
+    // front (required) + back (optional)
+    const frontField = { id: "assets.front", label: "front", type: "asset-upload", assetRole: "front" };
+    const backField  = { id: "assets.back",  label: "back (optional)", type: "asset-upload", assetRole: "back" };
+    handleChange._thumbSet = !!currentData.assets?.thumbnail;
+    container.appendChild(makeAssetUploadField(frontField, currentData.assets?.front, handleChange, getItemId));
+    container.appendChild(makeAssetUploadField(backField,  currentData.assets?.back,  handleChange, getItemId));
+    return container;
+  }
+
+  if (mode === "gallery") {
+    const field = { id: "assets.gallery", label: "gallery images" };
+    handleChange._thumbSet = !!currentData.assets?.thumbnail;
+    container.appendChild(makeGalleryUploadField(field, currentData.assets?.gallery, handleChange, getItemId));
+    return container;
+  }
+
+  if (mode === "document") {
+    handleChange._thumbSet = !!currentData.assets?.thumbnail;
+    container.appendChild(makeOrderedImageField({
+      fieldId: "assets.pages",
+      fieldLabel: "pages",
+      uploadFn: async (file, itemId, index) => {
+        const { uploadDocumentPage } = await import("../lib/upload.js");
+        return uploadDocumentPage(file, itemId, index);
+      },
+      handleChange,
+      getItemId,
+      initialValue: currentData.assets?.pages,
+    }));
+    return container;
+  }
+
+  if (mode === "object") {
+    // 3D model file upload + separate thumbnail image
+    const modelWrapper = document.createElement("div");
+    modelWrapper.className = "admin-field admin-field--asset-upload";
+
+    const modelLabel = document.createElement("label");
+    modelLabel.textContent = "3D model (.glb or .gltf)";
+    modelWrapper.appendChild(modelLabel);
+
+    const modelFilename = document.createElement("div");
+    modelFilename.className = "asset-upload__filename";
+    modelFilename.textContent = currentData.assets?.model || "No file selected";
+    modelWrapper.appendChild(modelFilename);
+
+    const modelInput = document.createElement("input");
+    modelInput.type = "file";
+    modelInput.accept = ".glb,.gltf";
+    modelInput.id = "field-assets-model";
+    modelLabel.setAttribute("for", modelInput.id);
+    modelWrapper.appendChild(modelInput);
+
+    const modelStatus = document.createElement("div");
+    modelStatus.className = "asset-upload__status";
+    modelWrapper.appendChild(modelStatus);
+
+    modelInput.addEventListener("change", async () => {
+      const file = modelInput.files?.[0];
+      if (!file) return;
+      const itemId = getItemId();
+      if (!itemId) { modelStatus.textContent = "Save an ID first before uploading."; return; }
+      modelStatus.textContent = "Uploading…";
+      modelInput.disabled = true;
+      try {
+        const { uploadModelAsset } = await import("../lib/upload.js");
+        const result = await uploadModelAsset(file, itemId);
+        handleChange("assets.model", result.model);
+        modelFilename.textContent = result.model;
+        modelStatus.textContent = "Uploaded";
+      } catch (err) {
+        modelStatus.textContent = `Error: ${err.message}`;
+      } finally {
+        modelInput.disabled = false;
+      }
+    });
+
+    container.appendChild(modelWrapper);
+
+    // Separate thumbnail (still image) for the object
+    const thumbField = { id: "assets.thumbnail", label: "thumbnail image", type: "asset-upload", assetRole: "thumbnail" };
+    handleChange._thumbSet = !!currentData.assets?.thumbnail;
+    container.appendChild(makeAssetUploadField(thumbField, currentData.assets?.thumbnail, handleChange, getItemId));
+
+    return container;
+  }
+
+  if (mode === "contraption") {
+    // State builder: list of named states, each with an ordered image array
+    const states = Array.isArray(currentData.assets?.states)
+      ? currentData.assets.states.map(s => ({ name: s.name || "", images: Array.isArray(s.images) ? [...s.images] : [] }))
+      : [];
+
+    const stateList = document.createElement("div");
+    stateList.className = "contraption-states";
+
+    const addBtn = document.createElement("button");
+    addBtn.type = "button";
+    addBtn.className = "contraption-states__add";
+    addBtn.textContent = "+ Add state";
+
+    handleChange._thumbSet = !!currentData.assets?.thumbnail;
+
+    function commitStates() {
+      handleChange("assets.states", states.map(s => ({ name: s.name, images: [...s.images] })));
+    }
+
+    function renderStates() {
+      stateList.innerHTML = "";
+      states.forEach((state, si) => {
+        const stateEl = document.createElement("div");
+        stateEl.className = "contraption-state";
+
+        const header = document.createElement("div");
+        header.className = "contraption-state__header";
+
+        const nameInput = document.createElement("input");
+        nameInput.type = "text";
+        nameInput.placeholder = "state name (e.g. closed, open)";
+        nameInput.value = state.name;
+        nameInput.addEventListener("input", () => { states[si].name = nameInput.value; commitStates(); });
+
+        const removeStateBtn = document.createElement("button");
+        removeStateBtn.type = "button";
+        removeStateBtn.textContent = "× Remove state";
+        removeStateBtn.addEventListener("click", () => {
+          states.splice(si, 1);
+          renderStates();
+          commitStates();
+        });
+
+        header.appendChild(nameInput);
+        header.appendChild(removeStateBtn);
+        stateEl.appendChild(header);
+
+        // Per-state ordered image uploader — shares makeOrderedImageField logic inline
+        // to keep state[si].images in sync with the local `states` array
+        const imagesField = makeOrderedImageField({
+          fieldId: `assets.states[${si}].images`,
+          fieldLabel: "images for this state",
+          uploadFn: async (file, itemId, index) => {
+            const { uploadGalleryAsset } = await import("../lib/upload.js");
+            return uploadGalleryAsset(file, itemId, index);
+          },
+          handleChange: (_, value) => {
+            // Override: write directly into state images and re-commit
+            states[si].images = Array.isArray(value) ? value : [];
+            commitStates();
+            // Auto-set thumbnail from first image of first state
+            if (!handleChange._thumbSet && si === 0 && states[0].images[0]?.thumbnail) {
+              handleChange("assets.thumbnail", states[0].images[0].thumbnail);
+              handleChange._thumbSet = true;
+            }
+          },
+          getItemId,
+          initialValue: state.images,
+        });
+
+        stateEl.appendChild(imagesField);
+        stateList.appendChild(stateEl);
+      });
+    }
+
+    addBtn.addEventListener("click", () => {
+      states.push({ name: "", images: [] });
+      renderStates();
+      commitStates();
+    });
+
+    renderStates();
+    container.appendChild(stateList);
+    container.appendChild(addBtn);
+    return container;
+  }
+
+  return container;
 }
 
 function makeField(field, value, onChange) {
@@ -363,6 +551,60 @@ function makeField(field, value, onChange) {
   return wrapper;
 }
 
+// Builds and returns the inspection fieldset (mode select + dynamic asset section)
+function makeInspectionFieldset(group, currentData, handleChange, getItemId, depth) {
+  if (depth === "quick") return null;
+
+  const fieldset = document.createElement("div");
+  fieldset.className = "admin-fieldset";
+  fieldset.dataset.group = group.id;
+
+  const legend = document.createElement("div");
+  legend.className = "admin-fieldset-legend";
+  legend.textContent = group.label;
+  fieldset.appendChild(legend);
+
+  // Inspection mode select
+  const modeField = group.fields[0]; // the inspection-select field
+  const modeWrapper = document.createElement("div");
+  modeWrapper.className = "admin-field";
+
+  const modeLabel = document.createElement("label");
+  modeLabel.textContent = modeField.label;
+  modeLabel.setAttribute("for", "field-inspection");
+  modeWrapper.appendChild(modeLabel);
+
+  const modeSelect = document.createElement("select");
+  modeSelect.id = "field-inspection";
+  for (const opt of modeField.options) {
+    const o = document.createElement("option");
+    o.value = opt;
+    o.textContent = opt;
+    modeSelect.appendChild(o);
+  }
+  const currentMode = currentData.inspection || "none";
+  modeSelect.value = currentMode;
+  modeWrapper.appendChild(modeSelect);
+  fieldset.appendChild(modeWrapper);
+
+  // Dynamic asset section — replaced on mode change
+  const assetSection = document.createElement("div");
+  assetSection.className = "inspection-asset-section";
+  assetSection.appendChild(makeInspectionAwareAssets(currentMode, currentData, handleChange, getItemId));
+  fieldset.appendChild(assetSection);
+
+  modeSelect.addEventListener("change", () => {
+    const newMode = modeSelect.value;
+    handleChange("inspection", newMode);
+    // Reset thumbnail tracking so the new mode's first upload sets it
+    handleChange._thumbSet = !!currentData.assets?.thumbnail;
+    assetSection.innerHTML = "";
+    assetSection.appendChild(makeInspectionAwareAssets(newMode, currentData, handleChange, getItemId));
+  });
+
+  return fieldset;
+}
+
 export function renderForm(container, groups, initialData, onChange, depth = "full") {
   const form = document.createElement("div");
   form.className = "admin-form";
@@ -380,6 +622,13 @@ export function renderForm(container, groups, initialData, onChange, depth = "fu
 
   for (const group of groups) {
     if (group.depth === "full" && depth === "quick") continue;
+
+    // Inspection-assets sentinel: render the mode select + dynamic asset section
+    if (group.id === INSPECTION_ASSETS_SENTINEL.id) {
+      const fieldset = makeInspectionFieldset(group, currentData, handleChange, getItemId, depth);
+      if (fieldset) form.appendChild(fieldset);
+      continue;
+    }
 
     const fieldset = document.createElement("div");
     fieldset.className = "admin-fieldset";

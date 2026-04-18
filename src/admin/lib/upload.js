@@ -67,6 +67,38 @@ export async function uploadGalleryAsset(file, itemId, index) {
   return { file: originalName, thumbnail: thumbName, caption: "", alt: "" };
 }
 
+export async function uploadDocumentPage(file, itemId, index) {
+  const ext = fileExtension(file);
+  const n = String(index + 1).padStart(2, "0");
+  const originalName = `${itemId}-page-${n}.${ext}`;
+  const thumbName = `${itemId}-page-${n}-thumb.jpg`;
+
+  const [originalUrl, thumbUrl] = await Promise.all([
+    getPresignedUrl(originalName, file.type, "originals"),
+    getPresignedUrl(thumbName, "image/jpeg", "thumbnails"),
+  ]);
+
+  const img = await loadImage(file);
+  const thumbBlob = await makeThumbnail(img);
+  URL.revokeObjectURL(img.src);
+
+  await Promise.all([
+    putToR2(originalUrl, file, file.type),
+    putToR2(thumbUrl, thumbBlob, "image/jpeg"),
+  ]);
+
+  return { file: originalName, thumbnail: thumbName, caption: "", alt: "" };
+}
+
+// Model assets are not images — no thumbnail generation, uploads to originals/ only
+export async function uploadModelAsset(file, itemId) {
+  const ext = fileExtension(file);
+  const originalName = `${itemId}-model.${ext}`;
+  const uploadUrl = await getPresignedUrl(originalName, file.type, "originals");
+  await putToR2(uploadUrl, file, file.type);
+  return { model: originalName };
+}
+
 export async function uploadImageAsset(file, itemId, role) {
   const ext = fileExtension(file);
   const originalName = `${itemId}-${role}.${ext}`;

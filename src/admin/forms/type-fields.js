@@ -1,3 +1,4 @@
+// Used by consumption types only — these don't use inspection modes
 function assetGroup(roles) {
   return {
     id: "assets",
@@ -12,34 +13,23 @@ function assetGroup(roles) {
   };
 }
 
-// Thumbnail is auto-generated from the first role — no separate upload slot needed
 function assetGroupWithThumb(roles) {
   return assetGroup(roles);
 }
 
-function assetGalleryGroup() {
-  return {
-    id: "assets-gallery",
-    label: "Gallery",
-    depth: "full",
-    fields: [
-      {
-        id: "assets.gallery",
-        label: "gallery images",
-        type: "gallery-upload",
-      },
-    ],
-  };
-}
-
-const INSPECTION = {
-  id: "inspection-grp",
-  label: "Inspection",
+// Inspection-capable types get a sentinel group that form-renderer replaces
+// with the mode-appropriate asset UI when inspection changes
+export const INSPECTION_ASSETS_SENTINEL = {
+  id: "inspection-assets",
+  label: "Assets",
   depth: "full",
   fields: [
-    { id: "inspection", label: "inspection", type: "select",
-      options: ["none", "simple", "rich"],
-      hint: "none = no special viewer, simple = zoom/flip/gallery, rich = multi-state/3D" },
+    {
+      id: "inspection",
+      label: "inspection mode",
+      type: "inspection-select",
+      options: ["none", "card", "gallery", "document", "object", "contraption"],
+    },
   ],
 };
 
@@ -47,6 +37,7 @@ export function getTypeGroups(itemType) {
   switch (itemType) {
 
     // ── Consumption ──────────────────────────────────────────
+    // These types use named roles directly, not inspection modes
 
     case "film":
       return [
@@ -139,9 +130,7 @@ export function getTypeGroups(itemType) {
               hint: "Leave blank if ongoing" },
           ],
         },
-        INSPECTION,
-        assetGroupWithThumb(["cover"]),
-        assetGalleryGroup(),
+        INSPECTION_ASSETS_SENTINEL,
       ];
 
     // ── Creation ─────────────────────────────────────────────
@@ -149,17 +138,10 @@ export function getTypeGroups(itemType) {
     case "sketch":
     case "photo":
     case "prototype":
-      return [
-        INSPECTION,
-        assetGroupWithThumb(["primary"]),
-        assetGalleryGroup(),
-      ];
-
     case "video":
     case "note":
       return [
-        INSPECTION,
-        assetGroupWithThumb(["primary"]),
+        INSPECTION_ASSETS_SENTINEL,
       ];
 
     // ── Identity ─────────────────────────────────────────────
@@ -224,8 +206,7 @@ export function getTypeGroups(itemType) {
               hint: "How / where it was acquired" },
           ],
         },
-        INSPECTION,
-        assetGroupWithThumb(["front", "back"]),
+        INSPECTION_ASSETS_SENTINEL,
       ];
   }
 }
