@@ -7,21 +7,28 @@ function locationToState() {
   const item = params.get("item") || null;
 
   if (parts.length === 0) {
-    return { layer: item ? "item" : "desk", series: null, subcollection: null, view: null, item };
-  }
-
-  const [series, second] = parts;
-
-  if (!isValidSeries(series)) {
     return { layer: "desk", series: null, subcollection: null, view: null, item: null };
   }
 
-  // Accumulation uses a view-based second segment, not a subcollection key
-  if (series === "accumulation") {
+  const [first, second] = parts;
+
+  // Guide is a top-level meta item
+  if (first === "guide") {
+    return { layer: "guide", series: null, subcollection: null, view: null, item: null };
+  }
+
+  if (!isValidSeries(first)) {
+    return { layer: "desk", series: null, subcollection: null, view: null, item: null };
+  }
+
+  const series = first;
+
+  // Labor (and Accumulation) use a view-based second segment, not a subcollection key
+  if (series === "labor" || series === "accumulation") {
     if (second) {
-      return { layer: item ? "item" : "browse", series, subcollection: "ephemera", view: second, item };
+      return { layer: item ? "item" : "browse", series, subcollection: null, view: second, item };
     }
-    return { layer: "series", series, subcollection: "ephemera", view: null, item: null };
+    return { layer: "series", series, subcollection: null, view: null, item: null };
   }
 
   if (second) {
@@ -34,13 +41,14 @@ function locationToState() {
 // Derive the URL pathname + search from state
 function stateToURL(s) {
   if (s.layer === "desk") return "/";
+  if (s.layer === "guide") return "/guide/";
 
-  // Accumulation: second segment is view slug, not subcollection key
-  if (s.series === "accumulation") {
-    if (s.layer === "series") return "/accumulation/";
+  // Labor and Accumulation: second segment is view slug, not subcollection key
+  if (s.series === "labor" || s.series === "accumulation") {
+    if (s.layer === "series") return `/${s.series}/`;
     const viewSeg = s.view || "all";
     const search = s.item ? `?item=${encodeURIComponent(s.item)}` : "";
-    return `/accumulation/${viewSeg}/${search}`;
+    return `/${s.series}/${viewSeg}/${search}`;
   }
 
   let path = `/${s.series}/`;

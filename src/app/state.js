@@ -1,10 +1,10 @@
-const VALID_SERIES = new Set(["identity", "work", "consumption", "creation", "accumulation"]);
+const VALID_SERIES = new Set(["identity", "labor", "consumption", "creation", "accumulation"]);
 
 const state = {
-  layer: "desk",       // 'desk' | 'series' | 'browse' | 'item'
+  layer: "desk",       // 'desk' | 'guide' | 'series' | 'browse' | 'item'
   series: null,        // e.g. 'accumulation'
-  subcollection: null, // e.g. 'ephemera' (data key)
-  view: null,          // URL view segment — accumulation only: 'all' | filter slug
+  subcollection: null, // e.g. 'ephemera' (data key). null for labor/accumulation (flat)
+  view: null,          // URL view segment — labor/accumulation: 'all' | context/filter slug
   item: null,          // item id, e.g. 'EPH-2025-001'
 };
 

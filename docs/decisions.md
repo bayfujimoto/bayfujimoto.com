@@ -27,10 +27,24 @@ Its purpose is to prevent drift, repetition, and silent contradictions over time
 - decision: The archive is organized as collection > series > subcollection > item.
 - reason: Archival hierarchy is foundational to the concept and keeps the project legible as it grows.
 
-### Top-level series
+### Top-level structure
 - status: confirmed
-- decision: The five top-level categories are Identity, Work, Consumption, Creation, and Accumulation.
-- reason: These categories define how material enters or leaves a life and provide the main navigational structure.
+- decision: The site has six top-level objects: Guide (meta item), plus five series (Identity, Labor, Consumption, Creation, Accumulation).
+- reason: These categories define how material enters or leaves a life and provide the main navigational structure. Guide separates self-referential content (finding aid, sitemap, philosophy) from archival content, signaling the distinction through visual treatment.
+- note: Series renamed from Work to Labor (confirmed decision below).
+
+### Series naming: Work → Labor
+- status: confirmed
+- decision: The Work series is renamed to Labor.
+- reason: "Labor" emphasizes effort, process, and human work over portfolio output. More consistent with the archive's tone and voice.
+- date: 2026-04-17
+
+### Labor structure (flat, no subcollections)
+- status: confirmed
+- decision: Labor uses a flat browse model with no subcollections, similar to Accumulation. Items are filtered by `context` metadata field (academic, professional, personal).
+- reason: The prior subcollection split (projects + artifacts) was context-based and fragile. Flat + metadata filtering is more durable and aligns with the Accumulation model.
+- url_pattern: `/labor/all/`, `/labor/academic/`, `/labor/professional/`, `/labor/personal/`
+- date: 2026-04-17
 
 ### Homepage concept
 - status: confirmed
@@ -103,13 +117,26 @@ Its purpose is to prevent drift, repetition, and silent contradictions over time
 
 ### Category interior container metaphors
 - status: confirmed
-- decision: Each series interior uses its object metaphor as a physical container. Subcollections appear as pages, tabs, or sections within that container rather than as tile grids.
+- decision: Each series interior uses its object metaphor as a physical container. Subcollections appear as pages, tabs, or sections within that container rather than as tile grids. Series without subcollections use flat browse with view-based filtering.
 - reason: Preserves the material logic of the archive through the browse layers, not just on the desk and in inspection.
-  - Identity: dossier packet
-  - Work: open binder or folio
-  - Consumption: open ledger with edge tabs per subcollection
-  - Creation: open sketchbook or tray
-  - Accumulation: open flat file or drawer
+  - Identity: dossier packet (subcollections: biography, cv, contact)
+  - Labor: open binder or folio (flat browse, filtered by context)
+  - Consumption: open ledger with edge tabs per subcollection (films, books, music, coffee, games)
+  - Creation: open sketchbook or tray (sketches, photos, prototypes, videos, notes)
+  - Accumulation: open flat file or drawer (flat browse)
+
+### Consumption subcollections (updated)
+- status: confirmed
+- decision: Consumption subcollections are films, books, music, coffee, and games.
+- reason: Expands log coverage and removes inflated "influences" category (better as a metadata filter).
+- note: UI labels can read "film log", "reading log" etc.; keys are bare plurals.
+- date: 2026-04-17
+
+### Creation subcollections (updated)
+- status: confirmed
+- decision: Creation subcollections are sketches, photos, prototypes, videos, and notes.
+- reason: Organized by material type, not by project context. "Projects" belongs in Labor, not Creation. Adds "notes" for textual and sketch ideas.
+- date: 2026-04-17
 
 ### Accumulation browse model
 - status: confirmed
@@ -206,11 +233,6 @@ Its purpose is to prevent drift, repetition, and silent contradictions over time
 - why_it_matters: Without thresholds, metadata effort may become inconsistent.
 - current_bias: significance, inspectability, contextual richness, or relationship density
 
-### Influence section scope
-- status: open
-- question: In Consumption, how broad should “favorite media and influences” become?
-- why_it_matters: This can easily sprawl into an unbounded references section.
-- current_bias: start tightly curated
 
 ### Creation boundaries
 - status: open

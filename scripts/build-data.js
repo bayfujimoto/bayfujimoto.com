@@ -6,7 +6,7 @@ import { dirname } from "path";
 // Series definitions: order, labels, and container metaphors
 const SERIES = {
   identity:    { label: "Identity",    container: "dossier",   order: 0 },
-  work:        { label: "Work",        container: "binder",    order: 1 },
+  labor:       { label: "Labor",       container: "binder",    order: 1 },
   consumption: { label: "Consumption", container: "ledger",    order: 2 },
   creation:    { label: "Creation",    container: "sketchbook", order: 3 },
   accumulation:{ label: "Accumulation",container: "flat-file", order: 4 },
@@ -15,10 +15,18 @@ const SERIES = {
 // Subcollection definitions per series
 const SUBCOLLECTIONS = {
   identity:    ["biography", "cv", "contact"],
-  work:        ["projects", "artifacts"],
-  consumption: ["films", "books", "coffee", "influences"],
-  creation:    ["sketches", "photos", "prototypes", "videos"],
+  labor:       [],
+  consumption: ["films", "books", "music", "coffee", "games"],
+  creation:    ["sketches", "photos", "prototypes", "videos", "notes"],
   accumulation:["ephemera"],
+};
+
+// Guide is a top-level meta item (not a series)
+const GUIDE = {
+  type: "guide",
+  label: "Guide",
+  container: "metadata",
+  order: 5,
 };
 
 function resolveAssetPaths(assets) {
@@ -46,7 +54,7 @@ function resolveAssetPaths(assets) {
 function buildArchive() {
   const files = glob.sync("src/content/**/*.md");
 
-  const archive = { series: {} };
+  const archive = { series: {}, guide: GUIDE };
 
   // Pre-populate all series and subcollections so they exist even if empty
   for (const [seriesKey, seriesDef] of Object.entries(SERIES)) {
@@ -65,8 +73,8 @@ function buildArchive() {
     const raw = readFileSync(file, "utf8");
     const { data } = matter(raw);
 
-    if (!data.series || !data.subcollection) {
-      console.warn(`Skipping ${file} — missing series or subcollection`);
+    if (!data.series) {
+      console.warn(`Skipping ${file} — missing series`);
       continue;
     }
 
@@ -76,20 +84,42 @@ function buildArchive() {
       console.warn(`Unknown series "${series}" in ${file}`);
       continue;
     }
-    if (!archive.series[series].subcollections[subcollection]) {
-      archive.series[series].subcollections[subcollection] = { label: subcollection, items: [] };
-    }
 
     // Resolve asset paths from /assets/* to full R2 URLs
     if (data.assets) {
       data.assets = resolveAssetPaths(data.assets);
     }
 
-    archive.series[series].subcollections[subcollection].items.push(data);
+    // Flat series (labor, accumulation with single ephemera) store items at series level
+    if (SUBCOLLECTIONS[series].length === 0) {
+      if (!archive.series[series].items) {
+        archive.series[series].items = [];
+      }
+      archive.series[series].items.push(data);
+    } else {
+      // Series with subcollections
+      if (!subcollection) {
+        console.warn(`Skipping ${file} — missing subcollection for series "${series}"`);
+        continue;
+      }
+      if (!archive.series[series].subcollections[subcollection]) {
+        archive.series[series].subcollections[subcollection] = { label: subcollection, items: [] };
+      }
+      archive.series[series].subcollections[subcollection].items.push(data);
+    }
   }
 
-  // Sort items by sort_date descending within each subcollection
+  // Sort items by sort_date descending within each subcollection and flat series
   for (const series of Object.values(archive.series)) {
+    // Flat series (items at series level)
+    if (series.items) {
+      series.items.sort((a, b) => {
+        const da = a.sort_date ? new Date(a.sort_date) : new Date(0);
+        const db = b.sort_date ? new Date(b.sort_date) : new Date(0);
+        return db - da;
+      });
+    }
+    // Series with subcollections
     for (const sub of Object.values(series.subcollections)) {
       sub.items.sort((a, b) => {
         const da = a.sort_date ? new Date(a.sort_date) : new Date(0);
@@ -104,7 +134,8 @@ function buildArchive() {
   writeFileSync(outPath, JSON.stringify(archive, null, 2));
 
   const totalItems = files.length;
-  console.log(`archive.json written — ${totalItems} record(s) across ${Object.keys(archive.series).length} series`);
+  const seriesCount = Object.keys(archive.series).length;
+  console.log(`archive.json written — ${totalItems} record(s) across ${seriesCount} series + Guide`);
 }
 
 buildArchive();

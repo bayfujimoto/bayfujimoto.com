@@ -101,13 +101,16 @@ Fields:
 - section links
 - explanatory note
 
-## Work records
+## Labor records
 
-### Project
+### Labor item (project, work sample, artifact)
+All labor items share a flat model with metadata-based filtering by `context` (academic, professional, personal).
+
 Required:
 - title
 - slug
-- project type
+- item_type (project, artifact, work-sample)
+- context (academic, professional, personal)
 - date or date range
 - short summary
 - role
@@ -120,20 +123,11 @@ Recommended:
 - deliverables
 - process notes
 - supporting documents
-- related prototypes
-- related scans
+- related items
 - links
 - inspection eligibility
 
-### Work artifact
-Fields:
-- title
-- project_id
-- artifact type
-- date
-- caption
-- asset
-- related_ids
+Note: Labor has no subcollections. Use `context` metadata field for filtering instead of structural subcollections. See decisions.md for rationale.
 
 ## Consumption records
 
@@ -187,19 +181,33 @@ Optional:
 - repurchase flag
 - related brew logs
 
-### Influence / reference entry
+### Music entry
 Required:
 - title
-- creator
-- type
-- note on relevance
+- artist
+- date listened or period
+- format if useful (album, single, ep, live, mix)
 
 Optional:
-- date encountered
+- album name
+- notes
 - tags
-- quote excerpt summary
-- related projects
-- related films/books/photos
+- source
+- year released
+
+### Games entry
+Required:
+- title
+- date played
+- platform
+- status (completed, in-progress, abandoned)
+
+Optional:
+- developer
+- genre
+- playtime
+- notes
+- tags
 
 ## Creation records
 
@@ -258,6 +266,18 @@ Optional:
 - still frames
 - related project
 - notes
+
+### Notes
+Required:
+- title
+- date
+- content or asset
+
+Optional:
+- note_type (sketch, written note, idea, draft)
+- related project
+- tags
+- related items
 
 ## Accumulation records
 

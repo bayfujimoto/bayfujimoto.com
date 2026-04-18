@@ -4,6 +4,9 @@ import { subscribe, getState } from "./state.js";
 let archive = null;
 const app = document.getElementById("app");
 
+// Labor and Accumulation use view-based URLs regardless of subcollection data structure
+const FLAT_URL_SERIES = new Set(["labor", "accumulation"]);
+
 // Stack of active layer sheets, each: { veil, sheet, cleanup }
 const layerStack = [];
 
@@ -39,10 +42,11 @@ function onStateChange(state) {
   }
 }
 
-// Depth: desk=0, series=1, browse=2, item=3
+// Depth: desk=0, guide=1, series=1, browse=2, item=3
 function stackDepth(state) {
   switch (state.layer) {
     case "desk":   return 0;
+    case "guide":  return 1;
     case "series": return 1;
     case "browse": return 2;
     case "item":   return 3;
@@ -52,11 +56,19 @@ function stackDepth(state) {
 
 // On first load with a deep URL, silently push sheets without history entries
 function restoreFromState(state) {
-  if (state.layer === "series" || state.layer === "browse" || state.layer === "item") {
-    pushLayerForState({ layer: "series", series: state.series, subcollection: null, item: null }, true);
+  if (state.layer === "guide") {
+    pushLayerForState({ layer: "guide" }, true);
+    return;
+  }
+  // Flat-URL series (labor, accumulation) have no series-level sheet — skip straight to browse
+  const skipSeriesSheet = FLAT_URL_SERIES.has(state.series) ||
+    Object.keys(archive.series[state.series]?.subcollections || {}).length <= 1;
+
+  if (!skipSeriesSheet && (state.layer === "series" || state.layer === "browse" || state.layer === "item")) {
+    pushLayerForState({ layer: "series", series: state.series, subcollection: null, view: null, item: null }, true);
   }
   if (state.layer === "browse" || state.layer === "item") {
-    pushLayerForState({ layer: "browse", series: state.series, subcollection: state.subcollection, item: null }, true);
+    pushLayerForState({ layer: "browse", series: state.series, subcollection: state.subcollection, view: state.view, item: null }, true);
   }
   if (state.layer === "item") {
     pushLayerForState(state, true);
@@ -65,17 +77,26 @@ function restoreFromState(state) {
 
 function pushLayerForState(state, silent = false) {
   switch (state.layer) {
+    case "guide": {
+      pushSheet(makeGuideSheet());
+      break;
+    }
     case "series": {
+      // Flat-URL series (labor, accumulation) skip the series sheet and go to browse
+      if (FLAT_URL_SERIES.has(state.series)) {
+        if (!silent) navigate({ layer: "browse", series: state.series, subcollection: null, view: state.view || "all", item: null });
+        return;
+      }
       const subs = Object.keys(archive.series[state.series]?.subcollections || {});
+      // If series has exactly 1 subcollection, skip series sheet and go to browse
       if (subs.length === 1) {
         if (!silent) navigate({ layer: "browse", series: state.series, subcollection: subs[0], view: "all", item: null });
-        // During silent restore, the caller already handles pushing the browse layer
         return;
       }
       pushSheet(makeSeriesSheet(state.series));
       break;
     }
-    case "browse": pushSheet(makeBrowseSheet(state.series, state.subcollection, state.item)); break;
+    case "browse": pushSheet(makeBrowseSheet(state.series, state.subcollection, state.view, state.item)); break;
     case "item":   pushSheet(makeItemSheet(state.series, state.subcollection, state.item)); break;
   }
 }
@@ -84,6 +105,7 @@ function pushLayerForState(state, silent = false) {
 
 function pushSheet({ veil, sheet, cleanup, update }) {
   const depth = layerStack.length + 1; // 1-based
+  const returnFocus = document.activeElement;
 
   veil.style.setProperty("--depth", depth);
   sheet.style.setProperty("--depth", depth);
@@ -91,7 +113,7 @@ function pushSheet({ veil, sheet, cleanup, update }) {
   document.body.appendChild(veil);
   document.body.appendChild(sheet);
 
-  layerStack.push({ veil, sheet, cleanup: cleanup || (() => {}), update: update || (() => {}) });
+  layerStack.push({ veil, sheet, cleanup: cleanup || (() => {}), update: update || (() => {}), returnFocus });
 
   // Animate in
   requestAnimationFrame(() => {
@@ -108,7 +130,13 @@ function popSheet() {
   top.sheet.classList.remove("layer-sheet--visible");
   top.cleanup();
 
-  const remove = () => { top.veil.remove(); top.sheet.remove(); };
+  const remove = () => {
+    top.veil.remove();
+    top.sheet.remove();
+    if (top.returnFocus && typeof top.returnFocus.focus === "function") {
+      top.returnFocus.focus({ preventScroll: true });
+    }
+  };
   top.sheet.addEventListener("transitionend", remove, { once: true });
   // Fallback if transition doesn't fire
   setTimeout(remove, 400);
@@ -121,15 +149,21 @@ function popAll() {
 // ── Desk (permanent, never replaced) ─────────────────────────────────────────
 
 function renderDesk() {
-  const entries = Object.entries(archive.series).sort((a, b) => a[1].order - b[1].order);
+  const seriesEntries = Object.entries(archive.series).sort((a, b) => a[1].order - b[1].order);
+
+  // Collect all desk objects: series + guide
+  const deskObjects = [
+    ...seriesEntries.map(([key, s]) => ({ type: "series", key, ...s })),
+    ...(archive.guide ? [{ type: "guide", key: "guide", ...archive.guide }] : [])
+  ].sort((a, b) => a.order - b.order);
 
   app.innerHTML = `
     <div class="desk">
       <div class="desk-objects">
-        ${entries.map(([key, s]) => `
-          <button class="desk-object" data-series="${key}">
-            <span class="desk-object__label">${s.label}</span>
-            <span class="desk-object__container">${s.container}</span>
+        ${deskObjects.map(obj => `
+          <button class="desk-object${obj.type === 'guide' ? ' desk-object--guide' : ''}" data-type="${obj.type}" data-key="${obj.key}">
+            <span class="desk-object__label">${obj.label}</span>
+            <span class="desk-object__container">${obj.container}</span>
           </button>
         `).join("")}
       </div>
@@ -137,9 +171,17 @@ function renderDesk() {
   `;
 
   app.querySelectorAll(".desk-object").forEach(btn => {
-    btn.addEventListener("click", () => {
-      navigate({ layer: "series", series: btn.dataset.series, subcollection: null, item: null });
-    });
+    const type = btn.dataset.type;
+    const key = btn.dataset.key;
+    if (type === "series") {
+      btn.addEventListener("click", () => {
+        navigate({ layer: "series", series: key, subcollection: null, item: null });
+      });
+    } else if (type === "guide") {
+      btn.addEventListener("click", () => {
+        navigate({ layer: "guide" });
+      });
+    }
   });
 }
 
@@ -170,9 +212,9 @@ function makeSeriesSheet(seriesKey) {
     </div>
   `;
 
-  sheet.querySelector(".sheet-close").addEventListener("click", () => {
-    navigate({ layer: "desk", series: null, subcollection: null, item: null });
-  });
+  const closeSeriesSheet = () => navigate({ layer: "desk", series: null, subcollection: null, item: null });
+
+  sheet.querySelector(".sheet-close").addEventListener("click", closeSeriesSheet);
 
   sheet.querySelectorAll(".series-tab").forEach(btn => {
     btn.addEventListener("click", () => {
@@ -180,51 +222,113 @@ function makeSeriesSheet(seriesKey) {
     });
   });
 
-  return { veil, sheet };
+  const cleanup = attachEscapeHandler(sheet, closeSeriesSheet);
+  requestAnimationFrame(() => sheet.querySelector(".sheet-close")?.focus());
+
+  return { veil, sheet, cleanup };
+}
+
+// ── Guide sheet ───────────────────────────────────────────────────────────────
+
+function makeGuideSheet() {
+  const veil = makeVeil(() => {
+    navigate({ layer: "desk" });
+  });
+
+  const sheet = makeSheet();
+  sheet.innerHTML = `
+    <div class="layer-sheet__inner">
+      <button class="sheet-close" type="button" aria-label="Close">✕</button>
+      <h1 class="sheet-title">Guide</h1>
+      <p class="sheet-subtitle">Finding aid, sitemap, and archive metadata</p>
+      <div class="guide-content">
+        <p>This is a personal archive — a collection of records, artifacts, documents, and traces that describe a life through material evidence rather than through a simplified personal brand narrative.</p>
+        <p>Navigate through the desk objects to explore the archive. Each series contains different types of material:</p>
+        <ul>
+          <li><strong>Identity:</strong> Biography, CV, and contact information</li>
+          <li><strong>Labor:</strong> Work, projects, and professional effort</li>
+          <li><strong>Consumption:</strong> Records of films, books, music, coffee, and games</li>
+          <li><strong>Creation:</strong> Sketches, photos, prototypes, videos, and notes</li>
+          <li><strong>Accumulation:</strong> Collected ephemera and physical artifacts</li>
+        </ul>
+      </div>
+    </div>
+  `;
+
+  const closeGuide = () => navigate({ layer: "desk" });
+  sheet.querySelector(".sheet-close").addEventListener("click", closeGuide);
+  const cleanup = attachEscapeHandler(sheet, closeGuide);
+  requestAnimationFrame(() => sheet.querySelector(".sheet-close")?.focus());
+
+  return { veil, sheet, cleanup };
 }
 
 // ── Browse sheet ──────────────────────────────────────────────────────────────
 
-function makeBrowseSheet(seriesKey, subKey, openItemId) {
+function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
   const s = archive.series[seriesKey];
-  const sub = s.subcollections[subKey];
-  const subs = Object.entries(s.subcollections);
-  const byYear = groupByYear(sub.items);
+  const isFlatSeries = FLAT_URL_SERIES.has(seriesKey);
+  // Only expose subcollection tabs for non-flat series
+  const subs = isFlatSeries ? [] : Object.entries(s.subcollections);
+
+  // Helper: gather all items for a flat-URL series (may have data subcollections)
+  function getFlatItems() {
+    if (s.items) return s.items;
+    return Object.values(s.subcollections || {}).flatMap(sc => sc.items || []);
+  }
 
   const veil = makeVeil(() => {
-    navigate({ layer: "series", series: seriesKey, subcollection: null, item: null });
+    if (isFlatSeries) {
+      navigate({ layer: "desk" });
+    } else {
+      navigate({ layer: "series", series: seriesKey, subcollection: null, item: null });
+    }
   });
 
   const sheet = makeSheet();
 
-  function renderContent(activeSubKey) {
-    const activeSub = s.subcollections[activeSubKey];
-    const years = groupByYear(activeSub.items);
+  function renderContent(activeSubKey, activeView) {
+    let activeSub, years;
+
+    if (isFlatSeries) {
+      let items = getFlatItems();
+      if (activeView && activeView !== "all") {
+        items = items.filter(item => item.context === activeView || item.view === activeView);
+      }
+      activeSub = { label: activeView || "all", items };
+      years = groupByYear(items);
+    } else {
+      activeSub = s.subcollections[activeSubKey];
+      years = groupByYear(activeSub?.items || []);
+    }
+
     sheet.innerHTML = `
       <div class="layer-sheet__inner">
         <button class="sheet-close" type="button" aria-label="Close">✕</button>
-        <nav class="series-tabs" aria-label="Subcollections">
-          ${subs.map(([key, sc]) => `
-            <button class="series-tab ${key === activeSubKey ? "series-tab--active" : ""}"
-              data-series="${seriesKey}" data-sub="${key}">
-              ${sc.label}
-              <span class="series-tab__count">${sc.items.length}</span>
-            </button>
-          `).join("")}
-        </nav>
+        ${subs.length > 0 ? `
+          <nav class="series-tabs" aria-label="Subcollections">
+            ${subs.map(([key, sc]) => `
+              <button class="series-tab ${key === activeSubKey ? "series-tab--active" : ""}"
+                data-series="${seriesKey}" data-sub="${key}">
+                ${sc.label}
+                <span class="series-tab__count">${sc.items.length}</span>
+              </button>
+            `).join("")}
+          </nav>
+        ` : ""}
         <div class="browse-header">
           <h2 class="sheet-title">${activeSub.label}</h2>
           <p class="browse-count">${activeSub.items.length} item${activeSub.items.length !== 1 ? "s" : ""}</p>
-          ${s.subcollections && Object.keys(s.subcollections).length === 1
-            ? `<p class="browse-groupby-stub" aria-label="Sort options coming in a later phase">group by: year · event · place · type</p>`
-            : ""}
+          ${subs.length === 0
+            ? `<p class="browse-groupby-stub" aria-label="Sort options coming in a later phase">group by: year · context · place · type</p>`
+            : (subs.length === 1 ? `<p class="browse-groupby-stub" aria-label="Sort options coming in a later phase">group by: year · event · place · type</p>` : "")}
         </div>
         <ul class="browse-list">
-          ${years.map(({ year, items }) => `
+          ${years.map(({ year, items: yearItems }) => `
             <li>
               <p class="browse-year-divider">${year}</p>
               <ul class="browse-list">
-                ${items.map(item => browseItemHTML(item)).join("")}
+                ${yearItems.map(item => browseItemHTML(item)).join("")}
               </ul>
             </li>
           `).join("")}
@@ -233,7 +337,11 @@ function makeBrowseSheet(seriesKey, subKey, openItemId) {
     `;
 
     sheet.querySelector(".sheet-close").addEventListener("click", () => {
-      navigate({ layer: "series", series: seriesKey, subcollection: null, item: null });
+      if (isFlatSeries) {
+        navigate({ layer: "desk" });
+      } else {
+        navigate({ layer: "series", series: seriesKey, subcollection: null, item: null });
+      }
     });
 
     sheet.querySelectorAll(".series-tab").forEach(btn => {
@@ -244,29 +352,52 @@ function makeBrowseSheet(seriesKey, subKey, openItemId) {
 
     sheet.querySelectorAll(".browse-item__trigger").forEach(btn => {
       btn.addEventListener("click", () => {
-        navigate({ layer: "item", series: seriesKey, subcollection: activeSubKey, item: btn.dataset.itemId });
+        navigate({ layer: "item", series: seriesKey, subcollection: activeSubKey, view: activeView, item: btn.dataset.itemId });
       });
     });
   }
 
-  renderContent(subKey);
+  const closeBrowse = () => {
+    if (isFlatSeries) {
+      navigate({ layer: "desk" });
+    } else {
+      navigate({ layer: "series", series: seriesKey, subcollection: null, item: null });
+    }
+  };
+
+  const cleanup = attachEscapeHandler(sheet, closeBrowse);
+
+  renderContent(subKey, viewSlug);
+  requestAnimationFrame(() => sheet.querySelector(".sheet-close")?.focus());
 
   function update(state) {
     if (state.subcollection && state.subcollection !== subKey) {
       subKey = state.subcollection;
-      renderContent(subKey);
+      renderContent(subKey, viewSlug);
+    }
+    if (state.view && state.view !== viewSlug) {
+      viewSlug = state.view;
+      renderContent(subKey, viewSlug);
     }
   }
 
-  return { veil, sheet, update };
+  return { veil, sheet, update, cleanup };
 }
 
 // ── Item sheet ────────────────────────────────────────────────────────────────
 
 function makeItemSheet(seriesKey, subKey, itemId) {
   const s = archive.series[seriesKey];
-  const sub = s.subcollections[subKey];
-  const allItems = sub.items;
+  let allItems;
+
+  if (subKey && s.subcollections[subKey]) {
+    allItems = s.subcollections[subKey].items;
+  } else if (Object.keys(s.subcollections || {}).length > 0) {
+    // Flat-URL series (accumulation) — items live in subcollections, merge them all
+    allItems = Object.values(s.subcollections).flatMap(sc => sc.items || []);
+  } else {
+    allItems = s.items || [];
+  }
   let currentIdx = allItems.findIndex(i => i.id === itemId);
   if (currentIdx === -1) currentIdx = 0;
 
@@ -322,7 +453,14 @@ function makeItemSheet(seriesKey, subKey, itemId) {
     });
 
     wireFlip(sheet);
-    wireRelated(sheet, allItems, currentIdx);
+
+    sheet.querySelectorAll(".modal-related__link").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const id = btn.dataset.relatedId;
+        const i = allItems.findIndex(it => it.id === id);
+        if (i !== -1) navItem(i);
+      });
+    });
 
     sheet.querySelector(".sheet-close").focus();
   }
@@ -345,6 +483,18 @@ function makeItemSheet(seriesKey, subKey, itemId) {
   renderContent(currentIdx);
 
   return { veil, sheet, cleanup };
+}
+
+// ── Keyboard handler for non-item sheets ─────────────────────────────────────
+
+function attachEscapeHandler(sheet, onEscape) {
+  const handler = (e) => {
+    if (e.key !== "Escape") return;
+    if (layerStack[layerStack.length - 1]?.sheet !== sheet) return;
+    onEscape();
+  };
+  document.addEventListener("keydown", handler);
+  return () => document.removeEventListener("keydown", handler);
 }
 
 // ── DOM factories ─────────────────────────────────────────────────────────────
@@ -416,16 +566,6 @@ function relatedHTML(item, allItems) {
     return `<li><button class="modal-related__link" type="button" data-related-id="${id}">${rel ? rel.title : id}</button></li>`;
   }).join("");
   return `<div class="modal-section"><h3 class="modal-section__label">related</h3><ul class="modal-related">${links}</ul></div>`;
-}
-
-function wireRelated(container, allItems, currentIdx) {
-  container.querySelectorAll(".modal-related__link").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const id = btn.dataset.relatedId;
-      const i = allItems.findIndex(it => it.id === id);
-      if (i !== -1) replace({ item: allItems[i].id });
-    });
-  });
 }
 
 function field(label, value) {

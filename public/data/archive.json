@@ -19,20 +19,11 @@
         }
       }
     },
-    "work": {
-      "label": "Work",
+    "labor": {
+      "label": "Labor",
       "container": "binder",
       "order": 1,
-      "subcollections": {
-        "projects": {
-          "label": "projects",
-          "items": []
-        },
-        "artifacts": {
-          "label": "artifacts",
-          "items": []
-        }
-      }
+      "subcollections": {}
     },
     "consumption": {
       "label": "Consumption",
@@ -47,12 +38,16 @@
           "label": "books",
           "items": []
         },
+        "music": {
+          "label": "music",
+          "items": []
+        },
         "coffee": {
           "label": "coffee",
           "items": []
         },
-        "influences": {
-          "label": "influences",
+        "games": {
+          "label": "games",
           "items": []
         }
       }
@@ -76,6 +71,10 @@
         },
         "videos": {
           "label": "videos",
+          "items": []
+        },
+        "notes": {
+          "label": "notes",
           "items": []
         }
       }
@@ -108,8 +107,8 @@
                 "art"
               ],
               "assets": {
-                "front": "https://example.r2.dev/assets/scans/EPH-2025-002-front.jpg",
-                "back": "https://example.r2.dev/assets/scans/EPH-2025-002-back.jpg"
+                "front": "/assets/scans/EPH-2025-002-front.jpg",
+                "back": "/assets/scans/EPH-2025-002-back.jpg"
               },
               "inspection": "simple",
               "related_ids": [
@@ -136,8 +135,8 @@
                 "art"
               ],
               "assets": {
-                "front": "https://example.r2.dev/assets/scans/EPH-2025-001-front.jpg",
-                "back": "https://example.r2.dev/assets/scans/EPH-2025-001-back.jpg"
+                "front": "/assets/scans/EPH-2025-001-front.jpg",
+                "back": "/assets/scans/EPH-2025-001-back.jpg"
               },
               "inspection": "simple",
               "related_ids": [
@@ -149,5 +148,11 @@
         }
       }
     }
+  },
+  "guide": {
+    "type": "guide",
+    "label": "Guide",
+    "container": "metadata",
+    "order": 5
   }
 }

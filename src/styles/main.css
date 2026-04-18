@@ -33,6 +33,18 @@ body {
   padding: 2rem;
 }
 
+/* Guide spans full width on its own row, visually distinct from the five series */
+.desk-object--guide {
+  grid-column: 1 / -1;
+  padding: 1rem 1.5rem;
+  border-style: dashed;
+  opacity: 0.6;
+  flex-direction: row;
+  justify-content: center;
+  gap: 1rem;
+}
+.desk-object--guide:hover { opacity: 1; }
+
 .desk-object {
   display: flex;
   flex-direction: column;
@@ -264,6 +276,16 @@ body {
 .modal-flip-btn:hover, .modal-zoom-btn:hover { border-color: rgba(232, 224, 208, 0.5); }
 
 body.modal-open { overflow: hidden; }
+
+/* ── Guide sheet ─────────────────────────────────────────────────────────────── */
+.guide-content { font-size: 0.88rem; line-height: 1.6; }
+.guide-content p { margin: 0 0 1rem; }
+.guide-content ul { margin: 0 0 1rem; padding-left: 1.25rem; }
+.guide-content li { margin-bottom: 0.4rem; }
+.guide-content strong { font-weight: normal; opacity: 0.85; }
+
+/* ── Browse group-by stub ────────────────────────────────────────────────────── */
+.browse-groupby-stub { margin: 0.25rem 0 0; font-size: 0.7rem; opacity: 0.3; }
 
 /* ── Reduced motion ──────────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {

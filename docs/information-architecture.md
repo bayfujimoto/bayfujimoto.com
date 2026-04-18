@@ -6,23 +6,40 @@ This is the canonical reference for the archive's structure, hierarchy, URL sche
 
 ## Hierarchy
 
-The archive is organized as a four-level hierarchy:
+The archive is organized as a multi-level hierarchy:
 
 ```
 Collection
+├─ Meta Item (Guide)
 └─ Series
-   └─ Subcollection
-      └─ Item
+   ├─ Subcollection (optional)
+   │  └─ Item
+   └─ Item (series without subcollections)
 ```
 
 - **Collection** — the archive as a whole. There is one collection: bayfujimoto.com.
-- **Series** — the five top-level domains of the archive. Each is represented as a physical object on the desk.
-- **Subcollection** — a group of related records within a series. Represented as pages, tabs, or sections within the series' physical container.
+- **Meta Item** — the Guide (finding aid, sitemap, site philosophy). A 6th top-level object, visually distinct, describing the archive itself rather than its contents.
+- **Series** — the five main domains of the archive. Each is represented as a physical object on the desk.
+- **Subcollection** — an optional group of related records within a series. Represented as pages, tabs, or sections within the series' physical container. Not all series use subcollections.
 - **Item** — an individual archive record. Has metadata, assets, status, and optional inspection behavior.
 
 ---
 
-## The Five Series
+## The Six Top-Level Objects
+
+### Guide (Meta Item)
+Archive metadata and site information. Visually distinct from the five series.
+
+Object metaphor: notebook / metadata sheet / label
+
+Contents:
+- finding aid / sitemap
+- site philosophy
+- archive metadata
+
+Note: Rendered differently on the desk to signal it's self-referential (describing the archive) rather than archival content (describing the person).
+
+### The Five Series
 
 ### Identity
 Self-description and orientation materials.
@@ -33,16 +50,13 @@ Subcollections:
 - `biography` — short and long-form profile text
 - `cv` — CV / resume entries
 - `contact` — contact channels and availability
-- `guide` — archive guide and sitemap
 
-### Work
-Portfolio projects and work samples.
+### Labor
+Work, projects, and professional effort. Renamed from "Work" to emphasize process and effort.
 
 Object metaphor: binder / folio / project case
 
-Subcollections:
-- `projects` — professional and school work, case studies
-- `artifacts` — process material, mockups, scans, supporting documents
+No subcollections. Browse is flat with metadata-based filtering. Like Accumulation, uses view-based URL segments and metadata context field (`academic`, `professional`, `personal`).
 
 ### Consumption
 Records of intake, ritual, taste, and repeated attention.
@@ -52,8 +66,11 @@ Object metaphor: ledger / logbook / record book
 Subcollections:
 - `films` — films watched
 - `books` — books read
+- `music` — music listened to
 - `coffee` — coffee brewed
-- `influences` — favorite media, recurring references, influences
+- `games` — games played
+
+Note: `influences` removed as a subcollection; implemented as a metadata filter on consumption browse.
 
 ### Creation
 Things made outside the narrower portfolio frame.
@@ -65,6 +82,9 @@ Subcollections:
 - `photos` — photographs, contact sheets
 - `prototypes` — physical and digital prototypes
 - `videos` — video work and experiments
+- `notes` — notes, sketches, and written ideas
+
+Note: `projects` is not used in Creation (use `labor` for project-framed work).
 
 ### Accumulation
 Collected physical ephemera: tickets, receipts, brochures, handouts, printed matter.
@@ -125,36 +145,41 @@ Clicking any item opens an inspection modal. The browse view behind dims and blu
 
 ```
 /                              homepage / desk
-/guide/                        archive guide and sitemap
+/guide/                        archive guide, sitemap, site philosophy
 
 /identity/                     identity category interior
 /identity/biography/           biography
 /identity/cv/                  CV / resume
 /identity/contact/             contact
 
-/work/                         work category interior
-/work/projects/                projects browse
-/work/projects/[slug]/         individual project (item inspection via modal)
-/work/artifacts/               artifacts browse
+/labor/                        labor category interior
+/labor/all/                    labor browse, unfiltered
+/labor/academic/               labor browse, filtered by context
+/labor/professional/           labor browse, filtered by context
+/labor/personal/               labor browse, filtered by context
 
 /consumption/                  consumption category interior
 /consumption/films/            film log browse
 /consumption/books/            books browse
+/consumption/music/            music log browse
 /consumption/coffee/           coffee log browse
-/consumption/influences/       influences browse
+/consumption/games/            games log browse
 
 /creation/                     creation category interior
 /creation/sketches/            sketches browse
 /creation/photos/              photos and contact sheets browse
 /creation/prototypes/          prototypes browse
 /creation/videos/              videos browse
+/creation/notes/               notes browse
 
 /accumulation/                 accumulation (redirects to /accumulation/all/)
 /accumulation/all/             ephemera browse, unfiltered
 /accumulation/sxsw-2026/      ephemera browse, filtered by event (filter logic Phase 7)
 ```
 
-Note: Accumulation uses a view-based second segment rather than a subcollection key. See decisions.md for rationale.
+Notes:
+- Labor and Accumulation both use view-based second segments rather than subcollection keys. See decisions.md for rationale.
+- Labor context filters (`academic`, `professional`, `personal`) are metadata-based, not structural subcollections.
 
 ### Item inspection deep-links
 
@@ -208,7 +233,7 @@ Series interior template notes:
 
 ## 11ty Collections
 
-Define one collection per series and one per subcollection. Use directory-based tagging via `src/content/[series]/[subcollection]/` paths.
+Define one collection per series and one per subcollection (where applicable). Use directory-based tagging via `src/content/[series]/[subcollection]/` paths for subcollected series, or `src/content/[series]/` for flat series.
 
 ### `.eleventy.js` collection definitions
 
@@ -217,8 +242,8 @@ Define one collection per series and one per subcollection. Use directory-based 
 eleventyConfig.addCollection("identity", (api) =>
   api.getFilteredByGlob("src/content/identity/**/*.md")
 );
-eleventyConfig.addCollection("work", (api) =>
-  api.getFilteredByGlob("src/content/work/**/*.md")
+eleventyConfig.addCollection("labor", (api) =>
+  api.getFilteredByGlob("src/content/labor/**/*.md")
 );
 eleventyConfig.addCollection("consumption", (api) =>
   api.getFilteredByGlob("src/content/consumption/**/*.md")
@@ -239,12 +264,16 @@ eleventyConfig.addCollection("books", (api) =>
   api.getFilteredByGlob("src/content/consumption/books/*.md")
      .sort((a, b) => b.data.sort_date - a.data.sort_date)
 );
+eleventyConfig.addCollection("music", (api) =>
+  api.getFilteredByGlob("src/content/consumption/music/*.md")
+     .sort((a, b) => b.data.sort_date - a.data.sort_date)
+);
 eleventyConfig.addCollection("coffee", (api) =>
   api.getFilteredByGlob("src/content/consumption/coffee/*.md")
      .sort((a, b) => b.data.sort_date - a.data.sort_date)
 );
-eleventyConfig.addCollection("projects", (api) =>
-  api.getFilteredByGlob("src/content/work/projects/*.md")
+eleventyConfig.addCollection("games", (api) =>
+  api.getFilteredByGlob("src/content/consumption/games/*.md")
      .sort((a, b) => b.data.sort_date - a.data.sort_date)
 );
 eleventyConfig.addCollection("ephemera", (api) =>
@@ -257,6 +286,18 @@ eleventyConfig.addCollection("sketches", (api) =>
 );
 eleventyConfig.addCollection("photos", (api) =>
   api.getFilteredByGlob("src/content/creation/photos/*.md")
+     .sort((a, b) => b.data.sort_date - a.data.sort_date)
+);
+eleventyConfig.addCollection("prototypes", (api) =>
+  api.getFilteredByGlob("src/content/creation/prototypes/*.md")
+     .sort((a, b) => b.data.sort_date - a.data.sort_date)
+);
+eleventyConfig.addCollection("videos", (api) =>
+  api.getFilteredByGlob("src/content/creation/videos/*.md")
+     .sort((a, b) => b.data.sort_date - a.data.sort_date)
+);
+eleventyConfig.addCollection("notes", (api) =>
+  api.getFilteredByGlob("src/content/creation/notes/*.md")
      .sort((a, b) => b.data.sort_date - a.data.sort_date)
 );
 ```
@@ -288,7 +329,7 @@ The `series` and `subcollection` fields drive collection membership and template
 ```
 src/
 ├─ index.njk                         homepage / desk
-├─ guide.njk                         archive guide
+├─ guide.njk                         archive guide, site philosophy, sitemap
 ├─ _data/                            global data
 ├─ _includes/
 │  ├─ layouts/
@@ -301,14 +342,14 @@ src/
 │     ├─ footer.njk
 │     ├─ containers/
 │     │  ├─ ledger.njk               Consumption container
-│     │  ├─ binder.njk               Work container
+│     │  ├─ binder.njk               Labor container
 │     │  ├─ sketchbook.njk           Creation container
-│     │  ├─ flat-file.njk            Accumulation container
+│     │  ├─ flat-file.njk            Labor + Accumulation container
 │     │  └─ dossier.njk              Identity container
 │     ├─ browse/
-│     │  ├─ log-list.njk             log-style list (films, books, coffee)
+│     │  ├─ log-list.njk             log-style list (films, books, music, coffee, games)
 │     │  ├─ contact-sheet.njk        grid of scan thumbnails
-│     │  ├─ project-grid.njk         project cards
+│     │  ├─ labor-list.njk           labor items list
 │     │  └─ doc-list.njk             document list
 │     └─ inspection/
 │        └─ modal.njk                inspection modal shell
@@ -317,19 +358,20 @@ src/
 │  │  ├─ biography/
 │  │  ├─ cv/
 │  │  └─ contact/
-│  ├─ work/
-│  │  ├─ projects/
-│  │  └─ artifacts/
+│  ├─ labor/
+│  │  └─ items/ (flat, no subcollections)
 │  ├─ consumption/
 │  │  ├─ films/
 │  │  ├─ books/
+│  │  ├─ music/
 │  │  ├─ coffee/
-│  │  └─ influences/
+│  │  └─ games/
 │  ├─ creation/
 │  │  ├─ sketches/
 │  │  ├─ photos/
 │  │  ├─ prototypes/
-│  │  └─ videos/
+│  │  ├─ videos/
+│  │  └─ notes/
 │  └─ accumulation/
 │     ├─ ephemera/
 │     └─ documents/
