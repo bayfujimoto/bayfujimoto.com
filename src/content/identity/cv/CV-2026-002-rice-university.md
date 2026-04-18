@@ -7,7 +7,7 @@ item_type: cv-entry
 status: published
 display_date: 2024 - 2025
 sort_date: "2025-05-01"
-title: Bachelor of Architecture
+title: Bachelor of Architectures
 related_ids:
   - CV-2026-001
 category: education
