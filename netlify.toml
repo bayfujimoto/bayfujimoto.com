@@ -5,6 +5,12 @@
 [build.environment]
   NODE_VERSION = "20"
 
+# Admin route — serves admin.html, hash router handles sub-routes
+[[redirects]]
+  from = "/admin/*"
+  to   = "/admin.html"
+  status = 200
+
 # SPA catch-all — all routes serve index.html, JS router handles them
 [[redirects]]
   from = "/*"

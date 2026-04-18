@@ -18,7 +18,7 @@ const SUBCOLLECTIONS = {
   labor:       [],
   consumption: ["films", "books", "music", "coffee", "games"],
   creation:    ["sketches", "photos", "prototypes", "videos", "notes"],
-  accumulation:["ephemera"],
+  accumulation:[],
 };
 
 // Guide is a top-level meta item (not a series)
@@ -52,7 +52,7 @@ function resolveAssetPaths(assets) {
 }
 
 function buildArchive() {
-  const files = glob.sync("src/content/**/*.md");
+  const files = glob.sync("src/content/**/*.md", { ignore: "src/content/_templates/**" });
 
   const archive = { series: {}, guide: GUIDE };
 
@@ -128,6 +128,15 @@ function buildArchive() {
       });
     }
   }
+
+  // Embed ID counters so the admin interface can read them from archive.json
+  const countersRaw = readFileSync("src/content/_id-counters.yaml", "utf8");
+  archive._counters = Object.fromEntries(
+    countersRaw.trim().split("\n").map(line => {
+      const [k, v] = line.split(":").map(s => s.trim());
+      return [k, parseInt(v, 10)];
+    })
+  );
 
   const outPath = "public/data/archive.json";
   mkdirSync(dirname(outPath), { recursive: true });

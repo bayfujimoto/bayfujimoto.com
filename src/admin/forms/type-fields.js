@@ -1,0 +1,209 @@
+function assetGroup(roles) {
+  return {
+    id: "assets",
+    label: "Assets",
+    depth: "full",
+    fields: roles.map(role => ({
+      id:          `assets.${role}`,
+      label:       role,
+      type:        "text",
+      placeholder: "/assets/...",
+      hint:        role === "thumbnail" ? "Small preview image" : undefined,
+    })),
+  };
+}
+
+function assetGroupWithThumb(roles) {
+  return assetGroup([...roles, "thumbnail"]);
+}
+
+const INSPECTION = {
+  id: "inspection-grp",
+  label: "Inspection",
+  depth: "full",
+  fields: [
+    { id: "inspection", label: "inspection", type: "select",
+      options: ["none", "simple", "rich"],
+      hint: "none = no special viewer, simple = zoom/flip/gallery, rich = multi-state/3D" },
+  ],
+};
+
+export function getTypeGroups(itemType) {
+  switch (itemType) {
+
+    // ── Consumption ──────────────────────────────────────────
+
+    case "film":
+      return [
+        {
+          id: "film-meta", label: "Film",
+          fields: [
+            { id: "director", label: "director", type: "text" },
+            { id: "year",     label: "year",     type: "text", placeholder: "e.g. 2024" },
+            { id: "format",   label: "format",   type: "select",
+              options: ["theatrical", "streaming", "physical", "festival"] },
+          ],
+        },
+        assetGroupWithThumb(["poster"]),
+      ];
+
+    case "book":
+      return [
+        {
+          id: "book-meta", label: "Book",
+          fields: [
+            { id: "author", label: "author", type: "text" },
+            { id: "year",   label: "year",   type: "text", placeholder: "e.g. 2024" },
+          ],
+        },
+        assetGroupWithThumb(["cover"]),
+      ];
+
+    case "album":
+    case "ep":
+    case "single":
+    case "mix":
+      return [
+        {
+          id: "music-meta", label: "Music",
+          fields: [
+            { id: "artist", label: "artist", type: "text" },
+            { id: "year",   label: "year",   type: "text", placeholder: "e.g. 2024" },
+          ],
+        },
+        assetGroupWithThumb(["cover"]),
+      ];
+
+    case "bag":
+      return [
+        {
+          id: "coffee-meta", label: "Coffee",
+          fields: [
+            { id: "roaster", label: "roaster", type: "text" },
+            { id: "origin",  label: "origin",  type: "text" },
+            { id: "process", label: "process", type: "text", placeholder: "e.g. washed, natural" },
+          ],
+        },
+        assetGroupWithThumb(["front", "back"]),
+      ];
+
+    case "game":
+      return [
+        {
+          id: "game-meta", label: "Game",
+          fields: [
+            { id: "developer", label: "developer", type: "text" },
+            { id: "platform",  label: "platform",  type: "text" },
+            { id: "year",      label: "year",      type: "text", placeholder: "e.g. 2024" },
+          ],
+        },
+        assetGroupWithThumb(["cover"]),
+      ];
+
+    // ── Labor ────────────────────────────────────────────────
+
+    case "project":
+    case "artifact":
+    case "commission":
+    case "contribution":
+      return [
+        {
+          id: "labor-meta", label: "Labor",
+          fields: [
+            { id: "context",      label: "context",      type: "select",
+              options: ["professional", "academic", "personal"] },
+            { id: "role",         label: "role",         type: "text" },
+            { id: "organization", label: "organization", type: "text" },
+          ],
+        },
+        {
+          id: "labor-dates", label: "Dates",
+          fields: [
+            { id: "date_start", label: "start date", type: "date" },
+            { id: "date_end",   label: "end date",   type: "date",
+              hint: "Leave blank if ongoing" },
+          ],
+        },
+        INSPECTION,
+        assetGroupWithThumb(["cover"]),
+      ];
+
+    // ── Creation ─────────────────────────────────────────────
+
+    case "sketch":
+    case "photo":
+    case "prototype":
+    case "video":
+    case "note":
+      return [
+        INSPECTION,
+        assetGroupWithThumb(["primary"]),
+      ];
+
+    // ── Identity ─────────────────────────────────────────────
+
+    case "biography":
+      return [
+        {
+          id: "bio-meta", label: "Biography",
+          fields: [
+            { id: "location", label: "location", type: "text" },
+            { id: "roles",    label: "roles",    type: "id-list",
+              hint: "One role per line" },
+            { id: "links",    label: "links",    type: "pair-list",
+              hint: "One per line: label: url" },
+          ],
+        },
+      ];
+
+    case "cv-entry":
+      return [
+        {
+          id: "cv-meta", label: "CV Entry",
+          fields: [
+            { id: "category",     label: "category",     type: "select",
+              options: ["employment", "education", "exhibition", "publication", "award"] },
+            { id: "organization", label: "organization", type: "text" },
+            { id: "role",         label: "role / title", type: "text" },
+          ],
+        },
+        {
+          id: "cv-dates", label: "Dates",
+          fields: [
+            { id: "date_start", label: "start date", type: "date" },
+            { id: "date_end",   label: "end date",   type: "date",
+              hint: "Leave blank if current" },
+          ],
+        },
+      ];
+
+    case "contact":
+      return [
+        {
+          id: "contact-meta", label: "Contact",
+          fields: [
+            { id: "channels", label: "channels", type: "pair-list",
+              hint: "One per line: label: value (e.g. email: name@example.com)" },
+          ],
+        },
+      ];
+
+    // ── Accumulation (ephemera) ───────────────────────────────
+
+    default:
+      // ticket, brochure, receipt, handout, document
+      return [
+        {
+          id: "ephemera-meta", label: "Ephemera",
+          fields: [
+            { id: "place",  label: "place",  type: "text" },
+            { id: "event",  label: "event",  type: "text" },
+            { id: "source", label: "source", type: "text",
+              hint: "How / where it was acquired" },
+          ],
+        },
+        INSPECTION,
+        assetGroupWithThumb(["front", "back"]),
+      ];
+  }
+}

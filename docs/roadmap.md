@@ -30,10 +30,10 @@ Output:
 ## Phase 3: Content preparation
 Goals:
 - gather assets
-- define file structure
-- prepare first records
-- test ingest workflow
-- create a starter dataset across all five series
+- define file structure ✓
+- prepare first records (deferred to Phase 4 — admin interface will be used for initial entry)
+- test ingest workflow (deferred to Phase 4)
+- create a starter dataset across all five series (deferred to Phase 4)
 
 Output:
 - initial archive records
@@ -47,12 +47,14 @@ Goals:
 - support drafts, partial records, and published records
 - generate or validate IDs, slugs, metadata, and asset references
 - ensure compatibility with the Vite + GitHub + Netlify workflow
-- test the archive with real content entry before public-facing polish
+- use the admin interface to create first records and validate the ingest workflow end-to-end
+- build starter dataset across all five series through the admin interface
 
 Output:
 - admin item-entry page
 - content creation workflow
 - validated ingest flow for multiple item types
+- first real archive records created via the admin
 
 ## Phase 5: Design system
 Goals:
