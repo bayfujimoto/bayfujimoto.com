@@ -29,7 +29,8 @@ export async function handler(event) {
   }
 
   try {
-    await githubPut(filePath, content, null, GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO, GITHUB_BRANCH);
+    const fileSha = await getFileSha(filePath, GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO, GITHUB_BRANCH);
+    await githubPut(filePath, content, fileSha, GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO, GITHUB_BRANCH);
     const countersSha = await getFileSha(countersPath, GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO, GITHUB_BRANCH);
     await githubPut(countersPath, countersContent, countersSha, GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO, GITHUB_BRANCH);
     return { statusCode: 200, body: JSON.stringify({ ok: true, mode: "github", filePath }) };
