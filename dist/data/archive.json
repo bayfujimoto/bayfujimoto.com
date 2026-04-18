@@ -19,20 +19,11 @@
         }
       }
     },
-    "work": {
-      "label": "Work",
+    "labor": {
+      "label": "Labor",
       "container": "binder",
       "order": 1,
-      "subcollections": {
-        "projects": {
-          "label": "projects",
-          "items": []
-        },
-        "artifacts": {
-          "label": "artifacts",
-          "items": []
-        }
-      }
+      "subcollections": {}
     },
     "consumption": {
       "label": "Consumption",
@@ -47,12 +38,16 @@
           "label": "books",
           "items": []
         },
+        "music": {
+          "label": "music",
+          "items": []
+        },
         "coffee": {
           "label": "coffee",
           "items": []
         },
-        "influences": {
-          "label": "influences",
+        "games": {
+          "label": "games",
           "items": []
         }
       }
@@ -77,6 +72,10 @@
         "videos": {
           "label": "videos",
           "items": []
+        },
+        "notes": {
+          "label": "notes",
+          "items": []
         }
       }
     },
@@ -84,70 +83,30 @@
       "label": "Accumulation",
       "container": "flat-file",
       "order": 4,
-      "subcollections": {
-        "ephemera": {
-          "label": "ephemera",
-          "items": [
-            {
-              "id": "EPH-2025-002",
-              "slug": "moma-matisse-brochure-2025-03-12",
-              "title": "MoMA — Matisse Exhibition Brochure",
-              "series": "accumulation",
-              "subcollection": "ephemera",
-              "item_type": "brochure",
-              "status": "published",
-              "display_date": "March 12, 2025",
-              "sort_date": "2025-03-12",
-              "source": "picked up at MoMA gallery entrance",
-              "place": "New York",
-              "event": "MoMA visit",
-              "tags": [
-                "museum",
-                "new york",
-                "matisse",
-                "art"
-              ],
-              "assets": {
-                "front": "/assets/scans/EPH-2025-002-front.jpg",
-                "back": "/assets/scans/EPH-2025-002-back.jpg"
-              },
-              "inspection": "simple",
-              "related_ids": [
-                "EPH-2025-001"
-              ],
-              "context_note": "Folded brochure from the Matisse retrospective. Includes floor plan and plate reproductions.\n"
-            },
-            {
-              "id": "EPH-2025-001",
-              "slug": "moma-admission-ticket-2025-03-12",
-              "title": "MoMA Admission Ticket",
-              "series": "accumulation",
-              "subcollection": "ephemera",
-              "item_type": "ticket",
-              "status": "published",
-              "display_date": "March 12, 2025",
-              "sort_date": "2025-03-12",
-              "source": "purchased at MoMA entrance",
-              "place": "New York",
-              "event": "MoMA visit",
-              "tags": [
-                "museum",
-                "new york",
-                "art"
-              ],
-              "assets": {
-                "front": "/assets/scans/EPH-2025-001-front.jpg",
-                "back": "/assets/scans/EPH-2025-001-back.jpg"
-              },
-              "inspection": "simple",
-              "related_ids": [
-                "EPH-2025-002"
-              ],
-              "context_note": "Visited for the Matisse exhibition. Kept the ticket stub along with the gallery brochure from the same afternoon.\n"
-            }
-          ]
-        }
-      }
+      "subcollections": {}
     }
+  },
+  "guide": {
+    "type": "guide",
+    "label": "Guide",
+    "container": "metadata",
+    "order": 5
+  },
+  "_counters": {
+    "EPH": 2,
+    "FILM": 0,
+    "BOOK": 0,
+    "MUSIC": 0,
+    "COFFEE": 0,
+    "GAME": 0,
+    "SKETCH": 0,
+    "PHOTO": 0,
+    "PROTO": 0,
+    "VIDEO": 0,
+    "NOTE": 0,
+    "PROJ": 0,
+    "BIO": 0,
+    "CV": 0,
+    "CONTACT": 0
   }
 }
