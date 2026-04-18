@@ -2,6 +2,8 @@ node_modules/
 _site/
 .cache/
 .env
+.env.local
+.env.*.local
 
 # Asset binaries — stored in Cloudflare R2, not committed to repo
 src/assets/
