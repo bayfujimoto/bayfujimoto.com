@@ -15,8 +15,8 @@ html, body {
   height: 100%;
   background: var(--bg);
   color: var(--fg);
-  font-family: var(--font);
-  font-size: 13px;
+  font-family: var(--font-mono);
+  font-size: var(--text-base);
   line-height: 1.5;
 }
 
@@ -43,7 +43,7 @@ html, body {
 
 .admin-logo {
   padding: 0 16px 20px;
-  font-size: 11px;
+  font-size: var(--text-xs);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--muted);
@@ -61,7 +61,7 @@ html, body {
   padding: 7px 16px;
   color: var(--fg);
   text-decoration: none;
-  font-size: 12px;
+  font-size: var(--text-sm);
 }
 
 .admin-nav a:hover {
@@ -97,7 +97,7 @@ html, body {
   display: flex;
   align-items: center;
   padding: 0 16px;
-  font-size: 11px;
+  font-size: var(--text-xs);
   color: var(--muted);
   z-index: 100;
 }
@@ -109,7 +109,7 @@ html, body {
 
 .admin-commit-btn {
   font-family: inherit;
-  font-size: 11px;
+  font-size: var(--text-xs);
   padding: 3px 10px;
   border: 1px solid var(--border);
   background: var(--fg);
@@ -121,7 +121,7 @@ html, body {
 /* ── Page headings ── */
 
 .admin-page-title {
-  font-size: 15px;
+  font-size: var(--text-md);
   font-weight: 600;
   margin-bottom: 24px;
   padding-bottom: 12px;
@@ -143,7 +143,7 @@ html, body {
 }
 
 .admin-stat-label {
-  font-size: 10px;
+  font-size: var(--text-xs);
   text-transform: uppercase;
   letter-spacing: 0.07em;
   color: var(--muted);
@@ -151,13 +151,13 @@ html, body {
 }
 
 .admin-stat-value {
-  font-size: 22px;
+  font-size: var(--text-xl);
 }
 
 /* ── Section headings ── */
 
 .admin-section-title {
-  font-size: 10px;
+  font-size: var(--text-xs);
   text-transform: uppercase;
   letter-spacing: 0.07em;
   color: var(--muted);
@@ -170,13 +170,13 @@ html, body {
 .admin-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 12px;
+  font-size: var(--text-sm);
 }
 
 .admin-table th {
   text-align: left;
   padding: 6px 10px;
-  font-size: 10px;
+  font-size: var(--text-xs);
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--muted);
@@ -206,7 +206,7 @@ html, body {
 
 .badge {
   display: inline-block;
-  font-size: 10px;
+  font-size: var(--text-xs);
   padding: 1px 6px;
   border: 1px solid var(--border);
   text-transform: uppercase;
@@ -231,8 +231,8 @@ html, body {
   border: 1px solid var(--border);
   background: var(--bg);
   padding: 12px 14px;
-  font-family: var(--font);
-  font-size: 12px;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
   cursor: pointer;
   text-align: left;
   color: var(--fg);
@@ -244,7 +244,7 @@ html, body {
 
 .admin-quick-btn .type-label {
   display: block;
-  font-size: 10px;
+  font-size: var(--text-xs);
   text-transform: uppercase;
   letter-spacing: 0.07em;
   color: var(--muted);
@@ -265,7 +265,7 @@ html, body {
 
 .admin-fieldset-legend {
   display: block;
-  font-size: 10px;
+  font-size: var(--text-xs);
   text-transform: uppercase;
   letter-spacing: 0.07em;
   color: var(--muted);
@@ -281,7 +281,7 @@ html, body {
 
 .admin-field label {
   display: block;
-  font-size: 11px;
+  font-size: var(--text-xs);
   color: var(--muted);
   margin-bottom: 4px;
 }
@@ -290,8 +290,8 @@ html, body {
 .admin-field select,
 .admin-field textarea {
   width: 100%;
-  font-family: var(--font);
-  font-size: 12px;
+  font-family: var(--font-mono);
+  font-size: 16px; /* iOS zoom prevention — must stay ≥16px */
   color: var(--fg);
   background: var(--bg);
   border: 1px solid var(--border);
@@ -318,7 +318,7 @@ html, body {
 }
 
 .admin-field .field-hint {
-  font-size: 10px;
+  font-size: var(--text-xs);
   color: var(--muted);
   margin-top: 3px;
 }
@@ -335,8 +335,8 @@ html, body {
 }
 
 .admin-btn {
-  font-family: var(--font);
-  font-size: 12px;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
   padding: 8px 16px;
   border: 1px solid var(--fg);
   background: var(--fg);
@@ -373,8 +373,8 @@ html, body {
   padding: 14px 16px;
   cursor: pointer;
   background: var(--bg);
-  font-family: var(--font);
-  font-size: 12px;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
   text-align: left;
   color: var(--fg);
 }
@@ -384,7 +384,7 @@ html, body {
 
 .admin-step-tile .tile-label {
   display: block;
-  font-size: 10px;
+  font-size: var(--text-xs);
   text-transform: uppercase;
   letter-spacing: 0.07em;
   color: var(--muted);
@@ -406,7 +406,7 @@ html, body {
   padding: 20px 18px;
   cursor: pointer;
   background: var(--bg);
-  font-family: var(--font);
+  font-family: var(--font-mono);
   text-align: left;
   color: var(--fg);
 }
@@ -415,20 +415,20 @@ html, body {
 
 .admin-depth-btn .depth-name {
   display: block;
-  font-size: 13px;
+  font-size: var(--text-base);
   font-weight: 600;
   margin-bottom: 6px;
 }
 
 .admin-depth-btn .depth-desc {
-  font-size: 11px;
+  font-size: var(--text-xs);
   color: var(--muted);
 }
 
 /* ── File path preview ── */
 
 .admin-filepath-preview {
-  font-size: 11px;
+  font-size: var(--text-xs);
   color: var(--muted);
   margin-bottom: 20px;
   padding: 8px 10px;
@@ -455,8 +455,8 @@ html, body {
 
 .admin-filter-bar select,
 .admin-filter-bar input {
-  font-family: var(--font);
-  font-size: 12px;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
   color: var(--fg);
   background: var(--bg);
   border: 1px solid var(--border);
@@ -469,7 +469,7 @@ html, body {
 /* ── Breadcrumb / wizard nav ── */
 
 .admin-breadcrumb {
-  font-size: 11px;
+  font-size: var(--text-xs);
   color: var(--muted);
   margin-bottom: 20px;
 }
@@ -487,7 +487,7 @@ html, body {
 
 .admin-attention-list {
   list-style: none;
-  font-size: 12px;
+  font-size: var(--text-sm);
 }
 
 .admin-attention-list li {
@@ -508,6 +508,6 @@ html, body {
 
 .admin-empty {
   color: var(--muted);
-  font-size: 12px;
+  font-size: var(--text-sm);
   padding: 12px 0;
 }

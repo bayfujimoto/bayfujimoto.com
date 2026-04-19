@@ -58,17 +58,36 @@
   --overlay-padding: 2rem;
 }
 
+/* ── Fonts ── */
+@font-face {
+  font-family: 'Commit Mono';
+  src: url('/fonts/CommitMono-400-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Commit Mono';
+  src: url('/fonts/CommitMono-400-Italic.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
 /* ── Typography ── */
 :root {
-  --font: ui-monospace, "Cascadia Mono", "Fira Mono", monospace;
+  --font-mono:  'Commit Mono', ui-monospace, "Cascadia Mono", "Fira Mono", monospace;
+  --font-serif: 'EB Garamond', Georgia, serif;
+  --font:       var(--font-serif);
 
   /* Type scale */
-  --text-xs:   0.7rem;   /* 11.2px — labels, IDs, meta-meta */
-  --text-sm:   0.75rem;  /* 12px   — captions, secondary */
-  --text-base: 0.875rem; /* 14px   — body, browse items */
-  --text-md:   0.95rem;  /* 15.2px — desk labels */
-  --text-lg:   1.1rem;   /* 17.6px — modal titles */
-  --text-xl:   1.4rem;   /* 22.4px — sheet titles */
+  --text-xs:   0.8rem;   /* labels, IDs, meta-meta */
+  --text-sm:   0.9rem;  /* captions, secondary */
+  --text-base: 1.0rem; /* body, browse items */
+  --text-md:   1.1rem;  /* desk labels */
+  --text-lg:   1.2rem;   /* modal titles */
+  --text-xl:   1.4rem;   /* sheet titles */
 
   /* Line heights */
   --leading-tight: 1.3;

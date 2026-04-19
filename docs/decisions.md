@@ -46,6 +46,12 @@ Its purpose is to prevent drift, repetition, and silent contradictions over time
 - url_pattern: `/labor/all/`, `/labor/academic/`, `/labor/professional/`, `/labor/personal/`
 - date: 2026-04-17
 
+### Typography: serif-primary with Commit Mono for IDs
+- status: confirmed
+- decision: EB Garamond is the default typeface across the public site. Commit Mono (self-hosted woff2) is reserved for archive ID strings and code elements only (.overlay-id and equivalents). Admin interface retains monospace.
+- reason: Serif-primary reinforces the archival, document-like character of the site. Monospace IDs distinguish machine-readable identifiers from prose-like metadata and navigation.
+- date: 2026-04-19
+
 ### Homepage concept
 - status: confirmed
 - decision: The homepage is a sparse desk with five primary objects.
