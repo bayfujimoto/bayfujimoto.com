@@ -11,6 +11,7 @@
 
 import { existsSync, writeFileSync, readFileSync } from "fs";
 import { join } from "path";
+import { glob } from "glob";
 import RSSParser from "rss-parser";
 import { watchedDateToCentral } from "./utils/letterboxd-timezone.js";
 import { fetchBackdrop } from "./utils/tmdb.js";
@@ -162,6 +163,18 @@ async function main() {
   );
   console.log(`[ingest-rss] ${filmItems.length} film entries in feed`);
 
+  // Build a set of all existing letterboxd_links to check for duplicates
+  const existingLinks = new Set();
+  const existingFiles = glob.sync(join(CONTENT_DIR, "*.md"));
+  for (const file of existingFiles) {
+    const raw = readFileSync(file, "utf8");
+    // Extract letterboxd_link from front matter
+    const match = raw.match(/letterboxd_link: "([^"]*)"/);
+    if (match) {
+      existingLinks.add(match[1]);
+    }
+  }
+
   const counters = readCounters();
   let newCount = 0;
   let skipCount = 0;
@@ -171,6 +184,14 @@ async function main() {
     const year = item.filmYear || extractYear(item.title || "");
 
     if (!title) {
+      skipCount++;
+      continue;
+    }
+
+    const letterboxd_link = item.link || "";
+
+    // Check if this film already exists by its letterboxd link
+    if (letterboxd_link && existingLinks.has(letterboxd_link)) {
       skipCount++;
       continue;
     }
@@ -188,18 +209,11 @@ async function main() {
     }
 
     const slug = buildSlug(title, year, watchDate);
-    const outPath = join(CONTENT_DIR, `${slug}.md`);
-
-    if (existsSync(outPath)) {
-      skipCount++;
-      continue;
-    }
 
     const rating = extractRating(item);
     const rewatch = item.rewatch === "Yes";
     const poster = extractPoster(item);
     const backdrop = await fetchBackdrop(title, year);
-    const letterboxd_link = item.link || "";
 
     const id = nextId(counters);
 

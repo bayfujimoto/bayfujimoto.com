@@ -78,3 +78,8 @@ When working on this project:
 - design with real archive growth in mind
 - treat the admin workflow as core infrastructure, not an afterthought
 - update `docs/decisions.md` when assumptions become decisions
+
+## Git workflow
+- **Do not commit and push to main unless explicitly asked.** Always ask for approval before pushing.
+- Prepare changes, verify they work locally, then wait for user confirmation before running git commit and push.
+- This gives the user time to review and request changes before code goes to the remote repository.
