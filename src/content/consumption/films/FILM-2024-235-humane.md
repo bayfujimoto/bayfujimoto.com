@@ -1,0 +1,21 @@
+---
+id: FILM-2024-235
+slug: FILM-2024-235-humane
+title: "Humane"
+series: consumption
+subcollection: films
+item_type: film
+status: published
+year: "2024"
+director: ""
+watch_date: "2024-04-27"
+display_date: "April 27, 2024"
+sort_date: "2024-04-27"
+rating: 2.5
+rewatch: false
+letterboxd_link: "https://boxd.it/6mD1PD"
+tags:
+  - "live q&a"
+  - "@ alamo manhattan"
+
+---

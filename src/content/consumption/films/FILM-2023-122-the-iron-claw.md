@@ -1,0 +1,20 @@
+---
+id: FILM-2023-122
+slug: FILM-2023-122-the-iron-claw
+title: "The Iron Claw"
+series: consumption
+subcollection: films
+item_type: film
+status: published
+year: "2023"
+director: ""
+watch_date: "2023-12-19"
+display_date: "December 19, 2023"
+sort_date: "2023-12-19"
+rating: 4.5
+rewatch: false
+letterboxd_link: "https://boxd.it/5mhq0j"
+tags:
+  - "@ alamo manhattan"
+
+---

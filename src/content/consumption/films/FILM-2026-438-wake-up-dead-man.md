@@ -1,0 +1,19 @@
+---
+id: FILM-2026-438
+slug: FILM-2026-438-wake-up-dead-man
+title: "Wake Up Dead Man"
+series: consumption
+subcollection: films
+item_type: film
+status: published
+year: "2025"
+director: ""
+watch_date: "2026-01-31"
+display_date: "January 31, 2026"
+sort_date: "2026-01-31"
+rating: 3
+rewatch: false
+letterboxd_link: "https://letterboxd.com/bayf/film/wake-up-dead-man/"
+assets:
+  poster: "https://a.ltrbxd.com/resized/film-poster/7/2/9/1/1/3/729113-wake-up-dead-man-0-600-0-900-crop.jpg?v=85f3366617"
+---

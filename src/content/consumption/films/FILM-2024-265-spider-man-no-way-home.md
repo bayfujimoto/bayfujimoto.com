@@ -1,0 +1,20 @@
+---
+id: FILM-2024-265
+slug: FILM-2024-265-spider-man-no-way-home
+title: "Spider-Man: No Way Home"
+series: consumption
+subcollection: films
+item_type: film
+status: published
+year: "2021"
+director: ""
+watch_date: "2024-06-04"
+display_date: "June 4, 2024"
+sort_date: "2024-06-04"
+rating: 5
+rewatch: false
+letterboxd_link: "https://boxd.it/6BUo3h"
+tags:
+  - "@ alamo manhattan"
+
+---

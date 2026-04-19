@@ -1,0 +1,20 @@
+---
+id: FILM-2025-388
+slug: FILM-2025-388-o-brother-where-art-thou
+title: "O Brother, Where Art Thou?"
+series: consumption
+subcollection: films
+item_type: film
+status: published
+year: "2000"
+director: ""
+watch_date: "2025-07-24"
+display_date: "July 24, 2025"
+sort_date: "2025-07-24"
+rating: 4.5
+rewatch: false
+letterboxd_link: "https://boxd.it/asY0GD"
+tags:
+  - "@ home"
+
+---

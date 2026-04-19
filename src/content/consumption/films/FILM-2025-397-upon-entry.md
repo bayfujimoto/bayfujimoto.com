@@ -1,0 +1,21 @@
+---
+id: FILM-2025-397
+slug: FILM-2025-397-upon-entry
+title: "Upon Entry"
+series: consumption
+subcollection: films
+item_type: film
+status: published
+year: "2022"
+director: ""
+watch_date: "2025-08-22"
+display_date: "August 22, 2025"
+sort_date: "2025-08-22"
+rating: 2
+rewatch: false
+letterboxd_link: "https://boxd.it/aPtF91"
+tags:
+  - "@ home"
+  - "watched w/ my mom"
+
+---

@@ -1,0 +1,21 @@
+---
+id: FILM-2025-407
+slug: FILM-2025-407-the-substance
+title: "The Substance"
+series: consumption
+subcollection: films
+item_type: film
+status: published
+year: "2024"
+director: ""
+watch_date: "2025-10-21"
+display_date: "October 21, 2025"
+sort_date: "2025-10-21"
+rating: 4
+rewatch: true
+letterboxd_link: "https://boxd.it/brW8BL"
+tags:
+  - "@ home"
+  - "watched w/ my mom"
+
+---

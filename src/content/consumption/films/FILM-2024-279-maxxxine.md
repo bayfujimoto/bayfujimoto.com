@@ -1,0 +1,21 @@
+---
+id: FILM-2024-279
+slug: FILM-2024-279-maxxxine
+title: "MaXXXine"
+series: consumption
+subcollection: films
+item_type: film
+status: published
+year: "2024"
+director: ""
+watch_date: "2024-07-11"
+display_date: "July 11, 2024"
+sort_date: "2024-07-11"
+rating: 4
+rewatch: false
+letterboxd_link: "https://boxd.it/6R4vVv"
+tags:
+  - "@ alamo lakeline"
+  - "watched w/ my mom"
+
+---

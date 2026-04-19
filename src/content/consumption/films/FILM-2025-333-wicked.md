@@ -1,0 +1,21 @@
+---
+id: FILM-2025-333
+slug: FILM-2025-333-wicked
+title: "Wicked"
+series: consumption
+subcollection: films
+item_type: film
+status: published
+year: "2024"
+director: ""
+watch_date: "2025-01-07"
+display_date: "January 7, 2025"
+sort_date: "2025-01-07"
+rating: 3
+rewatch: false
+letterboxd_link: "https://boxd.it/8mZDk9"
+tags:
+  - "@ amc lakeline"
+  - "watched w/ my mom"
+
+---

@@ -1,0 +1,20 @@
+---
+id: FILM-2024-246
+slug: FILM-2024-246-psycho
+title: "Psycho"
+series: consumption
+subcollection: films
+item_type: film
+status: published
+year: "1960"
+director: ""
+watch_date: "2024-05-11"
+display_date: "May 11, 2024"
+sort_date: "2024-05-11"
+rating: 0
+rewatch: false
+letterboxd_link: "https://boxd.it/6senAJ"
+tags:
+  - "@ alamo manhattan"
+
+---

@@ -1,0 +1,19 @@
+---
+id: FILM-2026-442
+slug: FILM-2026-442-kill-me
+title: "Kill Me"
+series: consumption
+subcollection: films
+item_type: film
+status: published
+year: "2026"
+director: ""
+watch_date: "2026-03-12"
+display_date: "March 12, 2026"
+sort_date: "2026-03-12"
+rating: 4.5
+rewatch: false
+letterboxd_link: "https://letterboxd.com/bayf/film/kill-me-2026/"
+assets:
+  poster: "https://a.ltrbxd.com/resized/film-poster/1/0/9/5/9/2/5/1095925-kill-me-0-600-0-900-crop.jpg?v=ee2427cf79"
+---

@@ -1,0 +1,20 @@
+---
+id: FILM-2023-105
+slug: FILM-2023-105-next-goal-wins
+title: "Next Goal Wins"
+series: consumption
+subcollection: films
+item_type: film
+status: published
+year: "2023"
+director: ""
+watch_date: "2023-11-17"
+display_date: "November 17, 2023"
+sort_date: "2023-11-17"
+rating: 3
+rewatch: false
+letterboxd_link: "https://boxd.it/5b5Q2n"
+tags:
+  - "@ alamo manhattan"
+
+---

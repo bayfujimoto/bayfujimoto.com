@@ -1,0 +1,20 @@
+---
+id: FILM-2025-403
+slug: FILM-2025-403-marvel-zombies
+title: "Marvel Zombies"
+series: consumption
+subcollection: films
+item_type: film
+status: published
+year: "2025"
+director: ""
+watch_date: "2025-10-03"
+display_date: "October 3, 2025"
+sort_date: "2025-10-03"
+rating: 3
+rewatch: false
+letterboxd_link: "https://boxd.it/bhzPYx"
+tags:
+  - "@ home"
+
+---
