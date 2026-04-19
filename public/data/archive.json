@@ -9501,7 +9501,1908 @@
         },
         "books": {
           "label": "books",
-          "items": []
+          "items": [
+            {
+              "id": "BOOK-2026-002",
+              "slug": "frankenstein-the-1818-text-2026-read",
+              "title": "Frankenstein: The 1818 Text",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Mary Wollstonecraft Shelley",
+              "year": "2026",
+              "date_read": "2026-04-14",
+              "display_date": "April 14, 2026",
+              "sort_date": "2026-04-14",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/8174302993?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1631088473l/35031085._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-001",
+              "slug": "the-expert-of-subtle-revisions-2026-read",
+              "title": "The Expert of Subtle Revisions",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Kirsten Menger-Anderson",
+              "year": "2016",
+              "date_read": "2026-04-14",
+              "display_date": "April 14, 2026",
+              "sort_date": "2026-04-14",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/8114605943?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1718765499l/214986234._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-003",
+              "slug": "the-ways-of-paradise-2026-read",
+              "title": "The Ways of Paradise",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Peter Cornell",
+              "year": "1987",
+              "date_read": "2026-03-13",
+              "display_date": "March 13, 2026",
+              "sort_date": "2026-03-13",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/8114601803?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1706243074l/205978602._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-004",
+              "slug": "the-fellowship-of-the-ring-the-lord-of-the-rings-1-2026-read",
+              "title": "The Fellowship of the Ring (The Lord of the Rings, #1)",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "J.R.R. Tolkien",
+              "year": "1954",
+              "date_read": "2026-02-13",
+              "display_date": "February 12, 2026",
+              "sort_date": "2026-02-13",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/2916016842?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1295996438l/423092._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-005",
+              "slug": "the-shining-the-shining-1-2025-read",
+              "title": "The Shining (The Shining, #1)",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Stephen  King",
+              "year": "1977",
+              "date_read": "2025-12-29",
+              "display_date": "December 29, 2025",
+              "sort_date": "2025-12-29",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/2916003926?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1729172989l/220505376._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-006",
+              "slug": "brief-answers-to-the-big-questions-2025-read",
+              "title": "Brief Answers to the Big Questions",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Stephen W. Hawking",
+              "year": "2018",
+              "date_read": "2025-12-12",
+              "display_date": "December 11, 2025",
+              "sort_date": "2025-12-12",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/8132075108?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1536862019l/40277241._SX50_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-007",
+              "slug": "stamped-from-the-beginning-the-definitive-history-of-racist-ideas-in-america-2025-read",
+              "title": "Stamped from the Beginning: The Definitive History of Racist Ideas in America",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Ibram X. Kendi",
+              "year": "2016",
+              "date_read": "2025-12-05",
+              "display_date": "December 5, 2025",
+              "sort_date": "2025-12-05",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/3785024244?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1440457523l/25898216._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-008",
+              "slug": "perfume-the-story-of-a-murderer-2025-read",
+              "title": "Perfume: The Story of a Murderer",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Patrick Süskind",
+              "year": "1985",
+              "date_read": "2025-12-04",
+              "display_date": "December 4, 2025",
+              "sort_date": "2025-12-04",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/6993922926?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1344095083l/7790524._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-009",
+              "slug": "watchmen-2025-read",
+              "title": "Watchmen",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Alan             Moore",
+              "year": "1987",
+              "date_read": "2025-11-28",
+              "display_date": "November 27, 2025",
+              "sort_date": "2025-11-28",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/4123886808?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1442239711l/472331._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-010",
+              "slug": "blood-meridian-or-the-evening-redness-in-the-west-2025-read",
+              "title": "Blood Meridian: Or the Evening Redness in the West",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Cormac McCarthy",
+              "year": "1985",
+              "date_read": "2025-11-07",
+              "display_date": "November 6, 2025",
+              "sort_date": "2025-11-07",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/7841920688?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1537969427l/8889448._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-011",
+              "slug": "after-the-ecstasy-the-laundry-how-the-heart-grows-wise-on-the-spiritual-path-2025-read",
+              "title": "After the Ecstasy, the Laundry: How the Heart Grows Wise on the Spiritual Path",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Jack Kornfield",
+              "year": "2000",
+              "date_read": "2025-09-26",
+              "display_date": "September 25, 2025",
+              "sort_date": "2025-09-26",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/7917565223?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1388627679l/341631._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-012",
+              "slug": "four-thousand-weeks-time-management-for-mortals-2025-read",
+              "title": "Four Thousand Weeks: Time Management for Mortals",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Oliver Burkeman",
+              "year": "2021",
+              "date_read": "2025-09-13",
+              "display_date": "September 13, 2025",
+              "sort_date": "2025-09-13",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/6601470776?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1627425434l/54785515._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-013",
+              "slug": "the-girl-with-the-dragon-tattoo-millennium-1-2025-read",
+              "title": "The Girl With the Dragon Tattoo (Millennium, #1)",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Stieg Larsson",
+              "year": "2005",
+              "date_read": "2025-09-12",
+              "display_date": "September 11, 2025",
+              "sort_date": "2025-09-12",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/7870262364?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1684638853l/2429135._SX50_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-014",
+              "slug": "the-prophet-a-penguin-classics-hardcover-2025-read",
+              "title": "The Prophet (A Penguin Classics Hardcover)",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Kahlil Gibran",
+              "year": "1923",
+              "date_read": "2025-09-11",
+              "display_date": "September 10, 2025",
+              "sort_date": "2025-09-11",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/3774642723?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1548364044l/39945240._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-015",
+              "slug": "mistborn-the-final-empire-mistborn-1-2025-read",
+              "title": "Mistborn: The Final Empire (Mistborn, #1)",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Brandon Sanderson",
+              "year": "2006",
+              "date_read": "2025-08-18",
+              "display_date": "August 18, 2025",
+              "sort_date": "2025-08-18",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/7753304928?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1617768316l/68428._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-016",
+              "slug": "true-grit-2025-read",
+              "title": "True Grit",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Charles Portis",
+              "year": "1968",
+              "date_read": "2025-08-16",
+              "display_date": "August 16, 2025",
+              "sort_date": "2025-08-16",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/7752808203?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1628278365l/43612456._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-017",
+              "slug": "the-penelopiad-2025-read",
+              "title": "The Penelopiad",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Margaret Atwood",
+              "year": "2005",
+              "date_read": "2025-08-01",
+              "display_date": "August 1, 2025",
+              "sort_date": "2025-08-01",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/7687774146?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1442806554l/17645._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-018",
+              "slug": "the-king-in-yellow-2025-read",
+              "title": "The King in Yellow",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Robert W. Chambers",
+              "year": "2001",
+              "date_read": "2025-07-28",
+              "display_date": "July 28, 2025",
+              "sort_date": "2025-07-28",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/7684360282?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1742853462l/32277642._SX50_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-019",
+              "slug": "the-odyssey-2025-read",
+              "title": "The Odyssey",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Homer",
+              "year": "2025",
+              "date_read": "2025-07-19",
+              "display_date": "July 19, 2025",
+              "sort_date": "2025-07-19",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/7114842756?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1487351579l/34068470._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-021",
+              "slug": "a-certain-hunger-2025-read",
+              "title": "A Certain Hunger",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Chelsea G. Summers",
+              "year": "2019",
+              "date_read": "2025-06-17",
+              "display_date": "June 17, 2025",
+              "sort_date": "2025-06-17",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/3489542645?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1586904556l/53180064._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-020",
+              "slug": "rejection-2025-read",
+              "title": "Rejection",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Tony Tulathimutte",
+              "year": "2024",
+              "date_read": "2025-06-17",
+              "display_date": "June 17, 2025",
+              "sort_date": "2025-06-17",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/7107124586?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1757697215l/199635125._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-023",
+              "slug": "the-secret-history-2025-read",
+              "title": "The Secret History",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Donna Tartt",
+              "year": "1992",
+              "date_read": "2025-06-02",
+              "display_date": "June 2, 2025",
+              "sort_date": "2025-06-02",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/3388824544?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1751820530l/29044._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-022",
+              "slug": "say-nothing-a-true-story-of-murder-and-memory-in-northern-ireland-2025-read",
+              "title": "Say Nothing: A True Story of Murder and Memory in Northern Ireland",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Patrick Radden Keefe",
+              "year": "1972",
+              "date_read": "2025-06-02",
+              "display_date": "June 2, 2025",
+              "sort_date": "2025-06-02",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/3632485954?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1537315266l/40163119._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-024",
+              "slug": "red-rising-red-rising-saga-1-2025-read",
+              "title": "Red Rising (Red Rising Saga, #1)",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Pierce Brown",
+              "year": "2014",
+              "date_read": "2025-06-01",
+              "display_date": "June 1, 2025",
+              "sort_date": "2025-06-01",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/7560853415?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1461354651l/15839976._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-026",
+              "slug": "the-handmaids-tale-handmaids-tale-1-2025-read",
+              "title": "The Handmaid's Tale (Handmaid's Tale, #1)",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Margaret Atwood",
+              "year": "1985",
+              "date_read": "2025-05-11",
+              "display_date": "May 11, 2025",
+              "sort_date": "2025-05-11",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/2916002960?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1651677426l/50885244._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-025",
+              "slug": "yr-dead-2025-read",
+              "title": "Yr Dead",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Sam Sax",
+              "year": "2024",
+              "date_read": "2025-05-11",
+              "display_date": "May 11, 2025",
+              "sort_date": "2025-05-11",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/7107122757?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1721931001l/195450005._SX50_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-028",
+              "slug": "the-overstory-2025-read",
+              "title": "The Overstory",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Richard Powers",
+              "year": "2018",
+              "date_read": "2025-05-02",
+              "display_date": "May 1, 2025",
+              "sort_date": "2025-05-02",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/6720394462?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1562786502l/40180098._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-027",
+              "slug": "atomic-habits-an-easy-proven-way-to-build-good-habits-break-bad-ones-2025-read",
+              "title": "Atomic Habits: An Easy & Proven Way to Build Good Habits & Break Bad Ones",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "James Clear",
+              "year": "2018",
+              "date_read": "2025-05-02",
+              "display_date": "May 1, 2025",
+              "sort_date": "2025-05-02",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/3347680322?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1655988385l/40121378._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-030",
+              "slug": "night-sky-with-exit-wounds-2025-read",
+              "title": "Night Sky with Exit Wounds",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Ocean Vuong",
+              "year": "2016",
+              "date_read": "2025-03-30",
+              "display_date": "March 30, 2025",
+              "sort_date": "2025-03-30",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/3858532024?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1450971013l/23841432._SX50_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-029",
+              "slug": "this-is-how-you-lose-the-time-war-2025-read",
+              "title": "This Is How You Lose the Time War",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Amal El-Mohtar",
+              "year": "2019",
+              "date_read": "2025-03-30",
+              "display_date": "March 30, 2025",
+              "sort_date": "2025-03-30",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/6312672307?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1759084233l/43352954._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-031",
+              "slug": "the-you-you-are-a-spiritual-biography-of-you-2025-read",
+              "title": "The You You Are: A Spiritual Biography of You",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Ricken Lazlo Hale",
+              "year": "2022",
+              "date_read": "2025-03-27",
+              "display_date": "March 27, 2025",
+              "sort_date": "2025-03-27",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/7381014203?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1738578835l/60841708._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-033",
+              "slug": "the-covenant-of-water-2025-read",
+              "title": "The Covenant of Water",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Abraham   Verghese",
+              "year": "1900",
+              "date_read": "2025-03-06",
+              "display_date": "March 6, 2025",
+              "sort_date": "2025-03-06",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/6537938844?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1677331380l/123008485._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-032",
+              "slug": "severance-the-lexington-letter-2025-read",
+              "title": "Severance - The Lexington Letter",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Anonymous",
+              "year": "2022",
+              "date_read": "2025-03-06",
+              "display_date": "March 6, 2025",
+              "sort_date": "2025-03-06",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/7380935234?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1647639568l/60644263._SX50_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-034",
+              "slug": "the-master-and-margarita-2025-read",
+              "title": "The Master and Margarita",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Mikhail Bulgakov",
+              "year": "1967",
+              "date_read": "2025-01-16",
+              "display_date": "January 15, 2025",
+              "sort_date": "2025-01-16",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/3370189052?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1651610994l/339472._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-035",
+              "slug": "the-salt-grows-heavy-2025-read",
+              "title": "The Salt Grows Heavy",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Cassandra Khaw",
+              "year": "2023",
+              "date_read": "2025-01-07",
+              "display_date": "January 7, 2025",
+              "sort_date": "2025-01-07",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/5934722137?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1665333143l/61884779._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-036",
+              "slug": "parade-2024-read",
+              "title": "Parade",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Hiromi Kawakami",
+              "year": "2004",
+              "date_read": "2024-12-30",
+              "display_date": "December 29, 2024",
+              "sort_date": "2024-12-30",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/7135901606?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1556654461l/44146682._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-037",
+              "slug": "strange-weather-in-tokyo-2024-read",
+              "title": "Strange Weather in Tokyo",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Hiromi Kawakami",
+              "year": "2001",
+              "date_read": "2024-12-29",
+              "display_date": "December 29, 2024",
+              "sort_date": "2024-12-29",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/7110275573?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1375634096l/18283207._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-038",
+              "slug": "the-people-in-the-trees-2024-read",
+              "title": "The People in the Trees",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Hanya Yanagihara",
+              "year": "1950",
+              "date_read": "2024-12-28",
+              "display_date": "December 28, 2024",
+              "sort_date": "2024-12-28",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/2916010598?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1497055684l/35396824._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-040",
+              "slug": "prophet-song-2024-read",
+              "title": "Prophet Song",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Paul    Lynch",
+              "year": "2023",
+              "date_read": "2024-12-23",
+              "display_date": "December 22, 2024",
+              "sort_date": "2024-12-23",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/6537942700?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1693237019l/197063642._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-039",
+              "slug": "house-of-bone-and-rain-2024-read",
+              "title": "House of Bone and Rain",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Gabino Iglesias",
+              "year": "2024",
+              "date_read": "2024-12-23",
+              "display_date": "December 23, 2024",
+              "sort_date": "2024-12-23",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/6722995684?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1706838866l/203163914._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-043",
+              "slug": "what-is-metaphysics-2024-read",
+              "title": "What is Metaphysics?",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Martin Heidegger",
+              "year": "1929",
+              "date_read": "2024-12-22",
+              "display_date": "December 22, 2024",
+              "sort_date": "2024-12-22",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/3433157634?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1476134345l/32567666._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-042",
+              "slug": "ankle-snatcher-2024-read",
+              "title": "Ankle Snatcher",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Grady Hendrix",
+              "year": "2023",
+              "date_read": "2024-12-22",
+              "display_date": "December 22, 2024",
+              "sort_date": "2024-12-22",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/6851632817?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1693698091l/195945776._SX50_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-041",
+              "slug": "gratitude-2024-read",
+              "title": "Gratitude",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Oliver Sacks",
+              "year": "2015",
+              "date_read": "2024-12-22",
+              "display_date": "December 22, 2024",
+              "sort_date": "2024-12-22",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/3766977496?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1445791421l/27161964._SX50_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-044",
+              "slug": "the-goldfinch-2024-read",
+              "title": "The Goldfinch",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Donna Tartt",
+              "year": "2014",
+              "date_read": "2024-12-14",
+              "display_date": "December 14, 2024",
+              "sort_date": "2024-12-14",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/6666070700?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1378710146l/17333223._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-045",
+              "slug": "hurricane-season-2024-read",
+              "title": "Hurricane Season",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Fernanda Melchor",
+              "year": "2020",
+              "date_read": "2024-11-14",
+              "display_date": "November 14, 2024",
+              "sort_date": "2024-11-14",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/4019651192?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1576017147l/46041168._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-057",
+              "slug": "piranesi-2024-read",
+              "title": "Piranesi",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Susanna Clarke",
+              "year": "2020",
+              "date_read": "2024-11-04",
+              "display_date": "November 4, 2024",
+              "sort_date": "2024-11-04",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/4116715128?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1773750050l/50202953._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-056",
+              "slug": "the-illustrated-man-2024-read",
+              "title": "The Illustrated Man",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Ray Bradbury",
+              "year": "1951",
+              "date_read": "2024-11-04",
+              "display_date": "November 4, 2024",
+              "sort_date": "2024-11-04",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/2916011893?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1333349737l/13259261._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-055",
+              "slug": "jurassic-park-jurassic-park-1-2024-read",
+              "title": "Jurassic Park (Jurassic Park, #1)",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Michael Crichton",
+              "year": "1990",
+              "date_read": "2024-11-04",
+              "display_date": "November 4, 2024",
+              "sort_date": "2024-11-04",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/3351177973?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1529604411l/40604658._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-054",
+              "slug": "catch-22-2024-read",
+              "title": "Catch-22",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Joseph Heller",
+              "year": "1961",
+              "date_read": "2024-11-04",
+              "display_date": "November 4, 2024",
+              "sort_date": "2024-11-04",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/2916018238?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1463157317l/168668._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-053",
+              "slug": "coraline-2024-read",
+              "title": "Coraline",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Neil Gaiman",
+              "year": "2002",
+              "date_read": "2024-11-04",
+              "display_date": "November 4, 2024",
+              "sort_date": "2024-11-04",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/4135193208?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1493497435l/17061._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-052",
+              "slug": "drive-your-plow-over-the-bones-of-the-dead-2024-read",
+              "title": "Drive Your Plow Over the Bones of the Dead",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Olga Tokarczuk",
+              "year": "2009",
+              "date_read": "2024-11-04",
+              "display_date": "November 4, 2024",
+              "sort_date": "2024-11-04",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/3632489261?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1570997298l/42946966._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-051",
+              "slug": "the-paper-menagerie-and-other-stories-2024-read",
+              "title": "The Paper Menagerie and Other Stories",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Ken Liu",
+              "year": "2016",
+              "date_read": "2024-11-04",
+              "display_date": "November 4, 2024",
+              "sort_date": "2024-11-04",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/3347888651?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1511290092l/24885533._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-050",
+              "slug": "annihilation-southern-reach-1-2024-read",
+              "title": "Annihilation (Southern Reach, #1)",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Jeff Vandermeer",
+              "year": "2014",
+              "date_read": "2024-11-04",
+              "display_date": "November 4, 2024",
+              "sort_date": "2024-11-04",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/3347884213?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1403941587l/17934530._SX50_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-049",
+              "slug": "the-memory-police-2024-read",
+              "title": "The Memory Police",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Yōko Ogawa",
+              "year": "1994",
+              "date_read": "2024-11-04",
+              "display_date": "November 4, 2024",
+              "sort_date": "2024-11-04",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/3374162368?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1550886591l/38058832._SX50_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-048",
+              "slug": "a-gentleman-in-moscow-2024-read",
+              "title": "A Gentleman in Moscow",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Amor Towles",
+              "year": "1922",
+              "date_read": "2024-11-04",
+              "display_date": "November 4, 2024",
+              "sort_date": "2024-11-04",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/3348677534?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1624531706l/45695810._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-047",
+              "slug": "the-hitchhikers-guide-to-the-galaxy-hitchhikers-guide-1-2024-read",
+              "title": "The Hitchhiker's Guide to the Galaxy (Hitchhiker's Guide, #1)",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Douglas Adams",
+              "year": "1979",
+              "date_read": "2024-11-04",
+              "display_date": "November 4, 2024",
+              "sort_date": "2024-11-04",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/2916020237?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1540169016l/42410904._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-046",
+              "slug": "enders-game-enders-saga-1-2024-read",
+              "title": "Ender's Game (Ender's Saga, #1)",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Orson Scott Card",
+              "year": "1985",
+              "date_read": "2024-11-04",
+              "display_date": "November 4, 2024",
+              "sort_date": "2024-11-04",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/3440478139?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1768601176l/1950052._SX50_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-058",
+              "slug": "tomorrow-and-tomorrow-and-tomorrow-2024-read",
+              "title": "Tomorrow, and Tomorrow, and Tomorrow",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Gabrielle Zevin",
+              "year": "2022",
+              "date_read": "2024-10-01",
+              "display_date": "October 1, 2024",
+              "sort_date": "2024-10-01",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/6667490574?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1636978687l/58784475._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-059",
+              "slug": "prophet-song-2024-read",
+              "title": "Prophet Song",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Paul    Lynch",
+              "year": "2023",
+              "date_read": "2024-09-16",
+              "display_date": "September 16, 2024",
+              "sort_date": "2024-09-16",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/6769499238?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1689541792l/158875813._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-060",
+              "slug": "dune-messiah-dune-2-2024-read",
+              "title": "Dune Messiah (Dune, #2)",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Frank Patrick Herbert",
+              "year": "1969",
+              "date_read": "2024-08-18",
+              "display_date": "August 18, 2024",
+              "sort_date": "2024-08-18",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/6694963706?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1656214046l/34326633._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-061",
+              "slug": "why-has-nobody-told-me-this-before-2024-read",
+              "title": "Why Has Nobody Told Me This Before?",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Julie      Smith",
+              "year": "2022",
+              "date_read": "2024-08-14",
+              "display_date": "August 13, 2024",
+              "sort_date": "2024-08-14",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/6335332235?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1670001084l/58536046._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-062",
+              "slug": "unsettling-surviving-extinction-together-2024-read",
+              "title": "Unsettling: Surviving Extinction Together",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Elizabeth Weinberg",
+              "year": "2024",
+              "date_read": "2024-08-02",
+              "display_date": "August 2, 2024",
+              "sort_date": "2024-08-02",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/6694660393?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1642408165l/60143381._SX50_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-063",
+              "slug": "the-zone-of-interest-2024-read",
+              "title": "The Zone of Interest",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Martin Amis",
+              "year": "1991",
+              "date_read": "2024-07-23",
+              "display_date": "July 23, 2024",
+              "sort_date": "2024-07-23",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/6169155787?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1395615002l/20447658._SX50_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-064",
+              "slug": "memory-theater-2024-read",
+              "title": "Memory Theater",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Simon Critchley",
+              "year": "2014",
+              "date_read": "2024-07-21",
+              "display_date": "July 21, 2024",
+              "sort_date": "2024-07-21",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/4350219132?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1443796709l/25387716._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-065",
+              "slug": "greek-lessons-2024-read",
+              "title": "Greek Lessons",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Han Kang",
+              "year": "2011",
+              "date_read": "2024-06-18",
+              "display_date": "June 18, 2024",
+              "sort_date": "2024-06-18",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/6500067953?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1733711419l/61686012._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-066",
+              "slug": "dune-dune-chronicles-1-2024-read",
+              "title": "Dune (Dune Chronicles, #1)",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Frank Patrick Herbert",
+              "year": "1965",
+              "date_read": "2024-05-03",
+              "display_date": "May 3, 2024",
+              "sort_date": "2024-05-03",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/2916023407?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1460494305l/29889255._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-067",
+              "slug": "the-vanishing-half-2024-read",
+              "title": "The Vanishing Half",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Brit Bennett",
+              "year": "2016",
+              "date_read": "2024-04-29",
+              "display_date": "April 29, 2024",
+              "sort_date": "2024-04-29",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/6453353710?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1577090827l/51791252._SX50_SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-068",
+              "slug": "last-to-leave-the-room-2024-read",
+              "title": "Last to Leave the Room",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Caitlin  Starling",
+              "year": "2023",
+              "date_read": "2024-03-03",
+              "display_date": "March 3, 2024",
+              "sort_date": "2024-03-03",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/5934720869?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1674440574l/65213922._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-070",
+              "slug": "lesser-known-monsters-of-the-21st-century-2024-read",
+              "title": "Lesser Known Monsters of the 21st Century",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Kim Fu",
+              "year": "2022",
+              "date_read": "2024-02-04",
+              "display_date": "February 4, 2024",
+              "sort_date": "2024-02-04",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/6068621808?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1628796564l/58476152._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-069",
+              "slug": "where-reasons-end-2024-read",
+              "title": "Where Reasons End",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Yiyun Li",
+              "year": "2019",
+              "date_read": "2024-02-04",
+              "display_date": "February 4, 2024",
+              "sort_date": "2024-02-04",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/4401828255?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1538195431l/40147915._SX50_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-072",
+              "slug": "the-decagon-house-murders-house-murders-1-2023-read",
+              "title": "The Decagon House Murders (House Murders, #1)",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Yukito Ayatsuji",
+              "year": "1987",
+              "date_read": "2023-11-23",
+              "display_date": "November 22, 2023",
+              "sort_date": "2023-11-23",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/5970387228?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1433081507l/25561888._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-071",
+              "slug": "the-four-agreements-a-practical-guide-to-personal-freedom-2023-read",
+              "title": "The Four Agreements: A Practical Guide to Personal Freedom",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Miguel Ruiz",
+              "year": "1997",
+              "date_read": "2023-11-23",
+              "display_date": "November 22, 2023",
+              "sort_date": "2023-11-23",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/5788853298?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1630664059l/6596._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-074",
+              "slug": "the-trayvon-generation-2023-read",
+              "title": "The Trayvon Generation",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Elizabeth Alexander",
+              "year": "2022",
+              "date_read": "2023-11-12",
+              "display_date": "November 11, 2023",
+              "sort_date": "2023-11-12",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/5716522832?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1638159186l/58848151._SX50_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-073",
+              "slug": "the-night-circus-2023-read",
+              "title": "The Night Circus",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Erin Morgenstern",
+              "year": "2011",
+              "date_read": "2023-11-12",
+              "display_date": "November 11, 2023",
+              "sort_date": "2023-11-12",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/5877657479?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1387124618l/9361589._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-075",
+              "slug": "empire-of-pain-the-secret-history-of-the-sackler-dynasty-2023-read",
+              "title": "Empire of Pain: The Secret History of the Sackler Dynasty",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Patrick Radden Keefe",
+              "year": "2021",
+              "date_read": "2023-11-06",
+              "display_date": "November 6, 2023",
+              "sort_date": "2023-11-06",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/4884128425?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1611952534l/43868109._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-076",
+              "slug": "fairy-tale-2023-read",
+              "title": "Fairy Tale",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Stephen  King",
+              "year": "2022",
+              "date_read": "2023-11-03",
+              "display_date": "November 3, 2023",
+              "sort_date": "2023-11-03",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/5921756797?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1647789287l/60177373._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-077",
+              "slug": "the-burning-girls-2023-read",
+              "title": "The Burning Girls",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "C.J. Tudor",
+              "year": "2021",
+              "date_read": "2023-10-19",
+              "display_date": "October 19, 2023",
+              "sort_date": "2023-10-19",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/3935005624?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1608637998l/53387949._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-078",
+              "slug": "all-the-beauty-in-the-world-the-metropolitan-museum-of-art-and-me-2023-read",
+              "title": "All the Beauty in the World: The Metropolitan Museum of Art and Me",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Patrick Bringley",
+              "year": "2023",
+              "date_read": "2023-10-06",
+              "display_date": "October 5, 2023",
+              "sort_date": "2023-10-06",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/5846389783?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1675897622l/59364113._SX50_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-079",
+              "slug": "rogues-true-stories-of-grifters-killers-rebels-and-crooks-2023-read",
+              "title": "Rogues: True Stories of Grifters, Killers, Rebels and Crooks",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Patrick Radden Keefe",
+              "year": "2022",
+              "date_read": "2023-06-24",
+              "display_date": "June 24, 2023",
+              "sort_date": "2023-06-24",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/4972031860?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1636978568l/59148726._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-080",
+              "slug": "the-midnight-library-the-midnight-world-1-2023-read",
+              "title": "The Midnight Library (The Midnight World, #1)",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Matt Haig",
+              "year": "2020",
+              "date_read": "2023-02-09",
+              "display_date": "February 9, 2023",
+              "sort_date": "2023-02-09",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/3637878865?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1602190253l/52578297._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-081",
+              "slug": "unmask-alice-lsd-satanic-panic-and-the-imposter-behind-the-worlds-most-notorious-diaries-2022-read",
+              "title": "Unmask Alice: LSD, Satanic Panic, and the Imposter Behind the World's Most Notorious Diaries",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Rick Emerson",
+              "year": "1971",
+              "date_read": "2022-11-28",
+              "display_date": "November 27, 2022",
+              "sort_date": "2022-11-28",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/4813547800?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1641415927l/60041102._SX50_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-082",
+              "slug": "lapvona-2022-read",
+              "title": "Lapvona",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Ottessa Moshfegh",
+              "year": "2022",
+              "date_read": "2022-11-21",
+              "display_date": "November 20, 2022",
+              "sort_date": "2022-11-21",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/4755567854?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1637763820l/59693959._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-083",
+              "slug": "black-panther-2018-2021-1-2022-read",
+              "title": "Black Panther (2018-2021) #1",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Ta-Nehisi Coates",
+              "year": "2018",
+              "date_read": "2022-11-07",
+              "display_date": "November 6, 2022",
+              "sort_date": "2022-11-07",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/4951364784?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1527066048l/40197309._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-084",
+              "slug": "the-defining-decade-why-your-twenties-matter-and-how-to-make-the-most-of-them-now-2022-read",
+              "title": "The Defining Decade: Why Your Twenties Matter—And How to Make the Most of Them Now",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Meg Jay",
+              "year": "2012",
+              "date_read": "2022-11-01",
+              "display_date": "November 1, 2022",
+              "sort_date": "2022-11-01",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/5063104879?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1529594243l/40603783._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-085",
+              "slug": "the-1619-project-a-new-origin-story-2022-read",
+              "title": "The 1619 Project: A New Origin Story",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Nikole Hannah-Jones",
+              "year": "2019",
+              "date_read": "2022-10-19",
+              "display_date": "October 19, 2022",
+              "sort_date": "2022-10-19",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/5036228607?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1652703065l/57717410._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-086",
+              "slug": "youre-not-listening-what-youre-missing-and-why-it-matters-2022-read",
+              "title": "You're Not Listening: What You're Missing and Why It Matters",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Kate   Murphy",
+              "year": "2020",
+              "date_read": "2022-09-10",
+              "display_date": "September 10, 2022",
+              "sort_date": "2022-09-10",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/4939756023?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1650124222l/45892276._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-087",
+              "slug": "people-from-my-neighbourhood-2022-read",
+              "title": "People From My Neighbourhood",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Hiromi Kawakami",
+              "year": "2020",
+              "date_read": "2022-08-27",
+              "display_date": "August 27, 2022",
+              "sort_date": "2022-08-27",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/4556890692?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1588875038l/53345896._SX50_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-088",
+              "slug": "minor-feelings-an-asian-american-reckoning-2022-read",
+              "title": "Minor Feelings: An Asian American Reckoning",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Cathy Park Hong",
+              "year": "2020",
+              "date_read": "2022-08-23",
+              "display_date": "August 23, 2022",
+              "sort_date": "2022-08-23",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/3412611323?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1580788273l/52845775._SX50_SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-089",
+              "slug": "congo-2022-read",
+              "title": "Congo",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Michael Crichton",
+              "year": "1980",
+              "date_read": "2022-08-08",
+              "display_date": "August 8, 2022",
+              "sort_date": "2022-08-08",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/4884148229?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1388889401l/7672._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-090",
+              "slug": "the-thousand-crimes-of-ming-tsu-2022-read",
+              "title": "The Thousand Crimes of Ming Tsu",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Tom  Lin",
+              "year": "2021",
+              "date_read": "2022-07-30",
+              "display_date": "July 30, 2022",
+              "sort_date": "2022-07-30",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/3791955117?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1617706737l/55643292._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-091",
+              "slug": "project-hail-mary-2022-read",
+              "title": "Project Hail Mary",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Andy Weir",
+              "year": "2021",
+              "date_read": "2022-07-19",
+              "display_date": "July 19, 2022",
+              "sort_date": "2022-07-19",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/4116717997?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1764703833l/54493401._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-092",
+              "slug": "recursion-2022-read",
+              "title": "Recursion",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Blake Crouch",
+              "year": "2019",
+              "date_read": "2022-06-23",
+              "display_date": "June 23, 2022",
+              "sort_date": "2022-06-23",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/3440498701?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1750526564l/42046112._SX50_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-093",
+              "slug": "hidden-pictures-2022-read",
+              "title": "Hidden Pictures",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Jason Rekulak",
+              "year": "2022",
+              "date_read": "2022-06-10",
+              "display_date": "June 10, 2022",
+              "sort_date": "2022-06-10",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/4507556377?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1635260162l/58724923._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-094",
+              "slug": "salt-fat-acid-heat-mastering-the-elements-of-good-cooking-2022-read",
+              "title": "Salt, Fat, Acid, Heat: Mastering the Elements of Good Cooking",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Samin Nosrat",
+              "year": "2017",
+              "date_read": "2022-05-26",
+              "display_date": "May 26, 2022",
+              "sort_date": "2022-05-26",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/4722810231?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1599649084l/30753841._SX50_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-095",
+              "slug": "sisters-2022-read",
+              "title": "Sisters",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Daisy Johnson",
+              "year": "2020",
+              "date_read": "2022-04-04",
+              "display_date": "April 4, 2022",
+              "sort_date": "2022-04-04",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/3489515850?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1576016526l/50788186._SX50_SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-096",
+              "slug": "dragon-teeth-2022-read",
+              "title": "Dragon Teeth",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Michael Crichton",
+              "year": "2017",
+              "date_read": "2022-03-06",
+              "display_date": "March 6, 2022",
+              "sort_date": "2022-03-06",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/4573382781?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1481163021l/31287693._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-097",
+              "slug": "they-both-die-at-the-end-they-both-die-at-the-end-1-2022-read",
+              "title": "They Both Die at the End (They Both Die at the End, #1)",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Adam Silvera",
+              "year": "2017",
+              "date_read": "2022-02-25",
+              "display_date": "February 25, 2022",
+              "sort_date": "2022-02-25",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/3708158230?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1494333138l/33385229._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-098",
+              "slug": "the-push-2022-read",
+              "title": "The Push",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Ashley Audrain",
+              "year": "2021",
+              "date_read": "2022-02-20",
+              "display_date": "February 19, 2022",
+              "sort_date": "2022-02-20",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/3777714689?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1609854219l/52476830._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-099",
+              "slug": "a-darker-shade-of-magic-shades-of-magic-1-2022-read",
+              "title": "A Darker Shade of Magic (Shades of Magic, #1)",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "V.E. Schwab",
+              "year": "2015",
+              "date_read": "2022-02-13",
+              "display_date": "February 13, 2022",
+              "sort_date": "2022-02-13",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/3440486930?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1758833715l/22055262._SY75_.jpg"
+              }
+            },
+            {
+              "id": "BOOK-2026-100",
+              "slug": "all-the-light-we-cannot-see-2022-read",
+              "title": "All the Light We Cannot See",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "Anthony Doerr",
+              "year": "2014",
+              "date_read": "2022-01-19",
+              "display_date": "January 18, 2022",
+              "sort_date": "2022-01-19",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/review/show/3425957414?utm_medium=api&utm_source=rss",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1451445646l/18143977._SY75_.jpg"
+              }
+            }
+          ]
         },
         "music": {
           "label": "music",
@@ -9830,7 +11731,7 @@
   "_counters": {
     "EPH": 18,
     "FILM": 476,
-    "BOOK": 0,
+    "BOOK": 100,
     "MUSIC": 0,
     "COFFEE": 0,
     "GAME": 0,

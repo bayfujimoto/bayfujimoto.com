@@ -4,10 +4,11 @@
   "type": "module",
   "scripts": {
     "dev": "node scripts/ingest-letterboxd-rss.js && node scripts/build-data.js && vite",
-    "build": "node scripts/ingest-letterboxd-rss.js && node scripts/build-data.js && vite build",
+    "build": "node scripts/ingest-letterboxd-rss.js && node scripts/ingest-goodreads.js && node scripts/build-data.js && vite build",
     "build-data": "node scripts/build-data.js",
     "ingest:films:rss": "node scripts/ingest-letterboxd-rss.js",
     "ingest:films:csv": "node scripts/ingest-letterboxd-csv.js",
+    "ingest:books": "node scripts/ingest-goodreads.js",
     "preview": "vite preview"
   },
   "dependencies": {
