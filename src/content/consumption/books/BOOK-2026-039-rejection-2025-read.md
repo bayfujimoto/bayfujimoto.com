@@ -1,0 +1,17 @@
+---
+id: BOOK-2026-039
+slug: rejection-2025-read
+title: "Rejection"
+series: consumption
+subcollection: books
+item_type: book
+status: published
+author: "Tony Tulathimutte"
+year: "2024"
+date_read: "2025-06-16"
+display_date: "June 16, 2025"
+sort_date: "2025-06-16"
+rating: 4
+goodreads_link: "https://www.goodreads.com/book/show/199635125"
+
+---
