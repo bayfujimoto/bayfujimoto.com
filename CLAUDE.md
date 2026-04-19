@@ -25,6 +25,19 @@ Prefer:
 - Tactile atmosphere must not obscure navigation.
 - No important information should depend on 3D alone.
 
+## Mobile design requirements
+These requirements apply to every phase going forward. The mobile site must keep pace with the desktop version — mobile is not a deferred concern.
+
+- **Overlay non-overlap:** On screens narrower than 600px, the `.layer-meta` (bottom-right) and `.layer-breadcrumb` (bottom-left) must not overlap. `.layer-meta` shifts upward when breadcrumb is present.
+- **Touch scrolling:** The horizontal browse strip (`.browse-strip`) must be touch-scrollable with `-webkit-overflow-scrolling: touch` and `scroll-snap-type: x proximity`.
+- **No hover dependencies:** All interactions must be reachable by tap. Never rely on hover-only affordances to reveal navigation or content.
+- **Pinch-to-zoom:** Item images must support pinch-to-zoom via Pointer Events API (implemented in `panels.js` `makeItemSheet`).
+- **Minimum font size:** All overlay text must remain readable at 375px. Use `--overlay-padding: 1rem` at mobile breakpoint. Never set text below `0.65rem` on mobile.
+- **iOS input zoom prevention:** Admin form inputs must have `font-size: 16px` minimum to prevent iOS from zooming on focus. Apply in `src/admin/styles.css`.
+- **Touch targets:** All interactive overlay elements (breadcrumb segments, subnav buttons, prev/next arrows, browse strip buttons) must have a minimum touch target of 44×44px. Use `min-height: 44px` with `display: inline-flex; align-items: center`.
+- **Desk on mobile:** The desk grid collapses to 2 columns at ≤600px. Labels remain legible.
+- **Item image on mobile:** `max-height: 60vh; max-width: 90vw` at ≤600px so the image doesn't fill the entire screen and leave no room for overlays.
+
 ## Platform structure
 The site is built with:
 - **Vite** for bundling and dev server

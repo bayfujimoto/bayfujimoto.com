@@ -1,19 +1,14 @@
+@import '../styles/tokens.css';
+
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+/* Admin-specific aliases that map to shared tokens */
 :root {
-  --bg:        #f5f3ef;
-  --fg:        #1a1510;
-  --border:    rgba(26, 21, 16, 0.18);
-  --muted:     rgba(26, 21, 16, 0.45);
-  --hover-bg:  rgba(26, 21, 16, 0.05);
-  --active-bg: rgba(26, 21, 16, 0.10);
-  --sidebar-w: 200px;
-  --status-h:  36px;
-  --font:      ui-monospace, "Cascadia Mono", "Fira Mono", monospace;
+  --muted: var(--fg-muted);
 }
 
 html, body {

@@ -45,7 +45,7 @@ Goals:
 - generate or validate IDs, slugs, metadata, and asset references 
 - ensure compatibility with the Vite + GitHub + Netlify workflow ✓
 - use the admin interface to create first records and validate the ingest workflow end-to-end ✓
-- set up Letterboxd and Goodreads integrations
+- set up Letterboxd and Goodreads integrations ✓
 - build starter dataset across all five series through the admin interface
 
 Output:
@@ -54,20 +54,24 @@ Output:
 - validated ingest flow for multiple item types
 - first real archive records created via the admin
 
-## Phase 5: Design system
+## Phase 5: Design system ✓
 Goals:
-- establish typography
-- establish surface/material language
-- establish color restraint
-- establish metadata and label styling
-- establish how tactile cues appear without harming clarity
+- establish typography ✓
+- establish surface/material language ✓
+- establish color restraint ✓
+- establish metadata and label styling ✓
+- establish how tactile cues appear without harming clarity ✓
 
 Output:
-- design tokens
-- component rules
-- visual references
+- design tokens ✓
+- component rules ✓
+- visual references ✓
+- overlay architecture (no containers, centered layout, text overlays) ✓
+- horizontal browse strip ✓
+- click-to-flip and scroll-to-zoom interaction ✓
+- mobile design requirements ✓
 
-## Phase 6: Homepage objects (in progress)
+## Phase 6: Homepage objects
 Goals:
 - build sparse desk ✓ (HTML stub with five clickable series objects)
 - define five primary objects
@@ -78,21 +82,21 @@ Output:
 - homepage object system
 - first-pass desk interaction
 
-## Phase 7: Browse systems (in progress)
+## Phase 7: Browse systems
 Goals:
-- build category interiors ✓ (series sheet with subcollection tabs)
-- build subcollection views ✓ (browse sheet with year-grouped item list)
+- build category interiors ✓ (series sheet with subcollection list)
+- build subcollection views ✓ (horizontal browse strip with items)
 - build timelines, grids, folders, ledgers, contact sheets, or logs as needed
 - implement filtering and orientation systems
 
 Output:
 - navigable archive structure
 
-## Phase 8: Item inspection (in progress)
+## Phase 8: Item inspection
 Goals:
-- build focused inspection overlay or page ✓ (item sheet with modal, flip, related items)
+- build focused inspection overlay ✓ (item sheet centered on screen)
 - support metadata, notes, and related items ✓
-- support front/back, zoom, and contextual media behaviors (flip ✓, zoom stub)
+- support front/back, zoom, and contextual media behaviors ✓ (flip and zoom implemented)
 
 ## Phase 9: Selective 3D enhancement
 Goals:

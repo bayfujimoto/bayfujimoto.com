@@ -1,0 +1,131 @@
+/* ── Design Tokens ───────────────────────────────────────────────────────────────
+   Shared base: both public (dark) and admin (light) themes derive from these.
+   Public site applies [data-theme="dark"] on <html>.
+   Admin uses :root defaults (light theme).
+──────────────────────────────────────────────────────────────────────────────── */
+
+/* ── Palette primitives (raw values, not consumed directly in components) ── */
+:root {
+  --color-ink:         #1a1510;   /* warm near-black */
+  --color-paper:       #f5f3ef;   /* warm near-white */
+  --color-vellum:      #e8e0d0;   /* warm light gray */
+  --color-shadow:      #0a0805;   /* near-black for overlays */
+  --color-surface-dk:  #1e1a14;   /* dark warm surface (modals) */
+}
+
+/* ── Light theme (admin default) ── */
+:root {
+  --bg:        var(--color-paper);
+  --bg-surface: var(--color-paper);
+  --fg:        var(--color-ink);
+  --fg-muted:  rgba(26, 21, 16, 0.45);
+  --border:    rgba(26, 21, 16, 0.18);
+  --hover-bg:  rgba(26, 21, 16, 0.05);
+  --active-bg: rgba(26, 21, 16, 0.10);
+
+  /* Status colors */
+  --status-draft-color:     var(--fg-muted);
+  --status-draft-border:    var(--border);
+  --status-partial-color:   #7a5a10;
+  --status-partial-border:  #c09040;
+  --status-complete-color:  #2a5a2a;
+  --status-complete-border: #60a060;
+  --status-published-color: var(--fg);
+  --status-published-border:var(--fg);
+
+  /* Feedback colors */
+  --color-success: #2a7a2a;
+  --color-error:   #a02020;
+}
+
+/* ── Dark theme (public site) ── */
+[data-theme="dark"] {
+  --bg:        #000000;
+  --bg-surface: var(--color-surface-dk);
+  --fg:        var(--color-vellum);
+  --fg-muted:  rgba(232, 224, 208, 0.4);
+  --border:    rgba(232, 224, 208, 0.2);
+  --border-dim: rgba(232, 224, 208, 0.12);
+  --hover-bg:  rgba(232, 224, 208, 0.05);
+  --active-bg: rgba(232, 224, 208, 0.10);
+
+  /* Overlay/veil (used by layer system — --depth is set inline) */
+  --veil-color: var(--color-shadow);
+
+  /* Overlay text — always warm light on the dark/blurred background */
+  --overlay-text:    var(--color-vellum);
+  --overlay-muted:   rgba(232, 224, 208, 0.5);
+  --overlay-padding: 2rem;
+}
+
+/* ── Typography ── */
+:root {
+  --font: ui-monospace, "Cascadia Mono", "Fira Mono", monospace;
+
+  /* Type scale */
+  --text-xs:   0.7rem;   /* 11.2px — labels, IDs, meta-meta */
+  --text-sm:   0.75rem;  /* 12px   — captions, secondary */
+  --text-base: 0.875rem; /* 14px   — body, browse items */
+  --text-md:   0.95rem;  /* 15.2px — desk labels */
+  --text-lg:   1.1rem;   /* 17.6px — modal titles */
+  --text-xl:   1.4rem;   /* 22.4px — sheet titles */
+
+  /* Line heights */
+  --leading-tight: 1.3;
+  --leading-base:  1.5;
+  --leading-loose: 1.6;
+
+  /* Letter spacing */
+  --tracking-base:  0.03em;
+  --tracking-wide:  0.07em;
+  --tracking-wider: 0.1em;
+
+  /* Weights */
+  --weight-normal: 400;
+  --weight-semi:   600;
+}
+
+/* ── Spacing scale ── */
+:root {
+  --space-1:  2px;
+  --space-2:  4px;
+  --space-3:  8px;
+  --space-4:  12px;
+  --space-5:  16px;
+  --space-6:  24px;
+  --space-7:  32px;
+  --space-8:  48px;
+
+  /* Rem equivalents for public site context */
+  --sp-1:  0.15rem;
+  --sp-2:  0.25rem;
+  --sp-3:  0.4rem;
+  --sp-4:  0.5rem;
+  --sp-5:  0.75rem;
+  --sp-6:  1rem;
+  --sp-7:  1.5rem;
+  --sp-8:  2rem;
+  --sp-9:  2.5rem;
+}
+
+/* ── Borders ── */
+:root {
+  --border-width: 1px;
+  --radius-none:  0;
+  --radius-sm:    2px;
+}
+
+/* ── Motion ── */
+:root {
+  --dur-fast:  0.1s;
+  --dur-base:  0.15s;
+  --dur-slow:  0.32s;
+  --ease-out:  cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-base: ease;
+}
+
+/* ── Admin layout constants (admin-only, not used by public site) ── */
+:root {
+  --sidebar-w: 200px;
+  --status-h:  36px;
+}

@@ -7,7 +7,30 @@
       "subcollections": {
         "biography": {
           "label": "biography",
-          "items": []
+          "items": [
+            {
+              "id": "BIO-2026-001",
+              "slug": "biography-v1",
+              "title": "Biography",
+              "series": "identity",
+              "subcollection": "biography",
+              "item_type": "biography",
+              "status": "published",
+              "display_date": 2026,
+              "sort_date": "2026-01-01",
+              "roles": [
+                "Designer",
+                "Researcher"
+              ],
+              "location": "Houston, TX",
+              "links": [
+                {
+                  "label": "GitHub",
+                  "url": "https://github.com/bayfujimoto"
+                }
+              ]
+            }
+          ]
         },
         "cv": {
           "label": "cv",
@@ -11987,15 +12010,157 @@
         },
         "music": {
           "label": "music",
-          "items": []
+          "items": [
+            {
+              "id": "MUSIC-2026-002",
+              "slug": "arca-arca",
+              "title": "Arca",
+              "series": "consumption",
+              "subcollection": "music",
+              "item_type": "album",
+              "status": "published",
+              "display_date": 2017,
+              "sort_date": "2017-04-07",
+              "artist": "Arca",
+              "year": "2017",
+              "tags": [],
+              "context_note": "",
+              "assets": {
+                "cover": null,
+                "thumbnail": null
+              }
+            },
+            {
+              "id": "MUSIC-2026-003",
+              "slug": "four-tet-there-is-love-in-you",
+              "title": "There Is Love in You",
+              "series": "consumption",
+              "subcollection": "music",
+              "item_type": "album",
+              "status": "published",
+              "display_date": 2010,
+              "sort_date": "2010-01-25",
+              "artist": "Four Tet",
+              "year": "2010",
+              "tags": [],
+              "context_note": "",
+              "assets": {
+                "cover": null,
+                "thumbnail": null
+              }
+            },
+            {
+              "id": "MUSIC-2026-001",
+              "slug": "burial-untrue",
+              "title": "Untrue",
+              "series": "consumption",
+              "subcollection": "music",
+              "item_type": "album",
+              "status": "published",
+              "display_date": 2007,
+              "sort_date": "2007-11-05",
+              "artist": "Burial",
+              "year": "2007",
+              "tags": [],
+              "context_note": "",
+              "assets": {
+                "cover": null,
+                "thumbnail": null
+              }
+            }
+          ]
         },
         "coffee": {
           "label": "coffee",
-          "items": []
+          "items": [
+            {
+              "id": "COFFEE-2026-001",
+              "slug": "onyx-colombia-el-paraiso",
+              "title": "Colombia El Paraiso",
+              "series": "consumption",
+              "subcollection": "coffee",
+              "item_type": "bag",
+              "status": "published",
+              "display_date": "March 2025",
+              "sort_date": "2025-03-01",
+              "roaster": "Onyx Coffee Lab",
+              "origin": "Colombia",
+              "process": "Washed",
+              "tags": [],
+              "assets": {
+                "front": null,
+                "back": null,
+                "thumbnail": null
+              },
+              "context_note": ""
+            },
+            {
+              "id": "COFFEE-2026-002",
+              "slug": "coava-ethiopia-yirgacheffe",
+              "title": "Ethiopia Yirgacheffe",
+              "series": "consumption",
+              "subcollection": "coffee",
+              "item_type": "bag",
+              "status": "published",
+              "display_date": "January 2025",
+              "sort_date": "2025-01-01",
+              "roaster": "Coava Coffee",
+              "origin": "Ethiopia",
+              "process": "Natural",
+              "tags": [],
+              "assets": {
+                "front": null,
+                "back": null,
+                "thumbnail": null
+              },
+              "context_note": ""
+            }
+          ]
         },
         "games": {
           "label": "games",
-          "items": []
+          "items": [
+            {
+              "id": "GAME-2026-001",
+              "slug": "disco-elysium-2021-play",
+              "title": "Disco Elysium",
+              "series": "consumption",
+              "subcollection": "games",
+              "item_type": "game",
+              "status": "published",
+              "display_date": 2021,
+              "sort_date": "2021-06-01",
+              "developer": "ZA/UM",
+              "platform": "PC",
+              "year": "2019",
+              "tags": [],
+              "context_note": "",
+              "assets": {
+                "cover": null,
+                "thumbnail": null
+              }
+            },
+            {
+              "id": "GAME-2026-002",
+              "slug": "outer-wilds-2020-play",
+              "title": "Outer Wilds",
+              "series": "consumption",
+              "subcollection": "games",
+              "item_type": "game",
+              "status": "published",
+              "display_date": 2020,
+              "sort_date": "2020-08-01",
+              "developer": "Mobius Digital",
+              "platform": "PC",
+              "year": "2019",
+              "tags": [],
+              "context_note": "",
+              "assets": {
+                "cover": null,
+                "thumbnail": null
+              }
+            }
+          ]
         }
       }
     },
@@ -12006,23 +12171,218 @@
       "subcollections": {
         "sketches": {
           "label": "sketches",
-          "items": []
+          "items": [
+            {
+              "id": "SKETCH-2026-002",
+              "slug": "site-section-2024-06-15",
+              "title": "Site Section",
+              "series": "creation",
+              "subcollection": "sketches",
+              "item_type": "sketch",
+              "status": "published",
+              "display_date": "June 15, 2024",
+              "sort_date": "2024-06-15",
+              "tags": [],
+              "inspection": "none",
+              "assets": {
+                "primary": null,
+                "thumbnail": null
+              },
+              "related_ids": [],
+              "context_note": ""
+            },
+            {
+              "id": "SKETCH-2026-001",
+              "slug": "facade-study-2024-03-10",
+              "title": "Facade Study",
+              "series": "creation",
+              "subcollection": "sketches",
+              "item_type": "sketch",
+              "status": "published",
+              "display_date": "March 10, 2024",
+              "sort_date": "2024-03-10",
+              "tags": [],
+              "inspection": "none",
+              "assets": {
+                "primary": null,
+                "thumbnail": null
+              },
+              "related_ids": [],
+              "context_note": ""
+            }
+          ]
         },
         "photos": {
           "label": "photos",
-          "items": []
+          "items": [
+            {
+              "id": "PHOTO-2026-001",
+              "slug": "houston-texas-2024-01-20",
+              "title": "Houston, Texas",
+              "series": "creation",
+              "subcollection": "photos",
+              "item_type": "photo",
+              "status": "published",
+              "display_date": "January 20, 2024",
+              "sort_date": "2024-01-20",
+              "tags": [],
+              "inspection": "none",
+              "assets": {
+                "primary": null,
+                "thumbnail": null
+              },
+              "related_ids": [],
+              "context_note": ""
+            },
+            {
+              "id": "PHOTO-2026-002",
+              "slug": "tokyo-japan-2023-08-05",
+              "title": "Tokyo, Japan",
+              "series": "creation",
+              "subcollection": "photos",
+              "item_type": "photo",
+              "status": "published",
+              "display_date": "August 5, 2023",
+              "sort_date": "2023-08-05",
+              "tags": [],
+              "inspection": "none",
+              "assets": {
+                "primary": null,
+                "thumbnail": null
+              },
+              "related_ids": [],
+              "context_note": ""
+            }
+          ]
         },
         "prototypes": {
           "label": "prototypes",
-          "items": []
+          "items": [
+            {
+              "id": "PROTO-2026-001",
+              "slug": "archive-ui-2025-01-15",
+              "title": "Archive UI",
+              "series": "creation",
+              "subcollection": "prototypes",
+              "item_type": "prototype",
+              "status": "published",
+              "display_date": "January 15, 2025",
+              "sort_date": "2025-01-15",
+              "tags": [],
+              "inspection": "none",
+              "assets": {
+                "primary": null,
+                "thumbnail": null
+              },
+              "related_ids": [],
+              "context_note": ""
+            },
+            {
+              "id": "PROTO-2026-002",
+              "slug": "wayfinding-system-2024-09-01",
+              "title": "Wayfinding System",
+              "series": "creation",
+              "subcollection": "prototypes",
+              "item_type": "prototype",
+              "status": "published",
+              "display_date": "September 1, 2024",
+              "sort_date": "2024-09-01",
+              "tags": [],
+              "inspection": "none",
+              "assets": {
+                "primary": null,
+                "thumbnail": null
+              },
+              "related_ids": [],
+              "context_note": ""
+            }
+          ]
         },
         "videos": {
           "label": "videos",
-          "items": []
+          "items": [
+            {
+              "id": "VIDEO-2026-001",
+              "slug": "studio-documentation-2024-05-01",
+              "title": "Studio Documentation",
+              "series": "creation",
+              "subcollection": "videos",
+              "item_type": "video",
+              "status": "published",
+              "display_date": "May 1, 2024",
+              "sort_date": "2024-05-01",
+              "tags": [],
+              "inspection": "none",
+              "assets": {
+                "primary": null,
+                "thumbnail": null
+              },
+              "related_ids": [],
+              "context_note": ""
+            },
+            {
+              "id": "VIDEO-2026-002",
+              "slug": "time-lapse-build-2023-11-10",
+              "title": "Time-Lapse Build",
+              "series": "creation",
+              "subcollection": "videos",
+              "item_type": "video",
+              "status": "published",
+              "display_date": "November 10, 2023",
+              "sort_date": "2023-11-10",
+              "tags": [],
+              "inspection": "none",
+              "assets": {
+                "primary": null,
+                "thumbnail": null
+              },
+              "related_ids": [],
+              "context_note": ""
+            }
+          ]
         },
         "notes": {
           "label": "notes",
-          "items": []
+          "items": [
+            {
+              "id": "NOTE-2026-001",
+              "slug": "archive-as-interface-2025-02-01",
+              "title": "Archive as Interface",
+              "series": "creation",
+              "subcollection": "notes",
+              "item_type": "note",
+              "status": "published",
+              "display_date": "February 1, 2025",
+              "sort_date": "2025-02-01",
+              "tags": [],
+              "inspection": "none",
+              "assets": {
+                "primary": null,
+                "thumbnail": null
+              },
+              "related_ids": [],
+              "context_note": ""
+            },
+            {
+              "id": "NOTE-2026-002",
+              "slug": "on-material-presence-2024-07-12",
+              "title": "On Material Presence",
+              "series": "creation",
+              "subcollection": "notes",
+              "item_type": "note",
+              "status": "published",
+              "display_date": "July 12, 2024",
+              "sort_date": "2024-07-12",
+              "tags": [],
+              "inspection": "none",
+              "assets": {
+                "primary": null,
+                "thumbnail": null
+              },
+              "related_ids": [],
+              "context_note": ""
+            }
+          ]
         }
       }
     },
@@ -12313,16 +12673,16 @@
     "EPH": 18,
     "FILM": 476,
     "BOOK": 252,
-    "MUSIC": 0,
-    "COFFEE": 0,
-    "GAME": 0,
-    "SKETCH": 0,
-    "PHOTO": 0,
-    "PROTO": 0,
-    "VIDEO": 0,
-    "NOTE": 0,
+    "MUSIC": 3,
+    "COFFEE": 2,
+    "GAME": 2,
+    "SKETCH": 2,
+    "PHOTO": 2,
+    "PROTO": 2,
+    "VIDEO": 2,
+    "NOTE": 2,
     "PROJ": 2,
-    "BIO": 0,
+    "BIO": 1,
     "CV": 6,
     "CONTACT": 3
   }

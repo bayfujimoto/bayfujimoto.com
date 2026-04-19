@@ -8,7 +8,7 @@ const app = document.getElementById("app");
 // Labor and Accumulation use view-based URLs regardless of subcollection data structure
 const FLAT_URL_SERIES = new Set(["labor", "accumulation"]);
 
-// Stack of active layer sheets, each: { veil, sheet, cleanup }
+// Stack of active layer contents, each: { veil, content, cleanup, update }
 const layerStack = [];
 
 export async function initPanels() {
@@ -31,13 +31,10 @@ function onStateChange(state) {
   const current = layerStack.length;
 
   if (depth < current) {
-    // Navigated backward — pop sheets down to target depth
     while (layerStack.length > depth) popSheet();
   } else if (depth > current) {
-    // Navigated forward — push the new sheet
     pushLayerForState(state);
   } else if (depth > 0) {
-    // Same depth but different content (e.g. switched subcollection tab)
     const top = layerStack[layerStack.length - 1];
     top.update(state);
   }
@@ -55,13 +52,11 @@ function stackDepth(state) {
   }
 }
 
-// On first load with a deep URL, silently push sheets without history entries
 function restoreFromState(state) {
   if (state.layer === "guide") {
     pushLayerForState({ layer: "guide" }, true);
     return;
   }
-  // Flat-URL series (labor, accumulation) have no series-level sheet — skip straight to browse
   const skipSeriesSheet = FLAT_URL_SERIES.has(state.series) ||
     Object.keys(archive.series[state.series]?.subcollections || {}).length <= 1;
 
@@ -83,13 +78,11 @@ function pushLayerForState(state, silent = false) {
       break;
     }
     case "series": {
-      // Flat-URL series (labor, accumulation) skip the series sheet and go to browse
       if (FLAT_URL_SERIES.has(state.series)) {
         if (!silent) navigate({ layer: "browse", series: state.series, subcollection: null, view: state.view || "all", item: null });
         return;
       }
       const subs = Object.keys(archive.series[state.series]?.subcollections || {});
-      // If series has exactly 1 subcollection, skip series sheet and go to browse
       if (subs.length === 1) {
         if (!silent) navigate({ layer: "browse", series: state.series, subcollection: subs[0], view: "all", item: null });
         return;
@@ -104,22 +97,21 @@ function pushLayerForState(state, silent = false) {
 
 // ── Sheet stack primitives ────────────────────────────────────────────────────
 
-function pushSheet({ veil, sheet, cleanup, update }) {
-  const depth = layerStack.length + 1; // 1-based
+function pushSheet({ veil, content, cleanup, update }) {
+  const depth = layerStack.length + 1;
   const returnFocus = document.activeElement;
 
   veil.style.setProperty("--depth", depth);
-  sheet.style.setProperty("--depth", depth);
+  content.style.setProperty("--depth", depth);
 
   document.body.appendChild(veil);
-  document.body.appendChild(sheet);
+  document.body.appendChild(content);
 
-  layerStack.push({ veil, sheet, cleanup: cleanup || (() => {}), update: update || (() => {}), returnFocus });
+  layerStack.push({ veil, content, cleanup: cleanup || (() => {}), update: update || (() => {}), returnFocus });
 
-  // Animate in
   requestAnimationFrame(() => {
     veil.classList.add("layer-veil--visible");
-    sheet.classList.add("layer-sheet--visible");
+    content.classList.add("layer-content--visible");
   });
 }
 
@@ -128,31 +120,25 @@ function popSheet() {
   if (!top) return;
 
   top.veil.classList.remove("layer-veil--visible");
-  top.sheet.classList.remove("layer-sheet--visible");
+  top.content.classList.remove("layer-content--visible");
   top.cleanup();
 
   const remove = () => {
     top.veil.remove();
-    top.sheet.remove();
+    top.content.remove();
     if (top.returnFocus && typeof top.returnFocus.focus === "function") {
       top.returnFocus.focus({ preventScroll: true });
     }
   };
-  top.sheet.addEventListener("transitionend", remove, { once: true });
-  // Fallback if transition doesn't fire
+  top.content.addEventListener("transitionend", remove, { once: true });
   setTimeout(remove, 400);
 }
 
-function popAll() {
-  while (layerStack.length) popSheet();
-}
-
-// ── Desk (permanent, never replaced) ─────────────────────────────────────────
+// ── Desk (permanent) ──────────────────────────────────────────────────────────
 
 function renderDesk() {
   const seriesEntries = Object.entries(archive.series).sort((a, b) => a[1].order - b[1].order);
 
-  // Collect all desk objects: series + guide
   const deskObjects = [
     ...seriesEntries.map(([key, s]) => ({ type: "series", key, ...s })),
     ...(archive.guide ? [{ type: "guide", key: "guide", ...archive.guide }] : [])
@@ -196,72 +182,90 @@ function makeSeriesSheet(seriesKey) {
     navigate({ layer: "desk", series: null, subcollection: null, item: null });
   });
 
-  const sheet = makeSheet();
-  sheet.innerHTML = `
-    <div class="layer-sheet__inner">
-      <button class="sheet-close" type="button" aria-label="Close">✕</button>
-      <h1 class="sheet-title">${s.label}</h1>
-      <p class="sheet-subtitle">${s.container}</p>
-      <nav class="series-tabs" aria-label="Subcollections">
-        ${subs.map(([key, sub]) => `
-          <button class="series-tab" data-series="${seriesKey}" data-sub="${key}">
-            ${sub.label}
-            <span class="series-tab__count">${sub.items.length}</span>
-          </button>
-        `).join("")}
-      </nav>
-    </div>
-  `;
+  const content = makeContent();
 
-  const closeSeriesSheet = () => navigate({ layer: "desk", series: null, subcollection: null, item: null });
+  // Centered: series title + subcollection list
+  const center = el("div", "layer-center series-title-block");
+  const h1 = el("h1", "overlay-title");
+  h1.textContent = s.label;
+  const sub = el("p", "overlay-subtitle");
+  sub.textContent = s.container;
 
-  sheet.querySelector(".sheet-close").addEventListener("click", closeSeriesSheet);
-
-  sheet.querySelectorAll(".series-tab").forEach(btn => {
+  const list = el("ul", "series-subcollection-list");
+  list.setAttribute("aria-label", "Subcollections");
+  subs.forEach(([key, sc]) => {
+    const li = el("li");
+    const btn = el("button", "series-subcollection-btn");
+    btn.type = "button";
+    btn.dataset.series = seriesKey;
+    btn.dataset.sub = key;
+    btn.innerHTML = `${sc.label} <span class="series-subcollection-count">${sc.items.length}</span>`;
     btn.addEventListener("click", () => {
-      navigate({ layer: "browse", series: btn.dataset.series, subcollection: btn.dataset.sub, item: null });
+      navigate({ layer: "browse", series: seriesKey, subcollection: key, item: null });
     });
+    li.appendChild(btn);
+    list.appendChild(li);
   });
 
-  const cleanup = attachEscapeHandler(sheet, closeSeriesSheet);
-  requestAnimationFrame(() => sheet.querySelector(".sheet-close")?.focus());
+  center.appendChild(h1);
+  center.appendChild(sub);
+  center.appendChild(list);
+  content.appendChild(center);
 
-  return { veil, sheet, cleanup };
+  // Breadcrumb: desk / {series}
+  const bc = makeBreadcrumb([
+    { label: "desk", onClick: () => navigate({ layer: "desk" }) },
+    { label: s.label, current: true }
+  ]);
+  content.appendChild(bc);
+
+  const closeFn = () => navigate({ layer: "desk", series: null, subcollection: null, item: null });
+  const cleanup = attachEscapeHandler(content, closeFn);
+
+  requestAnimationFrame(() => list.querySelector("button")?.focus());
+
+  return { veil, content, cleanup };
 }
 
 // ── Guide sheet ───────────────────────────────────────────────────────────────
 
 function makeGuideSheet() {
-  const veil = makeVeil(() => {
-    navigate({ layer: "desk" });
-  });
+  const veil = makeVeil(() => navigate({ layer: "desk" }));
+  const content = makeContent();
 
-  const sheet = makeSheet();
-  sheet.innerHTML = `
-    <div class="layer-sheet__inner">
-      <button class="sheet-close" type="button" aria-label="Close">✕</button>
-      <h1 class="sheet-title">Guide</h1>
-      <p class="sheet-subtitle">Finding aid, sitemap, and archive metadata</p>
-      <div class="guide-content">
-        <p>This is a personal archive — a collection of records, artifacts, documents, and traces that describe a life through material evidence rather than through a simplified personal brand narrative.</p>
-        <p>Navigate through the desk objects to explore the archive. Each series contains different types of material:</p>
-        <ul>
-          <li><strong>Identity:</strong> Biography, CV, and contact information</li>
-          <li><strong>Labor:</strong> Work, projects, and professional effort</li>
-          <li><strong>Consumption:</strong> Records of films, books, music, coffee, and games</li>
-          <li><strong>Creation:</strong> Sketches, photos, prototypes, videos, and notes</li>
-          <li><strong>Accumulation:</strong> Collected ephemera and physical artifacts</li>
-        </ul>
-      </div>
-    </div>
+  const center = el("div", "layer-center");
+  center.setAttribute("role", "dialog");
+  center.setAttribute("aria-modal", "true");
+  center.setAttribute("aria-label", "Archive guide");
+
+  const inner = el("div", "guide-content");
+  inner.innerHTML = `
+    <p>This is a personal archive — a collection of records, artifacts, documents, and traces that describe a life through material evidence rather than through a simplified personal brand narrative.</p>
+    <p>Navigate through the desk objects to explore the archive. Each series contains different types of material:</p>
+    <ul>
+      <li><strong>Identity:</strong> Biography, CV, and contact information</li>
+      <li><strong>Labor:</strong> Work, projects, and professional effort</li>
+      <li><strong>Consumption:</strong> Records of films, books, music, coffee, and games</li>
+      <li><strong>Creation:</strong> Sketches, photos, prototypes, videos, and notes</li>
+      <li><strong>Accumulation:</strong> Collected ephemera and physical artifacts</li>
+    </ul>
   `;
 
-  const closeGuide = () => navigate({ layer: "desk" });
-  sheet.querySelector(".sheet-close").addEventListener("click", closeGuide);
-  const cleanup = attachEscapeHandler(sheet, closeGuide);
-  requestAnimationFrame(() => sheet.querySelector(".sheet-close")?.focus());
+  center.appendChild(inner);
+  content.appendChild(center);
 
-  return { veil, sheet, cleanup };
+  const bc = makeBreadcrumb([
+    { label: "desk", onClick: () => navigate({ layer: "desk" }) },
+    { label: "guide", current: true }
+  ]);
+  content.appendChild(bc);
+
+  const closeFn = () => navigate({ layer: "desk" });
+  const cleanup = attachEscapeHandler(content, closeFn);
+
+  requestAnimationFrame(() => center.focus());
+
+  return { veil, content, cleanup };
 }
 
 // ── Browse sheet ──────────────────────────────────────────────────────────────
@@ -269,10 +273,8 @@ function makeGuideSheet() {
 function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
   const s = archive.series[seriesKey];
   const isFlatSeries = FLAT_URL_SERIES.has(seriesKey);
-  // Only expose subcollection tabs for non-flat series
   const subs = isFlatSeries ? [] : Object.entries(s.subcollections);
 
-  // Helper: gather all items for a flat-URL series (may have data subcollections)
   function getFlatItems() {
     if (s.items) return s.items;
     return Object.values(s.subcollections || {}).flatMap(sc => sc.items || []);
@@ -286,9 +288,12 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
     }
   });
 
-  const sheet = makeSheet();
+  const content = makeContent();
 
   function renderContent(activeSubKey, activeView) {
+    // Clear previous children except veil (veil is not in content)
+    content.innerHTML = "";
+
     let activeSub, years;
 
     if (isFlatSeries) {
@@ -303,59 +308,86 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
       years = groupByYear(activeSub?.items || []);
     }
 
-    sheet.innerHTML = `
-      <div class="layer-sheet__inner">
-        <button class="sheet-close" type="button" aria-label="Close">✕</button>
-        ${subs.length > 0 ? `
-          <nav class="series-tabs" aria-label="Subcollections">
-            ${subs.map(([key, sc]) => `
-              <button class="series-tab ${key === activeSubKey ? "series-tab--active" : ""}"
-                data-series="${seriesKey}" data-sub="${key}">
-                ${sc.label}
-                <span class="series-tab__count">${sc.items.length}</span>
-              </button>
-            `).join("")}
-          </nav>
-        ` : ""}
-        <div class="browse-header">
-          <h2 class="sheet-title">${activeSub.label}</h2>
-          <p class="browse-count">${activeSub.items.length} item${activeSub.items.length !== 1 ? "s" : ""}</p>
-          ${subs.length === 0
-            ? `<p class="browse-groupby-stub" aria-label="Sort options coming in a later phase">group by: year · context · place · type</p>`
-            : (subs.length === 1 ? `<p class="browse-groupby-stub" aria-label="Sort options coming in a later phase">group by: year · event · place · type</p>` : "")}
-        </div>
-        <ul class="browse-list">
-          ${years.map(({ year, items: yearItems }) => `
-            <li>
-              <p class="browse-year-divider">${year}</p>
-              <ul class="browse-list">
-                ${yearItems.map(item => browseItemHTML(item)).join("")}
-              </ul>
-            </li>
-          `).join("")}
-        </ul>
-      </div>
-    `;
+    // Subcollection switcher (top-center) — only for multi-sub series
+    if (subs.length > 1) {
+      const subnav = el("div", "layer-subnav");
+      subnav.setAttribute("aria-label", "Subcollections");
+      subs.forEach(([key, sc], i) => {
+        if (i > 0) {
+          const sep = el("span", "layer-subnav__sep");
+          sep.textContent = "/";
+          sep.setAttribute("aria-hidden", "true");
+          subnav.appendChild(sep);
+        }
+        const btn = el("button", `layer-subnav__btn${key === activeSubKey ? " layer-subnav__btn--active" : ""}`);
+        btn.type = "button";
+        btn.textContent = sc.label;
+        btn.addEventListener("click", () => {
+          navigate({ layer: "browse", series: seriesKey, subcollection: key, item: null });
+        });
+        subnav.appendChild(btn);
+      });
+      content.appendChild(subnav);
+    }
 
-    sheet.querySelector(".sheet-close").addEventListener("click", () => {
-      if (isFlatSeries) {
-        navigate({ layer: "desk" });
-      } else {
-        navigate({ layer: "series", series: seriesKey, subcollection: null, item: null });
-      }
-    });
+    // Horizontal browse strip
+    const stripWrap = el("div", "browse-strip-wrap");
+    const strip = el("ul", "browse-strip");
+    strip.setAttribute("role", "list");
+    strip.setAttribute("aria-label", `${activeSub.label} items`);
 
-    sheet.querySelectorAll(".series-tab").forEach(btn => {
-      btn.addEventListener("click", () => {
-        navigate({ layer: "browse", series: btn.dataset.series, subcollection: btn.dataset.sub, item: null });
+    years.forEach(({ year, items: yearItems }) => {
+      // Year label
+      const yearLi = el("li", "browse-strip__year");
+      yearLi.setAttribute("aria-hidden", "true");
+      yearLi.textContent = year;
+      strip.appendChild(yearLi);
+
+      yearItems.forEach(item => {
+        const li = el("li", "browse-strip__item");
+        li.setAttribute("role", "listitem");
+        const btn = el("button", "browse-strip__btn");
+        btn.type = "button";
+        btn.dataset.itemId = item.id;
+        btn.setAttribute("aria-label", item.title);
+
+        const thumbSrc = imageUrl(item.assets?.thumbnail, "thumbnail") || imageUrl(primaryAsset(item), "original");
+        if (thumbSrc) {
+          const img = el("img", "browse-strip__thumb");
+          img.src = thumbSrc;
+          img.alt = "";
+          img.loading = "lazy";
+          btn.appendChild(img);
+        } else {
+          const txt = el("span", "browse-strip__text");
+          txt.textContent = item.title;
+          btn.appendChild(txt);
+        }
+
+        btn.addEventListener("click", () => {
+          navigate({ layer: "item", series: seriesKey, subcollection: activeSubKey, view: activeView, item: item.id });
+        });
+
+        li.appendChild(btn);
+        strip.appendChild(li);
       });
     });
 
-    sheet.querySelectorAll(".browse-item__trigger").forEach(btn => {
-      btn.addEventListener("click", () => {
-        navigate({ layer: "item", series: seriesKey, subcollection: activeSubKey, view: activeView, item: btn.dataset.itemId });
-      });
-    });
+    stripWrap.appendChild(strip);
+    content.appendChild(stripWrap);
+
+    // Breadcrumb
+    const segments = [
+      { label: "desk", onClick: () => navigate({ layer: "desk" }) }
+    ];
+    if (!isFlatSeries) {
+      segments.push({ label: s.label, onClick: () => navigate({ layer: "series", series: seriesKey }) });
+    }
+    const subLabel = isFlatSeries ? s.label : (activeSub?.label || activeSubKey);
+    segments.push({ label: subLabel, current: true });
+
+    const bc = makeBreadcrumb(segments);
+    content.appendChild(bc);
   }
 
   const closeBrowse = () => {
@@ -366,10 +398,9 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
     }
   };
 
-  const cleanup = attachEscapeHandler(sheet, closeBrowse);
+  const cleanup = attachEscapeHandler(content, closeBrowse);
 
   renderContent(subKey, viewSlug);
-  requestAnimationFrame(() => sheet.querySelector(".sheet-close")?.focus());
 
   function update(state) {
     if (state.subcollection && state.subcollection !== subKey) {
@@ -382,7 +413,7 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
     }
   }
 
-  return { veil, sheet, update, cleanup };
+  return { veil, content, update, cleanup };
 }
 
 // ── Item sheet ────────────────────────────────────────────────────────────────
@@ -394,7 +425,6 @@ function makeItemSheet(seriesKey, subKey, itemId) {
   if (subKey && s.subcollections[subKey]) {
     allItems = s.subcollections[subKey].items;
   } else if (Object.keys(s.subcollections || {}).length > 0) {
-    // Flat-URL series (accumulation) — items live in subcollections, merge them all
     allItems = Object.values(s.subcollections).flatMap(sc => sc.items || []);
   } else {
     allItems = s.items || [];
@@ -406,7 +436,7 @@ function makeItemSheet(seriesKey, subKey, itemId) {
     navigate({ layer: "browse", series: seriesKey, subcollection: subKey, item: null });
   });
 
-  const sheet = makeSheet("layer-sheet--item");
+  const content = makeContent();
 
   function renderContent(idx) {
     currentIdx = idx;
@@ -414,56 +444,186 @@ function makeItemSheet(seriesKey, subKey, itemId) {
     const hasPrev = idx > 0;
     const hasNext = idx < allItems.length - 1;
 
-    sheet.innerHTML = `
-      <div class="layer-sheet__inner layer-sheet__inner--item">
-        <button class="sheet-close" type="button" aria-label="Close">✕</button>
-        <div class="inspection-modal__content">
-          <div class="inspection-modal__image-col">
-            ${imageHTML(item)}
-          </div>
-          <div class="inspection-modal__meta-col">
-            <h2 class="modal-title">${item.title}</h2>
-            <dl class="modal-fields">
-              ${field("date",   item.display_date)}
-              ${field("type",   item.item_type)}
-              ${field("place",  item.place)}
-              ${field("event",  item.event)}
-              ${field("source", item.source)}
-            </dl>
-            ${item.context_note ? `<div class="modal-section"><h3 class="modal-section__label">note</h3><p>${item.context_note}</p></div>` : ""}
-            ${relatedHTML(item, allItems)}
-            ${item.tags?.length ? `<div class="modal-section"><h3 class="modal-section__label">tags</h3><p>${item.tags.join(" · ")}</p></div>` : ""}
-            <div class="modal-record">${item.id}</div>
-          </div>
-        </div>
-        <div class="inspection-modal__nav">
-          <button class="inspection-modal__prev" type="button" ${!hasPrev ? "disabled" : ""}>← prev</button>
-          <button class="inspection-modal__next" type="button" ${!hasNext ? "disabled" : ""}>next →</button>
-        </div>
-      </div>
-    `;
+    content.innerHTML = "";
 
-    sheet.querySelector(".sheet-close").addEventListener("click", () => {
-      navigate({ layer: "browse", series: seriesKey, subcollection: subKey, item: null });
-    });
-    sheet.querySelector(".inspection-modal__prev")?.addEventListener("click", () => {
-      if (currentIdx > 0) navItem(currentIdx - 1);
-    });
-    sheet.querySelector(".inspection-modal__next")?.addEventListener("click", () => {
-      if (currentIdx < allItems.length - 1) navItem(currentIdx + 1);
-    });
+    // Centered image
+    const center = el("div", "layer-center");
 
-    wireFlip(sheet);
+    const primary = primaryAsset(item);
+    let showingFront = true;
+    let frontImg = null;
+    let backImg = null;
+    let zoomScale = 1;
 
-    sheet.querySelectorAll(".modal-related__link").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const id = btn.dataset.relatedId;
-        const i = allItems.findIndex(it => it.id === id);
-        if (i !== -1) navItem(i);
+    if (primary) {
+      frontImg = el("img", `item-image${item.assets?.back ? " item-image--flippable" : ""}`);
+      frontImg.src = imageUrl(primary, "original");
+      frontImg.alt = item.title;
+      frontImg.draggable = false;
+
+      if (item.assets?.back) {
+        frontImg.setAttribute("title", "Click to flip");
+        frontImg.addEventListener("click", () => {
+          showingFront = !showingFront;
+          frontImg.hidden = !showingFront;
+          backImg.hidden = showingFront;
+        });
+
+        backImg = el("img", "item-image item-image--flippable");
+        backImg.src = imageUrl(item.assets.back, "original");
+        backImg.alt = `${item.title} (back)`;
+        backImg.draggable = false;
+        backImg.hidden = true;
+        backImg.setAttribute("title", "Click to flip");
+        backImg.addEventListener("click", () => {
+          showingFront = !showingFront;
+          frontImg.hidden = !showingFront;
+          backImg.hidden = showingFront;
+        });
+        center.appendChild(backImg);
+      }
+
+      // Scroll to zoom
+      function applyZoom(delta) {
+        zoomScale = Math.min(4, Math.max(1, zoomScale + delta));
+        const style = `scale(${zoomScale})`;
+        frontImg.style.transform = style;
+        if (backImg) backImg.style.transform = style;
+      }
+
+      center.addEventListener("wheel", (e) => {
+        e.preventDefault();
+        applyZoom(e.deltaY < 0 ? 0.15 : -0.15);
+      }, { passive: false });
+
+      // Pinch-to-zoom via pointer events
+      let ptrs = new Map();
+      let lastDist = null;
+      center.addEventListener("pointerdown", (e) => { ptrs.set(e.pointerId, e); });
+      center.addEventListener("pointermove", (e) => {
+        ptrs.set(e.pointerId, e);
+        if (ptrs.size === 2) {
+          const [a, b] = [...ptrs.values()];
+          const dist = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+          if (lastDist !== null) {
+            applyZoom((dist - lastDist) * 0.008);
+          }
+          lastDist = dist;
+        }
       });
+      center.addEventListener("pointerup", (e) => {
+        ptrs.delete(e.pointerId);
+        if (ptrs.size < 2) lastDist = null;
+      });
+      center.addEventListener("pointercancel", (e) => {
+        ptrs.delete(e.pointerId);
+        if (ptrs.size < 2) lastDist = null;
+      });
+
+      center.appendChild(frontImg);
+    }
+
+    content.appendChild(center);
+
+    // Metadata overlay — bottom right
+    const meta = el("div", "layer-meta");
+    meta.setAttribute("aria-label", "Item metadata");
+
+    const titleEl = el("p", "overlay-title");
+    titleEl.textContent = item.title;
+    meta.appendChild(titleEl);
+
+    const metaFields = [
+      ["date",   item.display_date],
+      ["type",   item.item_type],
+      ["year",   item.year],
+      ["director", item.director],
+      ["author", item.author],
+      ["artist", item.artist],
+      ["rating", item.rating],
+      ["place",  item.place],
+      ["event",  item.event],
+      ["source", item.source],
+    ];
+
+    metaFields.forEach(([label, value]) => {
+      if (!value) return;
+      const fieldEl = el("div", "overlay-field");
+      const labelEl = el("span", "overlay-label");
+      labelEl.textContent = label;
+      const valueEl = el("span", "overlay-value");
+      valueEl.textContent = value;
+      fieldEl.appendChild(labelEl);
+      fieldEl.appendChild(valueEl);
+      meta.appendChild(fieldEl);
     });
 
-    sheet.querySelector(".sheet-close").focus();
+    if (item.context_note) {
+      const note = el("p", "overlay-note");
+      note.textContent = item.context_note;
+      meta.appendChild(note);
+    }
+
+    if (item.related_ids?.length) {
+      const relLabel = el("span", "overlay-label");
+      relLabel.textContent = "related";
+      relLabel.style.marginTop = "0.75rem";
+      meta.appendChild(relLabel);
+      item.related_ids.forEach(id => {
+        const rel = allItems.find(i => i.id === id);
+        const relBtn = el("button", "overlay-value");
+        relBtn.style.cssText = "background:none;border:none;padding:0;font-family:inherit;cursor:pointer;text-decoration:underline;text-align:right;";
+        relBtn.textContent = rel ? rel.title : id;
+        relBtn.addEventListener("click", () => {
+          const i = allItems.findIndex(it => it.id === id);
+          if (i !== -1) navItem(i);
+        });
+        meta.appendChild(relBtn);
+      });
+    }
+
+    if (item.tags?.length) {
+      const tagLabel = el("span", "overlay-label");
+      tagLabel.textContent = "tags";
+      tagLabel.style.marginTop = "0.5rem";
+      const tagVal = el("span", "overlay-value");
+      tagVal.textContent = item.tags.join(" · ");
+      meta.appendChild(tagLabel);
+      meta.appendChild(tagVal);
+    }
+
+    const idEl = el("div", "overlay-id");
+    idEl.textContent = item.id;
+    meta.appendChild(idEl);
+
+    content.appendChild(meta);
+
+    // Breadcrumb — bottom left
+    const subLabel = subKey ? (s.subcollections[subKey]?.label || subKey) : s.label;
+    const bc = makeBreadcrumb([
+      { label: "desk", onClick: () => navigate({ layer: "desk" }) },
+      { label: s.label, onClick: () => navigate({ layer: "series", series: seriesKey }) },
+      { label: subLabel, onClick: () => navigate({ layer: "browse", series: seriesKey, subcollection: subKey, item: null }) },
+      { label: item.title, current: true }
+    ]);
+    content.appendChild(bc);
+
+    // Prev/next nav
+    const prevBtn = el("button", "layer-nav layer-nav--prev");
+    prevBtn.type = "button";
+    prevBtn.textContent = "←";
+    prevBtn.setAttribute("aria-label", "Previous item");
+    if (!hasPrev) prevBtn.disabled = true;
+    prevBtn.addEventListener("click", () => { if (currentIdx > 0) navItem(currentIdx - 1); });
+    content.appendChild(prevBtn);
+
+    const nextBtn = el("button", "layer-nav layer-nav--next");
+    nextBtn.type = "button";
+    nextBtn.textContent = "→";
+    nextBtn.setAttribute("aria-label", "Next item");
+    if (!hasNext) nextBtn.disabled = true;
+    nextBtn.addEventListener("click", () => { if (currentIdx < allItems.length - 1) navItem(currentIdx + 1); });
+    content.appendChild(nextBtn);
   }
 
   function navItem(idx) {
@@ -472,7 +632,7 @@ function makeItemSheet(seriesKey, subKey, itemId) {
   }
 
   const onKey = (e) => {
-    if (layerStack[layerStack.length - 1]?.sheet !== sheet) return;
+    if (layerStack[layerStack.length - 1]?.content !== content) return;
     if (e.key === "Escape") navigate({ layer: "browse", series: seriesKey, subcollection: subKey, item: null });
     if (e.key === "ArrowLeft"  && currentIdx > 0) navItem(currentIdx - 1);
     if (e.key === "ArrowRight" && currentIdx < allItems.length - 1) navItem(currentIdx + 1);
@@ -483,37 +643,72 @@ function makeItemSheet(seriesKey, subKey, itemId) {
 
   renderContent(currentIdx);
 
-  return { veil, sheet, cleanup };
+  return { veil, content, cleanup };
 }
 
-// ── Keyboard handler for non-item sheets ─────────────────────────────────────
+// ── Keyboard handler ──────────────────────────────────────────────────────────
 
-function attachEscapeHandler(sheet, onEscape) {
+function attachEscapeHandler(content, onEscape) {
   const handler = (e) => {
     if (e.key !== "Escape") return;
-    if (layerStack[layerStack.length - 1]?.sheet !== sheet) return;
+    if (layerStack[layerStack.length - 1]?.content !== content) return;
     onEscape();
   };
   document.addEventListener("keydown", handler);
   return () => document.removeEventListener("keydown", handler);
 }
 
+// ── Breadcrumb helper ─────────────────────────────────────────────────────────
+
+function makeBreadcrumb(segments) {
+  const nav = el("nav", "layer-breadcrumb");
+  nav.setAttribute("aria-label", "Archive location");
+
+  segments.forEach((seg, i) => {
+    if (i > 0) {
+      const sep = el("span", "layer-breadcrumb__sep");
+      sep.textContent = "/";
+      sep.setAttribute("aria-hidden", "true");
+      nav.appendChild(sep);
+    }
+
+    if (seg.current) {
+      const span = el("span", "layer-breadcrumb__seg layer-breadcrumb__seg--current");
+      span.textContent = seg.label;
+      span.setAttribute("aria-current", "page");
+      nav.appendChild(span);
+    } else {
+      const btn = el("button", "layer-breadcrumb__seg");
+      btn.type = "button";
+      btn.textContent = seg.label;
+      btn.addEventListener("click", seg.onClick);
+      nav.appendChild(btn);
+    }
+  });
+
+  return nav;
+}
+
 // ── DOM factories ─────────────────────────────────────────────────────────────
 
 function makeVeil(onClickThrough) {
-  const el = document.createElement("div");
-  el.className = "layer-veil";
-  el.setAttribute("aria-hidden", "true");
-  el.addEventListener("click", onClickThrough);
-  return el;
+  const veil = el("div", "layer-veil");
+  veil.setAttribute("aria-hidden", "true");
+  veil.addEventListener("click", onClickThrough);
+  return veil;
 }
 
-function makeSheet(extraClass = "") {
-  const el = document.createElement("div");
-  el.className = `layer-sheet ${extraClass}`.trim();
-  el.setAttribute("role", "dialog");
-  el.setAttribute("aria-modal", "true");
-  return el;
+function makeContent() {
+  const content = el("div", "layer-content");
+  content.setAttribute("role", "dialog");
+  content.setAttribute("aria-modal", "true");
+  return content;
+}
+
+function el(tag, className = "") {
+  const e = document.createElement(tag);
+  if (className) e.className = className;
+  return e;
 }
 
 // ── Shared render helpers ─────────────────────────────────────────────────────
@@ -525,64 +720,6 @@ function primaryAsset(item) {
 
 export function galleryAssets(item) {
   return item.assets?.gallery ?? [];
-}
-
-function browseItemHTML(item) {
-  const thumbSrc = imageUrl(item.assets?.thumbnail, "thumbnail") || imageUrl(primaryAsset(item), "original");
-  const thumb = thumbSrc ? `<img src="${thumbSrc}" alt="" loading="lazy">` : "";
-  return `
-    <li class="browse-item">
-      <button class="browse-item__trigger" type="button" data-item-id="${item.id}">
-        <div class="browse-item__thumb">${thumb}</div>
-        <div class="browse-item__info">
-          <span class="browse-item__type">${item.item_type || ""}</span>
-          <span class="browse-item__title">${item.title}</span>
-          ${item.display_date ? `<span class="browse-item__date">${item.display_date}</span>` : ""}
-          ${item.place ? `<span class="browse-item__place">${item.place}</span>` : ""}
-        </div>
-      </button>
-    </li>
-  `;
-}
-
-function imageHTML(item) {
-  const primary = primaryAsset(item);
-  if (!primary) return `<div class="browse-item__thumb"></div>`;
-  const frontSrc = imageUrl(primary, "original");
-  let html = `<img class="modal-image modal-image--front" src="${frontSrc}" alt="${item.title}" id="modal-img-front">`;
-  if (item.assets?.back) {
-    const backSrc = imageUrl(item.assets.back, "original");
-    html += `<img class="modal-image modal-image--back" src="${backSrc}" alt="${item.title} (back)" id="modal-img-back" hidden>`;
-    html += `<button class="modal-flip-btn" id="modal-flip" type="button">↔ flip</button>`;
-  }
-  html += `<button class="modal-zoom-btn" type="button">zoom</button>`;
-  return html;
-}
-
-function wireFlip(container) {
-  const flipBtn = container.querySelector("#modal-flip");
-  if (!flipBtn) return;
-  let showingFront = true;
-  flipBtn.addEventListener("click", () => {
-    showingFront = !showingFront;
-    container.querySelector("#modal-img-front").hidden = !showingFront;
-    container.querySelector("#modal-img-back").hidden = showingFront;
-    flipBtn.textContent = showingFront ? "↔ flip" : "↔ flip (back)";
-  });
-}
-
-function relatedHTML(item, allItems) {
-  if (!item.related_ids?.length) return "";
-  const links = item.related_ids.map(id => {
-    const rel = allItems.find(i => i.id === id);
-    return `<li><button class="modal-related__link" type="button" data-related-id="${id}">${rel ? rel.title : id}</button></li>`;
-  }).join("");
-  return `<div class="modal-section"><h3 class="modal-section__label">related</h3><ul class="modal-related">${links}</ul></div>`;
-}
-
-function field(label, value) {
-  if (!value) return "";
-  return `<div class="modal-field"><dt class="modal-field__label">${label}</dt><dd class="modal-field__value">${value}</dd></div>`;
 }
 
 function groupByYear(items) {
