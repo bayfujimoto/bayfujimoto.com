@@ -12,7 +12,7 @@ date_read: "2025-05-11"
 display_date: "May 11, 2025"
 sort_date: "2025-05-11"
 rating: 0
-goodreads_link: "https://www.goodreads.com/review/show/2916002960?utm_medium=api&utm_source=rss"
+goodreads_link: "https://www.goodreads.com/book/show/50885244"
 assets:
   cover: "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1651677426l/50885244._SY75_.jpg"
 ---

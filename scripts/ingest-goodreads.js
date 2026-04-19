@@ -148,6 +148,19 @@ function extractCover(item) {
   return m ? m[1] : "";
 }
 
+function extractBookId(item) {
+  const content = item.content || item["content:encoded"] || "";
+  // RSS content contains a link like href="https://www.goodreads.com/book/show/12345"
+  const m = content.match(/goodreads\.com\/book\/show\/(\d+)/);
+  return m ? m[1] : null;
+}
+
+function normalizeGoodreadsLink(item) {
+  const bookId = extractBookId(item);
+  if (bookId) return `https://www.goodreads.com/book/show/${bookId}`;
+  return item.link || "";
+}
+
 function extractYear(item) {
   const description = item["book_description"] || item.description || "";
   const content = item.content || item["content:encoded"] || "";
@@ -210,7 +223,7 @@ async function main() {
       continue;
     }
 
-    const goodreads_link = item.link || "";
+    const goodreads_link = normalizeGoodreadsLink(item);
 
     // Check if this book already exists by its goodreads link
     if (goodreads_link && existingLinks.has(goodreads_link)) {

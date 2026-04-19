@@ -12,7 +12,7 @@ date_read: "2024-11-04"
 display_date: "November 4, 2024"
 sort_date: "2024-11-04"
 rating: 0
-goodreads_link: "https://www.goodreads.com/review/show/2916011893?utm_medium=api&utm_source=rss"
+goodreads_link: "https://www.goodreads.com/book/show/13259261"
 assets:
   cover: "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1333349737l/13259261._SY75_.jpg"
 ---
