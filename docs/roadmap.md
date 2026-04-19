@@ -27,13 +27,10 @@ Output:
 - series sheet, browse sheet, item inspection sheet ✓
 - keyboard navigation, flip, related items ✓
 
-## Phase 3: Content preparation
+## Phase 3: Content preparation ✓
 Goals:
-- gather assets
+- gather assets ✓
 - define file structure ✓
-- prepare first records (deferred to Phase 4 — admin interface will be used for initial entry)
-- test ingest workflow (deferred to Phase 4)
-- create a starter dataset across all five series (deferred to Phase 4)
 
 Output:
 - initial archive records
@@ -43,11 +40,12 @@ Output:
 ## Phase 4: Admin interface / ingest tools
 Goals:
 - design and build a private or protected item-entry interface
-- support quick log and full archival entry modes
-- support drafts, partial records, and published records
-- generate or validate IDs, slugs, metadata, and asset references
-- ensure compatibility with the Vite + GitHub + Netlify workflow
-- use the admin interface to create first records and validate the ingest workflow end-to-end
+- support quick log and full archival entry modes ✓
+- support drafts, partial records, and published records ✓
+- generate or validate IDs, slugs, metadata, and asset references 
+- ensure compatibility with the Vite + GitHub + Netlify workflow ✓
+- use the admin interface to create first records and validate the ingest workflow end-to-end ✓
+- set up Letterboxd and Goodreads integrations
 - build starter dataset across all five series through the admin interface
 
 Output:

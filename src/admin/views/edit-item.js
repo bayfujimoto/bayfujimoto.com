@@ -2,8 +2,7 @@ import { getBaseGroups } from "../forms/base-fields.js";
 import { getTypeGroups } from "../forms/type-fields.js";
 import { renderForm }    from "../forms/form-renderer.js";
 import { generateSlug, generateFilePath, TYPE_SUBCOLLECTION } from "../lib/slug-generator.js";
-import { toMarkdown, toCountersYAML } from "../lib/serializer.js";
-import { saveRecord }    from "../lib/api.js";
+import { toMarkdown } from "../lib/serializer.js";
 import { getState, setState } from "../state.js";
 
 export function renderEditItem(container, id, allItems, archive) {
@@ -114,7 +113,7 @@ export function renderEditItem(container, id, allItems, archive) {
   body.appendChild(actions);
 }
 
-async function handleEditSave(saveBtn, formHandle, series, subcollection, itemType, archive, body) {
+function handleEditSave(saveBtn, formHandle, series, subcollection, itemType, archive, body) {
   const data = formHandle.getData();
   data.series       = series;
   data.subcollection = subcollection;
@@ -134,46 +133,18 @@ async function handleEditSave(saveBtn, formHandle, series, subcollection, itemTy
 
   const content = toMarkdown(data);
 
-  // Editing does not increment counters — send existing counters unchanged
-  const counters = archive._counters || {};
-  const countersContent = toCountersYAML(counters);
-
-  saveBtn.disabled = true;
-  saveBtn.textContent = "Saving…";
-  showStatus("saving", `Saving ${id}…`);
-
-  try {
-    const result = await saveRecord({
-      filePath,
-      content,
-      countersPath: "src/content/_id-counters.yaml",
-      countersContent,
-    });
-
-    if (result.ok) {
-      // Stage for GitHub commit
-      const { pendingChanges } = getState();
-      setState({ pendingChanges: [...pendingChanges, { id, filePath, content, action: "edit" }] });
-      showStatus("saved", `Saved ${id} — ${pendingChanges.length + 1} pending`);
-      // Update in-memory archive and refresh state
-      updateArchiveInState(archive, data, series, subcollection);
-      body.insertAdjacentHTML("afterbegin", `
-        <div style="margin-bottom:16px; color:#2a7a2a; font-size:12px;">
-          Saved. Browse and dashboard will update automatically.
-        </div>
-      `);
-      saveBtn.disabled = false;
-      saveBtn.textContent = "Save changes";
-    } else {
-      showStatus("error", `Error: ${result.error}`);
-      saveBtn.disabled = false;
-      saveBtn.textContent = "Save changes";
-    }
-  } catch (e) {
-    showStatus("error", `Network error: ${e.message}`);
-    saveBtn.disabled = false;
-    saveBtn.textContent = "Save changes";
-  }
+  const { pendingChanges } = getState();
+  setState({ pendingChanges: [...pendingChanges, { id, filePath, content, action: "edit" }] });
+  showStatus("saved", `Saved ${id} — ${pendingChanges.length + 1} pending`);
+  // Update in-memory archive and refresh state
+  updateArchiveInState(archive, data, series, subcollection);
+  body.insertAdjacentHTML("afterbegin", `
+    <div style="margin-bottom:16px; color:#2a7a2a; font-size:12px;">
+      Saved. Browse and dashboard will update automatically.
+    </div>
+  `);
+  saveBtn.disabled = false;
+  saveBtn.textContent = "Save changes";
 }
 
 function showStatus(type, message) {

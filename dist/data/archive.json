@@ -13,6 +13,20 @@
           "label": "cv",
           "items": [
             {
+              "id": "CV-2026-006",
+              "slug": "low-design-office-junior-designer",
+              "series": "identity",
+              "subcollection": "cv",
+              "item_type": "cv-entry",
+              "status": "published",
+              "display_date": "August 2025",
+              "sort_date": "2025-08-06",
+              "title": "Low Design Office",
+              "organization": "Low Design Office",
+              "role": "Junior Designer",
+              "date_start": "2025-08-06"
+            },
+            {
               "id": "CV-2026-002",
               "slug": "rice-university",
               "series": "identity",
@@ -52,6 +66,25 @@
               "date_end": "2024-12-20"
             },
             {
+              "id": "CV-2026-005",
+              "slug": "shop-architects-junior-designer",
+              "series": "identity",
+              "subcollection": "cv",
+              "item_type": "cv-entry",
+              "status": "published",
+              "display_date": "Sept 2023 - June 2024",
+              "sort_date": "2024-06-02",
+              "title": "SHoP Architects",
+              "context_note": "Supported project team through the schematic and design development phases for high-end residential projects. Completed sheets for the finished design development package in Revit.\n\nCreated design studies for facade iterations and worked with consultants on coordinating facade details.\n\nParticipated in consultant meetings for landscape, MEP, civil, facade, and structure.\n\nAssisted the fabrication team with developing physical models.",
+              "tags": [
+                "nyc"
+              ],
+              "organization": "SHoP Architects",
+              "role": "Junior Designer",
+              "date_start": "2023-09-02",
+              "date_end": "2024-06-02"
+            },
+            {
               "id": "CV-2026-001",
               "slug": "rice-university",
               "series": "identity",
@@ -88,7 +121,53 @@
         },
         "contact": {
           "label": "contact",
-          "items": []
+          "items": [
+            {
+              "id": "CONTACT-2026-003",
+              "slug": "contact",
+              "series": "identity",
+              "subcollection": "contact",
+              "item_type": "contact",
+              "status": "published",
+              "title": "Letterboxd",
+              "channels": [
+                {
+                  "label": "letterboxd",
+                  "value": "@bayf"
+                }
+              ]
+            },
+            {
+              "id": "CONTACT-2026-002",
+              "slug": "contact",
+              "series": "identity",
+              "subcollection": "contact",
+              "item_type": "contact",
+              "status": "published",
+              "title": "Instagram",
+              "channels": [
+                {
+                  "label": "instagram",
+                  "value": "@bayfujimoto"
+                }
+              ]
+            },
+            {
+              "id": "CONTACT-2026-001",
+              "slug": "contact",
+              "series": "identity",
+              "subcollection": "contact",
+              "item_type": "contact",
+              "status": "published",
+              "channels": [
+                {
+                  "label": "email",
+                  "value": "hello@bayfujimoto.com"
+                }
+              ],
+              "title": "Email"
+            }
+          ]
         }
       }
     },
@@ -179,7 +258,7 @@
     "NOTE": 0,
     "PROJ": 0,
     "BIO": 0,
-    "CV": 4,
-    "CONTACT": 0
+    "CV": 6,
+    "CONTACT": 3
   }
 }

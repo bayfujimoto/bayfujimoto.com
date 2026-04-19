@@ -3,8 +3,7 @@ import { getTypeGroups } from "../forms/type-fields.js";
 import { renderForm }    from "../forms/form-renderer.js";
 import { generateId }    from "../lib/id-generator.js";
 import { generateSlug, generateFilePath, TYPE_SUBCOLLECTION } from "../lib/slug-generator.js";
-import { toMarkdown, toCountersYAML } from "../lib/serializer.js";
-import { saveRecord }    from "../lib/api.js";
+import { toMarkdown } from "../lib/serializer.js";
 import { getState, setState } from "../state.js";
 
 const SERIES_TYPES = {
@@ -217,7 +216,7 @@ function renderFormStep(body, archive) {
   body.appendChild(actions);
 }
 
-async function handleSave(saveBtn, formHandle, id, prefix, nextCounter, counters, series, subcollection, itemType, archive, body) {
+function handleSave(saveBtn, formHandle, id, prefix, nextCounter, counters, series, subcollection, itemType, archive, body) {
   const data = formHandle.getData();
 
   // Resolve final slug + file path
@@ -237,40 +236,14 @@ async function handleSave(saveBtn, formHandle, id, prefix, nextCounter, counters
   }
 
   const content = toMarkdown(data);
-
   const newCounters = { ...counters, [prefix]: nextCounter };
-  const countersContent = toCountersYAML(newCounters);
 
-  saveBtn.disabled = true;
-  saveBtn.textContent = "Saving…";
-  showStatus("saving", `Saving ${id}…`);
-
-  try {
-    const result = await saveRecord({
-      filePath,
-      content,
-      countersPath: "src/content/_id-counters.yaml",
-      countersContent,
-    });
-
-    if (result.ok) {
-      // Stage for GitHub commit
-      const { pendingChanges } = getState();
-      setState({ pendingChanges: [...pendingChanges, { id, filePath, content, action: "add" }] });
-      showStatus("saved", `Saved ${id} — ${pendingChanges.length + 1} pending`);
-      // Add new item to in-memory archive so it appears immediately in browse/dashboard
-      updateArchiveInState(archive, { ...data }, series, subcollection);
-      renderSuccessState(body, id, itemType, series, subcollection, archive, newCounters);
-    } else {
-      showStatus("error", `Error: ${result.error}`);
-      saveBtn.disabled = false;
-      saveBtn.textContent = "Save";
-    }
-  } catch (e) {
-    showStatus("error", `Network error: ${e.message}`);
-    saveBtn.disabled = false;
-    saveBtn.textContent = "Save";
-  }
+  const { pendingChanges } = getState();
+  setState({ pendingChanges: [...pendingChanges, { id, filePath, content, action: "add" }] });
+  showStatus("saved", `Saved ${id} — ${pendingChanges.length + 1} pending`);
+  // Add new item to in-memory archive so it appears immediately in browse/dashboard
+  updateArchiveInState(archive, { ...data }, series, subcollection);
+  renderSuccessState(body, id, itemType, series, subcollection, archive, newCounters);
 }
 
 function renderSuccessState(body, id, itemType, series, subcollection, archive, newCounters) {

@@ -12,11 +12,6 @@
   status = 200
 
 [[redirects]]
-  from = "/api/save-record"
-  to   = "/.netlify/functions/save-record"
-  status = 200
-
-[[redirects]]
   from = "/api/commit-all"
   to   = "/.netlify/functions/commit-all"
   status = 200
