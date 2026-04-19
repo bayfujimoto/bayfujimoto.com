@@ -3,15 +3,19 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "node scripts/build-data.js && vite",
-    "build": "node scripts/build-data.js && vite build",
+    "dev": "node scripts/ingest-letterboxd-rss.js && node scripts/build-data.js && vite",
+    "build": "node scripts/ingest-letterboxd-rss.js && node scripts/build-data.js && vite build",
     "build-data": "node scripts/build-data.js",
+    "ingest:films:rss": "node scripts/ingest-letterboxd-rss.js",
+    "ingest:films:csv": "node scripts/ingest-letterboxd-csv.js",
     "preview": "vite preview"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1032.0",
     "@aws-sdk/s3-request-presigner": "^3.1032.0",
+    "csv-parser": "^3.2.0",
     "lru-cache": "^11.3.5",
+    "rss-parser": "^3.13.0",
     "three": "^0.170.0"
   },
   "devDependencies": {

@@ -1,6 +1,6 @@
 # Information Architecture
 
-This is the canonical reference for the archive's structure, hierarchy, URL scheme, interaction layers, template mapping, and 11ty collection definitions.
+This is the canonical reference for the archive's structure, hierarchy, URL scheme, interaction layers, module mapping, and data ingestion definitions.
 
 ---
 
@@ -207,100 +207,32 @@ The browse page reads the `item` param on load and opens the corresponding inspe
 
 ---
 
-## Template Mapping
+## Module Mapping
 
 ```
-Layer         Template                    Notes
+Layer         Module / Entry Point        Notes
 ──────────    ──────────────────────────  ─────────────────────────────────────
-Homepage      src/index.njk              desk scene, five objects
-Series        src/_includes/layouts/      one layout, series-specific includes
-              series.njk                  for each container metaphor
-Browse        src/_includes/layouts/      shared browse shell; per-subcollection
-              browse.njk                  view partials (grid, list, log, etc.)
-Inspection    rendered into browse page   modal JS reads front matter data
-              via JS modal                and builds inspection panel at runtime
-Admin         src/admin/index.njk         protected; not part of 11ty public build
-Base shell    src/_includes/layouts/      root HTML, nav, footer
-              base.njk
+Homepage      src/main.js                 desk scene, Three.js canvas init
+Series        src/views/series.js         one module per series container metaphor
+Browse        src/views/browse.js         shared browse shell; per-subcollection
+                                          view modules (grid, list, log, etc.)
+Inspection    src/views/modal.js          modal reads ?item= param, builds panel
+                                          at runtime from archive data
+Admin         src/admin/main.js           protected; separate Vite entry point
+Base shell    src/index.html              root HTML, nav, footer
 ```
 
-Series interior template notes:
-- Each series page uses `series.njk` as its layout
-- A `container` front matter field selects the physical metaphor partial
-- Partial options: `ledger.njk`, `binder.njk`, `sketchbook.njk`, `tray.njk`, `flat-file.njk`, `dossier.njk`
+Series interior module notes:
+- Each series view imports a container module for its physical metaphor
+- Container options: `ledger.js`, `binder.js`, `sketchbook.js`, `tray.js`, `flat-file.js`, `dossier.js`
 
 ---
 
-## 11ty Collections
+## Data Ingestion
 
-Define one collection per series and one per subcollection (where applicable). Use directory-based tagging via `src/content/[series]/[subcollection]/` paths for subcollected series, or `src/content/[series]/` for flat series.
+Content is stored as YAML/Markdown files in `src/content/`. A build-time Node script (`scripts/build-data.js`) reads all content files, validates them, and outputs a single `public/data/archive.json` used at runtime by the SPA.
 
-### `.eleventy.js` collection definitions
-
-```js
-// Series-level collections
-eleventyConfig.addCollection("identity", (api) =>
-  api.getFilteredByGlob("src/content/identity/**/*.md")
-);
-eleventyConfig.addCollection("labor", (api) =>
-  api.getFilteredByGlob("src/content/labor/**/*.md")
-);
-eleventyConfig.addCollection("consumption", (api) =>
-  api.getFilteredByGlob("src/content/consumption/**/*.md")
-);
-eleventyConfig.addCollection("creation", (api) =>
-  api.getFilteredByGlob("src/content/creation/**/*.md")
-);
-eleventyConfig.addCollection("accumulation", (api) =>
-  api.getFilteredByGlob("src/content/accumulation/**/*.md")
-);
-
-// Subcollection-level collections
-eleventyConfig.addCollection("films", (api) =>
-  api.getFilteredByGlob("src/content/consumption/films/*.md")
-     .sort((a, b) => b.data.sort_date - a.data.sort_date)
-);
-eleventyConfig.addCollection("books", (api) =>
-  api.getFilteredByGlob("src/content/consumption/books/*.md")
-     .sort((a, b) => b.data.sort_date - a.data.sort_date)
-);
-eleventyConfig.addCollection("music", (api) =>
-  api.getFilteredByGlob("src/content/consumption/music/*.md")
-     .sort((a, b) => b.data.sort_date - a.data.sort_date)
-);
-eleventyConfig.addCollection("coffee", (api) =>
-  api.getFilteredByGlob("src/content/consumption/coffee/*.md")
-     .sort((a, b) => b.data.sort_date - a.data.sort_date)
-);
-eleventyConfig.addCollection("games", (api) =>
-  api.getFilteredByGlob("src/content/consumption/games/*.md")
-     .sort((a, b) => b.data.sort_date - a.data.sort_date)
-);
-eleventyConfig.addCollection("ephemera", (api) =>
-  api.getFilteredByGlob("src/content/accumulation/ephemera/*.md")
-     .sort((a, b) => b.data.sort_date - a.data.sort_date)
-);
-eleventyConfig.addCollection("sketches", (api) =>
-  api.getFilteredByGlob("src/content/creation/sketches/*.md")
-     .sort((a, b) => b.data.sort_date - a.data.sort_date)
-);
-eleventyConfig.addCollection("photos", (api) =>
-  api.getFilteredByGlob("src/content/creation/photos/*.md")
-     .sort((a, b) => b.data.sort_date - a.data.sort_date)
-);
-eleventyConfig.addCollection("prototypes", (api) =>
-  api.getFilteredByGlob("src/content/creation/prototypes/*.md")
-     .sort((a, b) => b.data.sort_date - a.data.sort_date)
-);
-eleventyConfig.addCollection("videos", (api) =>
-  api.getFilteredByGlob("src/content/creation/videos/*.md")
-     .sort((a, b) => b.data.sort_date - a.data.sort_date)
-);
-eleventyConfig.addCollection("notes", (api) =>
-  api.getFilteredByGlob("src/content/creation/notes/*.md")
-     .sort((a, b) => b.data.sort_date - a.data.sort_date)
-);
-```
+Collections are defined by directory structure: `src/content/[series]/[subcollection]/`. The build script groups records by `series` and `subcollection` fields from front matter and sorts by `sort_date` descending.
 
 ### Front matter convention
 
@@ -328,31 +260,24 @@ The `series` and `subcollection` fields drive collection membership and template
 
 ```
 src/
-├─ index.njk                         homepage / desk
-├─ guide.njk                         archive guide, site philosophy, sitemap
-├─ _data/                            global data
-├─ _includes/
-│  ├─ layouts/
-│  │  ├─ base.njk                    root HTML shell
-│  │  ├─ series.njk                  category interior layout
-│  │  ├─ browse.njk                  subcollection browse layout
-│  │  └─ item.njk                    item data layout (feeds modal)
-│  └─ partials/
-│     ├─ nav.njk
-│     ├─ footer.njk
-│     ├─ containers/
-│     │  ├─ ledger.njk               Consumption container
-│     │  ├─ binder.njk               Labor container
-│     │  ├─ sketchbook.njk           Creation container
-│     │  ├─ flat-file.njk            Labor + Accumulation container
-│     │  └─ dossier.njk              Identity container
-│     ├─ browse/
-│     │  ├─ log-list.njk             log-style list (films, books, music, coffee, games)
-│     │  ├─ contact-sheet.njk        grid of scan thumbnails
-│     │  ├─ labor-list.njk           labor items list
-│     │  └─ doc-list.njk             document list
-│     └─ inspection/
-│        └─ modal.njk                inspection modal shell
+├─ index.html                        root HTML shell
+├─ main.js                           Vite entry point, desk scene init
+├─ views/
+│  ├─ series.js                      category interior view
+│  ├─ browse.js                      subcollection browse view
+│  ├─ modal.js                       item inspection modal
+│  └─ admin.js                       admin view entry
+├─ containers/
+│  ├─ ledger.js                      Consumption container
+│  ├─ binder.js                      Labor container
+│  ├─ sketchbook.js                  Creation container
+│  ├─ flat-file.js                   Labor + Accumulation container
+│  └─ dossier.js                     Identity container
+├─ browse/
+│  ├─ log-list.js                    log-style list (films, books, music, coffee, games)
+│  ├─ contact-sheet.js               grid of scan thumbnails
+│  ├─ labor-list.js                  labor items list
+│  └─ doc-list.js                    document list
 ├─ content/
 │  ├─ identity/
 │  │  ├─ biography/
@@ -380,8 +305,11 @@ src/
 │  ├─ scans/
 │  └─ models/
 ├─ styles/
-└─ scripts/
-   └─ inspection-modal.js            opens modal, reads ?item= param, deep-links
+public/
+└─ data/
+   └─ archive.json                   generated by scripts/build-data.js
+scripts/
+└─ build-data.js                     ingests content/, outputs archive.json
 ```
 
 ---
