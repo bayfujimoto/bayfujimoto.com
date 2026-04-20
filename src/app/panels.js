@@ -32,6 +32,11 @@ function onStateChange(state) {
 
   if (depth < current) {
     while (layerStack.length > depth) popSheet();
+    // After popping, update the newly-exposed layer
+    if (layerStack.length > 0) {
+      const exposed = layerStack[layerStack.length - 1];
+      exposed.update(state);
+    }
   } else if (depth > current) {
     pushLayerForState(state);
   } else if (depth > 0) {
@@ -41,13 +46,15 @@ function onStateChange(state) {
 }
 
 // Depth: desk=0, guide=1, series=1, browse=2, item=3
+// Flat series (labor/accumulation) skip the series sheet, so browse=1, item=2
 function stackDepth(state) {
+  const isFlat = state.series && FLAT_URL_SERIES.has(state.series);
   switch (state.layer) {
     case "desk":   return 0;
     case "guide":  return 1;
     case "series": return 1;
-    case "browse": return 2;
-    case "item":   return 3;
+    case "browse": return isFlat ? 1 : 2;
+    case "item":   return isFlat ? 2 : 3;
     default:       return 0;
   }
 }
@@ -91,7 +98,7 @@ function pushLayerForState(state, silent = false) {
       break;
     }
     case "browse": pushSheet(makeBrowseSheet(state.series, state.subcollection, state.view, state.item)); break;
-    case "item":   pushSheet(makeItemSheet(state.series, state.subcollection, state.item)); break;
+    case "item":   pushSheet(makeItemSheet(state.series, state.subcollection, state.item, state.view)); break;
   }
 }
 
@@ -184,13 +191,8 @@ function makeSeriesSheet(seriesKey) {
 
   const content = makeContent();
 
-  // Centered: series title + subcollection list
-  const center = el("div", "layer-center series-title-block");
-  const h1 = el("h1", "overlay-title");
-  h1.textContent = s.label;
-  const sub = el("p", "overlay-subtitle");
-  sub.textContent = s.container;
-
+  // Centered: subcollection list only
+  const center = el("div", "layer-center");
   const list = el("ul", "series-subcollection-list");
   list.setAttribute("aria-label", "Subcollections");
   subs.forEach(([key, sc]) => {
@@ -207,10 +209,20 @@ function makeSeriesSheet(seriesKey) {
     list.appendChild(li);
   });
 
-  center.appendChild(h1);
-  center.appendChild(sub);
-  center.appendChild(list);
+  const wrap = el("div", "series-subcollection-wrap");
+  wrap.appendChild(list);
+  center.appendChild(wrap);
   content.appendChild(center);
+
+  // Series title + subtitle in bottom-right metadata overlay
+  const meta = el("div", "layer-meta");
+  const h1 = el("h1", "overlay-title");
+  h1.textContent = s.label;
+  const subtitle = el("p", "overlay-subtitle");
+  subtitle.textContent = s.container;
+  meta.appendChild(h1);
+  meta.appendChild(subtitle);
+  content.appendChild(meta);
 
   // Breadcrumb: desk / {series}
   const bc = makeBreadcrumb([
@@ -253,6 +265,16 @@ function makeGuideSheet() {
 
   center.appendChild(inner);
   content.appendChild(center);
+
+  // Guide title + subtitle in bottom-right metadata overlay
+  const meta = el("div", "layer-meta");
+  const h1 = el("h1", "overlay-title");
+  h1.textContent = "Guide";
+  const subtitle = el("p", "overlay-subtitle");
+  subtitle.textContent = "How to navigate this archive";
+  meta.appendChild(h1);
+  meta.appendChild(subtitle);
+  content.appendChild(meta);
 
   const bc = makeBreadcrumb([
     { label: "desk", onClick: () => navigate({ layer: "desk" }) },
@@ -388,6 +410,16 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
 
     const bc = makeBreadcrumb(segments);
     content.appendChild(bc);
+
+    // Browse sheet title + subtitle in bottom-right metadata overlay
+    const meta = el("div", "layer-meta");
+    const h1 = el("h1", "overlay-title");
+    h1.textContent = isFlatSeries ? s.label : (activeSub?.label || activeSubKey);
+    const subtitle = el("p", "overlay-subtitle");
+    subtitle.textContent = isFlatSeries ? s.container || "" : activeSub?.container || "";
+    meta.appendChild(h1);
+    meta.appendChild(subtitle);
+    content.appendChild(meta);
   }
 
   const closeBrowse = () => {
@@ -418,7 +450,7 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
 
 // ── Item sheet ────────────────────────────────────────────────────────────────
 
-function makeItemSheet(seriesKey, subKey, itemId) {
+function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
   const s = archive.series[seriesKey];
   let allItems;
 
@@ -433,7 +465,7 @@ function makeItemSheet(seriesKey, subKey, itemId) {
   if (currentIdx === -1) currentIdx = 0;
 
   const veil = makeVeil(() => {
-    navigate({ layer: "browse", series: seriesKey, subcollection: subKey, item: null });
+    navigate({ layer: "browse", series: seriesKey, subcollection: subKey, view: viewSlug || null, item: null });
   });
 
   const content = makeContent();
@@ -599,13 +631,19 @@ function makeItemSheet(seriesKey, subKey, itemId) {
     content.appendChild(meta);
 
     // Breadcrumb — bottom left
-    const subLabel = subKey ? (s.subcollections[subKey]?.label || subKey) : s.label;
-    const bc = makeBreadcrumb([
+    const isFlatItem = FLAT_URL_SERIES.has(seriesKey);
+    const subLabel = isFlatItem
+      ? (viewSlug || "all")
+      : (subKey ? (s.subcollections[subKey]?.label || subKey) : s.label);
+
+    const segments = [
       { label: "desk", onClick: () => navigate({ layer: "desk" }) },
-      { label: s.label, onClick: () => navigate({ layer: "series", series: seriesKey }) },
-      { label: subLabel, onClick: () => navigate({ layer: "browse", series: seriesKey, subcollection: subKey, item: null }) },
-      { label: item.title, current: true }
-    ]);
+      { label: s.label, onClick: () => navigate({ layer: isFlatItem ? "browse" : "series", series: seriesKey, subcollection: null, view: isFlatItem ? (viewSlug || "all") : null, item: null }) }
+    ];
+    segments.push({ label: subLabel, onClick: () => navigate({ layer: "browse", series: seriesKey, subcollection: subKey, view: viewSlug || "all", item: null }) });
+    segments.push({ label: item.title, current: true });
+
+    const bc = makeBreadcrumb(segments);
     content.appendChild(bc);
 
     // Prev/next nav
@@ -633,7 +671,7 @@ function makeItemSheet(seriesKey, subKey, itemId) {
 
   const onKey = (e) => {
     if (layerStack[layerStack.length - 1]?.content !== content) return;
-    if (e.key === "Escape") navigate({ layer: "browse", series: seriesKey, subcollection: subKey, item: null });
+    if (e.key === "Escape") navigate({ layer: "browse", series: seriesKey, subcollection: subKey, view: viewSlug || null, item: null });
     if (e.key === "ArrowLeft"  && currentIdx > 0) navItem(currentIdx - 1);
     if (e.key === "ArrowRight" && currentIdx < allItems.length - 1) navItem(currentIdx + 1);
   };
