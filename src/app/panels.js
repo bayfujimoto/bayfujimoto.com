@@ -1,6 +1,7 @@
 import { navigate, replace } from "./router.js";
 import { subscribe, getState } from "./state.js";
 import { imageUrl } from "./image-url.js";
+import { setSeriesInfo } from "./scene.js";
 
 let archive = null;
 const app = document.getElementById("app");
@@ -14,6 +15,13 @@ const layerStack = [];
 export async function initPanels() {
   const res = await fetch("/data/archive.json");
   archive = await res.json();
+
+  const info = {};
+  Object.entries(archive.series).forEach(([key, s]) => {
+    info[key] = { label: s.label, container: s.container };
+  });
+  if (archive.guide) info.guide = { label: archive.guide.label, container: archive.guide.container };
+  setSeriesInfo(info);
 
   renderDesk();
 
@@ -111,10 +119,19 @@ function pushSheet({ veil, content, cleanup, update }) {
   veil.style.setProperty("--depth", depth);
   content.style.setProperty("--depth", depth);
 
+  // Hoist layer-meta out of the fading content container so it appears instantly
+  const metaEl = content.querySelector(".layer-meta");
+  if (metaEl) content.removeChild(metaEl);
+
   document.body.appendChild(veil);
   document.body.appendChild(content);
+  if (metaEl) {
+    metaEl.style.zIndex = depth * 10 + 2;
+    metaEl.style.transition = "opacity 0.2s var(--ease-base)";
+    document.body.appendChild(metaEl);
+  }
 
-  layerStack.push({ veil, content, cleanup: cleanup || (() => {}), update: update || (() => {}), returnFocus });
+  layerStack.push({ veil, content, metaEl: metaEl || null, cleanup: cleanup || (() => {}), update: update || (() => {}), returnFocus });
 
   requestAnimationFrame(() => {
     veil.classList.add("layer-veil--visible");
@@ -130,15 +147,49 @@ function popSheet() {
   top.content.classList.remove("layer-content--visible");
   top.cleanup();
 
+  if (top.metaEl) top.metaEl.style.opacity = "0";
+
   const remove = () => {
     top.veil.remove();
     top.content.remove();
+    if (top.metaEl) top.metaEl.remove();
     if (top.returnFocus && typeof top.returnFocus.focus === "function") {
       top.returnFocus.focus({ preventScroll: true });
     }
   };
   top.content.addEventListener("transitionend", remove, { once: true });
   setTimeout(remove, 400);
+}
+
+// ── Skip menu for keyboard desk navigation ────────────────────────────────────
+
+function showSkipMenu(deskObjects) {
+  const existing = document.getElementById("scene-skip-menu");
+  if (existing) { existing.remove(); return; }
+
+  const menu = document.createElement("div");
+  menu.id = "scene-skip-menu";
+  menu.className = "scene-skip-menu";
+
+  deskObjects.forEach(({ type, key, label }) => {
+    const btn = document.createElement("button");
+    btn.textContent = label;
+    btn.addEventListener("click", () => {
+      menu.remove();
+      if (type === "guide") navigate({ layer: "guide" });
+      else navigate({ layer: "series", series: key, subcollection: null, item: null });
+    });
+    menu.appendChild(btn);
+  });
+
+  const closeBtn = document.createElement("button");
+  closeBtn.textContent = "Close";
+  closeBtn.addEventListener("click", () => menu.remove());
+  menu.appendChild(closeBtn);
+
+  menu.addEventListener("keydown", (e) => { if (e.key === "Escape") { menu.remove(); document.getElementById("scene-skip")?.focus(); } });
+  document.body.appendChild(menu);
+  menu.querySelector("button").focus();
 }
 
 // ── Desk (permanent) ──────────────────────────────────────────────────────────
@@ -163,6 +214,17 @@ function renderDesk() {
       </div>
     </div>
   `;
+
+  app.querySelector(".desk").style.display = "none";
+
+  if (!document.getElementById("scene-skip")) {
+    const skipLink = document.createElement("button");
+    skipLink.id = "scene-skip";
+    skipLink.className = "scene-skip-link";
+    skipLink.textContent = "Navigate archive";
+    skipLink.addEventListener("click", () => showSkipMenu(deskObjects));
+    document.body.prepend(skipLink);
+  }
 
   app.querySelectorAll(".desk-object").forEach(btn => {
     const type = btn.dataset.type;
@@ -234,8 +296,6 @@ function makeSeriesSheet(seriesKey) {
   const closeFn = () => navigate({ layer: "desk", series: null, subcollection: null, item: null });
   const cleanup = attachEscapeHandler(content, closeFn);
 
-  requestAnimationFrame(() => list.querySelector("button")?.focus());
-
   return { veil, content, cleanup };
 }
 
@@ -284,8 +344,6 @@ function makeGuideSheet() {
 
   const closeFn = () => navigate({ layer: "desk" });
   const cleanup = attachEscapeHandler(content, closeFn);
-
-  requestAnimationFrame(() => center.focus());
 
   return { veil, content, cleanup };
 }

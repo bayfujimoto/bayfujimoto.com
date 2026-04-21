@@ -2,6 +2,13 @@
 
 /* ── Reset ───────────────────────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; }
+* { outline: none; }
+:focus-visible {
+  outline: none;
+  text-decoration: underline;
+  text-decoration-color: var(--overlay-text);
+  text-underline-offset: 3px;
+}
 
 body {
   margin: 0;
@@ -11,11 +18,20 @@ body {
   min-height: 100vh;
 }
 
+/* ── Canvas base layer ───────────────────────────────────────────────────────── */
+#scene {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  display: block;
+}
+
 /* ── App root ────────────────────────────────────────────────────────────────── */
 #app {
   position: fixed;
   inset: 0;
   z-index: 0;
+  pointer-events: none;
 }
 
 /* ── Desk ────────────────────────────────────────────────────────────────────── */
@@ -437,6 +453,55 @@ body {
 .guide-content ul { margin: 0 0 1rem; padding-left: 1.25rem; }
 .guide-content li { margin-bottom: 0.4rem; }
 .guide-content strong { font-weight: var(--weight-normal); opacity: 0.85; }
+
+/* ── Keyboard skip link ──────────────────────────────────────────────────────── */
+.scene-skip-link {
+  position: fixed;
+  top: var(--overlay-padding);
+  left: var(--overlay-padding);
+  z-index: 9999;
+  background: var(--bg-surface);
+  color: var(--overlay-text);
+  font-family: var(--font);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  border: 1px solid var(--border);
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-base);
+}
+.scene-skip-link:focus-visible {
+  opacity: 1;
+  pointer-events: auto;
+  text-decoration: none;
+}
+
+.scene-skip-menu {
+  position: fixed;
+  top: var(--overlay-padding);
+  left: var(--overlay-padding);
+  z-index: 9999;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.scene-skip-menu button {
+  background: none;
+  border: none;
+  font-family: var(--font);
+  font-size: var(--text-sm);
+  color: var(--overlay-muted);
+  cursor: pointer;
+  text-align: left;
+  padding: 0.25rem 0;
+}
+.scene-skip-menu button:hover { color: var(--overlay-text); }
 
 /* ── Mobile adjustments ──────────────────────────────────────────────────────── */
 @media (max-width: 600px) {
