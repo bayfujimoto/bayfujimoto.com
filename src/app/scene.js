@@ -129,9 +129,12 @@ export function initScene() {
 
   const raycaster = new THREE.Raycaster();
   const pointer = new THREE.Vector2();
+  const mousePos = new THREE.Vector2();
   function getNDC(e) {
     pointer.x =  (e.clientX / window.innerWidth)  * 2 - 1;
     pointer.y = -(e.clientY / window.innerHeight) * 2 + 1;
+    mousePos.x = (e.clientX / window.innerWidth) * 2 - 1;
+    mousePos.y = -(e.clientY / window.innerHeight) * 2 + 1;
   }
 
   let currentHoverId = null;
@@ -178,7 +181,22 @@ export function initScene() {
   });
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  function render() { renderer.render(scene, camera); }
+  const lightPos = { x: 0, z: -2 };
+  function render() {
+    const moveDistance = 1;
+    const targetX = mousePos.x * moveDistance;
+    const targetZ = -2 + (-mousePos.y * moveDistance * 0.5);
+
+    lightPos.x += (targetX - lightPos.x) * 0.08;
+    lightPos.z += (targetZ - lightPos.z) * 0.08;
+
+    spotLight.position.x = lightPos.x;
+    spotLight.position.z = lightPos.z;
+    spotLight.target.position.set(0, 0, 0);
+    spotLight.target.updateMatrixWorld();
+    spotLight.shadow.camera.updateProjectionMatrix();
+    renderer.render(scene, camera);
+  }
   if (reduceMotion) {
     render();
   } else {
