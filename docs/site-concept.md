@@ -42,13 +42,21 @@ The Resident Evil influence is specifically about focused object attention:
 This project should borrow that intensity of inspection without inheriting horror aesthetics.
 
 ## Structural idea
-The homepage is a desk with five top-level objects.
-Each object corresponds to a major archival series:
-- Identity
-- Work
-- Consumption
-- Creation
-- Accumulation
+The homepage is a desk with seven objects: six that navigate the archive, one that remains unresolved.
+
+The six navigable objects are:
+- **Guide** — key on a paper tag (meta-object; finding aid)
+- **Identity** — dossier (expansion into three documents)
+- **Labor** — powder-coated steel strongbox (contraption)
+- **Consumption** — interlocking composite sphere (expansion into five pieces)
+- **Creation** — stone stamp and paper (contraption)
+- **Accumulation** — string-tied bundle (contraption)
+
+The **seventh object** — an amber block — sits at a slight remove and its purpose remains unresolved.
+
+Objects divide into two interaction types:
+- **Expansions**: clicking causes the object to separate into component parts, each independently navigable (Identity, Consumption)
+- **Contraptions**: clicking initiates a sequence of state changes that must be completed before the series opens (Guide, Labor, Creation, Accumulation)
 
 Opening an object reveals a category interior.
 The category interior reveals subcollections.

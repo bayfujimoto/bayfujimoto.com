@@ -25,73 +25,84 @@ Collection
 
 ---
 
-## The Six Top-Level Objects
+## The Six Top-Level Objects and the Amber Block
 
-### Guide (Meta Item)
-Archive metadata and site information. Visually distinct from the five series.
+### Guide (Meta Item) — key on a paper tag
+Archive metadata and site information. Visually distinct from the five series, sits at a slight remove from other objects.
 
-Object metaphor: notebook / metadata sheet / label
+Interaction type: **contraption**
+- Object: key with paper tag (unattached, not pinned to the desk)
+- Behavior: clicking causes the key to rotate half-turn, revealing the reverse face of the tag
+- Content: finding aid, sitemap, site philosophy, archive metadata
+- Metaphorical grounding: Derrida's archon; the archivist's custody and interpretation; specimen tags on archival items
 
-Contents:
-- finding aid / sitemap
-- site philosophy
-- archive metadata
+### Identity — dossier
+Self-description and orientation materials. The most literal object on the desk; prioritizes legibility for practical reference.
 
-Note: Rendered differently on the desk to signal it's self-referential (describing the archive) rather than archival content (describing the person).
+Interaction type: **expansion**
+- Object: bound document packet, clasp closed, label present, worn from repeated handling
+- Behavior: clicking loosens the binding; three documents slide out and arrange themselves on the surface
+- Subcollections (three documents):
+  - `biography` — short and long-form profile text
+  - `cv` — CV / resume entries
+  - `contact` — contact channels and availability
+- Metaphorical grounding: material particularity of the dossier itself (wear, label, weight); legibility as a principle; the transferable account of a person
 
-### The Five Series
+### Labor — powder-coated steel strongbox
+Work, projects, and professional effort. Emphasizes the institutional and deliverable aspects of work, not the process of making.
 
-### Identity
-Self-description and orientation materials.
+Interaction type: **contraption**
+- Object: flat-lidded rectangular box, powder-coated steel, single metal clasp, institutional appearance
+- Behavior: clicking releases the latch; the lid lifts, revealing heterogeneous contents (folded drawings, specifications, reports)
+- Contents: flat structure, no subcollections. Browse is flat with metadata-based filtering by context (`academic`, `professional`, `personal`)
+- Metaphorical grounding: utilitarian storage; the record of completed labor and professional exchange; work contextualized by role and accountability
 
-Object metaphor: business card / ID card / dossier packet
+### Consumption — interlocking composite sphere
+Records of intake, ritual, taste, and repeated attention. Emphasizes that a unified self is composed of disparate influences.
 
-Subcollections:
-- `biography` — short and long-form profile text
-- `cv` — CV / resume entries
-- `contact` — contact channels and availability
+Interaction type: **expansion**
+- Object: assembled sphere (appears unified from above), seams non-obvious, five interlocking pieces (turquoise, wood, copper, stone, crystal)
+- Behavior: clicking causes pieces to separate slowly; each slides or rotates out of joint, coming to rest on the surface
+- Interior faces: rough and irregular, crystalline in places, revealing the complexity withheld by the exterior
+- Subcollections (five pieces):
+  - `films` — films watched
+  - `books` — books read
+  - `music` — music listened to
+  - `coffee` — coffee brewed
+  - `games` — games played
+- Metaphorical grounding: Emerson's observation that consumption shapes us below conscious memory; the social life of objects; the relationship between a legible exterior and a composite interior
 
-### Labor
-Work, projects, and professional effort. Renamed from "Work" to emphasize process and effort.
+### Creation — stone stamp and paper
+Things made outside the narrower professional portfolio frame. Centered on the mark of authorship.
 
-Object metaphor: binder / folio / project case
+Interaction type: **contraption**
+- Object: personalized stone seal resting on its side beside a paper (sketch, painting, or indistinct drawing)
+- Behavior: clicking causes the stamp to right itself, traverse the paper, and press down; an impression appears; the series opens through the impression
+- Contents: flat structure, no subcollections
+- Subcollections:
+  - `sketches` — drawings and sketchbook pages
+  - `photos` — photographs, contact sheets
+  - `prototypes` — physical and digital prototypes
+  - `videos` — video work and experiments
+  - `notes` — notes, sketches, and written ideas
+- Metaphorical grounding: Simmel on the handle and mediation between use and contemplation; the seal as the oldest institutional gesture; the mark as the declaration that a thing has been made and is finished
 
-No subcollections. Browse is flat with metadata-based filtering. Like Accumulation, uses view-based URL segments and metadata context field (`academic`, `professional`, `personal`).
+### Accumulation — string-tied bundle
+Collected physical ephemera: tickets, receipts, brochures, handouts, printed matter. Emphasizes heterogeneity and the lack of collecting logic.
 
-### Consumption
-Records of intake, ritual, taste, and repeated attention.
+Interaction type: **contraption**
+- Object: cloth wrapped around things and tied with string, no lock or seal, closure is provisional
+- Behavior: clicking releases the string; the cloth unfolds flat; the contents become visible
+- Contents: flat structure, no subcollection tabs. Browse is flat and unfiltered: tickets, receipts, brochures, printed matter from events and transactions
+- Metaphorical grounding: Stewart's distinction between souvenirs and collections, resistant to both terms; the accumulation of things kept without full intention; the distinction between the care implied by wrapping and the resistance of the contents
 
-Object metaphor: ledger / logbook / record book
+### The Amber Block (unresolved)
+A small block of amber resin at slight remove from the six navigable objects. Its purpose remains unresolved.
 
-Subcollections:
-- `films` — films watched
-- `books` — books read
-- `music` — music listened to
-- `coffee` — coffee brewed
-- `games` — games played
-
-Note: `influences` removed as a subcollection; implemented as a metadata filter on consumption browse.
-
-### Creation
-Things made outside the narrower portfolio frame.
-
-Object metaphor: sketchbook / prototype tray / workshop folder / parts container
-
-Subcollections:
-- `sketches` — drawings and sketchbook pages
-- `photos` — photographs, contact sheets
-- `prototypes` — physical and digital prototypes
-- `videos` — video work and experiments
-- `notes` — notes, sketches, and written ideas
-
-Note: `projects` is not used in Creation (use `labor` for project-framed work).
-
-### Accumulation
-Collected physical ephemera: tickets, receipts, brochures, handouts, printed matter.
-
-Object metaphor: archive drawer / flat file / stack of envelopes
-
-Browse: flat list, no subcollection tabs. Intended grouping options (year, event, place, type) deferred to Phase 7.
+- Object: clear or nearly clear amber; small; objects visible inside but not reachable
+- Behavior: clicking sends hairline fractures across the surface; second click splits the block, opening like a geode
+- Purpose: not determined. Possibilities include: entry point to the administrative layer; entry point to unpublished records or drafts; an inert object that rewards examination with nothing that can be entered or used
+- Metaphorical grounding: amber as a preservation technology that precludes access; the relationship between visibility and access; a formal correspondence with the composite sphere (both involve looking into something, both preoccupied with enclosure)
 
 ---
 

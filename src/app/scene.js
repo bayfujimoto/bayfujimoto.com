@@ -51,11 +51,11 @@ export function initScene() {
     const size = new THREE.Vector3();
     box.getSize(size);
     // Scale so desk width matches the scene's 9-unit table width
-    const scale = 9 / size.x;
+    const scale = 13 / size.x;
     desk.scale.setScalar(scale);
     // After scaling, re-measure and position so top surface sits at y=0
     box.setFromObject(desk);
-    desk.position.y = -box.max.y;
+    desk.position.set(0, -box.max.y, -1);
     desk.traverse((child) => {
       if (child.isMesh) {
         child.receiveShadow = true;
@@ -67,17 +67,24 @@ export function initScene() {
 
   const clickables = [];
   const OBJECTS = [
-    { seriesId: "identity",     x: -1.6, z: -0.8, w: 2, h: 2, d: 2, rx:  0, ry:  140, rz:  0 },
-    { seriesId: "labor",        x:  0.0, z: -0.8, w: 1.4, h: 0.30, d: 0.80, rx:  0, ry:  0, rz:  0 },
-    { seriesId: "consumption",  x:  1.6, z: -0.8, w: 1.0, h: 0.50, d: 1.00, rx:  0, ry:  0, rz:  0 },
-    { seriesId: "creation",     x: -0.8, z:  0.8, w: 2, h: 2, d: 2, rx:  0, ry:  -15, rz:  0 },
-    { seriesId: "accumulation", x:  0.8, z:  0.8, w: 1.3, h: 0.45, d: 0.95, rx:  0, ry:  0, rz:  0 },
-    { seriesId: "guide",        x:  0.0, z:  1.6, w: 3, h: 1, d: 1, rx:  0, ry:  5, rz:  0 },
+    { seriesId: "identity",     x: -3.3, z: -1.2, w: 15, h: 15, d: 3.5, rx:  0, ry:  0, rz:  0, offsetY: -2.1 },
+    { seriesId: "labor",        x:  3, z: -2, w: 2.4, h: 2, d: 2, rx:  0, ry:  -20, rz:  0, offsetY: 0 },
+    { seriesId: "consumption",  x:  2, z: 0, w: 1.0, h: 1, d: 1, rx:  0, ry:  0, rz:  0, offsetY: 0 },
+    { seriesId: "creation",     x: -0.5, z:  0, w: 4, h: 4, d: 3, rx:  0, ry:  -15, rz:  0, offsetY: 0 },
+    { seriesId: "accumulation", x:  2.8, z:  1.8, w: 3.5, h: 2, d: 4, rx:  0, ry:  30, rz:  0, offsetY: 0 },
+    { seriesId: "guide",        x:  -3, z:  1.5, w: 1, h: 1, d: 1, rx:  0, ry:  210, rz:  0, offsetY: 0 },
   ];
 
   const loader = new GLTFLoader();
-  OBJECTS.forEach(({ seriesId, x, z, w, h, d, rx, ry, rz }) => {
-    loader.load(`${BASE}${seriesId}.glb`, (gltf) => {
+  OBJECTS.forEach(({ seriesId, x, z, w, h, d, rx, ry, rz, offsetY = 0 }) => {
+    let modelFile = `${seriesId}.glb`;
+    if (seriesId === "guide") modelFile = "desk-guide-key.glb";
+    else if (seriesId === "identity") modelFile = "desk-identity-dossier.glb";
+    else if (seriesId === "creation") modelFile = "desk-creation-stamp.glb";
+    else if (seriesId === "consumption") modelFile = "desk-consumption-sphere.glb";
+    else if (seriesId === "accumulation") modelFile = "desk-accumulation-bundle.glb";
+    else if (seriesId === "labor") modelFile = "desk-labor-box.glb";
+    loader.load(`${BASE}${modelFile}`, (gltf) => {
       const model = gltf.scene;
 
       const box = new THREE.Box3().setFromObject(model);
@@ -92,7 +99,7 @@ export function initScene() {
       box.setFromObject(model);
       const center = new THREE.Vector3();
       box.getCenter(center);
-      model.position.set(x - center.x, box.min.y * -1, z - center.z);
+      model.position.set(x - center.x, box.min.y * -1 + offsetY, z - center.z);
 
       model.traverse((child) => {
         if (child.isMesh) {
