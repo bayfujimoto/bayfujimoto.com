@@ -528,6 +528,9 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
 
   const content = makeContent();
 
+  const metaEl = el("div", "layer-meta");
+  metaEl.setAttribute("aria-label", "Item metadata");
+
   function renderContent(idx) {
     currentIdx = idx;
     const item = allItems[idx];
@@ -535,8 +538,6 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
     const hasNext = idx < allItems.length - 1;
 
     content.innerHTML = "";
-    const layer = layerStack[layerStack.length - 1];
-    const existingMeta = layer?.metaEl;
 
     // Centered image
     const center = el("div", "layer-center");
@@ -617,13 +618,12 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
 
     content.appendChild(center);
 
-    // Metadata overlay — bottom right
-    const meta = el("div", "layer-meta");
-    meta.setAttribute("aria-label", "Item metadata");
+    // Metadata overlay — bottom right (persistent element, populated in place)
+    metaEl.innerHTML = "";
 
     const titleEl = el("p", "overlay-title");
     titleEl.textContent = item.title;
-    meta.appendChild(titleEl);
+    metaEl.appendChild(titleEl);
 
     const metaFields = [
       ["date",   item.display_date],
@@ -647,20 +647,20 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
       valueEl.textContent = value;
       fieldEl.appendChild(labelEl);
       fieldEl.appendChild(valueEl);
-      meta.appendChild(fieldEl);
+      metaEl.appendChild(fieldEl);
     });
 
     if (item.context_note) {
       const note = el("p", "overlay-note");
       note.textContent = item.context_note;
-      meta.appendChild(note);
+      metaEl.appendChild(note);
     }
 
     if (item.related_ids?.length) {
       const relLabel = el("span", "overlay-label");
       relLabel.textContent = "related";
       relLabel.style.marginTop = "0.75rem";
-      meta.appendChild(relLabel);
+      metaEl.appendChild(relLabel);
       item.related_ids.forEach(id => {
         const rel = allItems.find(i => i.id === id);
         const relBtn = el("button", "overlay-value");
@@ -670,7 +670,7 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
           const i = allItems.findIndex(it => it.id === id);
           if (i !== -1) navItem(i);
         });
-        meta.appendChild(relBtn);
+        metaEl.appendChild(relBtn);
       });
     }
 
@@ -680,19 +680,13 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
       tagLabel.style.marginTop = "0.5rem";
       const tagVal = el("span", "overlay-value");
       tagVal.textContent = item.tags.join(" · ");
-      meta.appendChild(tagLabel);
-      meta.appendChild(tagVal);
+      metaEl.appendChild(tagLabel);
+      metaEl.appendChild(tagVal);
     }
 
     const idEl = el("div", "overlay-id");
     idEl.textContent = item.id;
-    meta.appendChild(idEl);
-
-    if (existingMeta && existingMeta.parentNode === document.body) {
-      existingMeta.innerHTML = meta.innerHTML;
-    } else {
-      content.appendChild(meta);
-    }
+    metaEl.appendChild(idEl);
 
     // Breadcrumb — bottom left
     const isFlatItem = FLAT_URL_SERIES.has(seriesKey);
@@ -741,9 +735,17 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
   };
   document.addEventListener("keydown", onKey);
 
-  const cleanup = () => document.removeEventListener("keydown", onKey);
+  const cleanup = () => {
+    document.removeEventListener("keydown", onKey);
+    metaEl.remove();
+  };
 
   renderContent(currentIdx);
+
+  const depth = layerStack.length + 1;
+  metaEl.style.zIndex = depth * 10 + 2;
+  metaEl.style.transition = "opacity 0.2s var(--ease-base)";
+  document.body.appendChild(metaEl);
 
   return { veil, content, cleanup };
 }
