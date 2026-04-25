@@ -410,38 +410,51 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
       content.appendChild(subnav);
     }
 
-    // Horizontal browse strip
-    const stripWrap = el("div", "browse-strip-wrap");
-    const strip = el("ul", "browse-strip");
-    strip.setAttribute("role", "list");
-    strip.setAttribute("aria-label", `${activeSub.label} items`);
+    // Item grid — column-major, horizontally scrolling, grouped by year
+    const GRID_ROWS = 3;
+    const gridWrap = el("div", "item-grid-wrap");
+    const grid = el("div", "item-grid");
+    grid.setAttribute("role", "list");
+    grid.setAttribute("aria-label", `${activeSub.label} items`);
 
     years.forEach(({ year, items: yearItems }) => {
-      // Year label
-      const yearLi = el("li", "browse-strip__year");
-      yearLi.setAttribute("aria-hidden", "true");
-      yearLi.textContent = year;
-      strip.appendChild(yearLi);
+      const group = el("div", "item-grid__group");
 
-      yearItems.forEach(item => {
-        const li = el("li", "browse-strip__item");
-        li.setAttribute("role", "listitem");
-        const btn = el("button", "browse-strip__btn");
+      const yearLabel = el("div", "item-grid__year");
+      yearLabel.textContent = year;
+      yearLabel.setAttribute("aria-hidden", "true");
+      group.appendChild(yearLabel);
+
+      const cells = el("div", "item-grid__cells");
+      const colCount = Math.ceil(yearItems.length / GRID_ROWS);
+      cells.style.gridTemplateColumns = `repeat(${colCount}, auto)`;
+      cells.style.gridTemplateRows = `repeat(${GRID_ROWS}, 1fr)`;
+
+      yearItems.forEach((item, i) => {
+        const col = Math.floor(i / GRID_ROWS) + 1;
+        const row = (i % GRID_ROWS) + 1;
+
+        const cell = el("div", "item-grid__cell");
+        cell.setAttribute("role", "listitem");
+        cell.style.gridColumn = col;
+        cell.style.gridRow = row;
+
+        const btn = el("button", "item-grid__btn");
         btn.type = "button";
         btn.dataset.itemId = item.id;
         btn.setAttribute("aria-label", item.title);
 
         const thumbSrc = imageUrl(item.assets?.thumbnail, "thumbnail") || imageUrl(primaryAsset(item), "original");
         if (thumbSrc) {
-          const img = el("img", "browse-strip__thumb");
+          const img = el("img", "item-grid__thumb");
           img.src = thumbSrc;
           img.alt = "";
           img.loading = "lazy";
 
           const applySize = (aspectRatio) => {
-            const stripH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--browse-strip-height")) || 140;
-            img.style.width = `${Math.round(stripH * aspectRatio)}px`;
-            img.style.height = `${stripH}px`;
+            const cellH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--item-grid-cell-height")) || 100;
+            img.style.width = `${Math.round(cellH * aspectRatio)}px`;
+            img.style.height = `${cellH}px`;
           };
 
           if (item.dimensions) {
@@ -455,10 +468,8 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
 
           btn.appendChild(img);
         } else {
-          const txt = el("span", "browse-strip__text");
+          const txt = el("span", "item-grid__text");
           txt.textContent = item.title;
-          txt.style.width = "80px";
-          txt.style.height = "80px";
           btn.appendChild(txt);
         }
 
@@ -466,13 +477,16 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
           navigate({ layer: "item", series: seriesKey, subcollection: activeSubKey, view: activeView, item: item.id });
         });
 
-        li.appendChild(btn);
-        strip.appendChild(li);
+        cell.appendChild(btn);
+        cells.appendChild(cell);
       });
+
+      group.appendChild(cells);
+      grid.appendChild(group);
     });
 
-    stripWrap.appendChild(strip);
-    content.appendChild(stripWrap);
+    gridWrap.appendChild(grid);
+    content.appendChild(gridWrap);
 
     // Breadcrumb
     const segments = [
