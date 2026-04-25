@@ -85,6 +85,8 @@ function buildArchive() {
       continue;
     }
 
+    if (data.status !== "published") continue;
+
     const { series, subcollection } = data;
 
     if (!archive.series[series]) {
