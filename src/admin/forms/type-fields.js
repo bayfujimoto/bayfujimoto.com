@@ -204,6 +204,8 @@ export function getTypeGroups(itemType) {
             { id: "event",  label: "event",  type: "text" },
             { id: "source", label: "source", type: "text",
               hint: "How / where it was acquired" },
+            { id: "dimensions", label: "dimensions", type: "text",
+              placeholder: "e.g. 89 x 54", hint: "Physical size in mm: width x height" },
           ],
         },
         INSPECTION_ASSETS_SENTINEL,
