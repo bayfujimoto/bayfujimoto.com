@@ -189,27 +189,86 @@ body {
   cursor: default;
 }
 
-/* ── Layer subnav — subcollection switcher, top-center ───────────────────────── */
-.layer-subnav {
-  position: fixed;
-  top: var(--overlay-padding);
-  left: 50%;
-  transform: translateX(-50%);
-  pointer-events: auto;
-  display: flex;
+/* ── Breadcrumb subcollection dropdown ───────────────────────────────────────── */
+.layer-breadcrumb__seg-wrap {
+  position: relative;
+  display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: var(--text-xs);
-  white-space: nowrap;
 }
 
-.layer-subnav__sep {
-  color: var(--overlay-muted);
-  opacity: 0.4;
-  user-select: none;
+.layer-breadcrumb__seg-wrap:hover .layer-breadcrumb__seg--current {
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
-.layer-subnav__btn {
+.layer-breadcrumb__dropdown {
+  position: absolute;
+  bottom: 100%;
+  padding-bottom: 0.5rem;
+  left: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  pointer-events: none;
+}
+
+.layer-breadcrumb__seg-wrap.is-open .layer-breadcrumb__dropdown,
+.layer-breadcrumb__seg-wrap:hover .layer-breadcrumb__dropdown {
+  pointer-events: auto;
+}
+
+.layer-breadcrumb__dropdown li {
+  list-style: none;
+  opacity: 0;
+}
+
+.layer-breadcrumb__seg-wrap.is-open .layer-breadcrumb__dropdown li,
+.layer-breadcrumb__seg-wrap:hover .layer-breadcrumb__dropdown li {
+  animation: breadcrumb-item-in 100ms ease both;
+  animation-delay: calc((var(--total, 1) - var(--i, 0) - 1) * 35ms);
+}
+
+.layer-breadcrumb__seg-wrap.is-open-instant .layer-breadcrumb__dropdown,
+.layer-breadcrumb__seg-wrap.is-open-instant:hover .layer-breadcrumb__dropdown,
+.layer-breadcrumb__seg-wrap.is-open-instant .layer-breadcrumb__dropdown li,
+.layer-breadcrumb__seg-wrap.is-open-instant:hover .layer-breadcrumb__dropdown li {
+  pointer-events: auto;
+  animation: none;
+  opacity: 1;
+  transform: none;
+}
+
+.layer-breadcrumb__seg-wrap.is-closing .layer-breadcrumb__dropdown li {
+  animation: breadcrumb-item-out 100ms ease both;
+  animation-delay: calc(var(--i, 0) * 35ms);
+}
+
+@keyframes breadcrumb-item-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes breadcrumb-item-out {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(4px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .layer-breadcrumb__seg-wrap.is-open .layer-breadcrumb__dropdown li,
+  .layer-breadcrumb__seg-wrap:hover .layer-breadcrumb__dropdown li {
+    animation: none;
+    opacity: 1;
+  }
+  .layer-breadcrumb__seg-wrap.is-closing .layer-breadcrumb__dropdown li {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+.layer-breadcrumb__dropdown button {
   background: none;
   border: none;
   padding: 0;
@@ -217,13 +276,14 @@ body {
   font-size: inherit;
   color: var(--overlay-muted);
   cursor: pointer;
-  min-height: 44px;
+  min-height: 0;
   display: inline-flex;
   align-items: center;
+  white-space: nowrap;
+  padding-block: 0.15em;
   transition: color var(--dur-base);
 }
-.layer-subnav__btn:hover { color: var(--overlay-text); }
-.layer-subnav__btn--active { color: var(--overlay-text); }
+.layer-breadcrumb__dropdown button:hover { color: var(--overlay-text); }
 
 /* ── Overlay typography ──────────────────────────────────────────────────────── */
 .overlay-title {
@@ -413,7 +473,7 @@ body {
   left: 0;
   right: 0;
   transform: translateY(-50%);
-  pointer-events: auto;
+  pointer-events: none;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
@@ -421,12 +481,18 @@ body {
 .item-grid-wrap::-webkit-scrollbar { display: none; }
 
 .item-grid {
-  display: inline-flex;
+  display: flex;
+  width: max-content;
   flex-direction: row;
   align-items: flex-start;
   padding: 1rem var(--overlay-padding);
   padding-left: 4rem;
   gap: 0;
+  pointer-events: auto;
+}
+.item-grid--centered {
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .item-grid__group {
@@ -636,13 +702,6 @@ body {
     max-width: 90vw;
   }
 
-  .layer-subnav {
-    font-size: 0.65rem;
-    flex-wrap: wrap;
-    justify-content: center;
-    max-width: 90vw;
-    text-align: center;
-  }
 }
 
 /* ── Reduced motion ──────────────────────────────────────────────────────────── */

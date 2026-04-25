@@ -112,7 +112,7 @@ function pushLayerForState(state, silent = false) {
 
 // ── Sheet stack primitives ────────────────────────────────────────────────────
 
-function pushSheet({ veil, content, cleanup, update }) {
+function pushSheet({ veil, content, cleanup, update, onHoist }) {
   const depth = layerStack.length + 1;
   const returnFocus = document.activeElement;
 
@@ -129,6 +129,7 @@ function pushSheet({ veil, content, cleanup, update }) {
     metaEl.style.zIndex = depth * 10 + 2;
     metaEl.style.transition = "opacity 0.2s var(--ease-base)";
     document.body.appendChild(metaEl);
+    if (onHoist) onHoist(metaEl);
   }
 
   layerStack.push({ veil, content, metaEl: metaEl || null, cleanup: cleanup || (() => {}), update: update || (() => {}), returnFocus });
@@ -369,8 +370,10 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
   });
 
   const content = makeContent();
+  let hoistedMeta = null; // tracks the .layer-meta element after pushSheet hoists it to document.body
 
   function renderContent(activeSubKey, activeView) {
+    const dropdownWasOpen = content.querySelector(".layer-breadcrumb__seg-wrap.is-open, .layer-breadcrumb__seg-wrap.is-open-instant") != null;
     // Clear previous children except veil (veil is not in content)
     content.innerHTML = "";
 
@@ -386,28 +389,6 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
     } else {
       activeSub = s.subcollections[activeSubKey];
       years = groupByYear(activeSub?.items || []);
-    }
-
-    // Subcollection switcher (top-center) — only for multi-sub series
-    if (subs.length > 1) {
-      const subnav = el("div", "layer-subnav");
-      subnav.setAttribute("aria-label", "Subcollections");
-      subs.forEach(([key, sc], i) => {
-        if (i > 0) {
-          const sep = el("span", "layer-subnav__sep");
-          sep.textContent = "/";
-          sep.setAttribute("aria-hidden", "true");
-          subnav.appendChild(sep);
-        }
-        const btn = el("button", `layer-subnav__btn${key === activeSubKey ? " layer-subnav__btn--active" : ""}`);
-        btn.type = "button";
-        btn.textContent = sc.label;
-        btn.addEventListener("click", () => {
-          navigate({ layer: "browse", series: seriesKey, subcollection: key, item: null });
-        });
-        subnav.appendChild(btn);
-      });
-      content.appendChild(subnav);
     }
 
     // Item grid — column-major, horizontally scrolling, grouped by year
@@ -504,6 +485,16 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
     gridWrap.appendChild(grid);
     content.appendChild(gridWrap);
 
+    const updateGridAlignment = () => {
+      grid.classList.toggle("item-grid--centered", grid.scrollWidth <= gridWrap.clientWidth);
+    };
+    updateGridAlignment();
+    const gridRO = new ResizeObserver(updateGridAlignment);
+    gridRO.observe(gridWrap);
+    new MutationObserver((_, mo) => {
+      if (!document.contains(gridWrap)) { gridRO.disconnect(); mo.disconnect(); }
+    }).observe(document.body, { childList: true, subtree: true });
+
     // Breadcrumb
     const segments = [
       { label: "desk", onClick: () => navigate({ layer: "desk" }) }
@@ -512,20 +503,46 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
       segments.push({ label: s.label, onClick: () => navigate({ layer: "series", series: seriesKey }) });
     }
     const subLabel = isFlatSeries ? s.label : (activeSub?.label || activeSubKey);
-    segments.push({ label: subLabel, current: true });
+    if (!isFlatSeries && subs.length > 1) {
+      segments.push({
+        label: subLabel,
+        current: true,
+        dropdown: subs
+          .map(([key, sc]) => ({
+            label: sc.label,
+            onClick: () => navigate({ layer: "browse", series: seriesKey, subcollection: key, item: null })
+          }))
+      });
+    } else {
+      segments.push({ label: subLabel, current: true });
+    }
 
     const bc = makeBreadcrumb(segments);
     content.appendChild(bc);
+    if (dropdownWasOpen) {
+      const newWrap = bc.querySelector(".layer-breadcrumb__seg-wrap");
+      if (newWrap) newWrap.classList.add("is-open-instant");
+    }
 
-    // Browse sheet title + subtitle in bottom-right metadata overlay
-    const meta = el("div", "layer-meta");
-    const h1 = el("h1", "overlay-title");
-    h1.textContent = isFlatSeries ? s.label : (activeSub?.label || activeSubKey);
-    const subtitle = el("p", "overlay-subtitle");
-    subtitle.textContent = isFlatSeries ? s.container || "" : activeSub?.container || "";
-    meta.appendChild(h1);
-    meta.appendChild(subtitle);
-    content.appendChild(meta);
+    // Browse sheet title + subtitle in bottom-right metadata overlay.
+    // If pushSheet already hoisted our .layer-meta to document.body, update it in place
+    // rather than appending a new one inside content — otherwise the stale hoisted element
+    // persists and overlaps the new title when switching subcollections via the dropdown.
+    const titleText = isFlatSeries ? s.label : (activeSub?.label || activeSubKey);
+    const subtitleText = isFlatSeries ? s.container || "" : activeSub?.container || "";
+    if (hoistedMeta) {
+      hoistedMeta.querySelector(".overlay-title").textContent = titleText;
+      hoistedMeta.querySelector(".overlay-subtitle").textContent = subtitleText;
+    } else {
+      const meta = el("div", "layer-meta");
+      const h1 = el("h1", "overlay-title");
+      h1.textContent = titleText;
+      const subtitle = el("p", "overlay-subtitle");
+      subtitle.textContent = subtitleText;
+      meta.appendChild(h1);
+      meta.appendChild(subtitle);
+      content.appendChild(meta);
+    }
   }
 
   const closeBrowse = () => {
@@ -551,7 +568,9 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
     }
   }
 
-  return { veil, content, update, cleanup };
+  function onHoist(el) { hoistedMeta = el; }
+
+  return { veil, content, update, cleanup, onHoist };
 }
 
 // ── Item sheet ────────────────────────────────────────────────────────────────
@@ -849,7 +868,62 @@ function makeBreadcrumb(segments) {
       nav.appendChild(sep);
     }
 
-    if (seg.current) {
+    if (seg.current && seg.dropdown?.length) {
+      const wrap = el("span", "layer-breadcrumb__seg-wrap");
+
+      const label = el("span", "layer-breadcrumb__seg--current");
+      label.textContent = seg.label;
+      label.setAttribute("aria-current", "page");
+      wrap.appendChild(label);
+
+      const list = el("ul", "layer-breadcrumb__dropdown");
+      list.setAttribute("role", "list");
+      list.style.setProperty("--total", seg.dropdown.length);
+      seg.dropdown.forEach((item, i) => {
+        const li = document.createElement("li");
+        li.style.setProperty("--i", i);
+        const btn = el("button", "");
+        btn.type = "button";
+        btn.textContent = item.label;
+        btn.addEventListener("click", e => {
+          e.stopPropagation();
+          item.onClick();
+        });
+        li.appendChild(btn);
+        list.appendChild(li);
+      });
+      wrap.appendChild(list);
+
+      // Desktop: hover open/close
+      wrap.addEventListener("mouseenter", () => {
+        if (wrap.classList.contains("is-open-instant")) return;
+        wrap.classList.remove("is-closing");
+        wrap.classList.add("is-open");
+      });
+      wrap.addEventListener("mouseleave", () => {
+        wrap.classList.remove("is-open-instant");
+        wrap.classList.add("is-closing");
+        const totalMs = (seg.dropdown.length - 1) * 35 + 100;
+        setTimeout(() => {
+          wrap.classList.remove("is-open", "is-closing");
+        }, totalMs);
+      });
+
+      // Mobile: tap toggles
+      wrap.addEventListener("click", e => {
+        if (e.target === wrap || e.target === label) {
+          wrap.classList.toggle("is-open");
+        }
+      });
+      // Close on outside tap; self-removes once nav leaves the DOM
+      const outsideClose = e => {
+        if (!nav.isConnected) { document.removeEventListener("click", outsideClose); return; }
+        if (!wrap.contains(e.target)) wrap.classList.remove("is-open");
+      };
+      document.addEventListener("click", outsideClose);
+
+      nav.appendChild(wrap);
+    } else if (seg.current) {
       const span = el("span", "layer-breadcrumb__seg layer-breadcrumb__seg--current");
       span.textContent = seg.label;
       span.setAttribute("aria-current", "page");
