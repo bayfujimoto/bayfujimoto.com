@@ -437,10 +437,28 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
           img.src = thumbSrc;
           img.alt = "";
           img.loading = "lazy";
+
+          const applySize = (aspectRatio) => {
+            const stripH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--browse-strip-height")) || 140;
+            img.style.width = `${Math.round(stripH * aspectRatio)}px`;
+            img.style.height = `${stripH}px`;
+          };
+
+          if (item.dimensions) {
+            const [wMm, hMm] = item.dimensions.split("x").map(s => parseFloat(s.trim()));
+            if (wMm && hMm) applySize(wMm / hMm);
+          } else {
+            img.addEventListener("load", () => {
+              if (img.naturalWidth && img.naturalHeight) applySize(img.naturalWidth / img.naturalHeight);
+            }, { once: true });
+          }
+
           btn.appendChild(img);
         } else {
           const txt = el("span", "browse-strip__text");
           txt.textContent = item.title;
+          txt.style.width = "80px";
+          txt.style.height = "80px";
           btn.appendChild(txt);
         }
 

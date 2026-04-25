@@ -324,6 +324,8 @@ body {
 }
 
 /* ── Browse strip — horizontal filmstrip ─────────────────────────────────────── */
+:root { --browse-strip-height: 140px; }
+
 .browse-strip-wrap {
   position: fixed;
   top: 50%;
@@ -374,8 +376,8 @@ body {
 
 .browse-strip__thumb {
   width: auto;
-  height: 140px;
-  object-fit: cover;
+  height: var(--browse-strip-height, 140px);
+  object-fit: contain;
   display: block;
 }
 
@@ -505,7 +507,10 @@ body {
 
 /* ── Mobile adjustments ──────────────────────────────────────────────────────── */
 @media (max-width: 600px) {
-  :root { --overlay-padding: 1rem; }
+  :root {
+    --overlay-padding: 1rem;
+    --browse-strip-height: 100px;
+  }
 
   .desk-objects {
     grid-template-columns: repeat(2, auto);
@@ -521,7 +526,7 @@ body {
     right: var(--overlay-padding);
   }
 
-  .browse-strip__thumb { height: 100px; }
+  .browse-strip__thumb { height: var(--browse-strip-height, 100px); }
 
   .item-image {
     max-height: 60vh;

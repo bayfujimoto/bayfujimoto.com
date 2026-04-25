@@ -292,7 +292,7 @@ Required:
 Optional:
 - place
 - event
-- dimensions
+- dimensions: physical size in mm as "W x H" (e.g. "89 x 54"). Used to render thumbnails at true relative size in the browse strip. Items without this field fall back to natural image aspect ratio.
 - front/back assets
 - note
 - related items
