@@ -535,6 +535,8 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
     const hasNext = idx < allItems.length - 1;
 
     content.innerHTML = "";
+    const layer = layerStack[layerStack.length - 1];
+    const existingMeta = layer?.metaEl;
 
     // Centered image
     const center = el("div", "layer-center");
@@ -686,7 +688,11 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
     idEl.textContent = item.id;
     meta.appendChild(idEl);
 
-    content.appendChild(meta);
+    if (existingMeta && existingMeta.parentNode === document.body) {
+      existingMeta.innerHTML = meta.innerHTML;
+    } else {
+      content.appendChild(meta);
+    }
 
     // Breadcrumb — bottom left
     const isFlatItem = FLAT_URL_SERIES.has(seriesKey);
