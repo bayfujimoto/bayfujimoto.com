@@ -14,4 +14,5 @@ inspection: card
 assets:
   front: EPH-2026-006-front.jpg
   thumbnail: EPH-2026-006-front-thumb.jpg
+dimensions: 54 x 85
 ---
