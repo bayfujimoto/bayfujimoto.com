@@ -12377,7 +12377,8 @@
           "assets": {
             "front": "EPH-2026-017-front.jpg",
             "thumbnail": "EPH-2026-017-front-thumb.jpg"
-          }
+          },
+          "dimensions": "62 x 88"
         },
         {
           "id": "EPH-2026-012",
@@ -12393,7 +12394,8 @@
           "assets": {
             "front": "EPH-2026-012-front.jpg",
             "thumbnail": "EPH-2026-012-front-thumb.jpg"
-          }
+          },
+          "dimensions": "76 x 76"
         },
         {
           "id": "EPH-2026-016",
@@ -12412,7 +12414,8 @@
           "assets": {
             "front": "EPH-2026-016-front.jpg",
             "thumbnail": "EPH-2026-016-front-thumb.jpg"
-          }
+          },
+          "dimensions": "76 x 103"
         },
         {
           "id": "EPH-2026-006",
@@ -12430,7 +12433,8 @@
           "assets": {
             "front": "EPH-2026-006-front.jpg",
             "thumbnail": "EPH-2026-006-front-thumb.jpg"
-          }
+          },
+          "dimensions": "54 x 85"
         }
       ]
     }

@@ -27,16 +27,14 @@ function loadImage(file) {
   });
 }
 
-function makeThumbnail(img, size = 200) {
+function makeThumbnail(img, maxSize = 200) {
+  const scale = Math.min(maxSize / img.naturalWidth, maxSize / img.naturalHeight);
+  const w = Math.round(img.naturalWidth * scale);
+  const h = Math.round(img.naturalHeight * scale);
   const canvas = document.createElement("canvas");
-  canvas.width = size;
-  canvas.height = size;
-  const scale = Math.max(size / img.naturalWidth, size / img.naturalHeight);
-  const sw = size / scale;
-  const sh = size / scale;
-  const sx = (img.naturalWidth - sw) / 2;
-  const sy = (img.naturalHeight - sh) / 2;
-  canvas.getContext("2d").drawImage(img, sx, sy, sw, sh, 0, 0, size, size);
+  canvas.width = w;
+  canvas.height = h;
+  canvas.getContext("2d").drawImage(img, 0, 0, w, h);
   return new Promise(resolve => canvas.toBlob(resolve, "image/jpeg", 0.8));
 }
 

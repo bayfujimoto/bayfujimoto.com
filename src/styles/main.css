@@ -405,7 +405,7 @@ body {
 }
 
 /* ── Item grid — column-major, horizontally scrolling ───────────────────────── */
-:root { --item-grid-cell-height: 100px; }
+:root { --item-grid-cell-height: 160px; }
 
 .item-grid-wrap {
   position: fixed;
@@ -433,16 +433,14 @@ body {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  border-left: 1px solid var(--grid-line);
 }
-.item-grid__group:first-child { border-left: none; }
+.item-grid__group:first-child .item-grid__cell--first-col { border-left: 1px solid var(--grid-line); }
 
 .item-grid__year {
   font-size: var(--text-xs);
-  color: var(--overlay-muted);
+  color: rgba(232, 224, 208, 0.2);
   text-transform: uppercase;
   letter-spacing: var(--tracking-wider);
-  opacity: 0.4;
   padding: 0 0.75rem 0.4rem;
   user-select: none;
   white-space: nowrap;
@@ -451,28 +449,39 @@ body {
 .item-grid__cells {
   display: grid;
   grid-auto-flow: column;
-  border-top: 1px solid var(--grid-line);
+  grid-auto-columns: var(--item-grid-cell-height, 160px);
+  border-bottom: 1px solid var(--grid-line);
+}
+.item-grid__group:last-child .item-grid__cells {
+  border-right: 1px solid var(--grid-line);
+}
+.item-grid__group + .item-grid__group .item-grid__cells {
   border-left: 1px solid var(--grid-line);
 }
 
 .item-grid__cell {
-  border-right: 1px solid var(--grid-line);
-  border-bottom: 1px solid var(--grid-line);
+  border-top: 1px solid var(--grid-line);
+  border-left: 1px solid var(--grid-line);
+  width: var(--item-grid-cell-height, 160px);
+  height: var(--item-grid-cell-height, 160px);
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 44px;
-  min-height: 44px;
+}
+.item-grid__cell--first-col {
+  border-left: none;
 }
 
 .item-grid__btn {
   background: none;
   border: none;
-  padding: 0.5rem;
+  padding: 0;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  height: 100%;
   font-family: inherit;
   color: var(--overlay-muted);
   transition: color var(--dur-base), opacity var(--dur-base);
@@ -480,10 +489,10 @@ body {
 .item-grid__btn:hover { color: var(--overlay-text); }
 
 .item-grid__thumb {
-  width: auto;
-  height: var(--item-grid-cell-height, 100px);
-  object-fit: contain;
   display: block;
+  object-fit: contain;
+  max-width: 100%;
+  max-height: 100%;
 }
 
 .item-grid__text {
@@ -498,8 +507,8 @@ body {
 /* ── Item image — centered, zoomable ─────────────────────────────────────────── */
 .item-image {
   display: block;
-  max-height: 70vh;
-  max-width: 70vw;
+  max-height: 100%;
+  max-width: 100%;
   object-fit: contain;
   transform-origin: center center;
   transition: transform var(--dur-base) var(--ease-base);
@@ -601,7 +610,7 @@ body {
   :root {
     --overlay-padding: 1rem;
     --browse-strip-height: 100px;
-    --item-grid-cell-height: 80px;
+    --item-grid-cell-height: 120px;
   }
 
   .desk-objects {

@@ -417,6 +417,16 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
     grid.setAttribute("role", "list");
     grid.setAttribute("aria-label", `${activeSub.label} items`);
 
+    // Find the largest physical dimension across all items that have dimensions metadata.
+    // Used to scale thumbnails relative to each other within their fixed square cells.
+    let maxDim = 0;
+    for (const item of activeSub.items) {
+      if (item.dimensions) {
+        const [wMm, hMm] = item.dimensions.split("x").map(s => parseFloat(s.trim()));
+        if (wMm && hMm) maxDim = Math.max(maxDim, wMm, hMm);
+      }
+    }
+
     years.forEach(({ year, items: yearItems }) => {
       const group = el("div", "item-grid__group");
 
@@ -427,14 +437,13 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
 
       const cells = el("div", "item-grid__cells");
       const colCount = Math.ceil(yearItems.length / GRID_ROWS);
-      cells.style.gridTemplateColumns = `repeat(${colCount}, auto)`;
-      cells.style.gridTemplateRows = `repeat(${GRID_ROWS}, 1fr)`;
+      cells.style.gridTemplateRows = `repeat(${GRID_ROWS}, var(--item-grid-cell-height, 160px))`;
 
       yearItems.forEach((item, i) => {
         const col = Math.floor(i / GRID_ROWS) + 1;
         const row = (i % GRID_ROWS) + 1;
 
-        const cell = el("div", "item-grid__cell");
+        const cell = el("div", `item-grid__cell${col === 1 ? " item-grid__cell--first-col" : ""}`);
         cell.setAttribute("role", "listitem");
         cell.style.gridColumn = col;
         cell.style.gridRow = row;
@@ -451,19 +460,14 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
           img.alt = "";
           img.loading = "lazy";
 
-          const applySize = (aspectRatio) => {
-            const cellH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--item-grid-cell-height")) || 100;
-            img.style.width = `${Math.round(cellH * aspectRatio)}px`;
-            img.style.height = `${cellH}px`;
-          };
-
-          if (item.dimensions) {
+          if (item.dimensions && maxDim > 0) {
             const [wMm, hMm] = item.dimensions.split("x").map(s => parseFloat(s.trim()));
-            if (wMm && hMm) applySize(wMm / hMm);
-          } else {
-            img.addEventListener("load", () => {
-              if (img.naturalWidth && img.naturalHeight) applySize(img.naturalWidth / img.naturalHeight);
-            }, { once: true });
+            if (wMm && hMm) {
+              // Scale relative to the largest item: largest fills ~90% of cell, others shrink proportionally
+              const scale = Math.max(wMm, hMm) / maxDim * 0.9;
+              img.style.width = `${Math.round(scale * 100)}%`;
+              img.style.height = `${Math.round(scale * 100)}%`;
+            }
           }
 
           btn.appendChild(img);
@@ -480,6 +484,18 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
         cell.appendChild(btn);
         cells.appendChild(cell);
       });
+
+      // Pad the last column with empty cells so all columns always have GRID_ROWS rows
+      const remainder = yearItems.length % GRID_ROWS;
+      if (remainder !== 0) {
+        const lastCol = Math.ceil(yearItems.length / GRID_ROWS);
+        for (let r = remainder + 1; r <= GRID_ROWS; r++) {
+          const empty = el("div", `item-grid__cell item-grid__cell--empty${lastCol === 1 ? " item-grid__cell--first-col" : ""}`);
+          empty.style.gridColumn = lastCol;
+          empty.style.gridRow = r;
+          cells.appendChild(empty);
+        }
+      }
 
       group.appendChild(cells);
       grid.appendChild(group);
@@ -554,6 +570,28 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
   let currentIdx = allItems.findIndex(i => i.id === itemId);
   if (currentIdx === -1) currentIdx = 0;
 
+  let maxDim = 0;
+  for (const item of allItems) {
+    if (item.dimensions) {
+      const [wMm, hMm] = item.dimensions.split("x").map(s => parseFloat(s.trim()));
+      if (wMm && hMm) maxDim = Math.max(maxDim, wMm, hMm);
+    }
+  }
+
+  function applyRelativeSize(img, item) {
+    if (maxDim > 0 && item.dimensions) {
+      const [wMm, hMm] = item.dimensions.split("x").map(s => parseFloat(s.trim()));
+      if (wMm && hMm) {
+        const scale = Math.max(wMm, hMm) / maxDim;
+        img.style.maxWidth  = `${Math.round(scale * 70)}vw`;
+        img.style.maxHeight = `${Math.round(scale * 70)}vh`;
+        return;
+      }
+    }
+    img.style.maxWidth  = "35vw";
+    img.style.maxHeight = "35vh";
+  }
+
   const veil = makeVeil(() => {
     navigate({ layer: "browse", series: seriesKey, subcollection: subKey, view: viewSlug || null, item: null });
   });
@@ -585,6 +623,7 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
       frontImg.src = imageUrl(primary, "original");
       frontImg.alt = item.title;
       frontImg.draggable = false;
+      applyRelativeSize(frontImg, item);
 
       if (item.assets?.back) {
         frontImg.setAttribute("title", "Click to flip");
@@ -600,6 +639,7 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
         backImg.draggable = false;
         backImg.hidden = true;
         backImg.setAttribute("title", "Click to flip");
+        applyRelativeSize(backImg, item);
         backImg.addEventListener("click", () => {
           showingFront = !showingFront;
           frontImg.hidden = !showingFront;
@@ -665,9 +705,10 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
       ["author", item.author],
       ["artist", item.artist],
       ["rating", item.rating],
-      ["place",  item.place],
-      ["event",  item.event],
-      ["source", item.source],
+      ["place",      item.place],
+      ["event",      item.event],
+      ["source",     item.source],
+      ["dimensions", item.dimensions ? `${item.dimensions} mm` : null],
     ];
 
     metaFields.forEach(([label, value]) => {
