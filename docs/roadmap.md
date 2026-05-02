@@ -74,8 +74,8 @@ Output:
 ## Phase 6: Homepage objects
 Goals:
 - build sparse desk ✓ (HTML stub with five clickable series objects)
-- define five primary objects
-- make each object clearly represent its series
+- define five primary objects ✓
+- make each object clearly represent its series ✓
 - prototype simple interaction states ✓ (click navigates to series layer)
 
 Output:

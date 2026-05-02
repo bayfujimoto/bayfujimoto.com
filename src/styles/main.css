@@ -704,6 +704,188 @@ body {
 
 }
 
+/* ── Biography document ──────────────────────────────────────────────────────── */
+.bio-document__box {
+  width: 40vw;
+  height: 80vh;
+  border: 1px solid var(--border-dim);
+  overflow: hidden;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.bio-document__scroll {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  flex: 1;
+  min-height: 0;
+}
+
+.bio-document {
+  background: transparent;
+  text-align: left;
+  width: 100%;
+  max-width: none;
+  font-family: var(--font);
+  color: var(--overlay-text);
+}
+
+/* Version indicator row */
+.bio-document__version-wrap {
+  position: relative;
+  margin-bottom: 1.25rem;
+}
+
+.bio-document__version {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--overlay-muted);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  cursor: default;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  min-height: 44px;
+}
+
+.bio-document__version--interactive {
+  cursor: pointer;
+}
+.bio-document__version--interactive:hover {
+  color: var(--overlay-text);
+}
+
+.bio-document__version-past {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: rgba(232, 224, 208, 0.3);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+}
+
+/* Version history dropdown — hoisted to body, positioned via JS */
+.bio-document__version-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  min-width: 16ch;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.bio-document__version-list.is-open {
+  pointer-events: auto;
+}
+
+.bio-document__version-list li {
+  opacity: 0;
+}
+
+.bio-document__version-list.is-open li {
+  animation: breadcrumb-item-in 100ms ease both;
+  animation-delay: calc((var(--total, 1) - var(--i, 0) - 1) * 35ms);
+}
+
+.bio-document__version-list.is-closing li {
+  animation: breadcrumb-item-out 100ms ease both;
+  animation-delay: calc(var(--i, 0) * 35ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bio-document__version-list.is-open li {
+    animation: none;
+    opacity: 1;
+  }
+  .bio-document__version-list.is-closing li {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+.bio-document__version-option {
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0;
+  padding-block: 0.15em;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--overlay-muted);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  text-align: left;
+  cursor: pointer;
+  transition: color var(--dur-base);
+  min-height: 0;
+  display: flex;
+  align-items: center;
+}
+.bio-document__version-option:hover { color: var(--overlay-text); }
+.bio-document__version-option--active { color: var(--overlay-text); }
+
+/* Divider */
+.bio-document__divider {
+  border: none;
+  border-top: 1px solid rgba(232, 224, 208, 0.12);
+  margin: 0 0 1.5rem;
+}
+
+/* Short bio — lead paragraph */
+.bio-document__short {
+  font-size: var(--text-md);
+  line-height: var(--leading-loose);
+  margin: 0 0 1.25rem;
+}
+
+/* Long bio — body prose */
+.bio-document__long {
+  font-size: var(--text-base);
+  line-height: var(--leading-loose);
+  color: var(--overlay-muted);
+}
+.bio-document__long p {
+  margin: 0 0 1rem;
+}
+.bio-document__long p:last-child {
+  margin-bottom: 0;
+}
+
+/* Link style within layer-meta */
+.overlay-link {
+  display: block;
+  color: var(--overlay-value, var(--overlay-text));
+  text-decoration: none;
+  font-size: var(--text-sm);
+  opacity: 0.8;
+  transition: opacity var(--dur-base);
+}
+.overlay-link:hover { opacity: 1; text-decoration: underline; }
+
+/* Mobile */
+@media (max-width: 600px) {
+  .bio-document__box {
+    width: calc(100vw - 2 * var(--overlay-padding));
+    height: auto;
+    max-height: 70vh;
+    border: none;
+    padding: 0;
+  }
+  .bio-document__scroll {
+    max-height: 60vh;
+  }
+  .bio-document {
+    max-width: none;
+  }
+  .bio-document__short { font-size: var(--text-base); }
+}
+
 /* ── Reduced motion ──────────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .layer-veil,

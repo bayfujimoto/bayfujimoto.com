@@ -105,7 +105,14 @@ function pushLayerForState(state, silent = false) {
       pushSheet(makeSeriesSheet(state.series));
       break;
     }
-    case "browse": pushSheet(makeBrowseSheet(state.series, state.subcollection, state.view, state.item)); break;
+    case "browse": {
+      if (state.series === "identity" && state.subcollection === "biography") {
+        pushSheet(makeBiographySheet());
+      } else {
+        pushSheet(makeBrowseSheet(state.series, state.subcollection, state.view, state.item));
+      }
+      break;
+    }
     case "item":   pushSheet(makeItemSheet(state.series, state.subcollection, state.item, state.view)); break;
   }
 }
@@ -347,6 +354,260 @@ function makeGuideSheet() {
   const cleanup = attachEscapeHandler(content, closeFn);
 
   return { veil, content, cleanup };
+}
+
+// ── Biography sheet ───────────────────────────────────────────────────────────
+
+function makeBiographySheet() {
+  const allVersions = archive.series["identity"]?.subcollections["biography"]?.items || [];
+  // Items are sorted by sort_date descending — index 0 is the most recent version
+
+  const veil = makeVeil(() => {
+    navigate({ layer: "series", series: "identity", subcollection: null, item: null });
+  });
+
+  const content = makeContent();
+  let hoistedMeta = null;
+  let activeOutsideClickHandler = null;
+  let hoistedVersionList = null;
+
+  function buildMeta(metaEl, bio) {
+    metaEl.innerHTML = "";
+
+    const h1 = el("h1", "overlay-title");
+    h1.textContent = "Biography";
+    metaEl.appendChild(h1);
+
+    const subtitle = el("p", "overlay-subtitle");
+    subtitle.textContent = bio.display_date;
+    metaEl.appendChild(subtitle);
+
+    if (bio.roles?.length) {
+      const field = el("div", "overlay-field");
+      const label = el("span", "overlay-label");
+      label.textContent = "roles";
+      const value = el("span", "overlay-value");
+      value.textContent = bio.roles.join(", ");
+      field.appendChild(label);
+      field.appendChild(value);
+      metaEl.appendChild(field);
+    }
+
+    if (bio.location) {
+      const field = el("div", "overlay-field");
+      const label = el("span", "overlay-label");
+      label.textContent = "location";
+      const value = el("span", "overlay-value");
+      value.textContent = bio.location;
+      field.appendChild(label);
+      field.appendChild(value);
+      metaEl.appendChild(field);
+    }
+
+    if (bio.links?.length) {
+      const linkLabel = el("span", "overlay-label");
+      linkLabel.textContent = "links";
+      linkLabel.style.marginTop = "0.5rem";
+      metaEl.appendChild(linkLabel);
+      bio.links.forEach(link => {
+        const a = el("a", "overlay-value overlay-link");
+        a.href = link.url;
+        a.textContent = link.label;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        metaEl.appendChild(a);
+      });
+    }
+
+    const idEl = el("div", "overlay-id");
+    idEl.textContent = bio.id;
+    metaEl.appendChild(idEl);
+  }
+
+  function renderDocument(idx) {
+    const bio = allVersions[idx];
+    if (!bio) return;
+    const isCurrent = idx === 0;
+
+    // Remove previous outside-click listener if any
+    if (activeOutsideClickHandler) {
+      document.removeEventListener("click", activeOutsideClickHandler);
+      activeOutsideClickHandler = null;
+    }
+
+    content.innerHTML = "";
+
+    // Centered document panel
+    const center = el("div", "layer-center");
+    const doc = el("div", "bio-document");
+    doc.setAttribute("role", "document");
+    doc.setAttribute("aria-label", "Biography");
+
+    // Version indicator
+    const versionWrap = el("div", "bio-document__version-wrap");
+
+    const versionBtn = el("button", "bio-document__version");
+    versionBtn.type = "button";
+    if (!isCurrent) {
+      const pastBadge = el("span", "bio-document__version-past");
+      pastBadge.textContent = "past version";
+      versionBtn.textContent = bio.display_date + " ";
+      versionBtn.appendChild(pastBadge);
+    } else {
+      versionBtn.textContent = bio.display_date;
+    }
+    versionWrap.appendChild(versionBtn);
+
+    // Version history dropdown (only if multiple versions exist)
+    if (allVersions.length > 1) {
+      versionBtn.setAttribute("aria-haspopup", "listbox");
+      versionBtn.setAttribute("aria-expanded", "false");
+      versionBtn.classList.add("bio-document__version--interactive");
+
+      const vList = el("ul", "bio-document__version-list");
+      vList.setAttribute("role", "listbox");
+      vList.setAttribute("aria-label", "Version history");
+      vList.style.setProperty("--total", allVersions.length);
+
+      const otherVersions = allVersions.map((v, i) => ({ v, i })).filter(({ i }) => i !== idx);
+      vList.style.setProperty("--total", otherVersions.length);
+      otherVersions.forEach(({ v, i }, j) => {
+        const li = document.createElement("li");
+        li.style.setProperty("--i", j);
+        const btn = el("button", "bio-document__version-option");
+        btn.type = "button";
+        btn.setAttribute("role", "option");
+        btn.setAttribute("aria-selected", "false");
+        btn.textContent = i === 0 ? `${v.display_date} — current` : v.display_date;
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          closeVersionList();
+          renderDocument(i);
+        });
+        li.appendChild(btn);
+        vList.appendChild(li);
+      });
+
+      // Hoist to body so it escapes overflow:hidden on .bio-document__box
+      document.body.appendChild(vList);
+      hoistedVersionList = vList;
+
+      const positionVersionList = () => {
+        const r = versionBtn.getBoundingClientRect();
+        vList.style.position = "fixed";
+        vList.style.left = r.left + "px";
+        vList.style.top = (r.top - vList.offsetHeight) + "px";
+      };
+
+      const closeVersionList = () => {
+        if (!vList.classList.contains("is-open")) return;
+        vList.classList.remove("is-open");
+        vList.classList.add("is-closing");
+        versionBtn.setAttribute("aria-expanded", "false");
+        const totalMs = (otherVersions.length - 1) * 35 + 100;
+        setTimeout(() => vList.classList.remove("is-closing"), totalMs);
+      };
+
+      const openVersionList = () => {
+        positionVersionList();
+        vList.classList.remove("is-closing");
+        vList.classList.add("is-open");
+        versionBtn.setAttribute("aria-expanded", "true");
+      };
+
+      versionWrap.addEventListener("mouseenter", openVersionList);
+      versionWrap.addEventListener("mouseleave", closeVersionList);
+
+      // Tap toggle for touch devices
+      versionBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (versionWrap.classList.contains("is-open")) {
+          closeVersionList();
+        } else {
+          openVersionList();
+        }
+      });
+
+      activeOutsideClickHandler = (e) => {
+        if (!versionWrap.contains(e.target)) closeVersionList();
+      };
+      document.addEventListener("click", activeOutsideClickHandler);
+    }
+
+    doc.appendChild(versionWrap);
+
+    // Scrollable prose region (keeps overflow away from the version dropdown)
+    const scroll = el("div", "bio-document__scroll");
+
+    // Divider
+    const divider = el("hr", "bio-document__divider");
+    scroll.appendChild(divider);
+
+    // Short bio — lead paragraph
+    if (bio.short_bio) {
+      const shortP = el("p", "bio-document__short");
+      shortP.textContent = bio.short_bio;
+      scroll.appendChild(shortP);
+    }
+
+    // Long bio — split on \n\n for paragraphs
+    if (bio.long_bio) {
+      const longWrap = el("div", "bio-document__long");
+      bio.long_bio.split(/\n\n+/).forEach(para => {
+        if (para.trim()) {
+          const p = el("p");
+          p.textContent = para.trim();
+          longWrap.appendChild(p);
+        }
+      });
+      scroll.appendChild(longWrap);
+    }
+
+    doc.appendChild(scroll);
+
+    const box = el("div", "bio-document__box");
+    box.appendChild(doc);
+    center.appendChild(box);
+    content.appendChild(center);
+
+    // Layer-meta — bottom right
+    if (hoistedMeta) {
+      buildMeta(hoistedMeta, bio);
+    } else {
+      const meta = el("div", "layer-meta");
+      buildMeta(meta, bio);
+      content.appendChild(meta);
+    }
+
+    // Breadcrumb — bottom left
+    const bc = makeBreadcrumb([
+      { label: "desk", onClick: () => navigate({ layer: "desk" }) },
+      { label: "Identity", onClick: () => navigate({ layer: "series", series: "identity" }) },
+      { label: "biography", current: true }
+    ]);
+    content.appendChild(bc);
+  }
+
+  const closeFn = () => navigate({ layer: "series", series: "identity", subcollection: null, item: null });
+  const escCleanup = attachEscapeHandler(content, closeFn);
+
+  const cleanup = () => {
+    escCleanup();
+    if (activeOutsideClickHandler) {
+      document.removeEventListener("click", activeOutsideClickHandler);
+      activeOutsideClickHandler = null;
+    }
+    if (hoistedVersionList && hoistedVersionList.parentNode) {
+      hoistedVersionList.parentNode.removeChild(hoistedVersionList);
+      hoistedVersionList = null;
+    }
+  };
+
+  renderDocument(0);
+
+  function onHoist(hoisted) { hoistedMeta = hoisted; }
+
+  return { veil, content, cleanup, onHoist };
 }
 
 // ── Browse sheet ──────────────────────────────────────────────────────────────
