@@ -17,7 +17,7 @@
               "item_type": "biography",
               "status": "published",
               "display_date": "April 2026",
-              "sort_date": "2026-04-01",
+              "sort_date": "2026-05-01",
               "version": 2,
               "roles": [
                 "Designer",
@@ -72,6 +72,7 @@
               "status": "published",
               "display_date": "August 2025",
               "sort_date": "2025-08-06",
+              "category": "employment",
               "title": "Low Design Office",
               "organization": "Low Design Office",
               "role": "Junior Designer",
@@ -125,6 +126,7 @@
               "status": "published",
               "display_date": "Sept 2023 - June 2024",
               "sort_date": "2024-06-02",
+              "category": "employment",
               "title": "SHoP Architects",
               "context_note": "Supported project team through the schematic and design development phases for high-end residential projects. Completed sheets for the finished design development package in Revit.\n\nCreated design studies for facade iterations and worked with consultants on coordinating facade details.\n\nParticipated in consultant meetings for landscape, MEP, civil, facade, and structure.\n\nAssisted the fabrication team with developing physical models.",
               "tags": [
@@ -160,6 +162,7 @@
               "display_date": "2021 - 2023",
               "title": "Weiss Architecture",
               "context_note": "Independently translated 2D AutoCAD drawings into a detailed 3D model and produced high-quality renderings to support design visualization and client presentations.\n\nParticipated in site visits and client presentations.",
+              "category": "employment",
               "tags": [
                 "summer"
               ],
@@ -229,6 +232,43 @@
       "subcollections": {},
       "items": [
         {
+          "id": "PROJ-2026-000",
+          "slug": "dummy-project",
+          "series": "labor",
+          "item_type": "project",
+          "status": "published",
+          "display_date": "Spring 2026",
+          "sort_date": "2026-01-01",
+          "title": "Dummy Project",
+          "context": "academic",
+          "role": "Student",
+          "organization": "Rice University",
+          "thesis": "This is a placeholder thesis statement for the dummy labor item. It describes the core argument or design intent of the project in plain language, without a heading. It occupies the second panel in the horizontal scroll view, after the 3D object.\n",
+          "assets": {
+            "thumbnail": "labor-dummy-thumb.png"
+          },
+          "subitems": [
+            {
+              "type": "image",
+              "file": "labor-dummy-01.png",
+              "caption": "Placeholder image — landscape format (1920×1080). East elevation looking toward the site boundary.",
+              "dimensions": "1920x1080"
+            },
+            {
+              "type": "image",
+              "file": "labor-dummy-02.png",
+              "caption": "Placeholder image — portrait format (1080×1440). Ground floor plan with threshold annotations.",
+              "dimensions": "1080x1440"
+            },
+            {
+              "type": "image",
+              "file": "labor-dummy-03.png",
+              "caption": "",
+              "dimensions": "1000x1000"
+            }
+          ]
+        },
+        {
           "id": "PROJ-2026-001",
           "slug": "wencun-village",
           "series": "labor",
@@ -269,6 +309,126 @@
         "films": {
           "label": "films",
           "items": [
+            {
+              "id": "FILM-2026-477",
+              "slug": "the-social-network-2010-2026-04-30",
+              "title": "The Social Network",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2010",
+              "director": "",
+              "watch_date": "2026-04-30",
+              "display_date": "April 30, 2026",
+              "sort_date": "2026-04-30",
+              "rating": 0,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/the-social-network/",
+              "assets": {
+                "poster": "https://a.ltrbxd.com/resized/sm/upload/nw/cm/pa/ai/sGQv3ZMZBDBnl3z42Q0mEQ5uiDe-0-600-0-900-crop.jpg?v=54ee59f7cd"
+              }
+            },
+            {
+              "id": "FILM-2026-478",
+              "slug": "inland-empire-2006-2026-04-29",
+              "title": "Inland Empire",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2006",
+              "director": "",
+              "watch_date": "2026-04-29",
+              "display_date": "April 29, 2026",
+              "sort_date": "2026-04-29",
+              "rating": 0,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/inland-empire/",
+              "assets": {
+                "poster": "https://a.ltrbxd.com/resized/film-poster/5/0/8/2/2/50822-inland-empire-0-600-0-900-crop.jpg?v=b4bd226d73"
+              }
+            },
+            {
+              "id": "FILM-2026-479",
+              "slug": "malcolm-x-1992-2026-04-27",
+              "title": "Malcolm X",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "1992",
+              "director": "",
+              "watch_date": "2026-04-27",
+              "display_date": "April 27, 2026",
+              "sort_date": "2026-04-27",
+              "rating": 5,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/malcolm-x-1992/",
+              "assets": {
+                "poster": "https://a.ltrbxd.com/resized/film-poster/5/0/7/2/0/50720-malcolm-x-0-600-0-900-crop.jpg?v=b52be1c88a"
+              }
+            },
+            {
+              "id": "FILM-2026-480",
+              "slug": "one-spoon-of-chocolate-2025-2026-04-26",
+              "title": "One Spoon of Chocolate",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2025",
+              "director": "",
+              "watch_date": "2026-04-26",
+              "display_date": "April 26, 2026",
+              "sort_date": "2026-04-26",
+              "rating": 1.5,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/one-spoon-of-chocolate/",
+              "assets": {
+                "poster": "https://a.ltrbxd.com/resized/film-poster/1/1/7/3/8/7/7/1173877-one-spoon-of-chocolate-0-600-0-900-crop.jpg?v=5192bfa03f"
+              }
+            },
+            {
+              "id": "FILM-2026-481",
+              "slug": "spider-man-far-from-home-2019-2026-04-24",
+              "title": "Spider-Man: Far From Home",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2019",
+              "director": "",
+              "watch_date": "2026-04-24",
+              "display_date": "April 24, 2026",
+              "sort_date": "2026-04-24",
+              "rating": 4.5,
+              "rewatch": true,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/spider-man-far-from-home/",
+              "assets": {
+                "poster": "https://a.ltrbxd.com/resized/film-poster/3/6/2/9/7/7/362977-spider-man-far-from-home-0-600-0-900-crop.jpg?v=d139fbf2ae"
+              }
+            },
+            {
+              "id": "FILM-2026-482",
+              "slug": "lee-cronins-the-mummy-2026-2026-04-22",
+              "title": "Lee Cronin's The Mummy",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2026",
+              "director": "",
+              "watch_date": "2026-04-22",
+              "display_date": "April 22, 2026",
+              "sort_date": "2026-04-22",
+              "rating": 3,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/lee-cronins-the-mummy/",
+              "assets": {
+                "poster": "https://a.ltrbxd.com/resized/film-poster/1/1/8/6/3/1/8/1186318-lee-cronins-the-mummy-0-600-0-900-crop.jpg?v=75239f90de"
+              }
+            },
             {
               "id": "FILM-2026-476",
               "slug": "FILM-2026-476-the-master",
@@ -12475,7 +12635,7 @@
   },
   "_counters": {
     "EPH": 18,
-    "FILM": 476,
+    "FILM": 482,
     "BOOK": 252,
     "MUSIC": 3,
     "COFFEE": 2,

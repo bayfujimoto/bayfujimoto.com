@@ -1,17 +1,18 @@
+function makePanel(label, ...children) {
+  const panel = document.createElement("div");
+  panel.className = "admin-panel";
+  const lbl = document.createElement("span");
+  lbl.className = "admin-panel-label";
+  lbl.textContent = label;
+  panel.appendChild(lbl);
+  for (const child of children) panel.appendChild(child);
+  return panel;
+}
+
 export function renderDashboard(container, archive, allItems) {
   container.innerHTML = "";
 
-  const title = document.createElement("h1");
-  title.className = "admin-page-title";
-  title.textContent = "Dashboard";
-  container.appendChild(title);
-
   // ── Stats ──────────────────────────────────────────────────
-
-  const statsLabel = document.createElement("div");
-  statsLabel.className = "admin-section-title";
-  statsLabel.textContent = "Items by series";
-  container.appendChild(statsLabel);
 
   const statsGrid = document.createElement("div");
   statsGrid.className = "admin-stats";
@@ -29,7 +30,6 @@ export function renderDashboard(container, archive, allItems) {
     statsGrid.appendChild(stat);
   }
 
-  // Total
   const totalStat = document.createElement("div");
   totalStat.className = "admin-stat";
   totalStat.innerHTML = `
@@ -38,14 +38,9 @@ export function renderDashboard(container, archive, allItems) {
   `;
   statsGrid.appendChild(totalStat);
 
-  container.appendChild(statsGrid);
+  container.appendChild(makePanel("Items by series", statsGrid));
 
   // ── Quick entry ────────────────────────────────────────────
-
-  const quickLabel = document.createElement("div");
-  quickLabel.className = "admin-section-title";
-  quickLabel.textContent = "Quick entry";
-  container.appendChild(quickLabel);
 
   const quickGrid = document.createElement("div");
   quickGrid.className = "admin-quick-grid";
@@ -68,14 +63,13 @@ export function renderDashboard(container, archive, allItems) {
     btn.innerHTML = `<span class="type-label">${series}</span>+ ${label}`;
     btn.addEventListener("click", (e) => {
       e.preventDefault();
-      // Store preselect and navigate
       window.__adminPreselect = { series, itemType: type };
       location.hash = "/new";
     });
     quickGrid.appendChild(btn);
   }
 
-  container.appendChild(quickGrid);
+  container.appendChild(makePanel("Quick entry", quickGrid));
 
   // ── Needs attention ────────────────────────────────────────
 
@@ -85,19 +79,14 @@ export function renderDashboard(container, archive, allItems) {
     return !hasAsset;
   }).slice(0, 10);
 
-  const attentionLabel = document.createElement("div");
-  attentionLabel.className = "admin-section-title";
-  attentionLabel.textContent = "Needs attention";
-  container.appendChild(attentionLabel);
-
+  let attentionContent;
   if (needsItems.length === 0) {
-    const empty = document.createElement("div");
-    empty.className = "admin-empty";
-    empty.textContent = "No draft or partial items without assets.";
-    container.appendChild(empty);
+    attentionContent = document.createElement("div");
+    attentionContent.className = "admin-empty";
+    attentionContent.textContent = "No draft or partial items without assets.";
   } else {
-    const list = document.createElement("ul");
-    list.className = "admin-attention-list";
+    attentionContent = document.createElement("ul");
+    attentionContent.className = "admin-attention-list";
     for (const item of needsItems) {
       const li = document.createElement("li");
       li.innerHTML = `
@@ -105,17 +94,13 @@ export function renderDashboard(container, archive, allItems) {
         <span>${item.title || "(untitled)"}</span>
         <span class="badge badge-${item.status || "draft"}">${item.status || "draft"}</span>
       `;
-      list.appendChild(li);
+      attentionContent.appendChild(li);
     }
-    container.appendChild(list);
   }
 
-  // ── Recent items ───────────────────────────────────────────
+  container.appendChild(makePanel("Needs attention", attentionContent));
 
-  const recentLabel = document.createElement("div");
-  recentLabel.className = "admin-section-title";
-  recentLabel.textContent = "Recent items";
-  container.appendChild(recentLabel);
+  // ── Recent items ───────────────────────────────────────────
 
   const sorted = [...allItems].sort((a, b) => {
     const da = a.sort_date ? new Date(a.sort_date) : new Date(0);
@@ -123,43 +108,41 @@ export function renderDashboard(container, archive, allItems) {
     return db - da;
   }).slice(0, 15);
 
+  let recentContent;
   if (sorted.length === 0) {
-    const empty = document.createElement("div");
-    empty.className = "admin-empty";
-    empty.textContent = "No items yet. Add your first record above.";
-    container.appendChild(empty);
-    return;
-  }
-
-  const table = document.createElement("table");
-  table.className = "admin-table";
-  table.innerHTML = `
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Title</th>
-        <th>Type</th>
-        <th>Series</th>
-        <th>Status</th>
-        <th>Date</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  `;
-  const tbody = table.querySelector("tbody");
-
-  for (const item of sorted) {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td><a href="#/edit/${item.id}">${item.id}</a></td>
-      <td>${item.title || "(untitled)"}</td>
-      <td>${item.item_type || ""}</td>
-      <td>${item._series || ""}${item._sub ? ` / ${item._sub}` : ""}</td>
-      <td><span class="badge badge-${item.status || "draft"}">${item.status || "draft"}</span></td>
-      <td>${item.sort_date || item.display_date || ""}</td>
+    recentContent = document.createElement("div");
+    recentContent.className = "admin-empty";
+    recentContent.textContent = "No items yet. Add your first record above.";
+  } else {
+    recentContent = document.createElement("table");
+    recentContent.className = "admin-table admin-table--dim";
+    recentContent.innerHTML = `
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Title</th>
+          <th>Type</th>
+          <th>Series</th>
+          <th>Status</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
     `;
-    tbody.appendChild(tr);
+    const tbody = recentContent.querySelector("tbody");
+    for (const item of sorted) {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><a href="#/edit/${item.id}">${item.id}</a></td>
+        <td>${item.title || "(untitled)"}</td>
+        <td>${item.item_type || ""}</td>
+        <td>${item._series || ""}${item._sub ? ` / ${item._sub}` : ""}</td>
+        <td><span class="badge badge-${item.status || "draft"}">${item.status || "draft"}</span></td>
+        <td>${item.sort_date || item.display_date || ""}</td>
+      `;
+      tbody.appendChild(tr);
+    }
   }
 
-  container.appendChild(table);
+  container.appendChild(makePanel("Recent items", recentContent));
 }

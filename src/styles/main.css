@@ -706,6 +706,7 @@ body {
 
 /* ── Biography document ──────────────────────────────────────────────────────── */
 .bio-document__box {
+  position: relative;
   width: 40vw;
   height: 80vh;
   border: 1px solid var(--border-dim);
@@ -721,6 +722,15 @@ body {
   -webkit-overflow-scrolling: touch;
   flex: 1;
   min-height: 0;
+  scrollbar-width: none;
+  mask-image: linear-gradient(to bottom, black calc(100% - 4rem), transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black calc(100% - 4rem), transparent 100%);
+  transition: mask-image 0.3s var(--ease-base), -webkit-mask-image 0.3s var(--ease-base);
+}
+.bio-document__scroll::-webkit-scrollbar { display: none; }
+.bio-document__box.at-bottom .bio-document__scroll {
+  mask-image: none;
+  -webkit-mask-image: none;
 }
 
 .bio-document {
@@ -730,6 +740,10 @@ body {
   max-width: none;
   font-family: var(--font);
   color: var(--overlay-text);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
 }
 
 /* Version indicator row */
@@ -857,6 +871,95 @@ body {
   margin-bottom: 0;
 }
 
+/* ── CV entries ──────────────────────────────────────────────────────────────── */
+.cv-section {
+  margin-bottom: 2rem;
+}
+.cv-section:last-child {
+  margin-bottom: 0;
+}
+.cv-section__category {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  color: var(--overlay-muted);
+  margin: 0 0 0.75rem;
+}
+.cv-entry {
+  margin-bottom: 1.25rem;
+}
+.cv-entry:last-child {
+  margin-bottom: 0;
+}
+.cv-entry__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+}
+.cv-entry__title {
+  font-size: var(--text-base);
+  color: var(--overlay-text);
+}
+.cv-entry__date {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--overlay-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.cv-entry__sub {
+  font-size: var(--text-sm);
+  color: var(--overlay-muted);
+  margin: 0.2rem 0 0;
+}
+.cv-entry__note {
+  margin-top: 0.5rem;
+}
+.cv-entry__note p {
+  font-size: var(--text-base);
+  line-height: var(--leading-loose);
+  color: var(--overlay-muted);
+  margin: 0 0 0.5rem;
+}
+.cv-entry__note p:last-child {
+  margin-bottom: 0;
+}
+
+.bio-document__scroll-caret {
+  position: absolute;
+  bottom: 1.75rem;
+  right: 1.75rem;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  opacity: 1;
+  transition: opacity 0.2s var(--ease-base);
+}
+.bio-document__scroll-caret::after {
+  content: "";
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-right: 1px solid var(--overlay-muted);
+  border-bottom: 1px solid var(--overlay-muted);
+  transform: rotate(45deg);
+  transition: border-color 0.15s var(--ease-base);
+}
+.bio-document__scroll-caret:hover::after {
+  border-color: var(--overlay-text);
+}
+.bio-document__scroll-caret.is-hidden {
+  opacity: 0;
+}
+
 /* Link style within layer-meta */
 .overlay-link {
   display: block;
@@ -891,4 +994,125 @@ body {
   .layer-veil,
   .layer-content,
   .item-image { transition: none; }
+}
+
+/* ── Labor item view ─────────────────────────────────────────────────────────── */
+
+/* The layer-content host needs pointer-events on the scroll container */
+.labor-item-content {
+  pointer-events: none; /* children opt in */
+}
+
+/* Outer bordered container — matches bio-document__box border language.
+   Positioned absolutely within the fixed layer so top/bottom values drive height
+   directly, keeping the bottom edge clear of the layer-meta overlay regardless
+   of viewport height.
+   bottom: overlay-padding (2rem) + metadata block (~14.5rem) + gap (1.5rem) = 18rem */
+.labor-item {
+  position: absolute;
+  top: 3rem;
+  bottom: 18rem;
+  left: var(--overlay-padding);
+  right: var(--overlay-padding);
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  border: 1px solid var(--border-dim);
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  pointer-events: auto;
+  /* mask-image set dynamically by JS based on scroll position */
+}
+.labor-item::-webkit-scrollbar { display: none; }
+
+/* Base panel */
+.labor-item__panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  flex-shrink: 0;
+  border-right: 0.5px solid var(--border-dim);
+  box-sizing: border-box;
+}
+.labor-item__panel:last-child { border-right: none; }
+
+/* Panel 1 — Three.js object */
+.labor-item__panel--object {
+  width: 340px;
+  position: relative;
+}
+
+/* Panel 2 — Thesis text */
+.labor-item__panel--thesis {
+  width: 220px;
+  padding: 1.5rem;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.labor-item__panel--thesis::-webkit-scrollbar { display: none; }
+
+/* Panel 3+ — Image */
+.labor-item__panel--image {
+  /* width set inline per aspect ratio */
+}
+
+/* Three.js canvas fills the object panel */
+.labor-item__canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Image panels: image fills available height, left-aligned */
+.labor-item__image-wrap {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.labor-item__image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: left center;
+  display: block;
+}
+
+/* Caption below image */
+.labor-item__caption {
+  border-top: 0.5px solid var(--border-dim);
+  padding: 0.5rem 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  line-height: 1.6;
+  color: var(--overlay-muted);
+  flex-shrink: 0;
+}
+
+/* Thesis text */
+.labor-item__thesis {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  line-height: 1.8;
+  color: var(--overlay-text);
+  margin: 0;
+}
+
+
+/* Mobile */
+@media (max-width: 600px) {
+  .labor-item {
+    top: 2rem;
+    bottom: 16rem;
+    left: var(--overlay-padding);
+    right: var(--overlay-padding);
+  }
+
+  .labor-item__panel--object { width: 280px; }
+  .labor-item__panel--thesis { width: 180px; padding: 1rem; }
 }

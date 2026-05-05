@@ -1,6 +1,6 @@
 import { navigate, replace } from "./router.js";
 import { subscribe, getState } from "./state.js";
-import { imageUrl } from "./image-url.js";
+import { imageUrl, modelUrl } from "./image-url.js";
 import { setSeriesInfo } from "./scene.js";
 
 let archive = null;
@@ -108,12 +108,20 @@ function pushLayerForState(state, silent = false) {
     case "browse": {
       if (state.series === "identity" && state.subcollection === "biography") {
         pushSheet(makeBiographySheet());
+      } else if (state.series === "identity" && state.subcollection === "cv") {
+        pushSheet(makeCVSheet());
       } else {
         pushSheet(makeBrowseSheet(state.series, state.subcollection, state.view, state.item));
       }
       break;
     }
-    case "item":   pushSheet(makeItemSheet(state.series, state.subcollection, state.item, state.view)); break;
+    case "item":
+      if (state.series === "labor") {
+        pushSheet(makeLaborItemSheet(state.series, state.item, state.view));
+      } else {
+        pushSheet(makeItemSheet(state.series, state.subcollection, state.item, state.view));
+      }
+      break;
   }
 }
 
@@ -496,19 +504,24 @@ function makeBiographySheet() {
         const r = versionBtn.getBoundingClientRect();
         vList.style.position = "fixed";
         vList.style.left = r.left + "px";
-        vList.style.top = (r.top - vList.offsetHeight) + "px";
+        vList.style.top = (r.top - vList.offsetHeight + 8) + "px";
       };
 
+      let closeTimer = null;
+
       const closeVersionList = () => {
-        if (!vList.classList.contains("is-open")) return;
-        vList.classList.remove("is-open");
-        vList.classList.add("is-closing");
-        versionBtn.setAttribute("aria-expanded", "false");
-        const totalMs = (otherVersions.length - 1) * 35 + 100;
-        setTimeout(() => vList.classList.remove("is-closing"), totalMs);
+        closeTimer = setTimeout(() => {
+          if (!vList.classList.contains("is-open")) return;
+          vList.classList.remove("is-open");
+          vList.classList.add("is-closing");
+          versionBtn.setAttribute("aria-expanded", "false");
+          const totalMs = (otherVersions.length - 1) * 35 + 100;
+          setTimeout(() => vList.classList.remove("is-closing"), totalMs);
+        }, 80);
       };
 
       const openVersionList = () => {
+        clearTimeout(closeTimer);
         positionVersionList();
         vList.classList.remove("is-closing");
         vList.classList.add("is-open");
@@ -517,6 +530,8 @@ function makeBiographySheet() {
 
       versionWrap.addEventListener("mouseenter", openVersionList);
       versionWrap.addEventListener("mouseleave", closeVersionList);
+      vList.addEventListener("mouseenter", openVersionList);
+      vList.addEventListener("mouseleave", closeVersionList);
 
       // Tap toggle for touch devices
       versionBtn.addEventListener("click", (e) => {
@@ -536,12 +551,12 @@ function makeBiographySheet() {
 
     doc.appendChild(versionWrap);
 
+    // Divider — outside scroll region so it stays fixed while content scrolls
+    const divider = el("hr", "bio-document__divider");
+    doc.appendChild(divider);
+
     // Scrollable prose region (keeps overflow away from the version dropdown)
     const scroll = el("div", "bio-document__scroll");
-
-    // Divider
-    const divider = el("hr", "bio-document__divider");
-    scroll.appendChild(divider);
 
     // Short bio — lead paragraph
     if (bio.short_bio) {
@@ -567,6 +582,23 @@ function makeBiographySheet() {
 
     const box = el("div", "bio-document__box");
     box.appendChild(doc);
+
+    const scrollCaret = el("button", "bio-document__scroll-caret");
+    scrollCaret.setAttribute("aria-label", "Scroll down");
+    scrollCaret.type = "button";
+    box.appendChild(scrollCaret);
+
+    const updateCaret = () => {
+      const atBottom = scroll.scrollHeight - scroll.scrollTop <= scroll.clientHeight + 2;
+      scrollCaret.classList.toggle("is-hidden", atBottom);
+      box.classList.toggle("at-bottom", atBottom);
+    };
+    scroll.addEventListener("scroll", updateCaret, { passive: true });
+    requestAnimationFrame(updateCaret);
+
+    scrollCaret.addEventListener("click", () => {
+      scroll.scrollTo({ top: scroll.scrollTop + scroll.clientHeight * 0.6, behavior: "smooth" });
+    });
     center.appendChild(box);
     content.appendChild(center);
 
@@ -606,6 +638,153 @@ function makeBiographySheet() {
   renderDocument(0);
 
   function onHoist(hoisted) { hoistedMeta = hoisted; }
+
+  return { veil, content, cleanup, onHoist };
+}
+
+// ── CV sheet ──────────────────────────────────────────────────────────────────
+
+function makeCVSheet() {
+  const entries = archive.series["identity"]?.subcollections["cv"]?.items || [];
+  // Sorted by sort_date descending — most recent first
+
+  const veil = makeVeil(() => {
+    navigate({ layer: "series", series: "identity", subcollection: null, item: null });
+  });
+
+  const content = makeContent();
+  let hoistedMeta = null;
+
+  function buildMeta(metaEl) {
+    metaEl.innerHTML = "";
+
+    const h1 = el("h1", "overlay-title");
+    h1.textContent = "CV";
+    metaEl.appendChild(h1);
+
+    const idEl = el("div", "overlay-id");
+    idEl.textContent = `${entries.length} entries`;
+    metaEl.appendChild(idEl);
+  }
+
+  function renderDocument() {
+    content.innerHTML = "";
+
+    const center = el("div", "layer-center");
+    const doc = el("div", "bio-document");
+    doc.setAttribute("role", "document");
+    doc.setAttribute("aria-label", "CV");
+
+    const scroll = el("div", "bio-document__scroll");
+
+    // Group entries by category
+    const groups = {};
+    entries.forEach(entry => {
+      const cat = entry.category || "other";
+      if (!groups[cat]) groups[cat] = [];
+      groups[cat].push(entry);
+    });
+
+    const categoryOrder = ["employment", "education", "exhibition", "publication", "award"];
+    const sortedCats = [
+      ...categoryOrder.filter(c => groups[c]),
+      ...Object.keys(groups).filter(c => !categoryOrder.includes(c))
+    ];
+
+    sortedCats.forEach(cat => {
+      const section = el("div", "cv-section");
+
+      const catLabel = el("p", "cv-section__category");
+      catLabel.textContent = cat;
+      section.appendChild(catLabel);
+
+      groups[cat].forEach(entry => {
+        const row = el("div", "cv-entry");
+
+        const header = el("div", "cv-entry__header");
+
+        const title = el("span", "cv-entry__title");
+        title.textContent = entry.organization || entry.title;
+        header.appendChild(title);
+
+        const date = el("span", "cv-entry__date");
+        date.textContent = entry.display_date;
+        header.appendChild(date);
+
+        row.appendChild(header);
+
+        if (entry.role || entry.title) {
+          const sub = el("p", "cv-entry__sub");
+          sub.textContent = entry.role ? `${entry.title}${entry.role ? " — " + entry.role : ""}` : entry.title;
+          row.appendChild(sub);
+        }
+
+        if (entry.context_note) {
+          const longWrap = el("div", "cv-entry__note");
+          entry.context_note.split(/\n\n+/).forEach(para => {
+            if (para.trim()) {
+              const p = el("p");
+              p.textContent = para.trim();
+              longWrap.appendChild(p);
+            }
+          });
+          row.appendChild(longWrap);
+        }
+
+        section.appendChild(row);
+      });
+
+      scroll.appendChild(section);
+    });
+
+    doc.appendChild(scroll);
+
+    const box = el("div", "bio-document__box");
+    box.appendChild(doc);
+
+    const scrollCaret = el("button", "bio-document__scroll-caret");
+    scrollCaret.setAttribute("aria-label", "Scroll down");
+    scrollCaret.type = "button";
+    box.appendChild(scrollCaret);
+
+    const updateCaret = () => {
+      const atBottom = scroll.scrollHeight - scroll.scrollTop <= scroll.clientHeight + 2;
+      scrollCaret.classList.toggle("is-hidden", atBottom);
+      box.classList.toggle("at-bottom", atBottom);
+    };
+    scroll.addEventListener("scroll", updateCaret, { passive: true });
+    requestAnimationFrame(updateCaret);
+
+    scrollCaret.addEventListener("click", () => {
+      scroll.scrollTo({ top: scroll.scrollTop + scroll.clientHeight * 0.6, behavior: "smooth" });
+    });
+
+    center.appendChild(box);
+    content.appendChild(center);
+
+    if (hoistedMeta) {
+      buildMeta(hoistedMeta);
+    } else {
+      const meta = el("div", "layer-meta");
+      buildMeta(meta);
+      content.appendChild(meta);
+    }
+
+    const bc = makeBreadcrumb([
+      { label: "desk", onClick: () => navigate({ layer: "desk" }) },
+      { label: "Identity", onClick: () => navigate({ layer: "series", series: "identity" }) },
+      { label: "cv", current: true }
+    ]);
+    content.appendChild(bc);
+  }
+
+  const closeFn = () => navigate({ layer: "series", series: "identity", subcollection: null, item: null });
+  const escCleanup = attachEscapeHandler(content, closeFn);
+  const cleanup = () => { escCleanup(); };
+
+  renderDocument();
+
+  function onHoist(hoisted) { hoistedMeta = hoisted; buildMeta(hoistedMeta); }
 
   return { veil, content, cleanup, onHoist };
 }
@@ -672,10 +851,12 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
     years.forEach(({ year, items: yearItems }) => {
       const group = el("div", "item-grid__group");
 
-      const yearLabel = el("div", "item-grid__year");
-      yearLabel.textContent = year;
-      yearLabel.setAttribute("aria-hidden", "true");
-      group.appendChild(yearLabel);
+      if (activeSubKey !== "contact") {
+        const yearLabel = el("div", "item-grid__year");
+        yearLabel.textContent = year;
+        yearLabel.setAttribute("aria-hidden", "true");
+        group.appendChild(yearLabel);
+      }
 
       const cells = el("div", "item-grid__cells");
       const colCount = Math.ceil(yearItems.length / GRID_ROWS);
@@ -1244,4 +1425,299 @@ function groupByYear(items) {
   return Array.from(map.entries())
     .sort((a, b) => b[0].localeCompare(a[0]))
     .map(([year, items]) => ({ year, items }));
+}
+
+// ── Labor item sheet ──────────────────────────────────────────────────────────
+
+function makeLaborItemSheet(seriesKey, itemId, viewSlug) {
+  const s = archive.series[seriesKey];
+  const allItems = s.items || [];
+  let currentIdx = allItems.findIndex(i => i.id === itemId);
+  if (currentIdx === -1) currentIdx = 0;
+
+  const veil = makeVeil(() => {
+    navigate({ layer: "browse", series: seriesKey, subcollection: null, view: viewSlug || "all", item: null });
+  });
+
+  const content = makeContent();
+  content.classList.add("labor-item-content");
+
+  const metaEl = el("div", "layer-meta");
+  metaEl.setAttribute("aria-label", "Item metadata");
+
+  // Track Three.js scene disposal across renders
+  let disposeScene = null;
+
+  function buildMeta(item) {
+    metaEl.innerHTML = "";
+
+    const titleEl = el("p", "overlay-title");
+    titleEl.textContent = item.title;
+    metaEl.appendChild(titleEl);
+
+    const metaFields = [
+      ["context",      item.context],
+      ["organization", item.organization],
+      ["date",         item.display_date],
+    ];
+
+    metaFields.forEach(([label, value]) => {
+      if (!value) return;
+      const fieldEl = el("div", "overlay-field");
+      const labelEl = el("span", "overlay-label");
+      labelEl.textContent = label;
+      const valueEl = el("span", "overlay-value");
+      valueEl.textContent = value;
+      fieldEl.appendChild(labelEl);
+      fieldEl.appendChild(valueEl);
+      metaEl.appendChild(fieldEl);
+    });
+
+    const idEl = el("div", "overlay-id");
+    idEl.textContent = item.id;
+    metaEl.appendChild(idEl);
+  }
+
+  function renderContent(idx) {
+    currentIdx = idx;
+    const item = allItems[idx];
+    const hasPrev = idx > 0;
+    const hasNext = idx < allItems.length - 1;
+
+    // Dispose previous Three.js scene
+    if (disposeScene) { disposeScene(); disposeScene = null; }
+
+    content.innerHTML = "";
+
+    // Breadcrumb
+    const bc = makeBreadcrumb([
+      { label: "desk",    onClick: () => navigate({ layer: "desk" }) },
+      { label: s.label,  onClick: () => navigate({ layer: "browse", series: seriesKey, subcollection: null, view: viewSlug || "all", item: null }) },
+      { label: item.title, current: true },
+    ]);
+    content.appendChild(bc);
+
+    // Horizontal scroll container
+    const scroll = el("div", "labor-item");
+    scroll.setAttribute("aria-label", `Project: ${item.title}`);
+
+    // ── Panel 1: 3D object ──
+    const objectPanel = el("div", "labor-item__panel labor-item__panel--object");
+    const canvas = el("canvas", "labor-item__canvas");
+    canvas.setAttribute("aria-label", `3D model for ${item.title}`);
+    objectPanel.appendChild(canvas);
+    scroll.appendChild(objectPanel);
+
+    // ── Panel 2: Thesis ──
+    const thesisPanel = el("div", "labor-item__panel labor-item__panel--thesis");
+    if (item.thesis) {
+      const p = el("p", "labor-item__thesis");
+      p.textContent = item.thesis;
+      thesisPanel.appendChild(p);
+    }
+    scroll.appendChild(thesisPanel);
+
+    // ── Panels 3+: Subitems ──
+    // Container height = 100vh minus top (3rem) and bottom (18rem) offsets
+    const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
+    const containerH = window.innerHeight - (3 * rem) - (18 * rem);
+    (item.subitems || []).forEach((sub, i) => {
+      if (sub.type !== "image") return;
+
+      let panelWidth = 200;
+      if (sub.dimensions) {
+        const [w, h] = sub.dimensions.split("x").map(Number);
+        if (w && h) panelWidth = Math.max(140, Math.round((w / h) * containerH));
+      }
+
+      const imgPanel = el("div", "labor-item__panel labor-item__panel--image");
+      imgPanel.style.width = `${panelWidth}px`;
+
+      const imgWrap = el("div", "labor-item__image-wrap");
+      const img = el("img", "labor-item__image");
+      img.src = imageUrl(sub.file, "original");
+      img.alt = sub.caption || `${item.title} — image ${i + 1}`;
+      img.draggable = false;
+      imgWrap.appendChild(img);
+      imgPanel.appendChild(imgWrap);
+
+      if (sub.caption) {
+        const cap = el("p", "labor-item__caption");
+        cap.textContent = sub.caption;
+        imgPanel.appendChild(cap);
+      }
+
+      scroll.appendChild(imgPanel);
+    });
+
+    content.appendChild(scroll);
+
+    // Scroll-edge fade mask — updates on scroll to fade whichever edges have overflow
+    function updateScrollMask() {
+      const atStart = scroll.scrollLeft <= 0;
+      const atEnd   = scroll.scrollLeft + scroll.clientWidth >= scroll.scrollWidth - 1;
+      let mask;
+      if (atStart && !atEnd) {
+        mask = "linear-gradient(to right, black calc(100% - 4rem), transparent 100%)";
+      } else if (!atStart && !atEnd) {
+        mask = "linear-gradient(to right, transparent 0, black 4rem, black calc(100% - 4rem), transparent 100%)";
+      } else if (!atStart && atEnd) {
+        mask = "linear-gradient(to right, transparent 0, black 4rem, black 100%)";
+      } else {
+        mask = "none";
+      }
+      scroll.style.maskImage = mask;
+      scroll.style.webkitMaskImage = mask;
+    }
+    scroll.addEventListener("scroll", updateScrollMask, { passive: true });
+    // Run after layout so scrollWidth is accurate
+    requestAnimationFrame(updateScrollMask);
+
+    // Prev / next arrows
+    const prevBtn = el("button", "layer-nav layer-nav--prev");
+    prevBtn.type = "button";
+    prevBtn.textContent = "←";
+    prevBtn.setAttribute("aria-label", "Previous item");
+    if (!hasPrev) prevBtn.disabled = true;
+    prevBtn.addEventListener("click", () => { if (currentIdx > 0) navItem(currentIdx - 1); });
+    content.appendChild(prevBtn);
+
+    const nextBtn = el("button", "layer-nav layer-nav--next");
+    nextBtn.type = "button";
+    nextBtn.textContent = "→";
+    nextBtn.setAttribute("aria-label", "Next item");
+    if (!hasNext) nextBtn.disabled = true;
+    nextBtn.addEventListener("click", () => { if (currentIdx < allItems.length - 1) navItem(currentIdx + 1); });
+    content.appendChild(nextBtn);
+
+    buildMeta(item);
+
+    // Init Three.js after the canvas is in the DOM
+    requestAnimationFrame(() => {
+      disposeScene = initLaborModelScene(canvas, item.model ? modelUrl(item.model) : null);
+    });
+  }
+
+  function navItem(idx) {
+    renderContent(idx);
+    replace({ layer: "item", series: seriesKey, subcollection: null, item: allItems[idx].id, view: viewSlug || "all" });
+  }
+
+  const onKey = (e) => {
+    if (layerStack[layerStack.length - 1]?.content !== content) return;
+    if (e.key === "Escape") navigate({ layer: "browse", series: seriesKey, subcollection: null, view: viewSlug || "all", item: null });
+    if (e.key === "ArrowLeft"  && currentIdx > 0) navItem(currentIdx - 1);
+    if (e.key === "ArrowRight" && currentIdx < allItems.length - 1) navItem(currentIdx + 1);
+  };
+  document.addEventListener("keydown", onKey);
+
+  const cleanup = () => {
+    document.removeEventListener("keydown", onKey);
+    if (disposeScene) { disposeScene(); disposeScene = null; }
+    metaEl.remove();
+  };
+
+  renderContent(currentIdx);
+
+  const depth = layerStack.length + 1;
+  metaEl.style.zIndex = depth * 10 + 2;
+  metaEl.style.transition = "opacity 0.2s var(--ease-base)";
+  document.body.appendChild(metaEl);
+
+  return { veil, content, cleanup };
+}
+
+// ── Labor Three.js model scene ────────────────────────────────────────────────
+
+function initLaborModelScene(canvas, glbUrl) {
+  import("three").then(({ WebGLRenderer, Scene, PerspectiveCamera, AmbientLight,
+    DirectionalLight, BoxGeometry, MeshStandardMaterial, Mesh, Color }) => {
+    import("three/examples/jsm/controls/OrbitControls.js").then(({ OrbitControls }) => {
+
+      if (!canvas.isConnected) return; // panel may have been removed before RAF fired
+
+      const renderer = new WebGLRenderer({ canvas, antialias: true, alpha: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setSize(canvas.offsetWidth, canvas.offsetHeight);
+
+      const scene = new Scene();
+
+      const camera = new PerspectiveCamera(45, canvas.offsetWidth / canvas.offsetHeight, 0.1, 100);
+      camera.position.set(2, 1.5, 3);
+      camera.lookAt(0, 0, 0);
+
+      // Lighting
+      const ambient = new AmbientLight(0xffffff, 0.7);
+      scene.add(ambient);
+      const dir = new DirectionalLight(0xffffff, 1.2);
+      dir.position.set(3, 6, 4);
+      scene.add(dir);
+
+      // Fallback geometry — always load first, replace if GLB loads
+      const boxGeo = new BoxGeometry(1, 1, 1);
+      const boxMat = new MeshStandardMaterial({ color: 0x999999, roughness: 0.6, metalness: 0.1 });
+      const box = new Mesh(boxGeo, boxMat);
+      scene.add(box);
+      let model = box;
+
+      // OrbitControls — constrained so model can't flip upside down
+      const controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.08;
+      controls.minPolarAngle = 0.1;
+      controls.maxPolarAngle = Math.PI * 0.85;
+      controls.autoRotate = true;
+      controls.autoRotateSpeed = 0.6;
+      controls.addEventListener("start", () => { controls.autoRotate = false; });
+
+      // Load GLB if provided
+      if (glbUrl) {
+        import("three/examples/jsm/loaders/GLTFLoader.js").then(({ GLTFLoader }) => {
+          new GLTFLoader().load(
+            glbUrl,
+            (gltf) => {
+              scene.remove(model);
+              model = gltf.scene;
+              scene.add(model);
+            },
+            undefined,
+            () => { /* load error — keep fallback box */ }
+          );
+        });
+      }
+
+      let rafId;
+      const animate = () => {
+        rafId = requestAnimationFrame(animate);
+        controls.update();
+        renderer.render(scene, camera);
+      };
+      animate();
+
+      // Resize observer
+      const ro = new ResizeObserver(() => {
+        const w = canvas.offsetWidth;
+        const h = canvas.offsetHeight;
+        if (w === 0 || h === 0) return;
+        renderer.setSize(w, h);
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+      });
+      ro.observe(canvas);
+
+      // Disposal function returned to caller
+      function dispose() {
+        cancelAnimationFrame(rafId);
+        ro.disconnect();
+        controls.dispose();
+        renderer.dispose();
+      }
+      canvas._laborDispose = dispose;
+    });
+  });
+
+  // Return a synchronous dispose handle that works even before Three.js resolves
+  return () => {
+    if (canvas._laborDispose) canvas._laborDispose();
+  };
 }

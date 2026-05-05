@@ -44,13 +44,23 @@
   --bg:        #000000;
   --bg-surface: var(--color-surface-dk);
   --fg:        var(--color-vellum);
-  --fg-muted:  rgba(232, 224, 208, 0.4);
+  --fg-muted:  rgba(232, 224, 208, 0.6);
   --border:    rgba(232, 224, 208, 0.2);
   --border-dim: rgba(232, 224, 208, 0.12);
   --hover-bg:  rgba(232, 224, 208, 0.05);
   --active-bg: rgba(232, 224, 208, 0.10);
 
   --grid-line:  rgba(232, 224, 208, 0.12);
+
+  /* Status colors (dark overrides — lighter to read on dark bg) */
+  --status-partial-color:   #c09040;
+  --status-partial-border:  #c09040;
+  --status-complete-color:  #60a060;
+  --status-complete-border: #60a060;
+  --status-published-color: var(--fg);
+  --status-published-border:var(--fg);
+  --color-success: #4aaa4a;
+  --color-error:   #cc5555;
 
   /* Overlay/veil (used by layer system — --depth is set inline) */
   --veil-color: var(--color-shadow);
@@ -150,4 +160,5 @@
 :root {
   --sidebar-w: 200px;
   --status-h:  36px;
+  --admin-accent: #FF9E0E;
 }

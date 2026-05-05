@@ -7,6 +7,7 @@ item_type: cv-entry
 status: published
 display_date: August 2025
 sort_date: "2025-08-06"
+category: employment
 title: Low Design Office
 organization: Low Design Office
 role: Junior Designer

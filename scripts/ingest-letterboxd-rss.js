@@ -233,6 +233,7 @@ async function main() {
       poster,
     };
 
+    const outPath = join(CONTENT_DIR, `${slug}.md`);
     writeFileSync(outPath, buildMarkdown(fields, ""));
     newCount++;
     console.log(`[ingest-rss] + ${title} (${year}) — ${watchDate}`);
@@ -250,3 +251,4 @@ main().catch((err) => {
   // Non-fatal: don't abort the build
   process.exit(0);
 });
+

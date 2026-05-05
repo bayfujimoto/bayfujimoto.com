@@ -1,4 +1,4 @@
-import { getBaseGroups } from "../forms/base-fields.js";
+import { getBaseGroups, orderGroups } from "../forms/base-fields.js";
 import { getTypeGroups } from "../forms/type-fields.js";
 import { renderForm }    from "../forms/form-renderer.js";
 import { generateId }    from "../lib/id-generator.js";
@@ -41,31 +41,22 @@ function getMainContainer(el) {
 function renderStep(container, archive) {
   container.innerHTML = "";
 
-  const breadcrumb = document.createElement("div");
-  breadcrumb.className = "admin-breadcrumb";
-  container.appendChild(breadcrumb);
-
-  const title = document.createElement("h1");
-  title.className = "admin-page-title";
-  container.appendChild(title);
+  const breadcrumb = document.getElementById("admin-topbar-breadcrumb");
 
   const body = document.createElement("div");
   body.className = "admin-wizard-step";
   container.appendChild(body);
 
   if (wizardState.step === 0) {
-    title.textContent = "New Item — Select type";
     breadcrumb.innerHTML = `<span>new item</span>`;
     renderTypeSelection(body, archive);
   } else if (wizardState.step === 1) {
-    title.textContent = "New Item — Entry depth";
     breadcrumb.innerHTML = `
       <a onclick="goStep(0)">new item</a><span>›</span>
       <span>${wizardState.series} / ${wizardState.itemType}</span>
     `;
     renderDepthSelection(body, archive);
   } else {
-    title.textContent = `New ${wizardState.itemType}`;
     breadcrumb.innerHTML = `
       <a onclick="goStep(0)">new item</a><span>›</span>
       <a onclick="goStep(1)">${wizardState.series} / ${wizardState.itemType}</a><span>›</span>
@@ -81,14 +72,20 @@ function renderStep(container, archive) {
   };
 }
 
+function makePanel(label, ...children) {
+  const panel = document.createElement("div");
+  panel.className = "admin-panel";
+  const lbl = document.createElement("span");
+  lbl.className = "admin-panel-label";
+  lbl.textContent = label;
+  panel.appendChild(lbl);
+  for (const child of children) panel.appendChild(child);
+  return panel;
+}
+
 function renderTypeSelection(body, archive) {
   for (const series of SERIES_ORDER) {
     const types = SERIES_TYPES[series];
-
-    const seriesLabel = document.createElement("div");
-    seriesLabel.className = "admin-section-title";
-    seriesLabel.textContent = series;
-    body.appendChild(seriesLabel);
 
     const grid = document.createElement("div");
     grid.className = "admin-step-grid";
@@ -106,7 +103,7 @@ function renderTypeSelection(body, archive) {
       grid.appendChild(btn);
     }
 
-    body.appendChild(grid);
+    body.appendChild(makePanel(series, grid));
   }
 }
 
@@ -140,7 +137,7 @@ function renderDepthSelection(body, archive) {
 
   grid.appendChild(quick);
   grid.appendChild(full);
-  body.appendChild(grid);
+  body.appendChild(makePanel("Entry depth", grid));
 }
 
 function renderFormStep(body, archive) {
@@ -163,12 +160,12 @@ function renderFormStep(body, archive) {
 
   initialData.slug = generateSlug(itemType, initialData);
 
-  const groups = [...getBaseGroups(), ...getTypeGroups(itemType)];
+  const groups = orderGroups([...getBaseGroups(), ...getTypeGroups(itemType)]);
 
   // File path preview
   const preview = document.createElement("div");
   preview.className = "admin-filepath-preview";
-  body.appendChild(preview);
+  body.appendChild(makePanel("Save path", preview));
 
   function updatePreview(data) {
     const slug = generateSlug(itemType, data);

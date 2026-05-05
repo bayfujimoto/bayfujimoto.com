@@ -46,6 +46,36 @@ Its purpose is to prevent drift, repetition, and silent contradictions over time
 - url_pattern: `/labor/all/`, `/labor/academic/`, `/labor/professional/`, `/labor/personal/`
 - date: 2026-04-17
 
+### Labor context filter removed from UI
+- status: confirmed
+- decision: No context filter UI is exposed in the labor browse view. Browse is flat and chronological. The `/labor/academic/`, `/labor/professional/`, `/labor/personal/` URL routes remain in the router for future use but no navigation element exposes them.
+- reason: With 2–3 items per year, filtering adds no navigational value. A flat chronological list is sufficient and less cluttered.
+- date: 2026-05-03
+
+### Labor item view: horizontal scroll panels
+- status: confirmed
+- decision: Clicking a labor item opens a full-bleed horizontal scroll view (not the standard centered modal). Panel order: (1) Three.js object panel, (2) thesis text panel, (3) image panels with caption below. Title and metadata remain in the bottom-right layer-meta overlay, not inside the scroll container.
+- reason: Labor items are projects with multiple assets and a thesis. The horizontal scroll panel structure is consistent with the browse strip and the bio-document container pattern, while giving each asset sufficient space.
+- date: 2026-05-03
+
+### Labor item view: caption style
+- status: confirmed
+- decision: Image captions sit below the image inside the same panel, separated by a 0.5px border-top hairline. Monospace, small, dim.
+- reason: Always visible, no interaction required, consistent panel structure.
+- date: 2026-05-03
+
+### Labor item view: image panel sizing
+- status: confirmed
+- decision: Image panel width is computed from the `dimensions` field ("WxH" in pixels) against the container height (75vh). Formula: `panelWidth = (W / H) * containerHeightPx`. Minimum 140px. `object-fit: contain`, left-aligned within the panel.
+- reason: Preserves aspect ratio without cropping. Left-alignment is appropriate for architectural drawings which typically have content at a predictable edge.
+- date: 2026-05-03
+
+### Labor item view: 3D object
+- status: confirmed
+- decision: Each labor item may have a `model` field (bare GLB filename). The Three.js object panel renders the GLB via an isolated WebGLRenderer with OrbitControls. If `model` is absent or fails to load, a BoxGeometry fallback renders automatically. Models live at `public/models/labor/` locally.
+- reason: The object panel should show the physical artifact from the box. BoxGeometry fallback ensures the panel always renders something meaningful during development.
+- date: 2026-05-03
+
 ### Typography: serif-primary with Commit Mono for IDs
 - status: confirmed
 - decision: EB Garamond is the default typeface across the public site. Commit Mono (self-hosted woff2) is reserved for archive ID strings and code elements only (.overlay-id and equivalents). Admin interface retains monospace.

@@ -11,6 +11,7 @@ context_note: |-
   Independently translated 2D AutoCAD drawings into a detailed 3D model and produced high-quality renderings to support design visualization and client presentations.
 
   Participated in site visits and client presentations.
+category: employment
 tags:
   - summer
 organization: Weiss Architecture

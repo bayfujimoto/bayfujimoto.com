@@ -7,6 +7,7 @@ item_type: cv-entry
 status: published
 display_date: Sept 2023 - June 2024
 sort_date: "2024-06-02"
+category: employment
 title: SHoP Architects
 context_note: |-
   Supported project team through the schematic and design development phases for high-end residential projects. Completed sheets for the finished design development package in Revit.

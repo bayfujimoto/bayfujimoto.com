@@ -123,14 +123,16 @@ export function getTypeGroups(itemType) {
           ],
         },
         {
-          id: "labor-dates", label: "Dates",
+          id: "labor-content", label: "Content",
+          depth: "full",
           fields: [
-            { id: "date_start", label: "start date", type: "date" },
-            { id: "date_end",   label: "end date",   type: "date",
-              hint: "Leave blank if ongoing" },
+            { id: "thesis",   label: "thesis",   type: "textarea",
+              hint: "Markdown supported." },
+            { id: "model",    label: "3D model", type: "model-upload",
+              hint: "GLB or GLTF" },
+            { id: "subitems", label: "images",   type: "subitem-list" },
           ],
         },
-        INSPECTION_ASSETS_SENTINEL,
       ];
 
     // ── Creation ─────────────────────────────────────────────
@@ -166,17 +168,9 @@ export function getTypeGroups(itemType) {
           id: "cv-meta", label: "CV Entry",
           fields: [
             { id: "category",     label: "category",     type: "select",
-              options: ["employment", "education", "exhibition", "publication", "award"] },
+              options: ["other", "employment", "education", "exhibition", "publication", "award"] },
             { id: "organization", label: "organization", type: "text" },
             { id: "role",         label: "role / title", type: "text" },
-          ],
-        },
-        {
-          id: "cv-dates", label: "Dates",
-          fields: [
-            { id: "date_start", label: "start date", type: "date" },
-            { id: "date_end",   label: "end date",   type: "date",
-              hint: "Leave blank if current" },
           ],
         },
       ];

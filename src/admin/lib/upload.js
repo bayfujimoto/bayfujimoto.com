@@ -88,6 +88,29 @@ export async function uploadDocumentPage(file, itemId, index) {
   return { file: originalName, thumbnail: thumbName, caption: "", alt: "" };
 }
 
+export async function uploadLaborImage(file, itemId, index) {
+  const ext = fileExtension(file);
+  const n = String(index + 1).padStart(2, "0");
+  const originalName = `${itemId}-img-${n}.${ext}`;
+  const thumbName    = `${itemId}-img-${n}-thumb.jpg`;
+
+  const [originalUrl, thumbUrl] = await Promise.all([
+    getPresignedUrl(originalName, file.type, "originals"),
+    getPresignedUrl(thumbName, "image/jpeg", "thumbnails"),
+  ]);
+
+  const img = await loadImage(file);
+  const thumbBlob = await makeThumbnail(img);
+  URL.revokeObjectURL(img.src);
+
+  await Promise.all([
+    putToR2(originalUrl, file, file.type),
+    putToR2(thumbUrl, thumbBlob, "image/jpeg"),
+  ]);
+
+  return { file: originalName, thumbnail: thumbName, caption: "" };
+}
+
 // Model assets are not images — no thumbnail generation, uploads to originals/ only
 export async function uploadModelAsset(file, itemId) {
   const ext = fileExtension(file);

@@ -1,60 +1,67 @@
+import { makeSelect } from "../components/select.js";
+
 let sortKey = "sort_date";
 let sortDir = -1; // -1 = desc, 1 = asc
 
+function makePanel(label, ...children) {
+  const panel = document.createElement("div");
+  panel.className = "admin-panel";
+  const lbl = document.createElement("span");
+  lbl.className = "admin-panel-label";
+  lbl.textContent = label;
+  panel.appendChild(lbl);
+  for (const child of children) panel.appendChild(child);
+  return panel;
+}
+
 export function renderBrowse(container, allItems) {
   container.innerHTML = "";
-
-  const title = document.createElement("h1");
-  title.className = "admin-page-title";
-  title.textContent = "Browse Items";
-  container.appendChild(title);
 
   // ── Filter bar ────────────────────────────────────────────
 
   const filterBar = document.createElement("div");
   filterBar.className = "admin-filter-bar";
 
-  const seriesSelect = document.createElement("select");
-  seriesSelect.innerHTML = `
-    <option value="">All series</option>
-    <option value="accumulation">Accumulation</option>
-    <option value="consumption">Consumption</option>
-    <option value="creation">Creation</option>
-    <option value="labor">Labor</option>
-    <option value="identity">Identity</option>
-  `;
+  const seriesHandle = makeSelect([
+    { value: "",              label: "All series"    },
+    { value: "accumulation",  label: "Accumulation"  },
+    { value: "consumption",   label: "Consumption"   },
+    { value: "creation",      label: "Creation"      },
+    { value: "labor",         label: "Labor"         },
+    { value: "identity",      label: "Identity"      },
+  ], "", () => renderTable());
 
-  const statusSelect = document.createElement("select");
-  statusSelect.innerHTML = `
-    <option value="">All statuses</option>
-    <option value="draft">Draft</option>
-    <option value="partial">Partial</option>
-    <option value="complete">Complete</option>
-    <option value="published">Published</option>
-  `;
+  const statusHandle = makeSelect([
+    { value: "",          label: "All statuses" },
+    { value: "draft",     label: "Draft"        },
+    { value: "partial",   label: "Partial"      },
+    { value: "complete",  label: "Complete"     },
+    { value: "published", label: "Published"    },
+  ], "", () => renderTable());
 
   const searchInput = document.createElement("input");
   searchInput.type = "text";
   searchInput.placeholder = "Search title, ID, or slug…";
 
-  filterBar.appendChild(seriesSelect);
-  filterBar.appendChild(statusSelect);
+  filterBar.appendChild(seriesHandle.el);
+  filterBar.appendChild(statusHandle.el);
   filterBar.appendChild(searchInput);
-  container.appendChild(filterBar);
 
   // ── Table ─────────────────────────────────────────────────
 
   const tableWrap = document.createElement("div");
-  container.appendChild(tableWrap);
+
+  const panel = makePanel("All items", filterBar, tableWrap);
+  container.appendChild(panel);
 
   function renderTable() {
-    const query   = searchInput.value.toLowerCase();
-    const series  = seriesSelect.value;
-    const status  = statusSelect.value;
+    const query  = searchInput.value.toLowerCase();
+    const series = seriesHandle.getValue();
+    const status = statusHandle.getValue();
 
     let filtered = allItems.filter(item => {
       if (series && item._series !== series) return false;
-      if (status && item.status !== status) return false;
+      if (status && item.status !== status)  return false;
       if (query) {
         const hay = `${item.id} ${item.title} ${item.slug}`.toLowerCase();
         if (!hay.includes(query)) return false;
@@ -74,6 +81,10 @@ export function renderBrowse(container, allItems) {
       return 0;
     });
 
+    // Update panel label with count
+    const lbl = panel.querySelector(".admin-panel-label");
+    if (lbl) lbl.textContent = `All items (${filtered.length})`;
+
     tableWrap.innerHTML = "";
 
     if (filtered.length === 0) {
@@ -88,12 +99,12 @@ export function renderBrowse(container, allItems) {
     table.className = "admin-table";
 
     const cols = [
-      { key: "id",        label: "ID"      },
-      { key: "title",     label: "Title"   },
-      { key: "item_type", label: "Type"    },
-      { key: "_series",   label: "Series"  },
-      { key: "status",    label: "Status"  },
-      { key: "sort_date", label: "Date"    },
+      { key: "id",        label: "ID"     },
+      { key: "title",     label: "Title"  },
+      { key: "item_type", label: "Type"   },
+      { key: "_series",   label: "Series" },
+      { key: "status",    label: "Status" },
+      { key: "sort_date", label: "Date"   },
     ];
 
     const thead = document.createElement("thead");
@@ -108,7 +119,6 @@ export function renderBrowse(container, allItems) {
       });
       headerRow.appendChild(th);
     }
-    // Edit column header
     headerRow.appendChild(document.createElement("th"));
     thead.appendChild(headerRow);
     table.appendChild(thead);
@@ -131,8 +141,6 @@ export function renderBrowse(container, allItems) {
     tableWrap.appendChild(table);
   }
 
-  seriesSelect.addEventListener("change", renderTable);
-  statusSelect.addEventListener("change", renderTable);
   searchInput.addEventListener("input", renderTable);
 
   renderTable();

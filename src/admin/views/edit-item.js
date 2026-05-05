@@ -1,9 +1,20 @@
-import { getBaseGroups } from "../forms/base-fields.js";
+import { getBaseGroups, orderGroups } from "../forms/base-fields.js";
 import { getTypeGroups } from "../forms/type-fields.js";
 import { renderForm }    from "../forms/form-renderer.js";
 import { generateSlug, generateFilePath, TYPE_SUBCOLLECTION } from "../lib/slug-generator.js";
 import { toMarkdown } from "../lib/serializer.js";
 import { getState, setState } from "../state.js";
+
+function makePanel(label, ...children) {
+  const panel = document.createElement("div");
+  panel.className = "admin-panel";
+  const lbl = document.createElement("span");
+  lbl.className = "admin-panel-label";
+  lbl.textContent = label;
+  panel.appendChild(lbl);
+  for (const child of children) panel.appendChild(child);
+  return panel;
+}
 
 export function renderEditItem(container, id, allItems, archive) {
   container.innerHTML = "";
@@ -23,15 +34,8 @@ export function renderEditItem(container, id, allItems, archive) {
   const subcollection = item._sub || item.subcollection;
   const itemType = item.item_type;
 
-  const breadcrumb = document.createElement("div");
-  breadcrumb.className = "admin-breadcrumb";
-  breadcrumb.innerHTML = `<a href="#/browse">browse</a><span>›</span><span>${id}</span>`;
-  container.appendChild(breadcrumb);
-
-  const title = document.createElement("h1");
-  title.className = "admin-page-title";
-  title.textContent = `Edit — ${id}`;
-  container.appendChild(title);
+  const breadcrumb = document.getElementById("admin-topbar-breadcrumb");
+  if (breadcrumb) breadcrumb.innerHTML = `<a href="#/browse">browse</a><span>›</span><span>${id}</span>`;
 
   const body = document.createElement("div");
   body.className = "admin-wizard-step";
@@ -39,10 +43,10 @@ export function renderEditItem(container, id, allItems, archive) {
 
   // Unlock toggle for ID/slug
   const unlockRow = document.createElement("div");
-  unlockRow.style.cssText = "margin-bottom:16px; font-size:11px; color:var(--muted);";
+  unlockRow.className = "admin-form-note admin-form-note--caution";
   unlockRow.innerHTML = `
-    <label style="cursor:pointer;">
-      <input type="checkbox" id="unlock-stable" style="margin-right:6px;">
+    <label>
+      <input type="checkbox" id="unlock-stable">
       Override stable ID and slug (use with care — breaks existing links)
     </label>
   `;
@@ -50,11 +54,11 @@ export function renderEditItem(container, id, allItems, archive) {
 
   // Warn if item not reloaded (added after last build)
   const note = document.createElement("div");
-  note.style.cssText = "font-size:11px; color:var(--muted); margin-bottom:16px;";
+  note.className = "admin-form-note";
   note.textContent = "Editing the saved version. Run npm run build-data after saving to update the browse list.";
   body.appendChild(note);
 
-  const groups = [...getBaseGroups(), ...getTypeGroups(itemType)];
+  const groups = orderGroups([...getBaseGroups(), ...getTypeGroups(itemType)]);
   const initialData = { ...item };
   // Ensure series/subcollection are set
   initialData.series      = series;
@@ -64,7 +68,7 @@ export function renderEditItem(container, id, allItems, archive) {
   // File path preview
   const preview = document.createElement("div");
   preview.className = "admin-filepath-preview";
-  body.appendChild(preview);
+  body.appendChild(makePanel("Save path", preview));
 
   function updatePreview(data) {
     const slug = data.slug || generateSlug(itemType, data);
@@ -139,7 +143,7 @@ function handleEditSave(saveBtn, formHandle, series, subcollection, itemType, ar
   // Update in-memory archive and refresh state
   updateArchiveInState(archive, data, series, subcollection);
   body.insertAdjacentHTML("afterbegin", `
-    <div style="margin-bottom:16px; color:#2a7a2a; font-size:12px;">
+    <div style="margin-bottom:16px; color:var(--color-success); font-size:12px;">
       Saved. Browse and dashboard will update automatically.
     </div>
   `);
