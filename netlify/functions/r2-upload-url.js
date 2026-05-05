@@ -40,11 +40,17 @@ export async function handler(event) {
     credentials: { accessKeyId: ACCESS_KEY_ID, secretAccessKey: SECRET_KEY },
   });
 
-  const command = new PutObjectCommand({ Bucket: BUCKET, Key: key, ContentType: contentType });
-  const uploadUrl = await getSignedUrl(client, command, { expiresIn: 120 });
-
-  return {
-    statusCode: 200,
-    body: JSON.stringify({ ok: true, uploadUrl, key }),
-  };
+  try {
+    const command = new PutObjectCommand({ Bucket: BUCKET, Key: key, ContentType: contentType });
+    const uploadUrl = await getSignedUrl(client, command, { expiresIn: 120 });
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ ok: true, uploadUrl, key }),
+    };
+  } catch (e) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ ok: false, error: `R2 presign failed: ${e.message}` }),
+    };
+  }
 }

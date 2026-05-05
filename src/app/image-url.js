@@ -14,5 +14,5 @@ export function imageUrl(filename, variant = "original") {
 export function modelUrl(filename) {
   if (!filename) return null;
   if (filename.startsWith("http")) return filename;
-  return `/models/labor/${filename}`;
+  return `${BASE}/originals/${filename}`;
 }

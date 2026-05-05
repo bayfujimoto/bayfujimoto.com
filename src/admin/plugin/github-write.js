@@ -1,5 +1,7 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "fs";
 import { resolve, dirname } from "path";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 function loadEnvLocal() {
   const envPath = resolve(process.cwd(), ".env.local");
@@ -108,6 +110,67 @@ export function githubWritePlugin() {
   return {
     name: "github-write",
     configureServer(server) {
+
+      // R2 presigned URL — mirrors the Netlify function for local dev
+      server.middlewares.use("/api/r2-upload-url", async (req, res) => {
+        res.setHeader("Content-Type", "application/json");
+
+        if (req.method !== "POST") {
+          res.writeHead(405);
+          res.end(JSON.stringify({ ok: false, error: "Method not allowed" }));
+          return;
+        }
+
+        const ACCOUNT_ID    = process.env.CLOUDFLARE_ACCOUNT_ID;
+        const BUCKET        = process.env.R2_BUCKET_NAME;
+        const ACCESS_KEY_ID = process.env.R2_ACCESS_KEY_ID;
+        const SECRET_KEY    = process.env.R2_SECRET_ACCESS_KEY;
+
+        if (!ACCOUNT_ID || !BUCKET || !ACCESS_KEY_ID || !SECRET_KEY) {
+          res.writeHead(500);
+          res.end(JSON.stringify({ ok: false, error: "R2 env vars not configured — add CLOUDFLARE_ACCOUNT_ID, R2_BUCKET_NAME, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY to .env.local" }));
+          return;
+        }
+
+        let payload;
+        try {
+          payload = await readBody(req);
+        } catch (e) {
+          res.writeHead(400);
+          res.end(JSON.stringify({ ok: false, error: "Invalid JSON body" }));
+          return;
+        }
+
+        const { filename, contentType, prefix } = payload;
+
+        if (!filename || !contentType || !prefix) {
+          res.writeHead(400);
+          res.end(JSON.stringify({ ok: false, error: "Missing filename, contentType, or prefix" }));
+          return;
+        }
+
+        if (!["originals", "thumbnails"].includes(prefix)) {
+          res.writeHead(400);
+          res.end(JSON.stringify({ ok: false, error: "prefix must be originals or thumbnails" }));
+          return;
+        }
+
+        try {
+          const key = `${prefix}/${filename}`;
+          const client = new S3Client({
+            region: "auto",
+            endpoint: `https://${ACCOUNT_ID}.r2.cloudflarestorage.com`,
+            credentials: { accessKeyId: ACCESS_KEY_ID, secretAccessKey: SECRET_KEY },
+          });
+          const command = new PutObjectCommand({ Bucket: BUCKET, Key: key, ContentType: contentType });
+          const uploadUrl = await getSignedUrl(client, command, { expiresIn: 120 });
+          res.writeHead(200);
+          res.end(JSON.stringify({ ok: true, uploadUrl, key }));
+        } catch (e) {
+          res.writeHead(500);
+          res.end(JSON.stringify({ ok: false, error: `R2 presign failed: ${e.message}` }));
+        }
+      });
 
       // Local write — always writes to disk immediately, no GitHub call
       server.middlewares.use("/api/save-record", async (req, res) => {

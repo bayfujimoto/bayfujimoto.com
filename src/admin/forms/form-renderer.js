@@ -136,11 +136,13 @@ function makeAssetUploadField(field, value, handleChange, getItemId) {
 
 // Shared ordered-image-list uploader used by gallery and document modes
 function makeOrderedImageField(opts) {
-  // opts: { fieldId, fieldLabel, uploadFn, handleChange, getItemId, initialValue, showAlt }
-  const { fieldId, fieldLabel, uploadFn, handleChange, getItemId, initialValue, showAlt = true } = opts;
+  // opts: { fieldId, fieldLabel, uploadFn, handleChange, getItemId, initialValue, showAlt, itemDefaults }
+  const { fieldId, fieldLabel, uploadFn, handleChange, getItemId, initialValue, showAlt = true, itemDefaults = {} } = opts;
 
   const items = Array.isArray(initialValue) ? initialValue.map(item =>
-    typeof item === "string" ? { file: item, thumbnail: "", caption: "", alt: "" } : { ...item }
+    typeof item === "string"
+      ? { file: item, thumbnail: "", caption: "", alt: "", ...itemDefaults }
+      : { ...itemDefaults, ...item }
   ) : [];
 
   const wrapper = document.createElement("div");
@@ -157,7 +159,10 @@ function makeOrderedImageField(opts) {
 
   const pickerLabel = document.createElement("label");
   pickerLabel.className = "gallery-upload__add-btn";
-  pickerLabel.textContent = items.length === 0 ? "Upload images" : "+ Add more images";
+
+  const pickerText = document.createElement("span");
+  pickerText.textContent = items.length === 0 ? "Upload images" : "+ Add more images";
+  pickerLabel.appendChild(pickerText);
 
   const fileInput = document.createElement("input");
   fileInput.type = "file";
@@ -262,7 +267,7 @@ function makeOrderedImageField(opts) {
         items.splice(i, 1);
         renderList();
         commit();
-        pickerLabel.textContent = items.length === 0 ? "Upload images" : "+ Add more images";
+        pickerText.textContent = items.length === 0 ? "Upload images" : "+ Add more images";
       });
       actions.appendChild(removeBtn);
 
@@ -290,7 +295,7 @@ function makeOrderedImageField(opts) {
       for (let i = 0; i < files.length; i++) {
         status.textContent = `Uploading ${i + 1} / ${files.length}…`;
         const result = await uploadFn(files[i], itemId, startIndex + i);
-        items.push(result);
+        items.push({ ...itemDefaults, ...result });
 
         if (!handleChange._thumbSet) {
           handleChange("assets.thumbnail", result.thumbnail);
@@ -299,7 +304,7 @@ function makeOrderedImageField(opts) {
       }
       renderList();
       commit();
-      pickerLabel.textContent = "+ Add more images";
+      pickerText.textContent = "+ Add more images";
       status.textContent = `${files.length} image${files.length > 1 ? "s" : ""} uploaded`;
     } catch (err) {
       status.textContent = `Error: ${err.message}`;
@@ -384,6 +389,7 @@ function makeSubitemListField(field, initialValue, handleChange, getItemId) {
     fieldId:      field.id,
     fieldLabel:   field.label,
     showAlt:      false,
+    itemDefaults: { type: "image" },
     uploadFn: async (file, itemId, index) => {
       const { uploadLaborImage } = await import("../lib/upload.js");
       return uploadLaborImage(file, itemId, index);

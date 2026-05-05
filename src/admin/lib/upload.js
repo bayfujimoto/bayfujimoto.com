@@ -4,7 +4,14 @@ async function getPresignedUrl(filename, contentType, prefix) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ filename, contentType, prefix }),
   });
-  const data = await res.json();
+  const text = await res.text();
+  if (!text) throw new Error(`Upload API returned empty response (status ${res.status}) — is R2 configured?`);
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch {
+    throw new Error(`Upload API returned non-JSON (status ${res.status}): ${text.slice(0, 120)}`);
+  }
   if (!data.ok) throw new Error(data.error || "Failed to get upload URL");
   return data.uploadUrl;
 }
