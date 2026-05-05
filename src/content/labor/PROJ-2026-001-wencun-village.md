@@ -27,4 +27,5 @@ subitems:
   - file: PROJ-2026-001-img-01.jpeg
     thumbnail: PROJ-2026-001-img-01-thumb.jpg
     caption: Render at night.
+model: PROJ-2026-001-model.glb
 ---
