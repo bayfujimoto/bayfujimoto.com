@@ -1518,20 +1518,13 @@ function makeLaborItemSheet(seriesKey, itemId, viewSlug) {
     scroll.appendChild(thesisPanel);
 
     // ── Panels 3+: Subitems ──
-    // Container height = 100vh minus top (3rem) and bottom (18rem) offsets
-    const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
-    const containerH = window.innerHeight - (3 * rem) - (18 * rem);
     (item.subitems || []).forEach((sub, i) => {
       if (sub.type !== "image") return;
 
-      let panelWidth = 200;
-      if (sub.dimensions) {
-        const [w, h] = sub.dimensions.split("x").map(Number);
-        if (w && h) panelWidth = Math.max(140, Math.round((w / h) * containerH));
-      }
+      const vw = (sub.width_vw != null && sub.width_vw >= 10) ? sub.width_vw : 60;
 
       const imgPanel = el("div", "labor-item__panel labor-item__panel--image");
-      imgPanel.style.width = `${panelWidth}px`;
+      imgPanel.style.width = `${vw}vw`;
 
       const imgWrap = el("div", "labor-item__image-wrap");
       const img = el("img", "labor-item__image");

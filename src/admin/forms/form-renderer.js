@@ -217,6 +217,29 @@ function makeOrderedImageField(opts) {
       captionInput.addEventListener("input", () => { items[i].caption = captionInput.value; commit(); });
       right.appendChild(captionInput);
 
+      if (!showAlt) {
+        // Labor subitems: author-controlled display width in vw units
+        const widthWrap = document.createElement("div");
+        widthWrap.className = "gallery-upload__width-row";
+        const widthLabel = document.createElement("span");
+        widthLabel.className = "gallery-upload__width-label";
+        widthLabel.textContent = "width (vw)";
+        const widthInput = document.createElement("input");
+        widthInput.type = "number";
+        widthInput.min = "10";
+        widthInput.max = "100";
+        widthInput.placeholder = "60";
+        widthInput.value = item.width_vw != null ? item.width_vw : "";
+        widthInput.addEventListener("input", () => {
+          const v = parseInt(widthInput.value, 10);
+          items[i].width_vw = (!isNaN(v) && v >= 10 && v <= 100) ? v : null;
+          commit();
+        });
+        widthWrap.appendChild(widthLabel);
+        widthWrap.appendChild(widthInput);
+        right.appendChild(widthWrap);
+      }
+
       if (showAlt) {
         const altInput = document.createElement("input");
         altInput.type = "text";

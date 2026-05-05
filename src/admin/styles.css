@@ -901,6 +901,30 @@ body {
   word-break: break-all;
 }
 
+.gallery-upload__width-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.gallery-upload__width-label {
+  font-size: var(--text-xs);
+  color: var(--muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.gallery-upload__width-row input[type="number"] {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  width: 52px;
+  background: transparent;
+  border: 1px solid var(--border-inner);
+  color: var(--fg);
+  padding: 3px 6px;
+}
+
 .gallery-upload__row-right input {
   font-family: var(--font-mono);
   font-size: var(--text-xs);
