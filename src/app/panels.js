@@ -1631,7 +1631,7 @@ function makeLaborItemSheet(seriesKey, itemId, viewSlug) {
 
 function initLaborModelScene(canvas, glbUrl) {
   import("three").then(({ WebGLRenderer, Scene, PerspectiveCamera, AmbientLight,
-    DirectionalLight, BoxGeometry, MeshStandardMaterial, Mesh, Color }) => {
+    DirectionalLight, BoxGeometry, MeshStandardMaterial, Mesh, Color, Box3, Vector3 }) => {
     import("three/examples/jsm/controls/OrbitControls.js").then(({ OrbitControls }) => {
 
       if (!canvas.isConnected) return; // panel may have been removed before RAF fired
@@ -1679,6 +1679,25 @@ function initLaborModelScene(canvas, glbUrl) {
               scene.remove(model);
               model = gltf.scene;
               scene.add(model);
+
+              // Auto-fit camera to bounding box so any model scale works
+              const bbox = new Box3().setFromObject(model);
+              const center = new Vector3();
+              bbox.getCenter(center);
+              const size = new Vector3();
+              bbox.getSize(size);
+              const radius = Math.max(size.x, size.y, size.z) * 0.75;
+
+              controls.target.copy(center);
+              camera.position.set(
+                center.x + radius * 0.9,
+                center.y + radius * 0.7,
+                center.z + radius * 1.5
+              );
+              camera.near = radius * 0.01;
+              camera.far  = radius * 20;
+              camera.updateProjectionMatrix();
+              controls.update();
             },
             undefined,
             () => { /* load error — keep fallback box */ }
