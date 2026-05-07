@@ -611,7 +611,7 @@ body {
 
 /* ── Guide content ───────────────────────────────────────────────────────────── */
 .guide-content {
-  font-size: var(--text-sm);
+  font-size: var(--text-xs);
   line-height: var(--leading-loose);
   color: var(--overlay-text);
   text-align: left;
@@ -663,7 +663,7 @@ body {
   background: none;
   border: none;
   font-family: var(--font);
-  font-size: var(--text-sm);
+  font-size: var(--text-xs);
   color: var(--overlay-muted);
   cursor: pointer;
   text-align: left;
@@ -904,13 +904,13 @@ body {
 }
 .cv-entry__date {
   font-family: var(--font-mono);
-  font-size: var(--text-sm);
+  font-size: var(--text-xs);
   color: var(--overlay-muted);
   white-space: nowrap;
   flex-shrink: 0;
 }
 .cv-entry__sub {
-  font-size: var(--text-sm);
+  font-size: var(--text-xs);
   color: var(--overlay-muted);
   margin: 0.2rem 0 0;
 }
@@ -965,7 +965,7 @@ body {
   display: block;
   color: var(--overlay-value, var(--overlay-text));
   text-decoration: none;
-  font-size: var(--text-sm);
+  font-size: var(--text-xs);
   opacity: 0.8;
   transition: opacity var(--dur-base);
 }
@@ -1007,11 +1007,12 @@ body {
    Positioned absolutely within the fixed layer so top/bottom values drive height
    directly, keeping the bottom edge clear of the layer-meta overlay regardless
    of viewport height.
-   bottom: overlay-padding (2rem) + metadata block (~14.5rem) + gap (1.5rem) = 18rem */
+   bottom: overlay-padding (2rem) + metadata block (~11rem) + gap (2rem) = 15rem
+   (context field removed from meta — ~3.5rem recovered vs. previous 18rem) */
 .labor-item {
   position: absolute;
-  top: 3rem;
-  bottom: 18rem;
+  top: 6rem;
+  bottom: 12rem;
   left: var(--overlay-padding);
   right: var(--overlay-padding);
   display: flex;
@@ -1088,7 +1089,7 @@ body {
   border-top: 0.5px solid var(--border-dim);
   padding: 0.5rem 0.75rem;
   font-family: var(--font-mono);
-  font-size: 0.6rem;
+  font-size: var(--text-xs);
   line-height: 1.6;
   color: var(--overlay-muted);
   flex-shrink: 0;
@@ -1097,7 +1098,7 @@ body {
 /* Thesis text */
 .labor-item__thesis {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: var(--text-xs);
   line-height: 1.8;
   color: var(--overlay-text);
   margin: 0;
@@ -1108,7 +1109,7 @@ body {
 @media (max-width: 600px) {
   .labor-item {
     top: 2rem;
-    bottom: 16rem;
+    bottom: 13rem;
     left: var(--overlay-padding);
     right: var(--overlay-padding);
   }

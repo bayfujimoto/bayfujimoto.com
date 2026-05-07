@@ -1456,7 +1456,6 @@ function makeLaborItemSheet(seriesKey, itemId, viewSlug) {
     metaEl.appendChild(titleEl);
 
     const metaFields = [
-      ["context",      item.context],
       ["organization", item.organization],
       ["date",         item.display_date],
     ];

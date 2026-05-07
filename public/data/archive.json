@@ -232,72 +232,36 @@
       "subcollections": {},
       "items": [
         {
-          "id": "PROJ-2026-000",
-          "slug": "dummy-project",
-          "series": "labor",
-          "item_type": "project",
-          "status": "published",
-          "display_date": "Spring 2026",
-          "sort_date": "2026-01-01",
-          "title": "Dummy Project",
-          "context": "academic",
-          "role": "Student",
-          "organization": "Rice University",
-          "thesis": "This is a placeholder thesis statement for the dummy labor item. It describes the core argument or design intent of the project in plain language, without a heading. It occupies the second panel in the horizontal scroll view, after the 3D object.\n",
-          "assets": {
-            "thumbnail": "labor-dummy-thumb.png"
-          },
-          "subitems": [
-            {
-              "type": "image",
-              "file": "labor-dummy-01.png",
-              "caption": "Placeholder image — landscape format (1920×1080). East elevation looking toward the site boundary.",
-              "dimensions": "1920x1080"
-            },
-            {
-              "type": "image",
-              "file": "labor-dummy-02.png",
-              "caption": "Placeholder image — portrait format (1080×1440). Ground floor plan with threshold annotations.",
-              "dimensions": "1080x1440"
-            },
-            {
-              "type": "image",
-              "file": "labor-dummy-03.png",
-              "caption": "",
-              "dimensions": "1000x1000"
-            }
-          ]
-        },
-        {
-          "id": "PROJ-2026-001",
+          "id": "PROJ-2026-003",
           "slug": "wencun-village",
           "series": "labor",
           "item_type": "project",
           "status": "published",
           "display_date": "Spring 2025",
           "sort_date": "2025-05-01",
-          "inspection": "gallery",
-          "assets": {
-            "thumbnail": "PROJ-2026-001-gallery-01-thumb.jpg",
-            "gallery": [
-              {
-                "file": "PROJ-2026-001-gallery-01.png",
-                "thumbnail": "PROJ-2026-001-gallery-01-thumb.jpg",
-                "caption": "caption 1",
-                "alt": "alt text 1"
-              },
-              {
-                "file": "PROJ-2026-001-gallery-02.png",
-                "thumbnail": "PROJ-2026-001-gallery-02-thumb.jpg",
-                "caption": "caption 2",
-                "alt": "alt text 2"
-              }
-            ]
-          },
           "title": "Wencun Village",
           "context": "academic",
           "role": "Student",
-          "organization": "Rice University"
+          "organization": "Rice University",
+          "thesis": "Set in the village of Wencun, China, this calligraphy library and workshop bridges past and present through hybrid construction approach. The building is rooted in traditional brickwork techniques, but integrates contemporary technologies to enhance ventilation and lighting.",
+          "model": "PROJ-2026-003-model.glb",
+          "assets": {
+            "thumbnail": "PROJ-2026-003-img-01-thumb.jpg"
+          },
+          "subitems": [
+            {
+              "type": "image",
+              "file": "PROJ-2026-003-img-01.jpeg",
+              "thumbnail": "PROJ-2026-003-img-01-thumb.jpg",
+              "caption": "Render at night"
+            },
+            {
+              "type": "image",
+              "file": "PROJ-2026-003-img-02.jpeg",
+              "thumbnail": "PROJ-2026-003-img-02-thumb.jpg",
+              "caption": "Inspired by Professor Wang Shu’s daily calligraphy practice, I generated hundreds of hand-drawn, imaginary characters, letting gesture and repetition guide form. These marks, though unreadable, became a generative language for the architecture itself to influence proportions, rhythms, and porosity."
+            }
+          ]
         }
       ]
     },
@@ -309,6 +273,66 @@
         "films": {
           "label": "films",
           "items": [
+            {
+              "id": "FILM-2026-489",
+              "slug": "playtime-1967-2026-05-05",
+              "title": "PlayTime",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "1967",
+              "director": "",
+              "watch_date": "2026-05-05",
+              "display_date": "May 5, 2026",
+              "sort_date": "2026-05-05",
+              "rating": 0,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/playtime/",
+              "assets": {
+                "poster": "https://a.ltrbxd.com/resized/sm/upload/bi/e2/9h/of/ivRkXDUcdBZxQiYw5R99ZJM0CpA-0-600-0-900-crop.jpg?v=5ab043bd2f"
+              }
+            },
+            {
+              "id": "FILM-2026-490",
+              "slug": "mishima-a-life-in-four-chapters-1985-2026-05-04",
+              "title": "Mishima: A Life in Four Chapters",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "1985",
+              "director": "",
+              "watch_date": "2026-05-04",
+              "display_date": "May 4, 2026",
+              "sort_date": "2026-05-04",
+              "rating": 0,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/mishima-a-life-in-four-chapters/",
+              "assets": {
+                "poster": "https://a.ltrbxd.com/resized/film-poster/3/4/8/2/9/34829-mishima-a-life-in-four-chapters-0-600-0-900-crop.jpg?v=1bed76a9ae"
+              }
+            },
+            {
+              "id": "FILM-2026-491",
+              "slug": "boogie-nights-1997-2026-05-02",
+              "title": "Boogie Nights",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "1997",
+              "director": "",
+              "watch_date": "2026-05-02",
+              "display_date": "May 2, 2026",
+              "sort_date": "2026-05-02",
+              "rating": 4.5,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/boogie-nights/",
+              "assets": {
+                "poster": "https://a.ltrbxd.com/resized/film-poster/4/9/0/0/7/49007-boogie-nights-0-600-0-900-crop.jpg?v=57bef85dc6"
+              }
+            },
             {
               "id": "FILM-2026-477",
               "slug": "the-social-network-2010-2026-04-30",
@@ -12635,8 +12659,8 @@
   },
   "_counters": {
     "EPH": 18,
-    "FILM": 482,
-    "BOOK": 252,
+    "FILM": 491,
+    "BOOK": 258,
     "MUSIC": 3,
     "COFFEE": 2,
     "GAME": 2,
@@ -12645,7 +12669,7 @@
     "PROTO": 2,
     "VIDEO": 2,
     "NOTE": 2,
-    "PROJ": 2,
+    "PROJ": 3,
     "BIO": 1,
     "CV": 6,
     "CONTACT": 3
