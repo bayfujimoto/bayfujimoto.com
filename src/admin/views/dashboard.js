@@ -1,148 +1,105 @@
-function makePanel(label, ...children) {
-  const panel = document.createElement("div");
-  panel.className = "admin-panel";
-  const lbl = document.createElement("span");
-  lbl.className = "admin-panel-label";
-  lbl.textContent = label;
-  panel.appendChild(lbl);
-  for (const child of children) panel.appendChild(child);
-  return panel;
-}
+// ── Empty state for the Record pane ──────────────────────────────────────────
+// What sits in the [r] Record pane before the user selects anything.
+// A one-line hint plus the Needs-attention list — capped at 5 items, with a
+// "… N more" tail when there are more. No Recent section: the Explorer is the
+// canonical "where to find things" surface.
 
-export function renderDashboard(container, archive, allItems) {
-  container.innerHTML = "";
+const ATTENTION_LIMIT = 5;
 
-  // ── Stats ──────────────────────────────────────────────────
+export function renderEmptyState(container, archive, allItems, callbacks = {}) {
+  const { onItemSelect } = callbacks;
+  container.innerHTML = '';
 
-  const statsGrid = document.createElement("div");
-  statsGrid.className = "admin-stats";
+  const root = document.createElement('div');
+  root.className = 'admin-empty-state';
 
-  const seriesOrder = ["accumulation", "consumption", "creation", "labor", "identity"];
-  for (const key of seriesOrder) {
-    const series = archive.series[key];
-    const seriesItems = allItems.filter(i => i._series === key);
-    const stat = document.createElement("div");
-    stat.className = "admin-stat";
-    stat.innerHTML = `
-      <div class="admin-stat-label">${series?.label ?? key}</div>
-      <div class="admin-stat-value">${seriesItems.length}</div>
-    `;
-    statsGrid.appendChild(stat);
-  }
+  // ── Hint line ──
+  const hint = document.createElement('p');
+  hint.className = 'admin-empty-state__hint';
+  hint.innerHTML = `Select an item in the Explorer, or press <kbd>:</kbd> for a command.`;
+  root.appendChild(hint);
 
-  const totalStat = document.createElement("div");
-  totalStat.className = "admin-stat";
-  totalStat.innerHTML = `
-    <div class="admin-stat-label">Total</div>
-    <div class="admin-stat-value">${allItems.length}</div>
-  `;
-  statsGrid.appendChild(totalStat);
-
-  container.appendChild(makePanel("Items by series", statsGrid));
-
-  // ── Quick entry ────────────────────────────────────────────
-
-  const quickGrid = document.createElement("div");
-  quickGrid.className = "admin-quick-grid";
-
-  const quickTypes = [
-    { series: "accumulation", type: "ticket",   label: "Ticket" },
-    { series: "accumulation", type: "brochure",  label: "Brochure" },
-    { series: "consumption",  type: "film",      label: "Film" },
-    { series: "consumption",  type: "book",      label: "Book" },
-    { series: "consumption",  type: "bag",       label: "Coffee" },
-    { series: "creation",     type: "sketch",    label: "Sketch" },
-    { series: "creation",     type: "photo",     label: "Photo" },
-    { series: "labor",        type: "project",   label: "Project" },
-  ];
-
-  for (const { series, type, label } of quickTypes) {
-    const btn = document.createElement("a");
-    btn.className = "admin-quick-btn";
-    btn.href = "#/new";
-    btn.innerHTML = `<span class="type-label">${series}</span>+ ${label}`;
-    btn.addEventListener("click", (e) => {
-      e.preventDefault();
-      window.__adminPreselect = { series, itemType: type };
-      location.hash = "/new";
-    });
-    quickGrid.appendChild(btn);
-  }
-
-  container.appendChild(makePanel("Quick entry", quickGrid));
-
-  // ── Needs attention ────────────────────────────────────────
-
-  const needsItems = allItems.filter(i => {
-    if (i.status !== "draft" && i.status !== "partial") return false;
+  // ── Needs attention ──
+  const allAttention = allItems.filter(i => {
+    if (i.status !== 'draft' && i.status !== 'partial') return false;
     const hasAsset = i.assets && Object.values(i.assets).some(v => v);
     return !hasAsset;
-  }).slice(0, 10);
+  });
 
-  let attentionContent;
-  if (needsItems.length === 0) {
-    attentionContent = document.createElement("div");
-    attentionContent.className = "admin-empty";
-    attentionContent.textContent = "No draft or partial items without assets.";
-  } else {
-    attentionContent = document.createElement("ul");
-    attentionContent.className = "admin-attention-list";
-    for (const item of needsItems) {
-      const li = document.createElement("li");
-      li.innerHTML = `
-        <a href="#/edit/${item.id}">${item.id}</a>
-        <span>${item.title || "(untitled)"}</span>
-        <span class="badge badge-${item.status || "draft"}">${item.status || "draft"}</span>
-      `;
-      attentionContent.appendChild(li);
-    }
-  }
+  const visible    = allAttention.slice(0, ATTENTION_LIMIT);
+  const remaining  = allAttention.length - visible.length;
 
-  container.appendChild(makePanel("Needs attention", attentionContent));
+  root.appendChild(renderSection(
+    'Needs attention',
+    visible,
+    remaining,
+    'No draft or partial items missing assets.',
+    onItemSelect,
+  ));
 
-  // ── Recent items ───────────────────────────────────────────
-
-  const sorted = [...allItems].sort((a, b) => {
-    const da = a.sort_date ? new Date(a.sort_date) : new Date(0);
-    const db = b.sort_date ? new Date(b.sort_date) : new Date(0);
-    return db - da;
-  }).slice(0, 15);
-
-  let recentContent;
-  if (sorted.length === 0) {
-    recentContent = document.createElement("div");
-    recentContent.className = "admin-empty";
-    recentContent.textContent = "No items yet. Add your first record above.";
-  } else {
-    recentContent = document.createElement("table");
-    recentContent.className = "admin-table admin-table--dim";
-    recentContent.innerHTML = `
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Title</th>
-          <th>Type</th>
-          <th>Series</th>
-          <th>Status</th>
-          <th>Date</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    `;
-    const tbody = recentContent.querySelector("tbody");
-    for (const item of sorted) {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td><a href="#/edit/${item.id}">${item.id}</a></td>
-        <td>${item.title || "(untitled)"}</td>
-        <td>${item.item_type || ""}</td>
-        <td>${item._series || ""}${item._sub ? ` / ${item._sub}` : ""}</td>
-        <td><span class="badge badge-${item.status || "draft"}">${item.status || "draft"}</span></td>
-        <td>${item.sort_date || item.display_date || ""}</td>
-      `;
-      tbody.appendChild(tr);
-    }
-  }
-
-  container.appendChild(makePanel("Recent items", recentContent));
+  container.appendChild(root);
 }
+
+function renderSection(title, items, remaining, emptyHint, onItemSelect) {
+  const section = document.createElement('section');
+  section.className = 'admin-empty-state__section';
+
+  const heading = document.createElement('h2');
+  heading.className = 'admin-empty-state__title';
+  heading.textContent = title;
+  section.appendChild(heading);
+
+  if (items.length === 0) {
+    const empty = document.createElement('p');
+    empty.className = 'admin-empty-state__empty';
+    empty.textContent = emptyHint;
+    section.appendChild(empty);
+    return section;
+  }
+
+  const list = document.createElement('ul');
+  list.className = 'admin-empty-state__list';
+
+  for (const item of items) {
+    const li = document.createElement('li');
+    li.className = 'admin-empty-state__item';
+
+    const link = document.createElement('a');
+    link.href = '#';
+    link.className = 'admin-empty-state__link';
+    link.dataset.itemId = item.id;
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (onItemSelect) onItemSelect(item);
+    });
+
+    link.innerHTML = `
+      <span class="admin-empty-state__id">${escapeHTML(item.id)}</span>
+      <span class="admin-empty-state__title-text">${escapeHTML(item.title || '(untitled)')}</span>
+      <span class="admin-empty-state__status badge badge-${item.status || 'draft'}">${item.status || 'draft'}</span>
+    `;
+
+    li.appendChild(link);
+    list.appendChild(li);
+  }
+
+  section.appendChild(list);
+
+  if (remaining > 0) {
+    const more = document.createElement('p');
+    more.className = 'admin-empty-state__more';
+    more.textContent = `… ${remaining} more`;
+    section.appendChild(more);
+  }
+
+  return section;
+}
+
+function escapeHTML(s) {
+  return String(s).replace(/[&<>"']/g, c => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+  ));
+}
+
+// Legacy alias — the old export name. Will be retired during Phase 7 cleanup.
+export const renderDashboard = renderEmptyState;

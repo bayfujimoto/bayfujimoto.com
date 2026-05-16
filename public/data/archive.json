@@ -260,6 +260,48 @@
               "file": "PROJ-2026-003-img-02.jpeg",
               "thumbnail": "PROJ-2026-003-img-02-thumb.jpg",
               "caption": "Inspired by Professor Wang Shu’s daily calligraphy practice, I generated hundreds of hand-drawn, imaginary characters, letting gesture and repetition guide form. These marks, though unreadable, became a generative language for the architecture itself to influence proportions, rhythms, and porosity."
+            },
+            {
+              "type": "image",
+              "file": "PROJ-2026-003-img-03.jpeg",
+              "thumbnail": "PROJ-2026-003-img-03-thumb.jpg",
+              "caption": "The form became rationalized over time to carve out larger spaces and to simplify circulation."
+            },
+            {
+              "type": "image",
+              "file": "PROJ-2026-003-img-04.jpeg",
+              "thumbnail": "PROJ-2026-003-img-04-thumb.jpg",
+              "caption": "A 1:4 scale model, designed parametrically, tested brick’s capability to create double curvature forms. Over 600 bricks were cast to create the model."
+            },
+            {
+              "type": "image",
+              "file": "PROJ-2026-003-img-05.jpeg",
+              "thumbnail": "PROJ-2026-003-img-05-thumb.jpg",
+              "caption": "Oblique plan drawing reveals the linear layout of program."
+            },
+            {
+              "type": "image",
+              "file": "PROJ-2026-003-img-06.jpeg",
+              "thumbnail": "PROJ-2026-003-img-06-thumb.jpg",
+              "caption": "Unrolled elevations illustrate the textural effects of rotated brickwork. The brick walls are parametrically designed, with rotated and offset units that create a porous surface for natural ventilation and different lighting conditions based on the program."
+            },
+            {
+              "type": "image",
+              "file": "PROJ-2026-003-img-07.jpeg",
+              "thumbnail": "PROJ-2026-003-img-07-thumb.jpg",
+              "caption": "The building sits on an existing pond that irrigates the nearby rice paddy."
+            },
+            {
+              "type": "image",
+              "file": "PROJ-2026-003-img-08.jpeg",
+              "thumbnail": "PROJ-2026-003-img-08-thumb.jpg",
+              "caption": ""
+            },
+            {
+              "type": "image",
+              "file": "PROJ-2026-003-img-09.jpeg",
+              "thumbnail": "PROJ-2026-003-img-09-thumb.jpg",
+              "caption": "The architecture embraces slowness and tactility: its thick walls, deep eaves, and hand-laid bonds speak to a collective memory of making."
             }
           ]
         }
@@ -273,6 +315,46 @@
         "films": {
           "label": "films",
           "items": [
+            {
+              "id": "FILM-2026-493",
+              "slug": "blink-2022-2026-05-11",
+              "title": "Blink",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2022",
+              "director": "",
+              "watch_date": "2026-05-11",
+              "display_date": "May 11, 2026",
+              "sort_date": "2026-05-11",
+              "rating": 0,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/blink-2022/",
+              "assets": {
+                "poster": "https://a.ltrbxd.com/resized/film-poster/8/3/9/6/5/6/839656-blink-0-600-0-900-crop.jpg?v=1e258d7ca6"
+              }
+            },
+            {
+              "id": "FILM-2026-492",
+              "slug": "obsession-2025-2026-05-06",
+              "title": "Obsession",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2025",
+              "director": "",
+              "watch_date": "2026-05-06",
+              "display_date": "May 6, 2026",
+              "sort_date": "2026-05-06",
+              "rating": 4.5,
+              "rewatch": true,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/obsession-2025-2/1/",
+              "assets": {
+                "poster": "https://a.ltrbxd.com/resized/film-poster/1/2/3/4/4/7/2/1234472-obsession-2025-2-0-600-0-900-crop.jpg?v=cff6fc00b6"
+              }
+            },
             {
               "id": "FILM-2026-489",
               "slug": "playtime-1967-2026-05-05",
@@ -12659,7 +12741,7 @@
   },
   "_counters": {
     "EPH": 18,
-    "FILM": 491,
+    "FILM": 493,
     "BOOK": 258,
     "MUSIC": 3,
     "COFFEE": 2,

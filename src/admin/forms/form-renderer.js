@@ -632,7 +632,9 @@ function makeField(field, value, onChange) {
 
   const label = document.createElement("label");
   label.textContent = field.label;
-  if (field.required) label.textContent += " *";
+  // Required marker is rendered via CSS (::after on label[data-required="true"])
+  // so the asterisk attaches to the field name with no space and can be styled.
+  if (field.required) label.dataset.required = "true";
   wrapper.appendChild(label);
 
   // Custom select — rendered separately (no native <select>, no input-wrap prompt)

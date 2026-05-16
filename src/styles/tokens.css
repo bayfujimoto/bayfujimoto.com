@@ -39,6 +39,55 @@
   --color-error:   #a02020;
 }
 
+/* ── Admin theme (cool neutral light grey + Solarized accents) ────────────────
+   Activated by <html data-theme="admin"> in admin.html. The public site uses
+   [data-theme="dark"] below and is unaffected by these tokens.
+   ─────────────────────────────────────────────────────────────────────────── */
+[data-theme="admin"] {
+  /* Surface ramp (cool neutral greys) — bars share the body color; separation is
+     carried by the 1px borders, not a tonal shift. */
+  --bg:           #d5d8db;   /* pane / body / topbar / statusbar */
+  --bg-bar:       var(--bg); /* topbar + status bar match body */
+  --bg-elevated:  #e2e5e8;   /* hover, focused row, dropdown (lighter than bg) */
+  --bg-selected:  #b8bcc0;   /* selected row background (darker than bg, matches gif) */
+  --bg-backdrop:  #afb3b7;   /* page backdrop around the centered window */
+
+  /* Foreground ramp — --fg is the "vibrant/focused" text used sparingly, body
+     defaults to --fg-muted (matches the gif's pattern of focus = same hue,
+     brighter version of default text). */
+  --fg:        #1f2226;      /* vibrant / focused / active text */
+  --fg-muted:  #4d5158;      /* default body text and labels */
+  --fg-dim:    #7d8186;      /* placeholder, hint, very secondary */
+
+  /* Borders — sized to read against the darker --bg */
+  --border:        #9ea2a6;  /* panel borders, table dividers */
+  --border-strong: #6c7074;  /* focused / heavy emphasis */
+  --border-faint:  #b4b8bc;  /* inner element borders */
+
+  /* Solarized accents (used semantically) */
+  --accent-yellow:  #b58900;
+  --accent-orange:  #cb4b16;
+  --accent-red:     #dc322f;
+  --accent-magenta: #d33682;
+  --accent-violet:  #6c71c4;
+  --accent-blue:    #268bd2;
+  --accent-cyan:    #2aa198;
+  --accent-green:   #859900;
+
+  /* Status overrides for admin context */
+  --color-success: var(--accent-green);
+  --color-error:   var(--accent-red);
+
+  --status-draft-color:     var(--fg-muted);
+  --status-draft-border:    var(--border);
+  --status-partial-color:   var(--accent-yellow);
+  --status-partial-border:  var(--accent-yellow);
+  --status-complete-color:  var(--accent-green);
+  --status-complete-border: var(--accent-green);
+  --status-published-color: var(--fg);
+  --status-published-border:var(--fg);
+}
+
 /* ── Dark theme (public site) ── */
 [data-theme="dark"] {
   --bg:        #000000;

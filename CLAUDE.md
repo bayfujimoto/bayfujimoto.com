@@ -34,9 +34,10 @@ These requirements apply to every phase going forward. The mobile site must keep
 - **Pinch-to-zoom:** Item images must support pinch-to-zoom via Pointer Events API (implemented in `panels.js` `makeItemSheet`).
 - **Minimum font size:** All overlay text must remain readable at 375px. Use `--overlay-padding: 1rem` at mobile breakpoint. Never set text below `0.65rem` on mobile.
 - **iOS input zoom prevention:** Admin form inputs must have `font-size: 16px` minimum to prevent iOS from zooming on focus. Apply in `src/admin/styles.css`.
-- **Touch targets:** All interactive overlay elements (breadcrumb segments, subnav buttons, prev/next arrows, browse strip buttons) must have a minimum touch target of 44×44px. Use `min-height: 44px` with `display: inline-flex; align-items: center`.
+- **Touch targets:** All interactive overlay elements (breadcrumb segments, subnav buttons, prev/next arrows, browse strip buttons, admin mobile tabstrip) must have a minimum touch target of 44×44px. Use `min-height: 44px` with `display: inline-flex; align-items: center`.
 - **Desk on mobile:** The desk grid collapses to 2 columns at ≤600px. Labels remain legible.
 - **Item image on mobile:** `max-height: 60vh; max-width: 90vw` at ≤600px so the image doesn't fill the entire screen and leave no room for overlays.
+- **Admin on mobile:** At ≤700px the admin's three-pane shell collapses to a single visible pane controlled by a bottom tabstrip (`[e] [r] [l]`). Vim modality strictly disables — keyboard shortcuts, mode chip, and keymap legend all hide. Tap and native form focus carry the entire mobile interaction model. See `docs/admin-interface.md`.
 
 ## Platform structure
 The site is built with:
@@ -57,7 +58,8 @@ Before making major decisions, consult these files selectively:
 - `docs/content-model.md` — metadata schema and record types
 - `docs/archive-ingest-workflow.md` — ingest workflows and naming conventions
 - `docs/rendering-strategy.md` — rendering hierarchy and inspection behaviors
-- `docs/admin-interface.md` — admin interface spec and workflows
+- `docs/admin-interface.md` — admin interface spec and as-built reference
+- `docs/admin-tui-overhaul.md` — change history of the admin TUI overhaul (phase plan, palette, animation language)
 - `docs/roadmap.md` — phased build plan with current status
 
 Research and essays (foundation, not prescriptive):

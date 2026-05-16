@@ -6,27 +6,34 @@
   padding: 0;
 }
 
-/* ── Terminal theme overrides ─────────────────────────────────────────────── */
-[data-theme="dark"] {
-  --bg:           #0d0b08;
-  --fg:           #f0d4a0;                  /* amber-tinted body text       */
-  --fg-muted:     rgba(240, 196, 120, 0.45);/* amber-tinted muted text      */
-  --border:       rgba(255, 158, 14, 0.38); /* outer / structural borders   */
-  --border-inner: rgba(255, 158, 14, 0.14); /* inner / element-level borders */
-  --hover-bg:     rgba(255, 158, 14, 0.05);
-  --active-bg:    rgba(255, 158, 14, 0.09);
-}
-
+/* ── Admin theme aliases ──────────────────────────────────────────────────────
+   The canonical light-grey + Solarized palette is defined in src/styles/tokens.css
+   under [data-theme="admin"]. This block maps the legacy/local role names still
+   used by older rules in this file (and the dormant command-bar styles awaiting
+   Phase 7 cleanup) onto those canonical tokens.
+   ─────────────────────────────────────────────────────────────────────────── */
 :root {
-  --muted:            var(--fg-muted);
-  --term-amber:       #FF9E0E;
-  --term-amber-dim:   rgba(255, 158, 14, 0.45);
-  --term-amber-faint: rgba(255, 158, 14, 0.18);
-  --term-glow:        0 0 9px rgba(255, 158, 14, 0.32);
-  --topbar-h:         54px;
-  --cmdbar-h:         42px;
-  --bar-bg:           rgba(255, 158, 14, 0.04);
-  --bar-border:       rgba(255, 158, 14, 0.38);
+  /* Role aliases for older rules */
+  --muted:        var(--fg-muted);
+  --hover-bg:     var(--bg-elevated);
+  --active-bg:    var(--bg-selected);
+  --border-inner: var(--border-faint);
+  --bar-bg:       var(--bg-bar);
+  --bar-border:   var(--border);
+
+  /* Legacy amber aliases — remapped to the new role colors. The active/focus
+     accent in the light theme is ink (--fg), a darker grey of the same hue as
+     the muted body text. Blue is reserved for the mode chip only and applied
+     directly on .admin-status-mode. Phase 7 will retire these aliases by
+     migrating each call site to its semantic token. */
+  --term-amber:       var(--fg);
+  --term-amber-dim:   var(--fg-muted);
+  --term-amber-faint: var(--border-strong);
+
+  /* Layout */
+  --topbar-h:    54px;
+  --statusbar-h: 48px;  /* two-row status: state + keymap legend */
+  --gutter-size: 6px;   /* draggable gutter thickness */
 }
 
 html {
@@ -35,8 +42,8 @@ html {
 
 body {
   min-height: 100%;
-  background: #000;
-  color: var(--fg);
+  background: var(--bg-backdrop);
+  color: var(--fg-muted);     /* default body text is muted; --fg is reserved for focus/active */
   font-family: var(--font-mono);
   font-size: var(--text-base);
   line-height: 1.5;
@@ -57,7 +64,7 @@ body {
   left: 0;
   width: 7px;
   height: 7px;
-  background: var(--term-amber);
+  background: var(--fg);
   pointer-events: none;
   z-index: 99999;
   transform: translate(-50%, -50%);
@@ -81,7 +88,7 @@ body {
   transform: translate(-50%, -50%);
   width: 0;
   height: 1px;
-  background: var(--term-amber);
+  background: var(--fg);
   transition: width 0.08s steps(2, end);
 }
 
@@ -130,7 +137,7 @@ body {
   left: 0;
   pointer-events: none;
   z-index: 99998;
-  background: var(--term-amber);
+  background: var(--fg);
   transform: translate(-50%, -50%);
   opacity: 0;
 }
@@ -152,10 +159,10 @@ body {
   height: 80vh;
   min-height: 400px;
   background: var(--bg);
-  border: 1px solid rgba(255, 158, 14, 0.22);
+  border: 1px solid var(--border-strong);
   overflow: hidden;
   position: relative;
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.75);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.14);
 }
 
 @media (max-width: 700px) {
@@ -166,22 +173,6 @@ body {
     border: none;
     box-shadow: none;
   }
-}
-
-/* ── Scanline overlay ── */
-#admin-app::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 3px,
-    rgba(0, 0, 0, 0.06) 3px,
-    rgba(0, 0, 0, 0.06) 4px
-  );
-  pointer-events: none;
-  z-index: 9999;
 }
 
 /* ── Blink animation ── */
@@ -275,157 +266,1026 @@ body {
   }
 }
 
-/* ── Main content ── */
-.admin-main {
+/* ── Three-pane TUI shell ─────────────────────────────────────────────────────
+   Outer grid: [explorer] [gutter] [right column]
+   Right column grid: [record] [gutter] [log]
+   Pane sizes are stored in CSS custom properties so JS can write them directly
+   from the resize logic in shell.js (defaults are inlined here).
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.admin-shell {
   flex: 1;
-  padding: 32px 40px;
-  overflow-y: auto;
-  min-height: 0; /* flex shrink must respect overflow */
+  min-height: 0;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: var(--explorer-w, 30%) var(--gutter-size) 1fr;
+  grid-template-rows: 1fr;
+  padding: 18px 14px 10px;
+  gap: 0;
 }
 
-/* ── Command bar ── */
-.admin-cmdbar {
-  flex-shrink: 0;
-  height: var(--cmdbar-h);
-  border-top: 1px solid var(--bar-border);
-  background: var(--bar-bg);
-  display: flex;
-  align-items: center;
-  padding: 0 18px;
-  gap: 6px;
-  font-size: var(--text-xs);
+.admin-shell-right {
+  display: grid;
+  /* Horizontal gutter between Record and Log is deliberately wider than the
+     vertical gutter so the two right-column panes breathe. */
+  grid-template-rows: var(--record-h, 62%) 16px 1fr;
+  min-height: 0;
+  min-width: 0;
+}
+
+.admin-pane {
   position: relative;
-  z-index: 10;
-  cursor: text;
+  border: 1px solid var(--bar-border);
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  /* No overflow clip here — the label is absolutely positioned at top: -0.55em
+     so it sits on the border, and clipping would chop the label off.
+     Internal scroll is handled by .admin-pane-body { overflow: auto } below. */
 }
 
-.admin-cmd-prompt {
-  color: var(--term-amber-dim);
-  font-size: var(--text-sm);
-  flex-shrink: 0;
+.admin-pane.is-focused {
+  /* Focus = darker grey of the same family, not a color change */
+  border-color: var(--border-strong);
+}
+
+/* Notched [letter] Name label — sits in the top border of each pane */
+.admin-pane-label {
+  position: absolute;
+  top: -0.55em;
+  left: 14px;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  background: var(--bg);
+  padding: 0 8px;
   line-height: 1;
+  white-space: nowrap;
   user-select: none;
 }
 
-.admin-cmd-input {
+.admin-pane-letter {
+  color: var(--term-amber);
+  margin-right: 4px;
+}
+
+.admin-pane-letter::before { content: '['; color: var(--muted); margin-right: 1px; }
+.admin-pane-letter::after  { content: ']'; color: var(--muted); margin-left:  1px; }
+
+.admin-pane-body {
+  flex: 1;
+  padding: 20px 16px 14px;
+  overflow: auto;
+  min-height: 0;
+}
+
+/* Placeholder text while panes are unwired */
+.admin-placeholder {
+  font-size: var(--text-sm);
+  color: var(--muted);
+  text-align: center;
+  margin-top: 44px;
+  letter-spacing: 0.03em;
+}
+
+.admin-placeholder-sub {
+  display: block;
+  margin-top: 6px;
+  font-size: var(--text-xs);
+  color: var(--fg-dim);
+}
+
+/* ── Gutters: draggable resizers ─────────────────────────────────────────────
+   Transparent strips that produce a thin amber centerline on hover/drag.
+   Mouse cursor changes to col-resize / row-resize.
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.admin-gutter {
+  position: relative;
   background: transparent;
-  border: none;
   outline: none;
-  color: var(--fg);
+}
+
+.admin-gutter-v { cursor: col-resize; }
+.admin-gutter-h { cursor: row-resize; }
+
+.admin-gutter::after {
+  content: '';
+  position: absolute;
+  background: var(--term-amber-faint);
+  opacity: 0;
+  transition: opacity 0.08s steps(2, end);
+}
+
+.admin-gutter-v::after {
+  top: 12px;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1px;
+}
+
+.admin-gutter-h::after {
+  left: 12px;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 1px;
+}
+
+.admin-gutter:hover::after,
+.admin-gutter:focus-visible::after,
+.admin-gutter.dragging::after {
+  opacity: 1;
+}
+
+.admin-gutter.dragging::after {
+  background: var(--term-amber);
+}
+
+/* Lock body cursor and disable text selection while dragging */
+body.admin-gutter-dragging {
+  cursor: col-resize;
+  user-select: none;
+}
+
+body.admin-gutter-dragging.dragging-h {
+  cursor: row-resize;
+}
+
+/* ── Status bar: two rows (state + keymap legend) ────────────────────────────
+   Replaces the old command bar. Keymap legend is static for now; in Phase 7
+   it becomes contextual based on (mode, focused pane).
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.admin-statusbar {
+  flex-shrink: 0;
+  min-height: var(--statusbar-h);
+  border-top: 1px solid var(--bar-border);
+  background: var(--bar-bg);
+  display: flex;
+  flex-direction: column;
   font-family: var(--font-mono);
   font-size: var(--text-xs);
-  caret-color: var(--term-amber);
-  flex: 1;
-  min-width: 0;
-  display: none;
+  position: relative;
+  z-index: 10;
 }
 
-.admin-cmdbar.active .admin-cmd-input  { display: block; }
-.admin-cmdbar.active .admin-cmd-status { display: none; }
-.admin-cmdbar.active .admin-cmd-time   { display: none; }
-.admin-cmdbar.active .admin-commit-btn { display: none !important; }
-
-.admin-cmd-ac {
-  color: var(--term-amber-dim);
-  font-size: var(--text-xs);
-  pointer-events: none;
-  display: none;
-  opacity: 0.55;
-}
-
-.admin-cmdbar.active .admin-cmd-ac { display: block; }
-
-.admin-cmd-status {
+.admin-statusbar-row {
   flex: 1;
-  color: var(--muted);
-  font-size: var(--text-xs);
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  gap: 14px;
   overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.admin-cmd-status.saving  { color: var(--fg); }
-.admin-cmd-status.saved   { color: var(--color-success); }
-.admin-cmd-status.error   { color: var(--color-error); }
-.admin-cmd-status.pending { color: var(--term-amber); }
-.admin-cmd-status.nav     { color: var(--term-amber); }
+.admin-statusbar-state {
+  border-bottom: 1px solid var(--border);
+}
 
-.admin-cmd-time {
-  color: rgba(232, 224, 208, 0.2);
-  font-size: var(--text-xs);
-  letter-spacing: 0.04em;
+.admin-status-state {
+  color: var(--muted);
+}
+
+.admin-status-mode {
+  margin-left: auto;
+  /* Only place blue accent appears in the current admin */
+  color: var(--accent-blue);
+  letter-spacing: 0.08em;
+}
+
+/* ── Status-row state colors (mirror the Log pane palette) ───────────────── */
+.admin-status-state--pending { color: var(--accent-yellow); }
+.admin-status-state--loading,
+.admin-status-state--saving  { color: var(--accent-violet); }
+.admin-status-state--saved   { color: var(--accent-green); }
+.admin-status-state--error   { color: var(--accent-red); }
+
+/* ── Mode chip color per mode ────────────────────────────────────────────── */
+.admin-status-mode--normal  { color: var(--accent-blue); }
+.admin-status-mode--insert  { color: var(--accent-green); }
+.admin-status-mode--command { color: var(--accent-violet); }
+.admin-status-mode--filter  { color: var(--accent-cyan); }
+
+/* ── Inline command input (`:` opens this in the state row) ──────────────── */
+.admin-status-state--command {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  color: var(--fg);
+  min-width: 0;
+  flex: 1;
+}
+
+.admin-cmd-prompt {
+  color: var(--accent-violet);
+  font-weight: 500;
+  user-select: none;
   flex-shrink: 0;
 }
 
-.admin-commit-btn {
-  font-family: inherit;
-  font-size: var(--text-xs);
-  padding: 2px 8px;
-  border: 1px solid var(--term-amber-dim);
+.admin-cmd-input {
+  flex: 1;
   background: transparent;
-  color: var(--term-amber);
-  cursor: pointer;
-  letter-spacing: 0.05em;
+  border: none;
+  outline: none;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--fg);
+  padding: 0;
+  margin: 0;
+  caret-color: var(--accent-violet);
+  min-width: 80px;
+  letter-spacing: inherit;
 }
 
-.admin-commit-btn:hover {
-  background: rgba(255, 158, 14, 0.08);
-}
-
-/* ── Command bar suggestions ── */
+/* Suggestions dropdown — anchored just above the status bar */
 .admin-cmd-suggestions {
   position: absolute;
   bottom: 100%;
   left: 0;
   right: 0;
-  background: var(--bg);
-  border-top: 1px solid var(--bar-border);
-  border-left: 1px solid var(--bar-border);
-  border-right: 1px solid var(--bar-border);
-  z-index: 20;
+  background: var(--bg-elevated);
+  border-top: 1px solid var(--border-strong);
+  border-bottom: 1px solid var(--border);
+  z-index: 50;
+  font-family: var(--font-mono);
+  max-height: 240px;
+  overflow-y: auto;
 }
 
-.admin-cmd-suggestions:empty {
-  display: none;
-}
+.admin-cmd-suggestions:empty { display: none; }
 
 .admin-cmd-suggestion {
   display: flex;
   align-items: baseline;
-  gap: 6px; /* mirrors cmdbar gap */
-  padding: 7px 18px; /* mirrors cmdbar padding */
+  gap: 12px;
+  padding: 6px 14px;
   font-size: var(--text-xs);
   cursor: pointer;
-  border-bottom: 1px solid var(--border-inner);
+  border-bottom: 1px solid var(--border-faint);
 }
 
-.admin-cmd-suggestion:last-child {
-  border-bottom: none;
-}
+.admin-cmd-suggestion:last-child { border-bottom: none; }
 
 .admin-cmd-suggestion:hover,
 .admin-cmd-suggestion.focused {
-  background: var(--hover-bg);
+  background: var(--bg);
 }
 
-/* invisible prompt spacer — same size as the real cmdbar prompt,
-   pushes cmd text to the same x-position as the input */
-.admin-cmd-suggestion-prompt {
-  font-size: var(--text-sm); /* matches .admin-cmd-prompt */
-  visibility: hidden;
-  flex-shrink: 0;
-  user-select: none;
-}
-
-.admin-cmd-suggestion-cmd {
-  color: var(--term-amber);
-  min-width: 90px;
+.admin-cmd-suggestion-name {
+  color: var(--accent-violet);
+  min-width: 60px;
   flex-shrink: 0;
 }
 
 .admin-cmd-suggestion-hint {
+  color: var(--fg-muted);
+}
+
+/* ── Expanded keymap legend (? toggles it) ───────────────────────────────── */
+.admin-statusbar-keymap.is-expanded {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 14px 10px;
+  flex: 1;
+  align-items: stretch;
+  white-space: normal;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.admin-statusbar-keymap-section {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 14px;
+  padding-bottom: 2px;
+  border-bottom: 1px solid var(--border-faint);
+}
+
+.admin-statusbar-keymap-section:last-child {
+  border-bottom: none;
+}
+
+.admin-statusbar-keymap-heading {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--fg-dim);
+  min-width: 130px;
+  flex-shrink: 0;
+}
+
+/* ── Braille spinner ──────────────────────────────────────────────────────
+   Used for transient "operation in flight" states (loading the archive,
+   committing). Cycles 10 frames at ~12fps via CSS @keyframes + steps(1).
+   Single source of truth: the .admin-spinner-icon utility class.
+   ───────────────────────────────────────────────────────────────────────── */
+
+@keyframes braille-spin {
+  0%   { content: '⠋'; }
+  10%  { content: '⠙'; }
+  20%  { content: '⠹'; }
+  30%  { content: '⠸'; }
+  40%  { content: '⠼'; }
+  50%  { content: '⠴'; }
+  60%  { content: '⠦'; }
+  70%  { content: '⠧'; }
+  80%  { content: '⠇'; }
+  90%  { content: '⠏'; }
+}
+
+.admin-status-state--saving::before,
+.admin-status-state--loading::before,
+.admin-log-status--saving::before {
+  content: '⠋';
+  animation: braille-spin 0.8s steps(1, end) infinite;
+  display: inline-block;
+  width: 1ch;
+  margin-right: 0.5ch;
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-status-state--saving::before,
+  .admin-status-state--loading::before,
+  .admin-log-status--saving::before {
+    animation: none;
+    content: '⏵';
+  }
+}
+
+.admin-status-time {
+  color: var(--fg-dim);
+  letter-spacing: 0.04em;
+  margin-left: 12px;
+}
+
+.admin-statusbar-keymap {
   color: var(--muted);
-  padding-left: 10px;
+}
+
+.admin-statusbar-keymap span {
+  display: inline-flex;
+  align-items: baseline;
+}
+
+.admin-statusbar-keymap kbd {
+  font-family: inherit;
+  font-size: inherit;
+  font-style: normal;
+  font-weight: inherit;
+  color: var(--term-amber);
+  background: transparent;
+  padding: 0;
+  margin-right: 5px;
+}
+
+/* ── Mobile collapse (≤700px) ────────────────────────────────────────────────
+   Three panes stack vertically. Gutters and keymap legend hide. Status bar
+   shrinks to the state row only. Modality / keyboard nav disables itself in
+   later phases at this breakpoint.
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* Tabstrip is hidden by default — only shown inside the mobile media query. */
+.admin-mobile-tabs {
+  display: none;
+}
+
+@media (max-width: 700px) {
+  /* Single-pane layout: only the .is-mobile-active pane is visible. */
+  .admin-shell {
+    display: flex;
+    flex-direction: column;
+    padding: 8px 8px 0;
+    gap: 0;
+  }
+  .admin-shell-right {
+    display: contents;   /* panes participate directly in the parent flex */
+  }
+  .admin-pane:not(.is-mobile-active) {
+    display: none;
+  }
+  .admin-pane.is-mobile-active {
+    flex: 1;
+    min-height: 0;
+  }
+  .admin-gutter {
+    display: none;
+  }
+
+  /* Bottom tabstrip, iOS-style. 44px min-height for touch targets. */
+  .admin-mobile-tabs {
+    display: flex;
+    flex-shrink: 0;
+    border-top: 1px solid var(--border);
+    background: var(--bg-bar);
+  }
+  .admin-mobile-tab {
+    flex: 1;
+    min-height: 44px;
+    background: transparent;
+    border: none;
+    border-right: 1px solid var(--border-faint);
+    color: var(--fg-muted);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+    padding: 4px 6px;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0;
+  }
+  .admin-mobile-tab:last-child {
+    border-right: none;
+  }
+  .admin-mobile-tab:active {
+    background: var(--bg-selected);
+  }
+  .admin-mobile-tab-letter {
+    color: var(--fg-muted);
+    font-size: var(--text-sm);
+  }
+  .admin-mobile-tab.is-active {
+    background: var(--bg-elevated);
+  }
+  .admin-mobile-tab.is-active .admin-mobile-tab-letter,
+  .admin-mobile-tab.is-active .admin-mobile-tab-label {
+    color: var(--fg);
+  }
+
+  /* Status row — state text only on mobile; chip, clock, and legend hide. */
+  .admin-statusbar {
+    min-height: 28px;
+  }
+  .admin-statusbar-state {
+    border-bottom: none;
+  }
+  .admin-status-mode,
+  .admin-status-time,
+  .admin-statusbar-keymap {
+    display: none;
+  }
+}
+
+/* ── Explorer pane: tree + progress bar ──────────────────────────────────────
+   The explorer pane body switches to a flex column so the tree fills the
+   available height (scrolling internally) and the progress bar sits pinned
+   at the bottom. Tree rows are mono and tightly packed, matching the gif.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.admin-pane[data-pane="e"] .admin-pane-body {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-tree-wrap {
+  flex: 1;
+  overflow: auto;
+  min-height: 0;
+  padding: 12px 0 10px;
+}
+
+.admin-tree-loading {
+  font-size: var(--text-sm);
+  color: var(--fg-muted);
+  padding: 14px 16px;
+  letter-spacing: 0.03em;
+}
+
+.admin-tree-error {
+  font-size: var(--text-sm);
+  color: var(--accent-red);
+  padding: 14px 16px;
+  line-height: 1.5;
+}
+
+.admin-tree-error code {
+  background: var(--bg-elevated);
+  padding: 1px 5px;
+  font-family: inherit;
+}
+
+.admin-tree {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: 1.45;
+}
+
+.admin-tree-row {
+  display: flex;
+  align-items: baseline;
+  padding-top: 2px;
+  padding-right: 12px;
+  padding-bottom: 2px;
+  /* padding-left set inline per-depth */
+  cursor: pointer;
+  user-select: none;
+  color: var(--fg-muted);
+}
+
+.admin-tree-row:hover,
+.admin-tree-row.is-highlighted {
+  background: var(--bg-elevated);
+}
+
+.admin-tree-row.is-selected {
+  background: var(--bg-selected);
+  color: var(--fg);
+}
+
+.admin-tree-row.is-empty {
+  cursor: default;
+}
+
+.admin-tree-row.is-empty:hover {
+  background: transparent;
+}
+
+.admin-tree-marker {
+  width: 14px;
+  flex-shrink: 0;
+  text-align: center;
+  color: var(--fg-dim);
+  font-size: 0.78em;
+  margin-right: 2px;
+}
+
+.admin-tree-leaf .admin-tree-marker {
+  color: var(--border);
+}
+
+.admin-tree-star {
+  color: var(--fg);
+  margin-right: 4px;
+  flex-shrink: 0;
+}
+
+.admin-tree-label {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.admin-tree-root .admin-tree-label {
+  color: var(--fg);
+}
+
+.admin-tree-row.is-selected .admin-tree-label {
+  color: var(--fg);
+}
+
+.admin-tree-count {
+  margin-left: 10px;
+  font-size: var(--text-xs);
+  color: var(--fg-dim);
+  flex-shrink: 0;
+}
+
+.admin-tree-empty {
+  color: var(--fg-dim);
+  font-size: var(--text-xs);
+  margin-left: 4px;
+}
+
+/* ── Filter (Phase 6.5) ──────────────────────────────────────────────────────
+   Input bar pinned at the top of the Explorer pane body during FILTER mode.
+   Matched characters inside tree rows highlight in --accent-orange. After Esc,
+   matched rows keep a subtle tint until `:nohl`.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.admin-tree-filter {
+  flex-shrink: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 8px 14px 8px 10px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-elevated);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+}
+
+.admin-tree-filter-prompt {
+  color: var(--accent-orange);
+  flex-shrink: 0;
+  font-weight: 500;
+  user-select: none;
+}
+
+.admin-tree-filter-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: inherit;
+  font-size: inherit;
+  color: var(--fg);
+  padding: 0;
+  caret-color: var(--accent-orange);
+  min-width: 60px;
+}
+
+.admin-tree-filter-count {
+  font-size: var(--text-xs);
+  color: var(--fg-dim);
+  flex-shrink: 0;
+}
+
+/* Character-level match highlight in tree rows (active filter) */
+.admin-tree-match {
+  color: var(--accent-orange);
+  font-weight: 500;
+}
+
+/* Persistent tint on rows that matched the last filter (after Esc, before :nohl) */
+.admin-tree-row.is-matched {
+  background:
+    linear-gradient(
+      to right,
+      color-mix(in srgb, var(--accent-orange) 14%, transparent),
+      color-mix(in srgb, var(--accent-orange) 14%, transparent)
+    );
+}
+
+.admin-tree-row.is-matched:hover {
+  background:
+    linear-gradient(
+      to right,
+      color-mix(in srgb, var(--accent-orange) 22%, transparent),
+      color-mix(in srgb, var(--accent-orange) 22%, transparent)
+    );
+}
+
+.admin-tree-row.is-matched.is-selected {
+  /* Selected wins over matched, but keep a hint of the match color */
+  background: var(--bg-selected);
+}
+
+/* ── Progress bar (slim 2px, indeterminate) ──────────────────────────────────
+   Used at the bottom of the Explorer pane body while the archive loads. The
+   --accent-violet bar slides left-to-right on a loop; turn off by removing
+   the `is-active` class.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.admin-progress {
+  flex-shrink: 0;
+  height: 2px;
+  background: var(--border-faint);
+  position: relative;
+  overflow: hidden;
+}
+
+.admin-progress.is-active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 40%;
+  background: var(--accent-violet);
+  animation: admin-progress-slide 1.4s ease-in-out infinite;
+}
+
+@keyframes admin-progress-slide {
+  0%   { transform: translateX(-110%); }
+  100% { transform: translateX(280%);  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-progress.is-active::before {
+    animation: none;
+    width: 100%;
+    opacity: 0.4;
+  }
+}
+
+/* ── Record-pane empty state ─────────────────────────────────────────────────
+   What sits in the [r] Record pane before the user selects anything. A hint
+   line plus two short item lists (Needs attention, Recent).
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.admin-empty-state {
+  padding: 4px 4px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.admin-empty-state__hint {
+  font-size: var(--text-sm);
+  color: var(--fg-muted);
+  margin: 0 0 6px;
+  letter-spacing: 0.02em;
+}
+
+.admin-empty-state__hint kbd {
+  font-family: inherit;
+  font-size: inherit;
+  font-style: normal;
+  color: var(--fg);
+  background: transparent;
+  padding: 0 1px;
+}
+
+.admin-empty-state__section {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-empty-state__title {
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--fg-muted);
+  font-weight: normal;
+  margin: 0 0 8px;
+}
+
+.admin-empty-state__title::before {
+  content: '─ ';
+  color: var(--border);
+}
+
+.admin-empty-state__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: var(--text-sm);
+}
+
+.admin-empty-state__item {
+  border-bottom: 1px solid var(--border-faint);
+}
+
+.admin-empty-state__item:last-child {
+  border-bottom: none;
+}
+
+.admin-empty-state__link {
+  display: grid;
+  grid-template-columns: minmax(90px, max-content) 1fr auto;
+  gap: 12px;
+  align-items: baseline;
+  padding: 6px 4px;
+  text-decoration: none;
+  color: var(--fg-muted);
+}
+
+.admin-empty-state__link:hover {
+  background: var(--bg-elevated);
+  color: var(--fg);
+}
+
+.admin-empty-state__id {
+  font-size: var(--text-xs);
+  color: var(--fg-dim);
+  white-space: nowrap;
+}
+
+.admin-empty-state__title-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.admin-empty-state__link:hover .admin-empty-state__title-text {
+  color: var(--fg);
+}
+
+.admin-empty-state__status {
+  flex-shrink: 0;
+}
+
+.admin-empty-state__empty {
+  font-size: var(--text-xs);
+  color: var(--fg-dim);
+  margin: 0;
+  padding: 4px 4px 0;
+  font-style: italic;
+}
+
+.admin-empty-state__more {
+  font-size: var(--text-xs);
+  color: var(--fg-dim);
+  margin: 6px 0 0;
+  padding: 0 4px;
+}
+
+/* ── Log pane (Phase 4) ──────────────────────────────────────────────────────
+   Pending changes (git status shorthand) + commit button + session history.
+   Two-layer selection: the row tints on hover/selected; inside, the action
+   prefix cell gets a brighter background — the "active cell" idiom from the
+   gif's Results pane.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.admin-log {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  height: 100%;
+}
+
+.admin-log-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  min-height: 28px;
+}
+
+.admin-log-count {
+  font-size: var(--text-sm);
+  color: var(--fg-muted);
+}
+
+.admin-log-empty-hint {
+  font-size: var(--text-sm);
+  color: var(--fg-dim);
+  font-style: italic;
+}
+
+.admin-log-status {
+  font-size: var(--text-sm);
+}
+
+.admin-log-status--saving { color: var(--accent-violet); }
+.admin-log-status--saved  { color: var(--accent-green); }
+.admin-log-status--error  { color: var(--accent-red); }
+
+/* Smaller variant of the standard button, for the inline log header */
+.admin-log-commit-btn.admin-btn {
+  padding: 3px 12px;
+  font-size: var(--text-xs);
+}
+
+/* Pending list */
+.admin-log-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+}
+
+.admin-log-row {
+  display: grid;
+  grid-template-columns: 24px minmax(80px, max-content) 1fr;
+  gap: 10px;
+  padding: 4px 8px;
+  align-items: baseline;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border-faint);
+  color: var(--fg-muted);
+}
+
+.admin-log-row:last-child  { border-bottom: none; }
+.admin-log-row:hover,
+.admin-log-row.is-highlighted { background: var(--bg-elevated); color: var(--fg); }
+.admin-log-row.is-selected    { background: var(--bg-selected);  color: var(--fg); }
+
+.admin-log-action {
+  font-weight: 600;
+  text-align: center;
+  letter-spacing: 0;
+}
+
+.admin-log-action--add    { color: var(--accent-green); }
+.admin-log-action--edit   { color: var(--fg); }
+.admin-log-action--delete { color: var(--accent-red); }
+
+/* Active-cell idiom — brighter pill behind the action letter on hover/selected */
+.admin-log-row:hover .admin-log-action,
+.admin-log-row.is-highlighted .admin-log-action,
+.admin-log-row.is-selected .admin-log-action {
+  background: var(--bg);
+  border-radius: 1px;
+}
+
+.admin-log-id {
+  font-size: var(--text-xs);
+  color: var(--fg-dim);
+  white-space: nowrap;
+}
+
+.admin-log-row:hover .admin-log-id,
+.admin-log-row.is-highlighted .admin-log-id,
+.admin-log-row.is-selected .admin-log-id { color: var(--fg-muted); }
+
+.admin-log-path {
+  font-size: var(--text-xs);
+  color: var(--fg-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.admin-log-row:hover .admin-log-path,
+.admin-log-row.is-highlighted .admin-log-path,
+.admin-log-row.is-selected .admin-log-path { color: var(--fg); }
+
+/* ── Recent commits history ───────────────────────────────────────────────── */
+
+.admin-log-history {
+  margin-top: 4px;
+}
+
+.admin-log-history-title {
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--fg-muted);
+  font-weight: normal;
+  margin: 0 0 6px;
+  padding: 0 4px;
+}
+
+.admin-log-history-title::before {
+  content: '─ ';
+  color: var(--border);
+}
+
+.admin-log-commits {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: var(--text-xs);
+}
+
+.admin-log-history-empty {
+  color: var(--fg-dim);
+  font-style: italic;
+  padding: 4px 8px;
+  list-style: none;
+}
+
+.admin-log-history-row {
+  display: grid;
+  grid-template-columns: max-content 1fr max-content;
+  gap: 10px;
+  padding: 3px 8px;
+  color: var(--fg-muted);
+  border-bottom: 1px solid var(--border-faint);
+}
+
+.admin-log-history-row:last-child { border-bottom: none; }
+.admin-log-history-row.is-error    { color: var(--accent-red); }
+
+.admin-log-history-time {
+  color: var(--fg-dim);
+}
+
+.admin-log-history-msg {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.admin-log-history-result {
+  color: var(--accent-green);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.admin-log-history-row.is-error .admin-log-history-result {
+  color: var(--accent-red);
+}
+
+/* ── Inline message (saved / error confirmation in edit form) ────────────── */
+
+.admin-inline-message {
+  font-size: var(--text-xs);
+  padding: 8px 12px;
+  margin-bottom: 16px;
+  border-left: 2px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--fg-muted);
+}
+
+.admin-inline-message--saved {
+  border-left-color: var(--accent-green);
+  color: var(--fg);
+}
+
+.admin-inline-message--error {
+  border-left-color: var(--accent-red);
+  color: var(--accent-red);
 }
 
 /* ── Form annotation rows ── */
@@ -517,10 +1377,14 @@ body {
 
 /* ── Terminal section panels ── */
 .admin-panel {
-  border: 1px solid var(--border);
-  padding: 20px 16px 16px;
+  border: none;
+  padding: 0;
   position: relative;
-  margin-bottom: 20px;
+  margin-bottom: 14px;
+}
+
+.admin-panel:last-child {
+  margin-bottom: 0;
 }
 
 .admin-panel-label {
@@ -635,152 +1499,273 @@ body {
   margin-bottom: 2px;
 }
 
-/* ── Forms ── */
+/* ── Forms (Phase 10.5: 4-col tabular grid) ─────────────────────────────────
+   Form layout reads as a 4-column table:
+       [state]  [field-name]  [value]  [type]
+   The `.admin-panel` fieldsets stay as DOM containers but render flat — their
+   labels are hidden and sections separate via a margin-bottom blank line only.
+   ─────────────────────────────────────────────────────────────────────────── */
+
 .admin-form {
   width: 100%;
 }
 
+/* Fieldset becomes a plain spacing container; the label is gone */
 .admin-fieldset {
   border: none;
   padding: 0;
-  margin-bottom: 24px;
+  margin-bottom: 14px;
 }
 
-.admin-fieldset-legend {
-  display: block;
-  font-size: var(--text-xs);
+.admin-fieldset-legend,
+.admin-panel-label {
+  display: none;
+}
+
+/* Form header row — UPPERCASE banner that anchors the table.
+   Injected at the top of the form by edit-item.js / new-item.js. */
+.admin-form-header {
+  display: grid;
+  grid-template-columns: 1.5ch 14ch 1fr 8ch;
+  gap: 8px;
+  align-items: baseline;
+  padding: 3px 8px;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--fg-muted);
   text-transform: uppercase;
-  letter-spacing: 0.07em;
-  color: var(--muted);
-  margin-bottom: 12px;
-  padding-top: 16px;
-  border-top: 1px solid var(--border-inner);
-  width: 100%;
+  letter-spacing: 0.04em;
 }
 
-/* Two-column label | input grid */
+.admin-form-header-sep {
+  height: 1px;
+  border-bottom: 1px dashed var(--border);
+  margin: 0 8px 6px;
+}
+
+/* Each .admin-field is one grid row matching the header columns */
 .admin-field {
   display: grid;
-  grid-template-columns: 130px 1fr;
-  column-gap: 12px;
-  row-gap: 4px;
-  align-items: start;
-  margin-bottom: 10px;
+  grid-template-columns: 1.5ch 14ch 1fr 8ch;
+  gap: 8px;
+  align-items: baseline;
+  padding: 3px 8px;
+  margin-bottom: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--fg);
+  border-radius: 0;
 }
 
+.admin-field.is-highlighted {
+  background: var(--bg-elevated);
+}
+
+/* State slot (column 1) — added by field-chrome.js */
+.admin-field-state {
+  text-align: center;
+  color: transparent;
+  font-weight: 500;
+  user-select: none;
+}
+.admin-field-state.is-modified { color: var(--accent-yellow); }
+.admin-field-state.is-error    { color: var(--accent-red); }
+
+/* Field name label (column 2). Required mark via ::after, no space, ink. */
 .admin-field > label {
-  font-size: var(--text-xs);
-  color: var(--muted);
-  text-align: right;
-  padding-top: 7px; /* aligns text baseline with input */
-  line-height: 1.3;
+  color: var(--fg-muted);
+  text-align: left;
+  padding-top: 0;
+  min-width: 0;
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 0;
 }
 
-.admin-field > .field-hint {
-  grid-column: 2;
-  font-size: var(--text-xs);
-  color: var(--muted);
+.admin-field > label[data-required="true"]::after {
+  content: '*';
+  color: var(--fg);
 }
 
-/* Full-depth fields (textarea, uploads, galleries) — stack label above */
+/* Type column (column 4) — added by field-chrome.js */
+.admin-field-type {
+  color: var(--fg-dim);
+  font-size: var(--text-xs);
+  white-space: nowrap;
+  text-align: left;
+}
+
+/* Hide hints — type column communicates field shape now */
+.admin-field .field-hint {
+  display: none;
+}
+
+/* Full-depth + asset-upload + gallery-upload fields keep the same grid */
 .admin-field[data-depth="full"],
 .admin-field--asset-upload,
 .admin-field--gallery-upload {
-  display: block;
-  margin-bottom: 14px;
+  display: grid;
+  grid-template-columns: 1.5ch 14ch 1fr 8ch;
+  gap: 8px;
+  align-items: baseline;
+  margin-bottom: 4px;
+  padding: 3px 8px;
 }
 
 .admin-field[data-depth="full"] > label,
 .admin-field--asset-upload > label,
 .admin-field--gallery-upload > label {
-  display: block;
   text-align: left;
   padding-top: 0;
-  margin-bottom: 6px;
+  margin-bottom: 0;
 }
 
-/* Mobile: single column */
+/* Mobile collapse — hide state + type cols, stack label above value */
 @media (max-width: 600px) {
-  .admin-field {
-    display: block;
-    margin-bottom: 12px;
+  .admin-form-header,
+  .admin-field,
+  .admin-field[data-depth="full"],
+  .admin-field--asset-upload,
+  .admin-field--gallery-upload {
+    grid-template-columns: 1fr;
+  }
+  .admin-form-header > :first-child,
+  .admin-form-header > :nth-child(3),
+  .admin-form-header > :nth-child(4),
+  .admin-field > .admin-field-state,
+  .admin-field > .admin-field-type {
+    display: none;
   }
   .admin-field > label {
-    display: block;
-    text-align: left;
-    padding-top: 0;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
   }
 }
 
-/* ── Input prompt wrapper ── */
+/* ── Input wrapper ──────────────────────────────────────────────────────────
+   Preserved as a positional shell. The toggle wrapper (.admin-field-value)
+   sits inside it and holds either the display span or the input.
+   ─────────────────────────────────────────────────────────────────────────── */
+
 .admin-input-wrap {
   position: relative;
+  flex: 1;
+  min-width: 0;
 }
 
-.admin-input-wrap::before {
-  content: '>';
-  position: absolute;
-  left: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--term-amber-dim);
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  pointer-events: none;
-  z-index: 1;
-  line-height: 1;
-}
+/* ── Field inputs (buffer style) ────────────────────────────────────────────
+   No more boxed inputs. A single bottom-border underline reads as "this is
+   editable text"; the underline brightens to --fg on focus.
+   ─────────────────────────────────────────────────────────────────────────── */
 
-.admin-input-wrap.is-area::before {
-  top: 9px;
-  transform: none;
-}
-
-/* ── Field inputs ── */
 .admin-field input,
 .admin-field select,
 .admin-field textarea {
   width: 100%;
   font-family: var(--font-mono);
-  font-size: 16px; /* iOS zoom prevention — must stay ≥16px */
+  /* Match field-label size so toggling between display and edit doesn't shift */
+  font-size: var(--text-sm);
+  font-weight: inherit;
   color: var(--fg);
-  background: rgba(255, 158, 14, 0.03);
-  border: 1px solid var(--border-inner);
-  padding: 6px 8px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border-faint);
+  border-radius: 0;
+  padding: 2px 4px;
   appearance: none;
 }
 
-.admin-input-wrap input,
-.admin-input-wrap select,
-.admin-input-wrap textarea {
-  padding-left: 22px;
+/* On mobile, bump back to 16px to suppress iOS zoom-on-focus */
+@media (max-width: 700px) {
+  .admin-field input,
+  .admin-field select,
+  .admin-field textarea {
+    font-size: 16px;
+  }
 }
 
 .admin-field input:focus,
 .admin-field select:focus,
 .admin-field textarea:focus {
-  outline: 1px solid var(--term-amber);
-  outline-offset: -1px;
-  background: rgba(255, 158, 14, 0.06);
+  outline: none;
+  border-bottom-color: var(--fg);
+  background: transparent;
+}
+
+/* Textarea — plain underlined buffer block, no left-border accent */
+.admin-field textarea {
+  border: none;
+  border-bottom: 1px solid var(--border-faint);
+  padding: 2px 4px;
+  min-height: 60px;
+  width: 100%;
+  resize: vertical;
+}
+
+.admin-field textarea:focus {
+  border-bottom-color: var(--fg);
+}
+
+/* ── Display-as-text toggle (Phase 10) ──────────────────────────────────────
+   .admin-field-value wraps an input + a display span. CSS toggles which is
+   visible via the .is-editing class on the wrapper.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.admin-field-value {
+  display: inline-flex;
+  align-items: baseline;
+  flex: 1;
+  min-width: 0;
+  position: relative;
+}
+
+.admin-field-display {
+  color: var(--fg);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  flex: 1;
+  min-width: 0;
+  cursor: text;
+  padding: 2px 4px;
+  border-bottom: 1px solid transparent;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.admin-field-display:hover {
+  border-bottom-color: var(--border-faint);
+}
+
+.admin-field-display.is-empty::before {
+  content: '(empty)';
+  color: var(--fg-dim);
+}
+
+.admin-field-value:not(.is-editing) > input {
+  display: none;
+}
+
+.admin-field-value.is-editing > .admin-field-display {
+  display: none;
 }
 
 .admin-field input[readonly],
 .admin-field input[disabled] {
-  color: var(--muted);
-  background: rgba(0, 0, 0, 0.2);
-  border-color: rgba(255, 158, 14, 0.06);
+  color: var(--fg-dim);
+  background: transparent;
+  border-bottom-color: transparent;
 }
 
 .admin-field textarea {
   resize: vertical;
-  min-height: 80px;
+  min-height: 60px;
 }
 
 .admin-field .field-hint {
   font-size: var(--text-xs);
-  color: var(--muted);
-  margin-top: 3px;
+  color: var(--fg-dim);
+  margin-top: 2px;
 }
 
 /* ── Asset upload fields (single file) ── */
@@ -929,7 +1914,7 @@ body {
   font-family: var(--font-mono);
   font-size: var(--text-xs);
   color: var(--fg);
-  background: rgba(255, 158, 14, 0.03);
+  background: transparent;
   border: 1px solid var(--border-inner);
   padding: 4px 7px;
   width: 100%;
@@ -1006,7 +1991,7 @@ body {
   font-family: var(--font-mono);
   font-size: var(--text-xs);
   color: var(--fg);
-  background: rgba(255, 158, 14, 0.03);
+  background: transparent;
   border: 1px solid var(--border-inner);
   padding: 5px 8px;
 }
@@ -1041,42 +2026,162 @@ body {
   margin-top: 4px;
 }
 
-/* ── Form actions ── */
+/* ── Form actions (legacy bordered buttons — kept for fallback) ── */
 .admin-form-actions {
   display: flex;
   gap: 12px;
   align-items: center;
-  padding-top: 24px;
-  border-top: 1px solid var(--border-inner);
-  margin-top: 32px;
+  padding-top: 16px;
+  margin-top: 24px;
 }
 
+.admin-btn-hint {
+  color: var(--fg-dim);
+  font-size: 0.85em;
+  margin-left: 8px;
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
+}
+
+/* ── Text-action lines (Phase 10.5) ─────────────────────────────────────────
+   Replaces bordered Save/Cancel buttons at the bottom of the form. Reads as
+   `> save     :w` mono rows that join the buffer rhythm.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.admin-actions {
+  display: flex;
+  flex-direction: column;
+  margin-top: 12px;
+  padding: 0;
+  border-top: none;
+}
+
+.admin-action {
+  display: grid;
+  grid-template-columns: 1.5ch 1fr auto;
+  gap: 8px;
+  align-items: baseline;
+  padding: 3px 8px;
+  background: transparent;
+  border: none;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--fg);
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+}
+
+.admin-action-marker {
+  color: var(--fg-dim);
+  text-align: center;
+  user-select: none;
+}
+
+.admin-action-label {
+  color: var(--fg);
+}
+
+.admin-action--secondary .admin-action-label {
+  color: var(--fg-muted);
+}
+
+.admin-action-hint {
+  color: var(--fg-dim);
+  font-size: var(--text-xs);
+}
+
+.admin-action:hover,
+.admin-action.is-highlighted {
+  background: var(--bg-elevated);
+}
+
+.admin-action:focus-visible {
+  outline: 1px solid var(--fg);
+  outline-offset: -1px;
+}
+
+/* ── Meta rows (path, lock) above the form header ───────────────────────── */
+
+.admin-field--meta {
+  color: var(--fg-muted);
+}
+
+.admin-field--meta > label {
+  color: var(--fg-muted);
+}
+
+.admin-field--meta > .admin-field-meta-value {
+  grid-column: 3 / 5;
+  color: var(--fg);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.admin-field--meta > .admin-field-meta-value.is-hint {
+  color: var(--fg-dim);
+}
+
+/* Lock toggle for stable ID / slug (Phase 10).
+   Reads `[locked]` in muted color by default; `[unlocked]` in red. */
+.admin-lock-toggle {
+  font-family: var(--font-mono);
+  font-size: inherit;
+  background: transparent;
+  border: none;
+  color: var(--fg-dim);
+  cursor: pointer;
+  padding: 0;
+  letter-spacing: 0;
+}
+
+.admin-lock-toggle[data-state="unlocked"] {
+  color: var(--accent-red);
+}
+
+.admin-lock-toggle:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Primary button — real border, elevated bg, ink text */
 .admin-btn {
   font-family: var(--font-mono);
   font-size: var(--text-sm);
-  padding: 6px 8px;
-  border: none;
-  background: transparent;
-  color: var(--term-amber);
+  padding: 6px 14px;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-elevated);
+  color: var(--fg);
   cursor: pointer;
   text-decoration: none;
   display: inline-block;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+  line-height: 1.4;
 }
 
-.admin-btn::before { content: '[ '; }
-.admin-btn::after  { content: ' ]'; }
+.admin-btn:hover {
+  background: var(--bg-bar);
+  border-color: var(--fg);
+}
 
-.admin-btn:hover { background: rgba(255, 158, 14, 0.08); }
+.admin-btn:focus-visible {
+  outline: 1px solid var(--fg);
+  outline-offset: 2px;
+}
 
+/* Secondary / ghost button */
 .admin-btn-secondary {
-  color: var(--muted);
+  background: transparent;
+  border-color: var(--border);
+  color: var(--fg-muted);
 }
 
 .admin-btn-secondary:hover {
-  background: transparent;
+  background: var(--bg-elevated);
   color: var(--fg);
+  border-color: var(--border-strong);
 }
 
 /* ── Wizard steps ── */
@@ -1109,7 +2214,7 @@ body {
 
 .admin-step-tile.selected {
   border-color: var(--term-amber);
-  background: rgba(255, 158, 14, 0.06);
+  background: var(--bg-elevated);
   color: var(--term-amber);
 }
 
@@ -1120,6 +2225,81 @@ body {
   letter-spacing: 0.07em;
   color: var(--muted);
   margin-bottom: 3px;
+}
+
+/* ── Wizard list (Phase 10) ─────────────────────────────────────────────────
+   Numbered rows for the new-item wizard's type and depth selection. Replaces
+   the card grids. Matches the tree-section idiom used elsewhere.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.admin-wizard-section {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--fg-muted);
+  padding: 12px 8px 4px;
+  margin: 0;
+}
+
+.admin-wizard-section::before {
+  content: '─ ';
+  color: var(--border);
+}
+
+.admin-wizard-list {
+  list-style: none;
+  margin: 0 0 8px;
+  padding: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+}
+
+.admin-wizard-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 3px 8px;
+  cursor: pointer;
+  color: var(--fg-muted);
+}
+
+.admin-wizard-row:hover,
+.admin-wizard-row.is-highlighted {
+  background: var(--bg-elevated);
+  color: var(--fg);
+}
+
+.admin-wizard-row-num {
+  color: var(--fg-dim);
+  min-width: 2ch;
+  flex-shrink: 0;
+}
+
+.admin-wizard-row-label {
+  color: var(--fg);
+}
+
+.admin-wizard-row--depth {
+  padding: 6px 8px;
+  align-items: flex-start;
+}
+
+.admin-wizard-row-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.admin-wizard-row-name {
+  color: var(--fg);
+}
+
+.admin-wizard-row-desc {
+  font-size: var(--text-xs);
+  color: var(--fg-muted);
+  line-height: 1.4;
 }
 
 /* ── Depth buttons ── */
@@ -1158,18 +2338,21 @@ body {
 }
 
 /* ── File path preview ── */
+/* Buffer-style: a single mono status line at the top of the pane body — no
+   box, no panel, just `path:  src/…` in muted color. */
 .admin-filepath-preview {
+  font-family: var(--font-mono);
   font-size: var(--text-xs);
-  color: var(--muted);
-  margin-bottom: 20px;
-  padding: 8px 10px;
-  border: 1px solid var(--border-inner);
-  background: rgba(255, 158, 14, 0.03);
+  color: var(--fg-muted);
+  margin-bottom: 12px;
+  padding: 0 8px;
+  background: transparent;
+  border: none;
   word-break: break-all;
 }
 
 .admin-filepath-preview strong {
-  color: var(--term-amber);
+  color: var(--fg);
   font-weight: normal;
 }
 
@@ -1199,7 +2382,7 @@ body {
 .admin-filter-bar input {
   flex: 1;
   min-width: 160px;
-  background: rgba(255, 158, 14, 0.03);
+  background: transparent;
   border: 1px solid var(--border-inner);
   padding: 5px 8px;
   appearance: none;
@@ -1211,46 +2394,53 @@ body {
 }
 
 /* ── Custom select ── */
+/* ── Custom select — M1 inline expansion (Phase 10.5) ───────────────────────
+   No boxed trigger, no floating dropdown. The trigger reads as plain mono
+   text with a tiny ▾ marker; when open, options stack below in-line so they
+   indent under the value column and grow the row height. Current option is
+   tinted with the same low-alpha blue as the trigger when open, so the two
+   feel paired.
+   ─────────────────────────────────────────────────────────────────────────── */
+
 .admin-select {
-  position: relative;
-  display: block;
+  position: static;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
   cursor: pointer;
   outline: none;
 }
 
-/* > prompt — mirrors .admin-input-wrap::before */
-.admin-select::before {
-  content: '>';
-  position: absolute;
-  left: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--term-amber-dim);
+.admin-select-trigger {
+  display: inline-flex;
+  align-items: baseline;
+  padding: 1px 4px;
+  border: none;
+  background: transparent;
   font-family: var(--font-mono);
   font-size: var(--text-sm);
-  pointer-events: none;
-  z-index: 1;
-  line-height: 1;
-}
-
-.admin-select-trigger {
-  display: flex;
-  align-items: center;
-  padding: 6px 8px 6px 22px;
-  border: 1px solid var(--border-inner);
-  background: rgba(255, 158, 14, 0.03);
-  font-family: var(--font-mono);
-  font-size: 16px; /* iOS zoom prevention */
+  font-weight: inherit;
   color: var(--fg);
   user-select: none;
-  min-height: 34px;
 }
 
-.admin-select:focus .admin-select-trigger,
+@media (max-width: 700px) {
+  .admin-select-trigger {
+    font-size: 16px;
+  }
+}
+
+.admin-select-trigger:hover {
+  background: var(--bg-elevated);
+}
+
 .admin-select.open .admin-select-trigger {
-  outline: 1px solid var(--term-amber);
+  background: color-mix(in srgb, var(--accent-blue) 10%, transparent);
+}
+
+.admin-select:focus-visible .admin-select-trigger {
+  outline: 1px solid var(--fg);
   outline-offset: -1px;
-  background: rgba(255, 158, 14, 0.06);
 }
 
 .admin-select-value {
@@ -1262,9 +2452,9 @@ body {
 
 .admin-select-arrow {
   flex-shrink: 0;
-  color: var(--term-amber-dim);
-  font-size: 0.65rem;
-  margin-left: 10px;
+  color: var(--fg-dim);
+  font-size: 0.7em;
+  margin-left: 6px;
   display: inline-block;
   transition: transform 0.1s;
 }
@@ -1275,16 +2465,13 @@ body {
 
 .admin-select-dropdown {
   display: none;
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  z-index: 200;
-  background: var(--bg);
-  border: 1px solid var(--border-inner);
-  border-top: none;
+  position: static;
+  margin-top: 1px;
+  background: transparent;
+  border: none;
   max-height: 200px;
   overflow-y: auto;
+  z-index: auto;
 }
 
 .admin-select.open .admin-select-dropdown {
@@ -1292,9 +2479,10 @@ body {
 }
 
 .admin-select-option {
-  padding: 7px 8px 7px 22px;
+  padding: 1px 4px;
   font-family: var(--font-mono);
   font-size: var(--text-sm);
+  font-weight: inherit;
   color: var(--fg);
   cursor: pointer;
   white-space: nowrap;
@@ -1304,12 +2492,16 @@ body {
 
 .admin-select-option:hover,
 .admin-select-option.focused {
-  background: var(--hover-bg);
-  color: var(--term-amber);
+  background: var(--bg-elevated);
 }
 
 .admin-select-option.selected {
-  color: var(--term-amber);
+  background: color-mix(in srgb, var(--accent-blue) 10%, transparent);
+}
+
+.admin-select-option.selected:hover,
+.admin-select-option.selected.focused {
+  background: color-mix(in srgb, var(--accent-blue) 18%, transparent);
 }
 
 /* ── Breadcrumb / wizard nav ── */
@@ -1366,22 +2558,22 @@ body {
 }
 
 #admin-app ::-webkit-scrollbar-thumb {
-  background: rgba(255, 158, 14, 0.35);
+  background: var(--border-strong);
   border-radius: 0 !important;
   -webkit-appearance: none;
 }
 
 #admin-app ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 158, 14, 0.6);
+  background: var(--fg-dim);
 }
 
 #admin-app ::-webkit-scrollbar-corner {
   background: transparent;
 }
 
-* {
+#admin-app * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 158, 14, 0.35) transparent;
+  scrollbar-color: var(--border-strong) transparent;
 }
 
 /* ── Empty state ── */

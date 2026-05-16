@@ -1,0 +1,608 @@
+// ── Explorer pane (Phase 2) ──────────────────────────────────────────────────
+// Renders the archive as a collapsible tree into the [e] Explorer pane.
+//
+// Tree shape:
+//   * archive
+//     ▼ Identity
+//       ▶ biography (2)
+//       ▶ cv (6)
+//       ...
+//     ▼ Consumption
+//       ▶ films (487)
+//       ...
+//
+// Expansion state is persisted to localStorage under 'admin.explorer.expanded'
+// (the value is a JSON array of opened-node paths). On first run with no saved
+// state, root and the five series are opened by default so the user can see
+// the archive's shape immediately.
+//
+// Item selection is visual only in this phase. Phase 3 wires the click into
+// opening the record in the [r] Record pane.
+
+import { registerPaneNav, refreshHighlight, setHighlightedRow } from "../nav.js";
+
+const EXPANDED_KEY = 'admin.explorer.expanded';
+
+let expanded         = null;
+let itemsByPath      = new Map();
+let onItemSelectFn   = null;
+let navRegistered    = false;
+
+// Filter state (Phase 6.5):
+//   filter        — { query, mode, matchSet, ancestorSet, positionsMap } while filtering, null when not
+//   matchedPaths  — Set retained AFTER filter exits, used to tint rows until :nohl
+let filter          = null;
+let matchedPaths    = new Set();
+
+function loadExpanded() {
+  try {
+    const raw = localStorage.getItem(EXPANDED_KEY);
+    return raw ? new Set(JSON.parse(raw)) : new Set();
+  } catch {
+    return new Set();
+  }
+}
+
+function saveExpanded(set) {
+  try {
+    localStorage.setItem(EXPANDED_KEY, JSON.stringify([...set]));
+  } catch {}
+}
+
+// ── Public API ───────────────────────────────────────────────────────────────
+
+/**
+ * Inject the explorer's DOM scaffold (tree wrap + progress bar) into the
+ * [e] Explorer pane body. Idempotent — safe to call multiple times.
+ */
+export function initExplorer() {
+  const body = document.querySelector('#pane-explorer .admin-pane-body');
+  if (!body) return;
+  body.innerHTML = `
+    <div class="admin-tree-wrap" id="explorer-tree-wrap">
+      <div class="admin-tree-loading">Loading archive…</div>
+    </div>
+    <div class="admin-progress" id="explorer-progress"></div>
+  `;
+}
+
+/**
+ * Build the tree from `archive` and render it into the prepared scaffold.
+ * Must be called after initExplorer().
+ *
+ *   renderExplorer(archive, { onItemSelect })
+ *
+ * `onItemSelect(item)` fires when the user clicks a leaf. The item passed is
+ * the live archive item (not a tree node).
+ */
+export function renderExplorer(archive, callbacks = {}) {
+  const wrap = document.getElementById('explorer-tree-wrap');
+  if (!wrap) return;
+
+  if (!expanded) expanded = loadExpanded();
+
+  onItemSelectFn = callbacks.onItemSelect || null;
+  itemsByPath = new Map();
+
+  const model = buildModel(archive);
+
+  // First-time defaults: open the root and every series so the user lands on
+  // a meaningful skeleton instead of a single collapsed line.
+  if (expanded.size === 0) {
+    expanded.add(model.path);
+    for (const s of model.children) expanded.add(s.path);
+  }
+
+  wrap.innerHTML = renderTree(model);
+  wrap.__model = model;
+
+  if (!wrap.__handlerAttached) {
+    wrap.addEventListener('click', onTreeClick);
+    wrap.__handlerAttached = true;
+  }
+
+  // Register pane nav for keyboard arrow navigation (Phase 9.5). Re-registering
+  // is idempotent; the nav module preserves the last-highlighted path.
+  registerExplorerNav();
+}
+
+/**
+ * Toggle the progress bar at the bottom of the explorer pane.
+ * Reusable for future commit/load operations beyond the initial archive fetch.
+ */
+export function setExplorerProgress(isActive) {
+  const bar = document.getElementById('explorer-progress');
+  if (bar) bar.classList.toggle('is-active', !!isActive);
+}
+
+// ── Filter API (Phase 6.5) ───────────────────────────────────────────────────
+
+/**
+ * Open the filter input at the top of the Explorer pane body. The mode engine
+ * calls this on `/`. Sets the filter to an empty query — typing in the input
+ * (via setFilter) is what shrinks the tree.
+ */
+export function enterFilter() {
+  const body = document.querySelector('#pane-explorer .admin-pane-body');
+  if (!body) return false;
+  if (document.getElementById('explorer-filter')) return true;
+
+  const bar = document.createElement('div');
+  bar.className = 'admin-tree-filter';
+  bar.id        = 'explorer-filter';
+  bar.innerHTML = `
+    <span class="admin-tree-filter-prompt">/</span>
+    <input type="text"
+           class="admin-tree-filter-input"
+           id="explorer-filter-input"
+           autocomplete="off"
+           spellcheck="false"
+           aria-label="Filter items">
+    <span class="admin-tree-filter-count" id="explorer-filter-count"></span>
+  `;
+  body.insertBefore(bar, body.firstChild);
+
+  const input = document.getElementById('explorer-filter-input');
+  input.addEventListener('input', () => setFilter(input.value));
+
+  // Start with an empty filter — tree stays full until the user types.
+  setFilter('');
+  // Focus AFTER setFilter so the focus-in handler (modes.js) doesn't trip.
+  // modes.js sets mode='filter' before calling enterFilter; the focusin handler
+  // in modes.js skips its auto-INSERT branch while mode is 'filter'.
+  input.focus();
+  return true;
+}
+
+/**
+ * Close the filter input. By default the matched paths are retained as a
+ * subtle persistent tint until clearMatched(). Pass clearMatches=true to drop
+ * the tint immediately (e.g., for an aborted/empty filter).
+ */
+export function exitFilter(clearMatches = false) {
+  const bar = document.getElementById('explorer-filter');
+  if (bar) bar.remove();
+
+  if (filter && filter.matchSet && filter.query) {
+    matchedPaths = new Set(filter.matchSet);
+  } else if (clearMatches) {
+    matchedPaths.clear();
+  }
+  filter = null;
+  renderCurrent();
+}
+
+/**
+ * Apply a query against the tree. Re-renders. Called from the filter input's
+ * `input` event. Empty query → no shrink (full tree, no highlights).
+ */
+export function setFilter(query) {
+  const isFuzzy = query.startsWith('~');
+  const q       = (isFuzzy ? query.slice(1) : query).trim();
+
+  if (!q) {
+    filter = { query: '', mode: 'substring', matchSet: new Set(), ancestorSet: null, positionsMap: new Map() };
+    updateFilterCount(0);
+    renderCurrent();
+    return;
+  }
+
+  const matcher       = isFuzzy ? fuzzyMatch : substringMatch;
+  const matchSet      = new Set();
+  const ancestorSet   = new Set();
+  const positionsMap  = new Map();
+
+  for (const [path, item] of itemsByPath) {
+    const target = (item.title || item.id || '').toString();
+    const positions = matcher(q, target);
+    if (positions) {
+      matchSet.add(path);
+      positionsMap.set(path, positions);
+      // Add every ancestor path so the row is reachable in the tree
+      const parts = path.split('/');
+      for (let i = 1; i < parts.length; i++) {
+        ancestorSet.add(parts.slice(0, i).join('/'));
+      }
+      ancestorSet.add(path);
+    }
+  }
+
+  filter = { query: q, mode: isFuzzy ? 'fuzzy' : 'substring', matchSet, ancestorSet, positionsMap };
+  updateFilterCount(matchSet.size);
+  renderCurrent();
+}
+
+/**
+ * Activate the first matching item — opens it via onItemSelect. Used by Enter
+ * inside FILTER mode.
+ */
+export function activateFirstMatch() {
+  if (!filter || !filter.matchSet.size) return false;
+  const firstPath = filter.matchSet.values().next().value;
+  const item      = itemsByPath.get(firstPath);
+  if (item && onItemSelectFn) {
+    onItemSelectFn(item);
+    return true;
+  }
+  return false;
+}
+
+/** Drop the persistent match tint. Wired to the `:nohl` command. */
+export function clearMatched() {
+  matchedPaths.clear();
+  renderCurrent();
+}
+
+// ── Filter helpers ───────────────────────────────────────────────────────────
+
+function updateFilterCount(matched) {
+  const el = document.getElementById('explorer-filter-count');
+  if (!el) return;
+  if (!filter || !filter.query) {
+    el.textContent = '';
+    return;
+  }
+  const total = itemsByPath.size;
+  el.textContent = `${matched}/${total}`;
+}
+
+function renderCurrent() {
+  const wrap = document.getElementById('explorer-tree-wrap');
+  if (!wrap || !wrap.__model) return;
+  wrap.innerHTML = renderTree(wrap.__model);
+  refreshHighlight('e');
+}
+
+// ── Nav registration (Phase 9.5) ─────────────────────────────────────────────
+
+function registerExplorerNav() {
+  const wrap = document.getElementById('explorer-tree-wrap');
+  if (!wrap) return;
+
+  registerPaneNav('e', {
+    container:   wrap,
+    rowSelector: '.admin-tree-row:not(.is-empty)',
+
+    onActivate: (row) => {
+      const path = row.dataset.path;
+      const type = row.dataset.type;
+      if (type === 'item') {
+        // Open in Record pane (same code path as a mouse click)
+        wrap.querySelectorAll('.admin-tree-row.is-selected').forEach(r => r.classList.remove('is-selected'));
+        row.classList.add('is-selected');
+        const item = itemsByPath.get(path);
+        if (item && onItemSelectFn) onItemSelectFn(item);
+      } else {
+        // Toggle expansion (same as click on a group row)
+        if (expanded.has(path)) expanded.delete(path);
+        else                    expanded.add(path);
+        saveExpanded(expanded);
+        renderCurrent();
+      }
+    },
+
+    onLeft: (row) => {
+      const path = row.dataset.path;
+      const type = row.dataset.type;
+
+      // Expanded group → collapse in place
+      if (type !== 'item' && expanded.has(path)) {
+        expanded.delete(path);
+        saveExpanded(expanded);
+        renderCurrent();
+        return;
+      }
+
+      // Otherwise → highlight parent row
+      const parent = parentPath(path);
+      if (!parent) return;
+      const parentRow = wrap.querySelector(`.admin-tree-row[data-path="${cssEscape(parent)}"]`);
+      if (parentRow) setHighlightedRow('e', parentRow);
+    },
+
+    onRight: (row) => {
+      const path = row.dataset.path;
+      const type = row.dataset.type;
+      if (type === 'item') return;
+
+      // Collapsed group → expand in place
+      if (!expanded.has(path)) {
+        expanded.add(path);
+        saveExpanded(expanded);
+        renderCurrent();
+        return;
+      }
+
+      // Already expanded → move to first child (next visible row whose path
+      // starts with current path + "/")
+      const rows = Array.from(wrap.querySelectorAll('.admin-tree-row:not(.is-empty)'));
+      const idx = rows.indexOf(row);
+      const next = rows[idx + 1];
+      if (next && next.dataset.path && next.dataset.path.startsWith(path + '/')) {
+        setHighlightedRow('e', next);
+      }
+    },
+  });
+}
+
+function parentPath(path) {
+  if (!path) return null;
+  const i = path.lastIndexOf('/');
+  return i === -1 ? null : path.slice(0, i);
+}
+
+function substringMatch(query, target) {
+  const i = target.toLowerCase().indexOf(query.toLowerCase());
+  if (i === -1) return null;
+  const positions = [];
+  for (let k = 0; k < query.length; k++) positions.push(i + k);
+  return positions;
+}
+
+function fuzzyMatch(query, target) {
+  const lq = query.toLowerCase();
+  const lt = target.toLowerCase();
+  const positions = [];
+  let qi = 0;
+  for (let i = 0; i < lt.length && qi < lq.length; i++) {
+    if (lt[i] === lq[qi]) {
+      positions.push(i);
+      qi++;
+    }
+  }
+  return qi === lq.length ? positions : null;
+}
+
+function wrapMatchPositions(label, positions) {
+  if (!positions || !positions.length) return escapeHTML(label);
+  const set = new Set(positions);
+  let out = '';
+  for (let i = 0; i < label.length; i++) {
+    if (set.has(i)) out += `<span class="admin-tree-match">${escapeHTML(label[i])}</span>`;
+    else            out += escapeHTML(label[i]);
+  }
+  return out;
+}
+
+/**
+ * Select an item by id from outside the tree (e.g., when the empty-state's
+ * Recent or Needs-attention list is clicked). Auto-expands ancestor groups so
+ * the row is visible, then highlights it and scrolls it into view.
+ */
+export function selectInTree(itemId) {
+  const wrap = document.getElementById('explorer-tree-wrap');
+  if (!wrap || !wrap.__model) return;
+
+  // Locate the path for this item id
+  let itemPath = null;
+  for (const [path, item] of itemsByPath) {
+    if (item.id === itemId) { itemPath = path; break; }
+  }
+  if (!itemPath) return;
+
+  // Expand every ancestor so the row is visible
+  const parts = itemPath.split('/');
+  for (let i = 1; i < parts.length; i++) {
+    expanded.add(parts.slice(0, i).join('/'));
+  }
+  saveExpanded(expanded);
+
+  // Re-render and apply selection (keyboard-highlight restored by renderCurrent)
+  renderCurrent();
+  const row = wrap.querySelector(`.admin-tree-row[data-path="${cssEscape(itemPath)}"]`);
+  if (row) {
+    row.classList.add('is-selected');
+    row.scrollIntoView({ block: 'nearest' });
+  }
+}
+
+/**
+ * Replace the tree wrap with an error message — used when archive.json fails
+ * to load.
+ */
+export function showExplorerError() {
+  const wrap = document.getElementById('explorer-tree-wrap');
+  if (!wrap) return;
+  wrap.innerHTML = `
+    <div class="admin-tree-error">
+      Failed to load <code>archive.json</code>.<br>
+      Run <code>npm run build-data</code> and reload.
+    </div>
+  `;
+}
+
+// ── Click handling ───────────────────────────────────────────────────────────
+
+function onTreeClick(e) {
+  const wrap = e.currentTarget;
+  const row  = e.target.closest('.admin-tree-row');
+  if (!row || row.classList.contains('is-empty')) return;
+
+  const path = row.dataset.path;
+  const type = row.dataset.type;
+
+  if (type === 'item') {
+    wrap.querySelectorAll('.admin-tree-row.is-selected')
+      .forEach(r => r.classList.remove('is-selected'));
+    row.classList.add('is-selected');
+
+    const item = itemsByPath.get(path);
+    if (item && onItemSelectFn) onItemSelectFn(item);
+    return;
+  }
+
+  // Group: toggle expansion and re-render.
+  if (expanded.has(path)) expanded.delete(path);
+  else                    expanded.add(path);
+  saveExpanded(expanded);
+
+  // Preserve selection across re-render: capture the selected path, redraw,
+  // then re-apply. The keyboard-highlight is restored via refreshHighlight()
+  // inside renderCurrent().
+  const selectedPath = wrap.querySelector('.admin-tree-row.is-selected')?.dataset.path;
+  renderCurrent();
+  if (selectedPath) {
+    const restored = wrap.querySelector(`.admin-tree-row[data-path="${cssEscape(selectedPath)}"]`);
+    if (restored) restored.classList.add('is-selected');
+  }
+}
+
+// ── Model ────────────────────────────────────────────────────────────────────
+
+function buildModel(archive) {
+  const seriesEntries = Object.entries(archive.series || {})
+    .sort((a, b) => (a[1].order ?? 0) - (b[1].order ?? 0));
+
+  const root = {
+    type:     'root',
+    label:    'archive',
+    path:     'archive',
+    children: [],
+  };
+
+  let totalItems = 0;
+
+  for (const [seriesKey, series] of seriesEntries) {
+    const seriesNode = {
+      type:     'series',
+      label:    series.label || seriesKey,
+      path:     'archive/' + seriesKey,
+      children: [],
+    };
+
+    // Direct items (e.g., Labor, Accumulation)
+    for (const item of series.items || []) {
+      seriesNode.children.push(itemNode(item, seriesNode.path));
+    }
+
+    // Subcollections (e.g., consumption → films)
+    for (const [subKey, sub] of Object.entries(series.subcollections || {})) {
+      const subNode = {
+        type:     'subcollection',
+        label:    sub.label || subKey,
+        path:     seriesNode.path + '/' + subKey,
+        children: [],
+      };
+      for (const item of sub.items || []) {
+        subNode.children.push(itemNode(item, subNode.path));
+      }
+      subNode.count = subNode.children.length;
+      seriesNode.children.push(subNode);
+    }
+
+    seriesNode.count = countLeaves(seriesNode);
+    totalItems += seriesNode.count;
+    root.children.push(seriesNode);
+  }
+
+  root.count = totalItems;
+  return root;
+}
+
+function itemNode(item, parentPath) {
+  const path = parentPath + '/' + item.id;
+  const node = {
+    type:  'item',
+    label: item.title || item.id,
+    path,
+    item,
+  };
+  itemsByPath.set(path, item);
+  return node;
+}
+
+function countLeaves(node) {
+  if (node.type === 'item') return 1;
+  let n = 0;
+  for (const c of node.children || []) n += countLeaves(c);
+  return n;
+}
+
+// ── HTML render ──────────────────────────────────────────────────────────────
+
+const INDENT_PX = 14;
+const ROW_PAD_LEFT_PX = 8;
+
+function renderTree(root) {
+  return `<div class="admin-tree">${renderNode(root, 0)}</div>`;
+}
+
+function renderNode(node, depth) {
+  // Filter shrink: skip nodes whose subtree contains no match (unless the
+  // query is empty — then ancestorSet is null and everything renders).
+  if (filter && filter.query && filter.ancestorSet && !filter.ancestorSet.has(node.path)) {
+    return '';
+  }
+
+  const isLeaf  = node.type === 'item';
+  const hasKids = !isLeaf && node.children && node.children.length > 0;
+  // While filtering with a query, force-expand every visible group.
+  const isOpen  = (filter && filter.query) ? true : expanded.has(node.path);
+  const isEmpty = !isLeaf && !hasKids;
+  const isRoot  = node.type === 'root';
+
+  let marker;
+  if (isLeaf)        marker = '·';
+  else if (isEmpty)  marker = ' ';
+  else               marker = isOpen ? '▼' : '▶';
+
+  let rowClass = 'admin-tree-row';
+  if (isLeaf)      rowClass += ' admin-tree-leaf';
+  else if (isRoot) rowClass += ' admin-tree-root';
+  else             rowClass += ' admin-tree-group';
+  if (isEmpty)     rowClass += ' is-empty';
+  // Persistent match tint (after filter exit, before :nohl)
+  if (!filter && matchedPaths.has(node.path)) rowClass += ' is-matched';
+
+  const indent = depth * INDENT_PX;
+
+  const star      = isRoot ? '<span class="admin-tree-star">*</span> ' : '';
+  const countHTML = (!isLeaf && node.count != null)
+    ? `<span class="admin-tree-count">${node.count}</span>`
+    : '';
+  const emptyHint = isEmpty
+    ? ' <span class="admin-tree-empty">(empty)</span>'
+    : '';
+
+  // Character-level highlight when this node is matched in the active filter
+  let labelHTML;
+  if (filter && filter.query && filter.positionsMap.has(node.path)) {
+    labelHTML = wrapMatchPositions(node.label, filter.positionsMap.get(node.path));
+  } else {
+    labelHTML = escapeHTML(node.label);
+  }
+
+  let html  = `<div class="${rowClass}" data-path="${escapeAttr(node.path)}" data-type="${node.type}" style="padding-left: ${indent + ROW_PAD_LEFT_PX}px">`;
+      html += `<span class="admin-tree-marker">${marker}</span>`;
+      html += star;
+      html += `<span class="admin-tree-label">${labelHTML}</span>`;
+      html += emptyHint;
+      html += countHTML;
+      html += `</div>`;
+
+  if (hasKids && isOpen) {
+    for (const child of node.children) {
+      html += renderNode(child, depth + 1);
+    }
+  }
+
+  return html;
+}
+
+// ── Utilities ────────────────────────────────────────────────────────────────
+
+function escapeHTML(s) {
+  return String(s).replace(/[&<>"']/g, c => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+  ));
+}
+
+function escapeAttr(s) {
+  return escapeHTML(s);
+}
+
+function cssEscape(s) {
+  // Minimal CSS attribute-selector escape — paths only contain alphanumerics,
+  // dashes, underscores, slashes, and dots, but we belt-and-suspenders it.
+  return String(s).replace(/(["\\])/g, '\\$1');
+}

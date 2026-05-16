@@ -180,6 +180,31 @@ Its purpose is to prevent drift, repetition, and silent contradictions over time
 - reason: The ephemera/documents distinction was weak — "handouts" appeared in both definitions and `documents` was always empty. A flat browse grouped by year, event, place, or type serves the content better.
 - deferred: Grouping/sort UI (year · event · place · type) is deferred to Phase 7.
 
+### Admin shell architecture: three-pane TUI
+- status: confirmed
+- decision: The admin interface is a single-page three-pane shell modeled on a vim-style database client. `[e] Explorer` (collapsible tree of the archive) sits on the left; `[r] Record` (edit form / empty state / new-item wizard) on the top-right; `[l] Log` (pending changes + commit button + session history) on the bottom-right. Each pane has a notched `[letter] Name` label and a draggable gutter between it and its neighbors; sizes persist to localStorage. The shell sits inside a centered window on a tray-grey backdrop.
+- reason: A single-pane routed admin (Dashboard / Browse / New / Edit) felt unnatural for an archive that grows over time. Tree + record + log fits the editorial loop (browse → open → review pending → commit) better than a sequence of routed views, and keeps every layer visible at once. The model mirrors a TUI database client (see docs/tui.gif for the visual reference).
+- reference: docs/admin-tui-overhaul.md
+- date: 2026-05-12
+
+### Admin interaction model: vim modality (desktop)
+- status: confirmed
+- decision: Desktop admin uses vim-style modal interaction. Four modes — normal (keyboard shortcuts), insert (a text input has focus, keys flow to it), command (`:` opens an inline command bar in the status row), filter (`/` opens an in-pane filter at the top of the focused pane). Auto-transitions: focusing any editable input flips NORMAL → INSERT; blurring returns to NORMAL. The keymap legend at the bottom of the window is contextual on (mode, focused pane).
+- reason: Keyboard-first navigation suits an archive that grows over time. A consistent mode model makes the legend self-documenting (it lists the bindings that are live for the current state). Auto-INSERT on focus avoids requiring explicit `i` before typing.
+- date: 2026-05-12
+
+### Admin palette: cool-grey body with Solarized accents
+- status: confirmed
+- decision: The admin uses a cool-grey body (`#d5d8db`) with Solarized accent colors used semantically — green for ok/added, red for error/deleted, violet for in-flight, yellow for pending edits, orange for filter matches. Blue is reserved for the `-- NORMAL --` mode chip only. Foreground inversion: `--fg` (vibrant ink `#1f2226`) is the focus/active text color; default body text sits at `--fg-muted` medium charcoal.
+- reason: The earlier amber-on-black terminal aesthetic was distinct from the public site but limited semantic vocabulary. A neutral grey + Solarized palette gives the admin its own identity while supporting four-plus semantic states (pending / saving / saved / error / matched). The vibrant-ink-as-focus pattern matches the gif's "active text = same hue, brighter version of default" idiom, inverted for light theme.
+- date: 2026-05-12
+
+### Admin mobile model: bottom tabstrip, no vim
+- status: confirmed
+- decision: At ≤700px the three-pane shell collapses to a single visible pane controlled by an iOS-style bottom tabstrip (`[e Explorer] [r Record] [l Log]`). Vim modality strictly disables — `modes.js` short-circuits all four handlers (keydown, focusin, focusout, mousedown) via a media-query check. The mode chip, clock, and keymap legend hide; the status row collapses to its state text only. Native form focus and tap interactions carry the entire mobile model. Opening an item from the Explorer auto-switches the active tab to Record.
+- reason: Vim-style keyboard interaction doesn't translate to phones. The bottom-tab pattern is familiar and the form fields keep the 16px input minimum to suppress iOS zoom-on-focus.
+- date: 2026-05-12
+
 ### Accumulation URL model
 - status: confirmed
 - decision: Accumulation uses a view-based second URL segment rather than a subcollection key.
@@ -207,10 +232,10 @@ Its purpose is to prevent drift, repetition, and silent contradictions over time
 - revisit_when: content volume and relationships become clearer
 
 ### Admin implementation
-- status: provisional
-- decision: Start with the simplest admin layer that respects the schema, potentially Decap CMS or a custom lightweight form.
-- reason: The project needs ingest support, but should not overbuild a CMS too early.
-- revisit_when: after content model and platform structure are stable
+- status: superseded
+- decision: Originally provisional — start with the simplest admin layer that respects the schema, potentially Decap CMS or a custom lightweight form.
+- superseded_by: the confirmed decisions above for the three-pane TUI shell, vim modality, palette, and mobile model. The admin is a custom GitHub-backed app served from `/admin.html`; no external CMS is used.
+- date: 2026-05-12
 
 ### Public/private split
 - status: provisional

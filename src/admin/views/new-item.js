@@ -5,6 +5,9 @@ import { generateId }    from "../lib/id-generator.js";
 import { generateSlug, generateFilePath, TYPE_SUBCOLLECTION } from "../lib/slug-generator.js";
 import { toMarkdown } from "../lib/serializer.js";
 import { getState, setState } from "../state.js";
+import { registerPaneNav } from "../nav.js";
+import { applyEditToggle } from "../forms/edit-toggle.js";
+import { applyFieldChrome } from "../forms/field-chrome.js";
 
 const SERIES_TYPES = {
   accumulation: ["ticket", "brochure", "receipt", "handout", "document"],
@@ -16,15 +19,17 @@ const SERIES_TYPES = {
 
 const SERIES_ORDER = ["accumulation", "consumption", "creation", "labor", "identity"];
 
-// Store wizard state between re-renders
-let wizardState = {
-  step:     0,
-  series:   null,
-  itemType: null,
-  depth:    null,
-};
+// Wizard state — kept module-scoped so step transitions and the success
+// state's "Add another" button can re-render in the same container without
+// rebuilding the scaffold.
+let wizardState     = { step: 0, series: null, itemType: null, depth: null };
+let wizardContainer = null;
+let wizardOnClose   = null;
 
-export function renderNewItem(container, archive, preselect = null) {
+export function renderNewItem(container, archive, preselect = null, callbacks = {}) {
+  wizardContainer = container;
+  wizardOnClose   = callbacks.onClose || null;
+
   if (preselect) {
     // Preselect jumps to depth selection (step 1), not straight to form
     wizardState = { step: 1, series: preselect.series, itemType: preselect.itemType, depth: null };
@@ -32,10 +37,6 @@ export function renderNewItem(container, archive, preselect = null) {
     wizardState = { step: 0, series: null, itemType: null, depth: null };
   }
   renderStep(container, archive);
-}
-
-function getMainContainer(el) {
-  return document.getElementById("admin-content") || el.closest(".admin-main") || el.parentElement;
 }
 
 function renderStep(container, archive) {
@@ -84,60 +85,80 @@ function makePanel(label, ...children) {
 }
 
 function renderTypeSelection(body, archive) {
+  // Buffer-style: each series gets a `─ series` section divider followed by a
+  // numbered list of type rows. Click a row to advance the wizard.
+  let counter = 0;
   for (const series of SERIES_ORDER) {
     const types = SERIES_TYPES[series];
 
-    const grid = document.createElement("div");
-    grid.className = "admin-step-grid";
+    const heading = document.createElement("div");
+    heading.className = "admin-wizard-section";
+    heading.textContent = series;
+    body.appendChild(heading);
+
+    const list = document.createElement("ul");
+    list.className = "admin-wizard-list";
 
     for (const type of types) {
-      const btn = document.createElement("button");
-      btn.className = "admin-step-tile";
-      btn.innerHTML = `<span class="tile-label">${series}</span>${type}`;
-      btn.addEventListener("click", () => {
+      counter++;
+      const li = document.createElement("li");
+      li.className = "admin-wizard-row";
+      li.innerHTML = `
+        <span class="admin-wizard-row-num">${counter}.</span>
+        <span class="admin-wizard-row-label">${type}</span>
+      `;
+      li.addEventListener("click", () => {
         wizardState.series   = series;
         wizardState.itemType = type;
         wizardState.step     = 1;
-        renderStep(getMainContainer(body), archive);
+        renderStep(wizardContainer, archive);
       });
-      grid.appendChild(btn);
+      list.appendChild(li);
     }
 
-    body.appendChild(makePanel(series, grid));
+    body.appendChild(list);
   }
 }
 
 function renderDepthSelection(body, archive) {
-  const grid = document.createElement("div");
-  grid.className = "admin-depth-grid";
+  const heading = document.createElement("div");
+  heading.className = "admin-wizard-section";
+  heading.textContent = "entry depth";
+  body.appendChild(heading);
 
-  const quick = document.createElement("button");
-  quick.className = "admin-depth-btn";
-  quick.innerHTML = `
-    <span class="depth-name">Quick log</span>
-    <span class="depth-desc">Title, date, optional thumbnail. Fast entry for films, coffee, books, ephemera.</span>
-  `;
-  quick.addEventListener("click", () => {
-    wizardState.depth = "quick";
-    wizardState.step  = 2;
-    renderStep(getMainContainer(body), archive);
+  const list = document.createElement("ul");
+  list.className = "admin-wizard-list admin-wizard-list--depth";
+
+  const depths = [
+    { key: 'quick', name: 'Quick log',  desc: 'Title, date, optional thumbnail. Fast entry for films, coffee, books, ephemera.' },
+    { key: 'full',  name: 'Full entry', desc: 'All metadata, assets, relationships, inspection settings. For richly annotated records.' },
+  ];
+
+  depths.forEach((d, i) => {
+    const li = document.createElement("li");
+    li.className = "admin-wizard-row admin-wizard-row--depth";
+    li.innerHTML = `
+      <span class="admin-wizard-row-num">${i + 1}.</span>
+      <span class="admin-wizard-row-body">
+        <span class="admin-wizard-row-name">${d.name}</span>
+        <span class="admin-wizard-row-desc">${escapeHTML(d.desc)}</span>
+      </span>
+    `;
+    li.addEventListener("click", () => {
+      wizardState.depth = d.key;
+      wizardState.step  = 2;
+      renderStep(wizardContainer, archive);
+    });
+    list.appendChild(li);
   });
 
-  const full = document.createElement("button");
-  full.className = "admin-depth-btn";
-  full.innerHTML = `
-    <span class="depth-name">Full entry</span>
-    <span class="depth-desc">All metadata, assets, relationships, inspection settings. For richly annotated records.</span>
-  `;
-  full.addEventListener("click", () => {
-    wizardState.depth = "full";
-    wizardState.step  = 2;
-    renderStep(getMainContainer(body), archive);
-  });
+  body.appendChild(list);
+}
 
-  grid.appendChild(quick);
-  grid.appendChild(full);
-  body.appendChild(makePanel("Entry depth", grid));
+function escapeHTML(s) {
+  return String(s).replace(/[&<>"']/g, c => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+  ));
 }
 
 function renderFormStep(body, archive) {
@@ -162,22 +183,38 @@ function renderFormStep(body, archive) {
 
   const groups = orderGroups([...getBaseGroups(), ...getTypeGroups(itemType)]);
 
-  // File path preview
-  const preview = document.createElement("div");
-  preview.className = "admin-filepath-preview";
-  body.appendChild(makePanel("Save path", preview));
+  // Meta row at top — file path preview (no lock row: new items always allow id edit)
+  const pathRow = document.createElement("div");
+  pathRow.className = "admin-field admin-field--meta";
+  pathRow.innerHTML = `
+    <span></span>
+    <label>path</label>
+    <span class="admin-field-meta-value" id="meta-path"></span>
+  `;
+  body.appendChild(pathRow);
 
   function updatePreview(data) {
+    const pathEl = document.getElementById("meta-path");
+    if (!pathEl) return;
     const slug = generateSlug(itemType, data);
     try {
       const fp = generateFilePath(series, subcollection, id, slug);
-      preview.innerHTML = `Will save as: <strong>${fp}</strong>`;
+      pathEl.textContent = fp;
     } catch {
-      preview.textContent = "Path not yet determined";
+      pathEl.textContent = "(not yet determined)";
     }
   }
-
   updatePreview(initialData);
+
+  // Form header banner
+  const header = document.createElement("div");
+  header.className = "admin-form-header";
+  header.innerHTML = `<span></span><span>FIELD</span><span>VALUE</span><span>TYPE</span>`;
+  body.appendChild(header);
+
+  const sep = document.createElement("div");
+  sep.className = "admin-form-header-sep";
+  body.appendChild(sep);
 
   let formHandle;
   const formContainer = document.createElement("div");
@@ -194,23 +231,51 @@ function renderFormStep(body, archive) {
     updatePreview(currentData);
   }, depth);
 
-  // Actions
+  applyFieldChrome(formContainer);
+  applyEditToggle(formContainer);
+
+  // Action lines
   const actions = document.createElement("div");
-  actions.className = "admin-form-actions";
+  actions.className = "admin-actions";
 
-  const saveBtn = document.createElement("button");
-  saveBtn.className = "admin-btn";
-  saveBtn.textContent = "Save";
-  saveBtn.addEventListener("click", () => handleSave(saveBtn, formHandle, id, prefix, nextCounter, counters, series, subcollection, itemType, archive, body));
+  const saveAction = document.createElement("button");
+  saveAction.type = "button";
+  saveAction.className = "admin-action";
+  saveAction.innerHTML = `
+    <span class="admin-action-marker">&gt;</span>
+    <span class="admin-action-label">save</span>
+    <span class="admin-action-hint">:w</span>
+  `;
+  saveAction.addEventListener("click", () => handleSave(saveAction, formHandle, id, prefix, nextCounter, counters, series, subcollection, itemType, archive, body));
+  actions.appendChild(saveAction);
 
-  const cancelLink = document.createElement("a");
-  cancelLink.href = "#/";
-  cancelLink.className = "admin-btn admin-btn-secondary";
-  cancelLink.textContent = "Cancel";
+  const cancelAction = document.createElement("button");
+  cancelAction.type = "button";
+  cancelAction.className = "admin-action admin-action--secondary";
+  cancelAction.innerHTML = `
+    <span class="admin-action-marker">&gt;</span>
+    <span class="admin-action-label">cancel</span>
+    <span class="admin-action-hint">:q</span>
+  `;
+  cancelAction.addEventListener("click", () => { if (wizardOnClose) wizardOnClose(); });
+  actions.appendChild(cancelAction);
 
-  actions.appendChild(saveBtn);
-  actions.appendChild(cancelLink);
   body.appendChild(actions);
+
+  // Arrow-key nav over the form's fields + action rows
+  registerPaneNav('r', {
+    container:   body,
+    rowSelector: '.admin-field:not(.admin-field--meta), .admin-action',
+    onActivate:  (row) => {
+      if (row.classList.contains('admin-action')) { row.click(); return; }
+      const display = row.querySelector('.admin-field-value:not(.is-editing) .admin-field-display');
+      if (display) { display.click(); return; }
+      const input = row.querySelector(
+        'input:not([readonly]):not([disabled]), textarea:not([readonly]):not([disabled]), select:not([disabled])'
+      );
+      if (input) input.focus();
+    },
+  });
 }
 
 function handleSave(saveBtn, formHandle, id, prefix, nextCounter, counters, series, subcollection, itemType, archive, body) {
@@ -251,17 +316,19 @@ function renderSuccessState(body, id, itemType, series, subcollection, archive, 
     <div style="padding: 24px 0;">
       <div style="margin-bottom: 16px;">Saved <strong>${id}</strong></div>
       <div style="display: flex; gap: 12px;">
-        <button class="admin-btn" id="add-another">Add another ${itemType}</button>
-        <a href="#/browse" class="admin-btn admin-btn-secondary">Browse items</a>
-        <a href="#/" class="admin-btn admin-btn-secondary">Dashboard</a>
+        <button class="admin-btn" id="add-another" type="button">Add another ${itemType}</button>
+        <button class="admin-btn admin-btn-secondary" id="wizard-close" type="button">Close</button>
       </div>
     </div>
   `;
 
   document.getElementById("add-another")?.addEventListener("click", () => {
     wizardState = { step: 1, series, itemType, depth: null };
-    const container = body.closest(".admin-main");
-    if (container) renderStep(container, archive);
+    if (wizardContainer) renderStep(wizardContainer, archive);
+  });
+
+  document.getElementById("wizard-close")?.addEventListener("click", () => {
+    if (wizardOnClose) wizardOnClose();
   });
 }
 

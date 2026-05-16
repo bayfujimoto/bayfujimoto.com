@@ -1517,13 +1517,16 @@ function makeLaborItemSheet(seriesKey, itemId, viewSlug) {
     scroll.appendChild(thesisPanel);
 
     // ── Panels 3+: Subitems ──
-    (item.subitems || []).forEach((sub, i) => {
-      if (sub.type !== "image") return;
+    // captionH must match the CSS height of .labor-item__caption (5.34rem)
+    const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
+    const captionH = 5.34 * rem;
 
-      const vw = (sub.width_vw != null && sub.width_vw >= 10) ? sub.width_vw : 60;
+    (item.subitems || []).forEach((sub, i) => {
+      // Skip only explicitly non-image types; pass through when type is absent
+      if (sub.type && sub.type !== "image") return;
 
       const imgPanel = el("div", "labor-item__panel labor-item__panel--image");
-      imgPanel.style.width = `${vw}vw`;
+      imgPanel.style.width = "300px"; // placeholder until natural dimensions load
 
       const imgWrap = el("div", "labor-item__image-wrap");
       const img = el("img", "labor-item__image");
@@ -1533,11 +1536,18 @@ function makeLaborItemSheet(seriesKey, itemId, viewSlug) {
       imgWrap.appendChild(img);
       imgPanel.appendChild(imgWrap);
 
-      if (sub.caption) {
-        const cap = el("p", "labor-item__caption");
-        cap.textContent = sub.caption;
-        imgPanel.appendChild(cap);
-      }
+      // Always render caption div — keeps image area height uniform across all panels
+      const cap = el("p", "labor-item__caption");
+      cap.textContent = sub.caption || "";
+      imgPanel.appendChild(cap);
+
+      // Set panel width from aspect ratio once image dimensions are known
+      img.addEventListener("load", () => {
+        const imageH = scroll.clientHeight - captionH;
+        const panelW = imageH * (img.naturalWidth / img.naturalHeight);
+        imgPanel.style.width = `${panelW}px`;
+        updateScrollMask();
+      });
 
       scroll.appendChild(imgPanel);
     });

@@ -6,7 +6,106 @@ This project should include a private or protected admin-facing interface for ad
 
 The admin interface exists to support a living archive. It should reduce friction for ongoing entry while preserving the same archival logic, metadata standards, and structural consistency used by the public site.
 
-This interface is not part of the public-facing archive experience. It is a maintenance tool for creating, editing, drafting, and organizing records that Eleventy later turns into the public site.
+This interface is not part of the public-facing archive experience. It is a maintenance tool for creating, editing, drafting, and organizing records that the build script (`scripts/build-data.js`) ingests into the public site.
+
+## Implementation (as built)
+
+The admin is implemented as a single-page three-pane TUI shell modeled on a vim-style database client. Visited at `/admin.html`. Full design history is in [`docs/admin-tui-overhaul.md`](admin-tui-overhaul.md); this section is a summary of the current behavior.
+
+### Layout
+
+Three panes inside a centered window, each with a notched `[letter] Name` label and draggable gutters between them (sizes persisted to `localStorage`). The window sits on a slightly darker tray-grey backdrop.
+
+- **`[e] Explorer`** (left) — a collapsible tree of the archive. Top-level groups are the five series (Identity, Labor, Consumption, Creation, Accumulation). Each series expands to its subcollections, and each subcollection expands to its items. Click an item to open it in the Record pane.
+- **`[r] Record`** (top-right) — context-driven. Default is a slim empty state (a hint line plus a short Needs-attention list, max 5 rows). Clicking an Explorer leaf renders that item's edit form here. The `:new <type>` command renders the new-item wizard here. Cancel returns to the empty state.
+- **`[l] Log`** (bottom-right) — pending changes in `git status` shorthand (`M` ink, `A` green, `D` red), a commit button bundling everything into a single GitHub commit via `commitAll()`, and a session-scoped history (last 5 commits with time + summary + ok/fail).
+
+A topbar above all three carries `ARCHIVE_SYS` identity on the left and a contextual breadcrumb (`edit › ITEM-ID`, etc.) on the right. A two-row status bar below: state line (state text + mode chip + clock) and contextual keymap legend.
+
+### Mode reference
+
+| Mode    | Chip color | Behavior                                                                      |
+| ------- | ---------- | ----------------------------------------------------------------------------- |
+| NORMAL  | blue       | Keyboard shortcuts fire. No editable input has focus.                         |
+| INSERT  | green      | A text input has focus. Keys flow to it. Esc returns to NORMAL.               |
+| COMMAND | violet     | `:` command bar is open inline in the state row. Enter executes; Esc cancels. |
+| FILTER  | cyan       | `/` filter bar is open at the top of a list-bearing pane.                     |
+
+Auto-transitions: focusing any editable input flips NORMAL → INSERT; blurring returns to NORMAL. INSERT can be entered explicitly from NORMAL with `i` or `a` (focuses the first editable field in the focused pane).
+
+### Default keymap
+
+The keymap legend at the bottom of the window is contextual on `(mode, focused pane)` — what's shown reflects what's bound right now. The full reference (toggle with `?` to expand the legend, or refer here):
+
+**NORMAL — when Explorer is focused**
+
+- `j` / `k` — navigate up/down *(deferred; visible in legend but not yet bound)*
+- `h` / `l` — collapse / expand *(deferred)*
+- `Enter` — open the highlighted leaf *(deferred — click instead)*
+- `/` — open filter
+- `r` — focus Record pane
+- `l` — focus Log pane
+- `:` — open command bar
+
+**NORMAL — when Record is focused**
+
+- `i` / `a` — enter INSERT on the first editable field
+- `Esc` — return to NORMAL (blurs the input)
+- `:w` — save / commit
+- `e` — focus Explorer
+- `l` — focus Log
+
+**NORMAL — when Log is focused**
+
+- `Enter` — open the highlighted record *(deferred — click instead)*
+- `:w` — commit pending
+- `e` — focus Explorer
+- `r` — focus Record
+
+**COMMAND** — typed after `:`
+
+- `:w` — bundle all pending changes into one GitHub commit
+- `:q` — close the current record (return to empty state)
+- `:e <id>` — open record by id (e.g. `:e FILM-0042`)
+- `:new <type>` — open the new-item wizard with the type preset (e.g. `:new ticket`)
+- `:nohl` — clear the persistent filter-match tint
+- `:help` — toggle expanded keymap legend
+- Tab — complete the single highlighted suggestion
+- ArrowDown / ArrowUp — navigate suggestions
+- Esc — cancel
+
+**FILTER** — typed after `/` while Explorer is focused
+
+- Substring matching by default. Prefix the query with `~` for fuzzy (subsequence) matching.
+- Enter — open the first matching item
+- Esc — close the filter input; matched rows keep a persistent orange tint until `:nohl` clears them.
+
+### Mobile fallback
+
+At ≤700px the three-pane grid collapses to a single visible pane controlled by an iOS-style bottom tabstrip (`[e] [r] [l]`). Vim modality strictly disables — no keyboard shortcuts fire, and the mode chip, clock, and keymap legend hide. Tapping an item in Explorer auto-switches the active tab to Record. The status row collapses to its state-text only. Form fields keep the 16px minimum to suppress iOS zoom-on-focus.
+
+### Status row palette
+
+The state text color reflects the current operation kind: yellow for pending edits, violet for in-flight (loading the archive or committing), green for completed saves, red for errors. A braille spinner (`⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏`) cycles via CSS as a `::before` on the loading and saving states. The full animation catalog is documented in `docs/admin-tui-overhaul.md` under "Animation language."
+
+### File map
+
+| File                                  | Role                                                                               |
+| ------------------------------------- | ---------------------------------------------------------------------------------- |
+| `admin.html`                          | entry point — single `#admin-app` root                                             |
+| `src/admin/main.js`                   | orchestrator — wires every module on init                                          |
+| `src/admin/shell.js`                  | three-pane grid, gutter drag-to-resize, Record pane API                            |
+| `src/admin/modes.js`                  | global keydown handler, mode transitions, command bar                              |
+| `src/admin/statusline.js`             | state text, mode chip, contextual keymap legend, focused-pane tracking             |
+| `src/admin/views/explorer.js`         | tree render + filter (Phase 2 + 6.5)                                               |
+| `src/admin/views/dashboard.js`        | Record-pane empty state                                                            |
+| `src/admin/views/edit-item.js`        | edit form view                                                                     |
+| `src/admin/views/new-item.js`         | new-item wizard (type → depth → form)                                              |
+| `src/admin/views/log.js`              | Log pane (pending list + commit button + session history)                          |
+| `src/admin/forms/`                    | form-renderer + base/type field definitions                                        |
+| `src/admin/lib/`                      | api.js (load/commit), serializer.js, id-generator.js, slug-generator.js, upload.js |
+| `src/styles/tokens.css` (admin block) | cool-grey + Solarized palette under `[data-theme="admin"]`                         |
+| `src/admin/styles.css`                | everything else                                                                    |
 
 ## Goals
 
@@ -23,6 +122,7 @@ This interface is not part of the public-facing archive experience. It is a main
 ## Non-goals
 
 The admin interface should not:
+
 - become a full custom CMS unless necessary
 - allow arbitrary schema-breaking content entry
 - prioritize visual flourish over speed and clarity
@@ -32,6 +132,7 @@ The admin interface should not:
 ## Core principle
 
 The admin interface should reflect the archive’s structure:
+
 - collection
 - series
 - subcollection
@@ -45,17 +146,20 @@ It should make that hierarchy easy to use rather than hiding it entirely.
 The admin interface should be private or protected.
 
 Possible access models:
+
 - Netlify Identity or similar auth
 - password-protected internal route
 - GitHub-authenticated CMS
 - private local-only tool during development
 
 Likely URL patterns:
+
 - `/admin/`
 - `/studio/`
 - `/archive-entry/`
 
 Recommendation:
+
 - keep the route separate from the public archive
 - keep the visual style simpler than the main site
 - prioritize speed, form clarity, and consistency over atmosphere
@@ -65,7 +169,9 @@ Recommendation:
 The admin interface should have at least two entry modes.
 
 ### 1. Quick log mode
+
 Use for:
+
 - films watched
 - books read
 - coffee entries
@@ -73,6 +179,7 @@ Use for:
 - fast recurring records
 
 Requirements:
+
 - minimal required fields
 - optional asset upload
 - fast save
@@ -82,7 +189,9 @@ Requirements:
 This mode should feel lightweight and repeatable.
 
 ### 2. Full archival entry mode
+
 Use for:
+
 - projects
 - prototypes
 - sketches worth preserving
@@ -93,6 +202,7 @@ Use for:
 - records needing multiple assets or related items
 
 Requirements:
+
 - full metadata form
 - relationship management
 - multiple assets
@@ -105,6 +215,7 @@ This mode should support richer archival treatment.
 ## Main workflows
 
 ### New item
+
 1. Choose series.
 2. Choose subcollection.
 3. Choose item type.
@@ -117,6 +228,7 @@ This mode should support richer archival treatment.
 10. Save draft or publish.
 
 ### Edit item
+
 1. Search or browse existing records.
 2. Open record.
 3. Edit metadata, assets, or relationships.
@@ -124,9 +236,11 @@ This mode should support richer archival treatment.
 5. Preserve stable ID and slug unless explicitly changed.
 
 ### Promote item
+
 A lightweight record should be promotable into a full archival record.
 
 Example:
+
 - a coffee log entry later becomes a richer entry with bag scans, tasting notes, and linked brew records
 - a film log later becomes a full record with note, stills, and related influences
 - an ephemera item later becomes a contextualized archival record
@@ -134,7 +248,9 @@ Example:
 ## Required interface sections
 
 ### Dashboard
+
 Should show:
+
 - recent drafts
 - recent published items
 - incomplete items needing metadata
@@ -142,7 +258,9 @@ Should show:
 - counts by series or status
 
 ### New item form
+
 Must support:
+
 - series selection
 - subcollection selection
 - item type selection
@@ -154,7 +272,9 @@ Must support:
 - status
 
 ### Existing items
+
 Must support:
+
 - search by title / ID / slug
 - filter by series
 - filter by subcollection
@@ -164,7 +284,9 @@ Must support:
 - sort by date created
 
 ### Asset handling
+
 Must support:
+
 - upload
 - preview
 - assign asset roles
@@ -173,7 +295,9 @@ Must support:
 - ordering for galleries or sequences
 
 ### Relationship editor
+
 Must support:
+
 - linking to existing records
 - specifying relationship type
 - viewing linked records
@@ -184,6 +308,7 @@ Must support:
 The admin interface should use the schemas defined in `content-model.md`.
 
 Behavior rules:
+
 - series determines available subcollections
 - item type determines visible fields
 - record depth determines required complexity
@@ -195,6 +320,7 @@ Behavior rules:
 ## Suggested form structure
 
 ### Base fields for most items
+
 - title
 - series
 - subcollection
@@ -208,9 +334,11 @@ Behavior rules:
 - related items
 
 ### Type-specific fields
+
 Examples:
 
 #### Film log
+
 - title
 - watch date
 - year
@@ -220,6 +348,7 @@ Examples:
 - notes
 
 #### Coffee
+
 - roaster
 - coffee name
 - brew date
@@ -230,6 +359,7 @@ Examples:
 - bag scan / bag photos
 
 #### Project
+
 - title
 - date / date range
 - role
@@ -241,6 +371,7 @@ Examples:
 - related prototypes
 
 #### Ephemera
+
 - title
 - subtype
 - date
@@ -256,12 +387,14 @@ Examples:
 The interface should generate suggested IDs and slugs automatically.
 
 Rules:
+
 - IDs should follow the project naming scheme
 - slugs should be human-readable and stable
 - users may override with care
 - collisions should be detected before save
 
 Examples:
+
 - FILM-2026-001
 - COFFEE-2026-004
 - PROJ-2025-002
@@ -272,12 +405,14 @@ The admin UI should not require users to manually understand file naming unless 
 ## Status model
 
 Suggested statuses:
+
 - draft
 - partial
 - complete
 - published
 
 Definitions:
+
 - draft: rough entry, incomplete
 - partial: identifiable but missing some metadata or assets
 - complete: internally finished, ready for review
@@ -288,6 +423,7 @@ The interface should make incomplete states normal and supported.
 ## Asset model
 
 The admin interface should distinguish between:
+
 - original source asset
 - web asset
 - thumbnail
@@ -298,6 +434,7 @@ The admin interface should distinguish between:
 - PDF / document asset
 
 It should support:
+
 - file upload
 - role assignment
 - ordering
@@ -310,11 +447,13 @@ It should support:
 The interface should allow each item to declare inspection behavior.
 
 Suggested options:
+
 - none
 - simple
 - rich
 
 Definitions:
+
 - none: no inspection behavior beyond standard page view
 - simple: zoom, enlarge, gallery, front/back
 - rich: multi-state inspection, rotation, unfolding, or 3D
@@ -324,6 +463,7 @@ The interface should not assume all items need inspection.
 ## Search and browse support
 
 Because the public archive relies on retrieval, the admin interface should encourage clean metadata entry for:
+
 - dates
 - type
 - tags
@@ -338,6 +478,7 @@ These fields should be treated as retrieval infrastructure, not optional decorat
 ## Writing guidance inside the admin interface
 
 Field labels and help text should support the archive’s tone:
+
 - clear
 - concise
 - non-corporate
@@ -345,6 +486,7 @@ Field labels and help text should support the archive’s tone:
 - not overly academic
 
 Example:
+
 - use “context note” instead of “marketing description”
 - use “related items” instead of “recommendations”
 - use “series” and “subcollection” where useful
@@ -353,6 +495,7 @@ Example:
 ## Draft management
 
 The admin interface should make it easy to:
+
 - save incomplete records
 - resume drafts
 - identify records missing assets
@@ -362,73 +505,20 @@ The admin interface should make it easy to:
 
 This is especially important for a living archive where backlog is normal.
 
-## Technical implementation options
+## Technical implementation
 
-Possible approaches:
+Decided: a custom GitHub-backed admin built into the same Vite app as the public site, served from `/admin.html`. Writes go through `commitAll()` in `src/admin/lib/api.js`, which POSTs to a Netlify function (`/api/commit-all`) that batches files into a single GitHub commit. Assets upload to Cloudflare R2 via `/api/r2-upload-url`. No external CMS dependency.
 
-### Decap CMS / Netlify CMS style
-Pros:
-- Git-backed
-- works with static sites
-- editorial UI exists already
+Earlier deferred options (Decap CMS, local-only tool) are documented in [`docs/decisions.md`](decisions.md) as superseded.
 
-Cons:
-- may feel rigid
-- may need customization for relationships and richer archive logic
+## Admin overhaul phases
 
-### Custom GitHub-backed form
-Pros:
-- tailored to the archive schema
-- better control over workflow
-- can match project needs closely
-
-Cons:
-- more work
-- needs auth and write flow
-
-### Local-first internal tool
-Pros:
-- simple for early phase
-- no public auth complexity
-- fast to prototype
-
-Cons:
-- less convenient for remote use
-- later migration may be needed
-
-Recommendation:
-- start with the simplest implementation that respects schema and asset flow
-- do not overbuild a CMS too early
-- but plan the schema so later tooling can be added cleanly
-
-## Admin interface phases
-
-### Phase 1
-- define schemas
-- define field groups
-- define statuses
-- define asset roles
-- define relationship types
-
-### Phase 2
-- build simple item-entry form
-- support quick log and full entry
-- support draft saving
-- support generated IDs and slugs
-
-### Phase 3
-- add editing and search
-- add asset handling
-- add relationship management
-
-### Phase 4
-- add publish flow
-- add validation and review tools
-- add batch import helpers for recurring logs
+The TUI overhaul shipped over a sequence of phases captured in detail in [`docs/admin-tui-overhaul.md`](admin-tui-overhaul.md). At the time of writing all phases (0 through 8) are complete; that document is the source of truth for the rationale behind each step and for the current open questions.
 
 ## Success criteria
 
 The admin interface is successful if:
+
 - adding a film, coffee, or ephemera item feels easy
 - adding a project or prototype feels structured, not overwhelming
 - the public archive remains consistent
