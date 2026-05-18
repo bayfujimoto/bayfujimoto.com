@@ -200,7 +200,109 @@ After deploy, perform the one-time production registration from Bay's device at
 and
 redeploy.
 
-## 9. Why this shape
+## 9. Operations: rotating `NETLIFY_BLOBS_TOKEN`
+
+This site does not get ambient Netlify Blobs, so the passkey functions read and
+write the credential store using an explicit Netlify **personal access token**
+(PAT) in `NETLIFY_BLOBS_TOKEN`, plus `NETLIFY_SITE_ID`. This token is used on
+**every gate login** (challenge + verify both touch Blobs), not just during
+registration. If it expires or is revoked, the symptom is:
+
+- `/gate` ceremony fails; `/api/passkey/challenge` returns HTTP 502 with
+  `BlobsInternalError ... 401 status code`.
+- Admin becomes unreachable (you can't pass the gate), but the public site is
+  unaffected.
+
+Rotate the token **before** a known expiry, or to recover from one:
+
+1. Create a fresh PAT at <https://app.netlify.com/user/applications/personal>
+   ("New access token"). Copy the **entire** value — it begins `nfp_`.
+2. Validate it before deploying (a truncated copy returns 401):
+   ```
+   curl -s -o /dev/null -w "%{http_code}\n" \
+     -H "Authorization: Bearer nfp_THE_NEW_TOKEN" \
+     https://api.netlify.com/api/v1/user
+   ```
+   Expect `200`. Anything else (e.g. `401`) means the token is bad — do not
+   proceed; re-copy it.
+3. Set it and redeploy so functions pick it up:
+   ```
+   netlify env:set NETLIFY_BLOBS_TOKEN 'nfp_THE_NEW_TOKEN' --context production --secret
+   netlify api createSiteBuild --data '{"site_id":"03a7e0d3-5d7b-4784-98ca-f5ddea392ce5","clear_cache":true}'
+   ```
+4. After the deploy is `ready`, confirm the store is reachable again:
+   ```
+   curl -s -X POST https://bayfujimoto.netlify.app/api/passkey/challenge \
+     -H "Content-Type: application/json" -d '{}'
+   ```
+   Expect HTTP `200` with `ok:true` (a credential is registered). A `502`
+   `BlobsInternalError` means the new token is still not authorized.
+5. Revoke the old PAT in the Netlify token list once the new one is confirmed.
+
+Notes:
+- A Netlify PAT is **account-wide**. Treat it as a high-value secret; it is
+  stored as a Netlify secret env var, never committed.
+- `SESSION_SECRET` is independent of this token. Rotating it (set
+  `SESSION_SECRET_PREVIOUS` to the old value, `SESSION_SECRET` to a new one,
+  redeploy) invalidates live sessions gracefully over one TTL; it does not
+  require touching the passkey credential.
+- The PAT cannot be deleted while the gate is in use — it is required at
+  runtime, not just at setup. The only safe lifecycle is rotate-then-revoke.
+
+## 10. Operations: moving to the `bayfujimoto.com` custom domain
+
+A passkey is cryptographically bound to its **RP ID** (currently
+`bayfujimoto.netlify.app`). It does not transfer to a different registrable
+domain. If the site is moved so that `bayfujimoto.com` becomes the host the
+admin is actually visited at, the existing credential **stops working** and a
+new one must be registered against the new domain. Plan for a brief window
+where you re-register.
+
+Procedure:
+
+1. Attach and verify `bayfujimoto.com` (+ `www`) as a custom domain in Netlify,
+   with TLS issued, and decide the canonical host. Confirm which host the
+   browser actually lands on:
+   ```
+   curl -s -o /dev/null -w "%{url_effective}\n" -L https://bayfujimoto.com/
+   ```
+   - If it stays on `https://bayfujimoto.com/` → origin is
+     `https://bayfujimoto.com`.
+   - If it redirects to `https://www.bayfujimoto.com/` → origin is
+     `https://www.bayfujimoto.com`.
+2. Update the WebAuthn env vars (RP ID is the registrable domain, no scheme, no
+   `www`; origin is the exact canonical URL from step 1):
+   ```
+   netlify env:set WEBAUTHN_RP_ID bayfujimoto.com --context production
+   netlify env:set WEBAUTHN_EXPECTED_ORIGIN https://www.bayfujimoto.com --context production
+   #                                         ^ or https://bayfujimoto.com per step 1
+   ```
+3. Temporarily re-open registration and redeploy:
+   ```
+   netlify env:set ALLOW_REGISTRATION true --context production
+   netlify api createSiteBuild --data '{"site_id":"03a7e0d3-5d7b-4784-98ca-f5ddea392ce5","clear_cache":true}'
+   ```
+4. After the deploy is `ready`, on the trusted device visit
+   `https://<canonical-host>/gate?register` (use the canonical URL directly so
+   there is no redirect mid-ceremony) and complete the press-and-hold
+   registration. This **overwrites** `passkeys/primary` — the old
+   `.netlify.app` credential is replaced; that is expected and intended.
+5. Confirm `https://<canonical-host>/admin` → `/gate` → passkey → `/admin`
+   works.
+6. Lock down again:
+   ```
+   netlify env:unset ALLOW_REGISTRATION --context production
+   netlify api createSiteBuild --data '{"site_id":"03a7e0d3-5d7b-4784-98ca-f5ddea392ce5","clear_cache":true}'
+   ```
+7. Verify registration is closed: `POST /api/passkey/register/options` returns
+   HTTP `403` "Registration is disabled".
+
+Then update §8 of this doc and `docs/admin-interface.md` to record the new
+host. `NETLIFY_BLOBS_TOKEN` / `NETLIFY_SITE_ID` / `SESSION_SECRET` are
+unaffected by a domain move — only the two `WEBAUTHN_*` values and the
+credential change.
+
+## 11. Why this shape
 
 - **Stateless tokens** keep the Edge check fast and remove a hot path from
   Blobs.
