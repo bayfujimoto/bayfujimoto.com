@@ -6,6 +6,11 @@ _site/
 .env.local
 .env.*.local
 
+# Netlify CLI state + dev-only filesystem Blobs sandbox (passkey gate).
+# The sandbox holds the local-dev credential and challenges — never commit it.
+.netlify/
+.netlify-blobs-dev/
+
 # Asset binaries — stored in Cloudflare R2, not committed to repo
 src/assets/
 public/assets/

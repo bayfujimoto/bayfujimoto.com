@@ -10,11 +10,15 @@
     "ingest:films:csv": "node scripts/ingest-letterboxd-csv.js",
     "ingest:books": "node scripts/ingest-goodreads.js",
     "ingest:books:csv": "node scripts/ingest-goodreads-csv.js",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "dev:netlify": "netlify dev"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1032.0",
     "@aws-sdk/s3-request-presigner": "^3.1032.0",
+    "@netlify/blobs": "^10.7.7",
+    "@simplewebauthn/browser": "^13.3.0",
+    "@simplewebauthn/server": "^13.3.0",
     "csv-parser": "^3.2.0",
     "lru-cache": "^11.3.5",
     "rss-parser": "^3.13.0",

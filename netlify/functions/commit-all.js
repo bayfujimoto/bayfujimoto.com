@@ -1,6 +1,18 @@
+import { readCookie, verifySession } from "../lib/session.js";
+
 export async function handler(event) {
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: JSON.stringify({ ok: false, error: "Method not allowed" }) };
+  }
+
+  // Gated by the same passkey session cookie as /admin. Without a valid
+  // session this returns 401 before any GitHub work — the Edge gate protects
+  // the admin document, this protects the privileged write action.
+  const session = await verifySession(
+    readCookie(event.headers?.cookie || event.headers?.Cookie)
+  );
+  if (!session) {
+    return { statusCode: 401, body: JSON.stringify({ ok: false, error: "unauthorized" }) };
   }
 
   const GITHUB_TOKEN  = process.env.GITHUB_TOKEN;

@@ -143,26 +143,27 @@ It should make that hierarchy easy to use rather than hiding it entirely.
 
 ## Access and protection
 
-The admin interface should be private or protected.
+The deployed admin is gated by a WebAuthn passkey. There is no password and no
+recovery flow. The mechanism — a stateless HMAC-signed session cookie issued
+only after a verified passkey assertion, enforced by a Netlify Edge Function in
+front of `/admin` and re-checked inside the privileged Functions — is specified
+in full in [`admin-gate.md`](admin-gate.md).
 
-Possible access models:
+As built:
 
-- Netlify Identity or similar auth
-- password-protected internal route
-- GitHub-authenticated CMS
-- private local-only tool during development
+- `/admin`, `/admin/*`, `/admin.html` → blocked by the `admin-gate` Edge
+  Function; no valid `bf_sess` cookie → 302 to `/gate`.
+- `/gate` → a press-and-hold canvas (recolored to the admin palette) that runs
+  the passkey ceremony and, on success, sets the session cookie and redirects
+  to `/admin`.
+- `/api/commit-all` and `/api/r2-upload-url` → re-check the same cookie and
+  return 401 to any unauthenticated caller, before any GitHub/R2 work.
+- Local `npm run dev` (Vite alone) is intentionally **not** gated — fast local
+  work, writes go to disk via the dev plugin. The gate only applies to the
+  Netlify build; exercise it locally with `npm run dev:netlify`.
 
-Likely URL patterns:
-
-- `/admin/`
-- `/studio/`
-- `/archive-entry/`
-
-Recommendation:
-
-- keep the route separate from the public archive
-- keep the visual style simpler than the main site
-- prioritize speed, form clarity, and consistency over atmosphere
+Route style still follows the original recommendation: separate from the public
+archive, simpler visual style, speed and form clarity over atmosphere.
 
 ## Primary modes
 

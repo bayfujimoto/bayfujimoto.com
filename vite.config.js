@@ -12,6 +12,7 @@ export default defineConfig({
       input: {
         main:  "index.html",
         admin: "admin.html",
+        gate:  "gate.html",
       },
     },
   },

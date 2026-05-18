@@ -1,9 +1,20 @@
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { readCookie, verifySession } from "../lib/session.js";
 
 export async function handler(event) {
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: JSON.stringify({ ok: false, error: "Method not allowed" }) };
+  }
+
+  // Gated by the same passkey session cookie as /admin. A presigned R2 PUT
+  // URL is a privileged credential (write access to the bucket), so this
+  // returns 401 before issuing one to an unauthenticated caller.
+  const session = await verifySession(
+    readCookie(event.headers?.cookie || event.headers?.Cookie)
+  );
+  if (!session) {
+    return { statusCode: 401, body: JSON.stringify({ ok: false, error: "unauthorized" }) };
   }
 
   const ACCOUNT_ID     = process.env.CLOUDFLARE_ACCOUNT_ID;
