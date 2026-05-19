@@ -4,6 +4,37 @@ import { navigate } from "./router.js";
 
 const seriesInfo = {};
 
+// The placeholder series objects sitting on the desk ship with image
+// textures that slow first load. While testing, strip those and replace
+// each material with a flat untextured one. The desk itself keeps its
+// real materials. Set to false to render the object textures again.
+const STRIP_MODEL_TEXTURES = true;
+
+function stripTextures(root) {
+  if (!STRIP_MODEL_TEXTURES) return;
+  root.traverse((child) => {
+    if (!child.isMesh || !child.material) return;
+    const materials = Array.isArray(child.material)
+      ? child.material
+      : [child.material];
+    child.material = materials.map((mat) => {
+      const flat = new THREE.MeshStandardMaterial({
+        color: mat.color ? mat.color.clone() : new THREE.Color(0x888888),
+        roughness: mat.roughness ?? 0.8,
+        metalness: mat.metalness ?? 0.0,
+      });
+      // Dispose old textures so the GPU/decoder frees them.
+      for (const key of Object.keys(mat)) {
+        const val = mat[key];
+        if (val && val.isTexture) val.dispose();
+      }
+      return flat;
+    });
+    if (!Array.isArray(child.material)) child.material = child.material[0];
+    if (child.material.length === 1) child.material = child.material[0];
+  });
+}
+
 export function setSeriesInfo(data) {
   Object.assign(seriesInfo, data);
 }
@@ -86,6 +117,7 @@ export function initScene() {
     else if (seriesId === "labor") modelFile = "desk-labor-box.glb";
     loader.load(`${BASE}${modelFile}`, (gltf) => {
       const model = gltf.scene;
+      stripTextures(model);
 
       const box = new THREE.Box3().setFromObject(model);
       const size = new THREE.Vector3();
