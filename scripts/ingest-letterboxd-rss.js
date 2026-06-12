@@ -2,8 +2,11 @@
 // Fetches the Letterboxd RSS feed and writes new .md files to
 // src/content/consumption/films/ for any entries not already present.
 //
-// Runs automatically before every build (see package.json build/dev scripts).
-// Safe to run repeatedly — skips files that already exist.
+// Runs on a schedule via GitHub Actions (.github/workflows/ingest-films.yml),
+// which commits any new records so each film's id/slug is assigned once and
+// stays stable. Also runs in `npm run dev` for local preview. It is NOT part of
+// the production build — the Netlify build serves only committed content.
+// Safe to run repeatedly — skips viewings already present (see dedup below).
 //
 // Requires:
 //   LETTERBOXD_USERNAME  (default: bayf)

@@ -1,0 +1,61 @@
+name: Ingest films from Letterboxd
+
+# Keeps committed content the source of truth. The Netlify build no longer
+# ingests films (it would mint throwaway ids on every deploy, churning slugs);
+# instead this job ingests new diary entries on a schedule and commits them so
+# each film's id and slug are assigned once and never change.
+#
+# A commit — and the single Netlify deploy it triggers — happens ONLY when
+# there are genuinely new films. Days with nothing logged produce no commit and
+# no deploy, so this adds the minimum number of builds needed to stay current.
+#
+# Optional configuration (Settings → Secrets and variables → Actions):
+#   secret  TMDB_API_KEY         — enables backdrop images (skipped if absent)
+#   var     LETTERBOXD_USERNAME  — defaults to "bayf" if unset
+
+on:
+  schedule:
+    - cron: "0 9 * * *"   # daily ~09:00 UTC. Widen (e.g. "0 9 * * 1") for fewer deploys.
+  workflow_dispatch: {}    # manual run from the Actions tab
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ingest-films
+  cancel-in-progress: false
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Ingest new films from Letterboxd
+        env:
+          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+          LETTERBOXD_USERNAME: ${{ vars.LETTERBOXD_USERNAME }}
+        run: node scripts/ingest-letterboxd-rss.js
+
+      - name: Commit new films (only if any)
+        run: |
+          git add src/content/consumption/films src/content/_id-counters.yaml
+          if git diff --cached --quiet; then
+            echo "No new films — nothing to commit, no deploy triggered."
+            exit 0
+          fi
+          NEW=$(git diff --cached --name-only --diff-filter=A -- src/content/consumption/films | wc -l | tr -d ' ')
+          echo "Committing ${NEW} new film(s)."
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Ingest ${NEW} new film(s) from Letterboxd" -m "Directed by: Scheduled auto-ingest — keeps committed content the source of truth so film ids and slugs stay stable across builds.
+          Produced by: Automation (scripts/ingest-letterboxd-rss.js via GitHub Actions)
+          Human decisions: None — unattended run."
+          git push
