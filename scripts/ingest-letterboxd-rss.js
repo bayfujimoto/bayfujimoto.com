@@ -12,6 +12,7 @@
 import { existsSync, writeFileSync, readFileSync } from "fs";
 import { join } from "path";
 import { glob } from "glob";
+import matter from "gray-matter";
 import RSSParser from "rss-parser";
 import { watchedDateToCentral } from "./utils/letterboxd-timezone.js";
 import { fetchBackdrop } from "./utils/tmdb.js";
@@ -44,6 +45,14 @@ function slugify(str) {
 
 function buildSlug(title, year, watchDate) {
   return `${slugify(title)}-${year}-${watchDate}`;
+}
+
+// Identity of a single viewing, independent of how the record was stored.
+// A diary entry is uniquely (film, watch date); this is robust to the two
+// link formats in the archive (full letterboxd.com URLs vs. boxd.it shorts)
+// and to the two historical slug conventions (with/without the date).
+function viewingKey(title, year, watchDate) {
+  return `${slugify(title || "")}|${year || ""}|${watchDate || ""}`;
 }
 
 function readCounters() {
@@ -163,16 +172,19 @@ async function main() {
   );
   console.log(`[ingest-rss] ${filmItems.length} film entries in feed`);
 
-  // Build a set of all existing letterboxd_links to check for duplicates
+  // Index existing records two ways so an entry already in the archive is never
+  // re-created: by viewing identity (title|year|watch_date) — the reliable key —
+  // and by letterboxd_link as a secondary match. Link-only dedup was the source
+  // of duplicate records: stored links come in two formats (boxd.it shorts and
+  // full letterboxd.com URLs) and never matched the feed's full-URL links, so
+  // films still in the RSS window were re-ingested under fresh ids on every build.
+  const existingKeys = new Set();
   const existingLinks = new Set();
   const existingFiles = glob.sync(join(CONTENT_DIR, "*.md"));
   for (const file of existingFiles) {
-    const raw = readFileSync(file, "utf8");
-    // Extract letterboxd_link from front matter
-    const match = raw.match(/letterboxd_link: "([^"]*)"/);
-    if (match) {
-      existingLinks.add(match[1]);
-    }
+    const { data } = matter(readFileSync(file, "utf8"));
+    existingKeys.add(viewingKey(data.title, data.year, data.watch_date));
+    if (data.letterboxd_link) existingLinks.add(String(data.letterboxd_link).trim());
   }
 
   const counters = readCounters();
@@ -188,13 +200,7 @@ async function main() {
       continue;
     }
 
-    const letterboxd_link = item.link || "";
-
-    // Check if this film already exists by its letterboxd link
-    if (letterboxd_link && existingLinks.has(letterboxd_link)) {
-      skipCount++;
-      continue;
-    }
+    const letterboxd_link = item.link ? String(item.link).trim() : "";
 
     // Use watchedDate (actual viewing date) over pubDate (when logged)
     let watchDate;
@@ -206,6 +212,16 @@ async function main() {
       watchDate = watchedDateToCentral(
         d.toISOString().split("T")[0]
       );
+    }
+
+    // Skip if this exact viewing already exists (by identity or by link).
+    // Rewatches on a different date have a different key and are kept.
+    if (
+      existingKeys.has(viewingKey(title, year, watchDate)) ||
+      (letterboxd_link && existingLinks.has(letterboxd_link))
+    ) {
+      skipCount++;
+      continue;
     }
 
     const slug = buildSlug(title, year, watchDate);
@@ -233,8 +249,13 @@ async function main() {
       poster,
     };
 
-    const outPath = join(CONTENT_DIR, `${slug}.md`);
+    // Filename matches the admin convention `${id}-${slug}.md`. Record the
+    // viewing key/link now so a repeated entry within this same feed run is
+    // also skipped.
+    const outPath = join(CONTENT_DIR, `${id}-${slug}.md`);
     writeFileSync(outPath, buildMarkdown(fields, ""));
+    existingKeys.add(viewingKey(title, year, watchDate));
+    if (letterboxd_link) existingLinks.add(letterboxd_link);
     newCount++;
     console.log(`[ingest-rss] + ${title} (${year}) — ${watchDate}`);
   }

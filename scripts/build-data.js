@@ -67,6 +67,13 @@ function buildArchive() {
   // duplicate. Two files sharing an id render as duplicate cards downstream.
   const idIndex = new Map();
 
+  // Track film viewings by identity (title|year|watch_date) so two records of
+  // the same viewing — e.g. a stale record plus a re-ingested copy — fail the
+  // build instead of shipping as duplicate cards. Rewatches differ by date.
+  const viewingIndex = new Map();
+  const filmKey = (d) =>
+    `${String(d.title || "").toLowerCase().replace(/['’]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}|${d.year || ""}|${d.watch_date || ""}`;
+
   // Pre-populate all series and subcollections so they exist even if empty
   for (const [seriesKey, seriesDef] of Object.entries(SERIES)) {
     archive.series[seriesKey] = {
@@ -95,6 +102,12 @@ function buildArchive() {
     }
 
     if (data.status !== "published") continue;
+
+    if (data.item_type === "film") {
+      const key = filmKey(data);
+      if (!viewingIndex.has(key)) viewingIndex.set(key, []);
+      viewingIndex.get(key).push(file);
+    }
 
     const { series, subcollection } = data;
 
@@ -158,12 +171,18 @@ function buildArchive() {
 
   // Fail loudly on any duplicate id — catches admin doubling, stray macOS
   // " 2.md" copies, and manual mistakes before a duplicated archive ships.
-  const duplicates = [...idIndex].filter(([, paths]) => paths.length > 1);
-  if (duplicates.length) {
-    const detail = duplicates
-      .map(([id, paths]) => `  Duplicate id ${id} in:\n${paths.map(p => `    ${p}`).join("\n")}`)
-      .join("\n");
-    throw new Error(`build-data: ${duplicates.length} duplicate id(s) found —\n${detail}`);
+  const dupIds = [...idIndex].filter(([, paths]) => paths.length > 1);
+  // …and on any duplicate film viewing — catches a re-ingested copy of a film
+  // already in the archive (different id, same title/year/watch_date).
+  const dupViewings = [...viewingIndex].filter(([, paths]) => paths.length > 1);
+  if (dupIds.length || dupViewings.length) {
+    const fmt = (label, groups) =>
+      groups.map(([k, paths]) => `  Duplicate ${label} ${k} in:\n${paths.map(p => `    ${p}`).join("\n")}`).join("\n");
+    const detail = [
+      dupIds.length    ? fmt("id", dupIds)             : "",
+      dupViewings.length ? fmt("film viewing", dupViewings) : "",
+    ].filter(Boolean).join("\n");
+    throw new Error(`build-data: ${dupIds.length} duplicate id(s), ${dupViewings.length} duplicate viewing(s) found —\n${detail}`);
   }
 
   const outPath = "public/data/archive.json";
