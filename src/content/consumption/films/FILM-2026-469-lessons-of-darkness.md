@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-469
-slug: FILM-2026-469-lessons-of-darkness
+slug: lessons-of-darkness
 title: "Lessons of Darkness"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-359
-slug: FILM-2025-359-a-minecraft-movie
+slug: a-minecraft-movie
 title: "A Minecraft Movie"
 series: consumption
 subcollection: films

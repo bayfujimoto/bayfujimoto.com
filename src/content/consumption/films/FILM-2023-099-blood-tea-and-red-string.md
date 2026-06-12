@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-099
-slug: FILM-2023-099-blood-tea-and-red-string
+slug: blood-tea-and-red-string
 title: "Blood Tea and Red String"
 series: consumption
 subcollection: films

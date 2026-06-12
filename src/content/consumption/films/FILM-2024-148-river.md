@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-148
-slug: FILM-2024-148-river
+slug: river
 title: "River"
 series: consumption
 subcollection: films

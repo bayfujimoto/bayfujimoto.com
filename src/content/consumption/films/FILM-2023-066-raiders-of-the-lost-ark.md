@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-066
-slug: FILM-2023-066-raiders-of-the-lost-ark
+slug: raiders-of-the-lost-ark
 title: "Raiders of the Lost Ark"
 series: consumption
 subcollection: films

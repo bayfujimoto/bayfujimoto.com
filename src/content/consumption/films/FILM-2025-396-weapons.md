@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-396
-slug: FILM-2025-396-weapons
+slug: weapons
 title: "Weapons"
 series: consumption
 subcollection: films

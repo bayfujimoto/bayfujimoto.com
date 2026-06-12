@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-328
-slug: FILM-2024-328-super-man-the-christopher-reeve-story
+slug: super-man-the-christopher-reeve-story
 title: "Super/Man: The Christopher Reeve Story"
 series: consumption
 subcollection: films

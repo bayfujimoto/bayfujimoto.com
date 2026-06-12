@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-467
-slug: FILM-2026-467-ready-or-not-2-here-i-come
+slug: ready-or-not-2-here-i-come
 title: "Ready or Not 2: Here I Come"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-141
-slug: FILM-2024-141-mean-girls
+slug: mean-girls
 title: "Mean Girls"
 series: consumption
 subcollection: films

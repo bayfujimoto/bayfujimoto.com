@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-090
-slug: FILM-2023-090-get-out
+slug: get-out
 title: "Get Out"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-380
-slug: FILM-2025-380-28-days-later
+slug: 28-days-later
 title: "28 Days Later"
 series: consumption
 subcollection: films

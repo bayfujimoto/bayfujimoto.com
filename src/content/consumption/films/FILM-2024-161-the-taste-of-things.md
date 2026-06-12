@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-161
-slug: FILM-2024-161-the-taste-of-things
+slug: the-taste-of-things
 title: "The Taste of Things"
 series: consumption
 subcollection: films

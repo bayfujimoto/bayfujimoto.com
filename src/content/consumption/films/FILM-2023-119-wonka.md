@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-119
-slug: FILM-2023-119-wonka
+slug: wonka
 title: "Wonka"
 series: consumption
 subcollection: films

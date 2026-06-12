@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-426
-slug: FILM-2026-426-anaconda
+slug: anaconda
 title: "Anaconda"
 series: consumption
 subcollection: films

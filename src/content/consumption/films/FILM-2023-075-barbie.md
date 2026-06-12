@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-075
-slug: FILM-2023-075-barbie
+slug: barbie
 title: "Barbie"
 series: consumption
 subcollection: films

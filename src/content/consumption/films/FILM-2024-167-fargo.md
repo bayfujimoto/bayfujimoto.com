@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-167
-slug: FILM-2024-167-fargo
+slug: fargo
 title: "Fargo"
 series: consumption
 subcollection: films

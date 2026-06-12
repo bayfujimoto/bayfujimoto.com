@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-038
-slug: FILM-2023-038-guillermo-del-toros-pinocchio
+slug: guillermo-del-toros-pinocchio
 title: "Guillermo del Toro's Pinocchio"
 series: consumption
 subcollection: films

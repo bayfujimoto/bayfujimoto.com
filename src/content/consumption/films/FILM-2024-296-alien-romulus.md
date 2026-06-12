@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-296
-slug: FILM-2024-296-alien-romulus
+slug: alien-romulus
 title: "Alien: Romulus"
 series: consumption
 subcollection: films

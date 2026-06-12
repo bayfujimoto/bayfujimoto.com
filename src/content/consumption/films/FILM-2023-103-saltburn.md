@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-103
-slug: FILM-2023-103-saltburn
+slug: saltburn
 title: "Saltburn"
 series: consumption
 subcollection: films

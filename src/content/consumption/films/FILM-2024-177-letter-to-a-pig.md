@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-177
-slug: FILM-2024-177-letter-to-a-pig
+slug: letter-to-a-pig
 title: "Letter to a Pig"
 series: consumption
 subcollection: films

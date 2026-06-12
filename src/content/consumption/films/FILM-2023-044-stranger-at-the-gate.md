@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-044
-slug: FILM-2023-044-stranger-at-the-gate
+slug: stranger-at-the-gate
 title: "Stranger at the Gate"
 series: consumption
 subcollection: films

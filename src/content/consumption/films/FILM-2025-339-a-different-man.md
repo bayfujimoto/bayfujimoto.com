@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-339
-slug: FILM-2025-339-a-different-man
+slug: a-different-man
 title: "A Different Man"
 series: consumption
 subcollection: films

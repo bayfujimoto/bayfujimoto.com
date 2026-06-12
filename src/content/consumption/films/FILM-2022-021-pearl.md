@@ -1,6 +1,6 @@
 ---
 id: FILM-2022-021
-slug: FILM-2022-021-pearl
+slug: pearl
 title: "Pearl"
 series: consumption
 subcollection: films

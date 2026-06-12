@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-352
-slug: FILM-2025-352-witches
+slug: witches
 title: "Witches"
 series: consumption
 subcollection: films

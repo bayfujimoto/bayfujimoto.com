@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-283
-slug: FILM-2024-283-aliens
+slug: aliens
 title: "Aliens"
 series: consumption
 subcollection: films

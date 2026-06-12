@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-228
-slug: FILM-2024-228-three-colours-blue
+slug: three-colours-blue
 title: "Three Colours: Blue"
 series: consumption
 subcollection: films

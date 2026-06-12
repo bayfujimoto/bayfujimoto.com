@@ -1,6 +1,6 @@
 ---
 id: FILM-2022-026
-slug: FILM-2022-026-black-panther-wakanda-forever
+slug: black-panther-wakanda-forever
 title: "Black Panther: Wakanda Forever"
 series: consumption
 subcollection: films

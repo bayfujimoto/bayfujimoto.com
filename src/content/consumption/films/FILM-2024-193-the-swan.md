@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-193
-slug: FILM-2024-193-the-swan
+slug: the-swan
 title: "The Swan"
 series: consumption
 subcollection: films

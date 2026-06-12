@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-274
-slug: FILM-2024-274-the-sixth-sense
+slug: the-sixth-sense
 title: "The Sixth Sense"
 series: consumption
 subcollection: films

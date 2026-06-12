@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-249
-slug: FILM-2024-249-next-floor
+slug: next-floor
 title: "Next Floor"
 series: consumption
 subcollection: films

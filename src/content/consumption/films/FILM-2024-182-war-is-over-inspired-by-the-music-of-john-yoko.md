@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-182
-slug: FILM-2024-182-war-is-over-inspired-by-the-music-of-john-yoko
+slug: war-is-over-inspired-by-the-music-of-john-yoko
 title: "WAR IS OVER! Inspired by the Music of John & Yoko"
 series: consumption
 subcollection: films

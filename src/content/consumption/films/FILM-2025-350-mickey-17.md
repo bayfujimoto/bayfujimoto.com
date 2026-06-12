@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-350
-slug: FILM-2025-350-mickey-17
+slug: mickey-17
 title: "Mickey 17"
 series: consumption
 subcollection: films

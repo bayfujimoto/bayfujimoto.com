@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-116
-slug: FILM-2023-116-poor-things
+slug: poor-things
 title: "Poor Things"
 series: consumption
 subcollection: films

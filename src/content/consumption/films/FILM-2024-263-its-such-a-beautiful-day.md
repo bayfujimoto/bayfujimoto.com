@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-263
-slug: FILM-2024-263-its-such-a-beautiful-day
+slug: its-such-a-beautiful-day
 title: "It's Such a Beautiful Day"
 series: consumption
 subcollection: films

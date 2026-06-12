@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-149
-slug: FILM-2024-149-the-matrix
+slug: the-matrix
 title: "The Matrix"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-285
-slug: FILM-2024-285-logan
+slug: logan
 title: "Logan"
 series: consumption
 subcollection: films

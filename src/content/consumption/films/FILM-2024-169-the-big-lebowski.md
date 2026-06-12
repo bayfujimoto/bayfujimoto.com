@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-169
-slug: FILM-2024-169-the-big-lebowski
+slug: the-big-lebowski
 title: "The Big Lebowski"
 series: consumption
 subcollection: films

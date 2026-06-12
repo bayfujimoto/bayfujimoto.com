@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-179
-slug: FILM-2024-179-our-uniform
+slug: our-uniform
 title: "Our Uniform"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-358
-slug: FILM-2025-358-warfare
+slug: warfare
 title: "Warfare"
 series: consumption
 subcollection: films

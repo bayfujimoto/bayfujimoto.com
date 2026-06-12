@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-053
-slug: FILM-2023-053-dungeons-dragons-honor-among-thieves
+slug: dungeons-dragons-honor-among-thieves
 title: "Dungeons & Dragons: Honor Among Thieves"
 series: consumption
 subcollection: films

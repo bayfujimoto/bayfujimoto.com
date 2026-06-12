@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-432
-slug: FILM-2026-432-28-years-later
+slug: 28-years-later
 title: "28 Years Later"
 series: consumption
 subcollection: films

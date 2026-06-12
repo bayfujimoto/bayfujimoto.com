@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-101
-slug: FILM-2023-101-the-ring
+slug: the-ring
 title: "The Ring"
 series: consumption
 subcollection: films

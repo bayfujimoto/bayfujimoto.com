@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-280
-slug: FILM-2024-280-longlegs
+slug: longlegs
 title: "Longlegs"
 series: consumption
 subcollection: films

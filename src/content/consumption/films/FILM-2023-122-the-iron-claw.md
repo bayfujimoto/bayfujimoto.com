@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-122
-slug: FILM-2023-122-the-iron-claw
+slug: the-iron-claw
 title: "The Iron Claw"
 series: consumption
 subcollection: films

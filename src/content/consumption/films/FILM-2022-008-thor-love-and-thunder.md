@@ -1,6 +1,6 @@
 ---
 id: FILM-2022-008
-slug: FILM-2022-008-thor-love-and-thunder
+slug: thor-love-and-thunder
 title: "Thor: Love and Thunder"
 series: consumption
 subcollection: films

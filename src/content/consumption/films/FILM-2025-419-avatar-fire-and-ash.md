@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-419
-slug: FILM-2025-419-avatar-fire-and-ash
+slug: avatar-fire-and-ash
 title: "Avatar: Fire and Ash"
 series: consumption
 subcollection: films

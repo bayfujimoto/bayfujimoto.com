@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-162
-slug: FILM-2024-162-rise-of-the-planet-of-the-apes
+slug: rise-of-the-planet-of-the-apes
 title: "Rise of the Planet of the Apes"
 series: consumption
 subcollection: films

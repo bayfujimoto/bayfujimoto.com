@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-056
-slug: FILM-2023-056-the-super-mario-bros-movie
+slug: the-super-mario-bros-movie
 title: "The Super Mario Bros. Movie"
 series: consumption
 subcollection: films

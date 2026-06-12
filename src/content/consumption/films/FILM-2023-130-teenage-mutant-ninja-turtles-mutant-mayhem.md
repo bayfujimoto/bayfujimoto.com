@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-130
-slug: FILM-2023-130-teenage-mutant-ninja-turtles-mutant-mayhem
+slug: teenage-mutant-ninja-turtles-mutant-mayhem
 title: "Teenage Mutant Ninja Turtles: Mutant Mayhem"
 series: consumption
 subcollection: films

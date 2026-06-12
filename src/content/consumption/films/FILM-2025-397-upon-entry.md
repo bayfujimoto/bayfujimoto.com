@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-397
-slug: FILM-2025-397-upon-entry
+slug: upon-entry
 title: "Upon Entry"
 series: consumption
 subcollection: films

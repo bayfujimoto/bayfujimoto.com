@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-272
-slug: FILM-2024-272-bad-boys-ride-or-die
+slug: bad-boys-ride-or-die
 title: "Bad Boys: Ride or Die"
 series: consumption
 subcollection: films

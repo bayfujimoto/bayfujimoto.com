@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-219
-slug: FILM-2024-219-worlds-beyond-earth
+slug: worlds-beyond-earth
 title: "Worlds Beyond Earth"
 series: consumption
 subcollection: films

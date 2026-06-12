@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-362
-slug: FILM-2025-362-black-mirror-common-people
+slug: black-mirror-common-people
 title: "Black Mirror: Common People"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-430
-slug: FILM-2026-430-scream
+slug: scream
 title: "Scream"
 series: consumption
 subcollection: films

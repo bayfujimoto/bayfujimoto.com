@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-386
-slug: FILM-2025-386-superman
+slug: superman
 title: "Superman"
 series: consumption
 subcollection: films

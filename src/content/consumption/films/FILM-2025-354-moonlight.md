@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-354
-slug: FILM-2025-354-moonlight
+slug: moonlight
 title: "Moonlight"
 series: consumption
 subcollection: films

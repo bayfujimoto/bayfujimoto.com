@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-373
-slug: FILM-2025-373-mission-impossible-fallout
+slug: mission-impossible-fallout
 title: "Mission: Impossible – Fallout"
 series: consumption
 subcollection: films

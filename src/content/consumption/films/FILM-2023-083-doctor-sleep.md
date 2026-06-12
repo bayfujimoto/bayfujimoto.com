@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-083
-slug: FILM-2023-083-doctor-sleep
+slug: doctor-sleep
 title: "Doctor Sleep"
 series: consumption
 subcollection: films

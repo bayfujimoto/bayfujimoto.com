@@ -1,6 +1,6 @@
 ---
 id: FILM-2022-017
-slug: FILM-2022-017-the-gray-man
+slug: the-gray-man
 title: "The Gray Man"
 series: consumption
 subcollection: films

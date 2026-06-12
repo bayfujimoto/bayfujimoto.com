@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-460
-slug: FILM-2026-460-hardcore
+slug: hardcore
 title: "Hardcore"
 series: consumption
 subcollection: films

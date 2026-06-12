@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-112
-slug: FILM-2023-112-silent-night
+slug: silent-night
 title: "Silent Night"
 series: consumption
 subcollection: films

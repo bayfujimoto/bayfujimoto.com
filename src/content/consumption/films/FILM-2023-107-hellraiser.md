@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-107
-slug: FILM-2023-107-hellraiser
+slug: hellraiser
 title: "Hellraiser"
 series: consumption
 subcollection: films

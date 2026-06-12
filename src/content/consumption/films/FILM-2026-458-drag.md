@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-458
-slug: FILM-2026-458-drag
+slug: drag
 title: "Drag"
 series: consumption
 subcollection: films

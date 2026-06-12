@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-421
-slug: FILM-2025-421-no-other-choice
+slug: no-other-choice
 title: "No Other Choice"
 series: consumption
 subcollection: films

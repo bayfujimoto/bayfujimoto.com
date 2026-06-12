@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-473
-slug: FILM-2026-473-scary-movie
+slug: scary-movie
 title: "Scary Movie"
 series: consumption
 subcollection: films

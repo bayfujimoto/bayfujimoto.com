@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-309
-slug: FILM-2024-309-the-terminator
+slug: the-terminator
 title: "The Terminator"
 series: consumption
 subcollection: films

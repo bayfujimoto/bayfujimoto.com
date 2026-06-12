@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-104
-slug: FILM-2023-104-killers-of-the-flower-moon
+slug: killers-of-the-flower-moon
 title: "Killers of the Flower Moon"
 series: consumption
 subcollection: films

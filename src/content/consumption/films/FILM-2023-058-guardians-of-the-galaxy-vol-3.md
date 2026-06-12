@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-058
-slug: FILM-2023-058-guardians-of-the-galaxy-vol-3
+slug: guardians-of-the-galaxy-vol-3
 title: "Guardians of the Galaxy Vol. 3"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-042
-slug: FILM-2023-042-the-fabelmans
+slug: the-fabelmans
 title: "The Fabelmans"
 series: consumption
 subcollection: films

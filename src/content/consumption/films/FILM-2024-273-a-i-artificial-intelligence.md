@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-273
-slug: FILM-2024-273-a-i-artificial-intelligence
+slug: a-i-artificial-intelligence
 title: "A.I. Artificial Intelligence"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-158
-slug: FILM-2024-158-past-lives
+slug: past-lives
 title: "Past Lives"
 series: consumption
 subcollection: films

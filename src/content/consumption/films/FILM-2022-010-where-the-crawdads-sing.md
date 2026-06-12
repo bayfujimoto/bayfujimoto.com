@@ -1,6 +1,6 @@
 ---
 id: FILM-2022-010
-slug: FILM-2022-010-where-the-crawdads-sing
+slug: where-the-crawdads-sing
 title: "Where the Crawdads Sing"
 series: consumption
 subcollection: films

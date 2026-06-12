@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-164
-slug: FILM-2024-164-lisa-frankenstein
+slug: lisa-frankenstein
 title: "Lisa Frankenstein"
 series: consumption
 subcollection: films

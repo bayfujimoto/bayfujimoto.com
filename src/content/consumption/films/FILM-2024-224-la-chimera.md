@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-224
-slug: FILM-2024-224-la-chimera
+slug: la-chimera
 title: "La Chimera"
 series: consumption
 subcollection: films

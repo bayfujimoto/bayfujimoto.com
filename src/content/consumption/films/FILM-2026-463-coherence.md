@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-463
-slug: FILM-2026-463-coherence
+slug: coherence
 title: "Coherence"
 series: consumption
 subcollection: films

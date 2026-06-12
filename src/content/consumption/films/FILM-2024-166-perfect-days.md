@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-166
-slug: FILM-2024-166-perfect-days
+slug: perfect-days
 title: "Perfect Days"
 series: consumption
 subcollection: films

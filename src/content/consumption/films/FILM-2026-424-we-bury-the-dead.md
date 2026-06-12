@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-424
-slug: FILM-2026-424-we-bury-the-dead
+slug: we-bury-the-dead
 title: "We Bury the Dead"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-383
-slug: FILM-2025-383-ironheart
+slug: ironheart
 title: "Ironheart"
 series: consumption
 subcollection: films

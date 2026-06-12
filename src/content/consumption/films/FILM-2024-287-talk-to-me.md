@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-287
-slug: FILM-2024-287-talk-to-me
+slug: talk-to-me
 title: "Talk to Me"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-205
-slug: FILM-2024-205-zodiac
+slug: zodiac
 title: "Zodiac"
 series: consumption
 subcollection: films

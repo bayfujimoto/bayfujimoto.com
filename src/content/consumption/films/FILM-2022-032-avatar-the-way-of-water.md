@@ -1,6 +1,6 @@
 ---
 id: FILM-2022-032
-slug: FILM-2022-032-avatar-the-way-of-water
+slug: avatar-the-way-of-water
 title: "Avatar: The Way of Water"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-129
-slug: FILM-2023-129-arrival
+slug: arrival
 title: "Arrival"
 series: consumption
 subcollection: films

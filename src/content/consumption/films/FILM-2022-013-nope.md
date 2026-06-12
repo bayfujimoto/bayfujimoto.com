@@ -1,6 +1,6 @@
 ---
 id: FILM-2022-013
-slug: FILM-2022-013-nope
+slug: nope
 title: "Nope"
 series: consumption
 subcollection: films

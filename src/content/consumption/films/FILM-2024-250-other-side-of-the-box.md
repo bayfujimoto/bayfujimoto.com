@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-250
-slug: FILM-2024-250-other-side-of-the-box
+slug: other-side-of-the-box
 title: "Other Side of the Box"
 series: consumption
 subcollection: films

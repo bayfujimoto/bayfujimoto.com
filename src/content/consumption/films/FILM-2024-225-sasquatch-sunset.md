@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-225
-slug: FILM-2024-225-sasquatch-sunset
+slug: sasquatch-sunset
 title: "Sasquatch Sunset"
 series: consumption
 subcollection: films

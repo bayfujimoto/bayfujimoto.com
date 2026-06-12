@@ -1,6 +1,6 @@
 ---
 id: FILM-2022-022
-slug: FILM-2022-022-saint-maud
+slug: saint-maud
 title: "Saint Maud"
 series: consumption
 subcollection: films

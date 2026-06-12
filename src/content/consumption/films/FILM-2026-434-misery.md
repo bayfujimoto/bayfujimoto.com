@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-434
-slug: FILM-2026-434-misery
+slug: misery
 title: "Misery"
 series: consumption
 subcollection: films

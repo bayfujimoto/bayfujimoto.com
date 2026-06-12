@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-051
-slug: FILM-2023-051-creed-iii
+slug: creed-iii
 title: "Creed III"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-454
-slug: FILM-2026-454-obsession
+slug: obsession
 title: "Obsession"
 series: consumption
 subcollection: films

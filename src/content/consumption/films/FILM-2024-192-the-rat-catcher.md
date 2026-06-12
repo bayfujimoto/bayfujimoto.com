@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-192
-slug: FILM-2024-192-the-rat-catcher
+slug: the-rat-catcher
 title: "The Rat Catcher"
 series: consumption
 subcollection: films

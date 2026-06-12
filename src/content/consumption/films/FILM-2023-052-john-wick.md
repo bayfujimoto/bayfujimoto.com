@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-052
-slug: FILM-2023-052-john-wick
+slug: john-wick
 title: "John Wick"
 series: consumption
 subcollection: films

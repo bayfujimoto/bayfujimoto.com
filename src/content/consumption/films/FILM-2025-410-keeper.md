@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-410
-slug: FILM-2025-410-keeper
+slug: keeper
 title: "Keeper"
 series: consumption
 subcollection: films

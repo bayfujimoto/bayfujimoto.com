@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-055
-slug: FILM-2023-055-swiss-army-man
+slug: swiss-army-man
 title: "Swiss Army Man"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-227
-slug: FILM-2024-227-civil-war
+slug: civil-war
 title: "Civil War"
 series: consumption
 subcollection: films

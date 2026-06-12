@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-226
-slug: FILM-2024-226-titane
+slug: titane
 title: "Titane"
 series: consumption
 subcollection: films

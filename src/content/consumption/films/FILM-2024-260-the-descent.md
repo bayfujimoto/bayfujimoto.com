@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-260
-slug: FILM-2024-260-the-descent
+slug: the-descent
 title: "The Descent"
 series: consumption
 subcollection: films

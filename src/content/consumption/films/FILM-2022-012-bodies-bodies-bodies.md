@@ -1,6 +1,6 @@
 ---
 id: FILM-2022-012
-slug: FILM-2022-012-bodies-bodies-bodies
+slug: bodies-bodies-bodies
 title: "Bodies Bodies Bodies"
 series: consumption
 subcollection: films

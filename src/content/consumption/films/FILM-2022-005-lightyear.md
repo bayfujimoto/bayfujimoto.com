@@ -1,6 +1,6 @@
 ---
 id: FILM-2022-005
-slug: FILM-2022-005-lightyear
+slug: lightyear
 title: "Lightyear"
 series: consumption
 subcollection: films

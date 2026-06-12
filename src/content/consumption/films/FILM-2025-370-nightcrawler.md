@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-370
-slug: FILM-2025-370-nightcrawler
+slug: nightcrawler
 title: "Nightcrawler"
 series: consumption
 subcollection: films

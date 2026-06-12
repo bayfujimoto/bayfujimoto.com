@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-341
-slug: FILM-2025-341-memoir-of-a-snail
+slug: memoir-of-a-snail
 title: "Memoir of a Snail"
 series: consumption
 subcollection: films

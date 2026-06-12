@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-183
-slug: FILM-2024-183-wild-summon
+slug: wild-summon
 title: "Wild Summon"
 series: consumption
 subcollection: films

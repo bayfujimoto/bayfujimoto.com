@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-412
-slug: FILM-2025-412-rental-family
+slug: rental-family
 title: "Rental Family"
 series: consumption
 subcollection: films

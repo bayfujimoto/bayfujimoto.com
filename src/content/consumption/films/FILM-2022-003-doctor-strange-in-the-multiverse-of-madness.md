@@ -1,6 +1,6 @@
 ---
 id: FILM-2022-003
-slug: FILM-2022-003-doctor-strange-in-the-multiverse-of-madness
+slug: doctor-strange-in-the-multiverse-of-madness
 title: "Doctor Strange in the Multiverse of Madness"
 series: consumption
 subcollection: films

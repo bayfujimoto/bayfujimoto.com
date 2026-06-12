@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-428
-slug: FILM-2026-428-primate
+slug: primate
 title: "Primate"
 series: consumption
 subcollection: films

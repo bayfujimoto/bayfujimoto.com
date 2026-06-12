@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-159
-slug: FILM-2024-159-eternal-sunshine-of-the-spotless-mind
+slug: eternal-sunshine-of-the-spotless-mind
 title: "Eternal Sunshine of the Spotless Mind"
 series: consumption
 subcollection: films

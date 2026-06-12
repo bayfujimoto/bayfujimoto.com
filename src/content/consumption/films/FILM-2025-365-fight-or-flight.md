@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-365
-slug: FILM-2025-365-fight-or-flight
+slug: fight-or-flight
 title: "Fight or Flight"
 series: consumption
 subcollection: films

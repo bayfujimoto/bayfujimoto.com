@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-440
-slug: FILM-2026-440-sorry-to-bother-you
+slug: sorry-to-bother-you
 title: "Sorry to Bother You"
 series: consumption
 subcollection: films

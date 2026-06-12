@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-323
-slug: FILM-2024-323-heretic
+slug: heretic
 title: "Heretic"
 series: consumption
 subcollection: films

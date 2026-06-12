@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-423
-slug: FILM-2026-423-dead-mans-wire
+slug: dead-mans-wire
 title: "Dead Man's Wire"
 series: consumption
 subcollection: films

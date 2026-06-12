@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-068
-slug: FILM-2023-068-the-flash
+slug: the-flash
 title: "The Flash"
 series: consumption
 subcollection: films

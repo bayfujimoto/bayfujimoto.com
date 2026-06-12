@@ -1,6 +1,6 @@
 ---
 id: FILM-2022-029
-slug: FILM-2022-029-the-guardians-of-the-galaxy-holiday-special
+slug: the-guardians-of-the-galaxy-holiday-special
 title: "The Guardians of the Galaxy Holiday Special"
 series: consumption
 subcollection: films

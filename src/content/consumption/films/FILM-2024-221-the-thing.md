@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-221
-slug: FILM-2024-221-the-thing
+slug: the-thing
 title: "The Thing"
 series: consumption
 subcollection: films

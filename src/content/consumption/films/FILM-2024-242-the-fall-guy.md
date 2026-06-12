@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-242
-slug: FILM-2024-242-the-fall-guy
+slug: the-fall-guy
 title: "The Fall Guy"
 series: consumption
 subcollection: films

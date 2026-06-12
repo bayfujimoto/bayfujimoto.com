@@ -1,6 +1,6 @@
 ---
 id: FILM-2022-004
-slug: FILM-2022-004-the-bobs-burgers-movie
+slug: the-bobs-burgers-movie
 title: "The Bob's Burgers Movie"
 series: consumption
 subcollection: films

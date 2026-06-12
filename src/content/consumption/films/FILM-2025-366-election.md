@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-366
-slug: FILM-2025-366-election
+slug: election
 title: "Election"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-123
-slug: FILM-2023-123-the-holdovers
+slug: the-holdovers
 title: "The Holdovers"
 series: consumption
 subcollection: films

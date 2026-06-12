@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-448
-slug: FILM-2026-448-imposters
+slug: imposters
 title: "Imposters"
 series: consumption
 subcollection: films

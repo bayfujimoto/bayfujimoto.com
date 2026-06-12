@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-363
-slug: FILM-2025-363-black-mirror-plaything
+slug: black-mirror-plaything
 title: "Black Mirror: Plaything"
 series: consumption
 subcollection: films

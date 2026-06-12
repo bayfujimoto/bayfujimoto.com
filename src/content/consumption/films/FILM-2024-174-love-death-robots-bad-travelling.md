@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-174
-slug: FILM-2024-174-love-death-robots-bad-travelling
+slug: love-death-robots-bad-travelling
 title: "Love, Death & Robots: Bad Travelling"
 series: consumption
 subcollection: films

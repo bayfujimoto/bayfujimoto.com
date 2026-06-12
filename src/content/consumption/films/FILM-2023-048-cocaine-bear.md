@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-048
-slug: FILM-2023-048-cocaine-bear
+slug: cocaine-bear
 title: "Cocaine Bear"
 series: consumption
 subcollection: films

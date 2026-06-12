@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-089
-slug: FILM-2023-089-dark-harvest
+slug: dark-harvest
 title: "Dark Harvest"
 series: consumption
 subcollection: films

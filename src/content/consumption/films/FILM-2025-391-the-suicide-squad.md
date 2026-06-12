@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-391
-slug: FILM-2025-391-the-suicide-squad
+slug: the-suicide-squad
 title: "The Suicide Squad"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-326
-slug: FILM-2024-326-bad-boys
+slug: bad-boys
 title: "Bad Boys"
 series: consumption
 subcollection: films

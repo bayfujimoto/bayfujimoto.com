@@ -1,6 +1,6 @@
 ---
 id: FILM-2022-018
-slug: FILM-2022-018-see-how-they-run
+slug: see-how-they-run
 title: "See How They Run"
 series: consumption
 subcollection: films

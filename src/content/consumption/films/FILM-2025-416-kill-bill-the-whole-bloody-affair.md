@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-416
-slug: FILM-2025-416-kill-bill-the-whole-bloody-affair
+slug: kill-bill-the-whole-bloody-affair
 title: "Kill Bill: The Whole Bloody Affair"
 series: consumption
 subcollection: films

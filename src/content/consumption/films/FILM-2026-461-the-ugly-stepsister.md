@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-461
-slug: FILM-2026-461-the-ugly-stepsister
+slug: the-ugly-stepsister
 title: "The Ugly Stepsister"
 series: consumption
 subcollection: films

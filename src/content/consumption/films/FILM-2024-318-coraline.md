@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-318
-slug: FILM-2024-318-coraline
+slug: coraline
 title: "Coraline"
 series: consumption
 subcollection: films

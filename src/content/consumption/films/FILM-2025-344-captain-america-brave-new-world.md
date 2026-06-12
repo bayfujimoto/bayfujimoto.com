@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-344
-slug: FILM-2025-344-captain-america-brave-new-world
+slug: captain-america-brave-new-world
 title: "Captain America: Brave New World"
 series: consumption
 subcollection: films

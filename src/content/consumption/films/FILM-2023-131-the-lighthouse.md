@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-131
-slug: FILM-2023-131-the-lighthouse
+slug: the-lighthouse
 title: "The Lighthouse"
 series: consumption
 subcollection: films

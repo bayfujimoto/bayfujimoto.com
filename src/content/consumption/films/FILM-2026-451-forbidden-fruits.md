@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-451
-slug: FILM-2026-451-forbidden-fruits
+slug: forbidden-fruits
 title: "Forbidden Fruits"
 series: consumption
 subcollection: films

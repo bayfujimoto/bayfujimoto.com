@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-464
-slug: FILM-2026-464-project-hail-mary
+slug: project-hail-mary
 title: "Project Hail Mary"
 series: consumption
 subcollection: films

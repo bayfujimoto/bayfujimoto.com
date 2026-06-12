@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-379
-slug: FILM-2025-379-quiz-show
+slug: quiz-show
 title: "Quiz Show"
 series: consumption
 subcollection: films

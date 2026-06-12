@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-342
-slug: FILM-2025-342-presence
+slug: presence
 title: "Presence"
 series: consumption
 subcollection: films

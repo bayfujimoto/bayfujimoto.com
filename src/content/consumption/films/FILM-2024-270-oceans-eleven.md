@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-270
-slug: FILM-2024-270-oceans-eleven
+slug: oceans-eleven
 title: "Ocean's Eleven"
 series: consumption
 subcollection: films

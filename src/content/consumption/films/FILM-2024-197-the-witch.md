@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-197
-slug: FILM-2024-197-the-witch
+slug: the-witch
 title: "The Witch"
 series: consumption
 subcollection: films

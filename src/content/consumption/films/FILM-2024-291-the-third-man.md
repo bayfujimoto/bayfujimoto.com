@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-291
-slug: FILM-2024-291-the-third-man
+slug: the-third-man
 title: "The Third Man"
 series: consumption
 subcollection: films

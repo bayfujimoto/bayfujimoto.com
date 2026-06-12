@@ -1,6 +1,6 @@
 ---
 id: FILM-2022-009
-slug: FILM-2022-009-everything-everywhere-all-at-once
+slug: everything-everywhere-all-at-once
 title: "Everything Everywhere All at Once"
 series: consumption
 subcollection: films

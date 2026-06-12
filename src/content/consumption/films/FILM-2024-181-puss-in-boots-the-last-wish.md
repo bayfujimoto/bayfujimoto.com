@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-181
-slug: FILM-2024-181-puss-in-boots-the-last-wish
+slug: puss-in-boots-the-last-wish
 title: "Puss in Boots: The Last Wish"
 series: consumption
 subcollection: films

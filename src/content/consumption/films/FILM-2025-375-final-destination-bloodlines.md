@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-375
-slug: FILM-2025-375-final-destination-bloodlines
+slug: final-destination-bloodlines
 title: "Final Destination Bloodlines"
 series: consumption
 subcollection: films

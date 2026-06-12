@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-108
-slug: FILM-2023-108-the-sisters-brothers
+slug: the-sisters-brothers
 title: "The Sisters Brothers"
 series: consumption
 subcollection: films

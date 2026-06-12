@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-207
-slug: FILM-2024-207-riddle-of-fire
+slug: riddle-of-fire
 title: "Riddle of Fire"
 series: consumption
 subcollection: films

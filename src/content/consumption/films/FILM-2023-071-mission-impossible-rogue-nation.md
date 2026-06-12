@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-071
-slug: FILM-2023-071-mission-impossible-rogue-nation
+slug: mission-impossible-rogue-nation
 title: "Mission: Impossible – Rogue Nation"
 series: consumption
 subcollection: films

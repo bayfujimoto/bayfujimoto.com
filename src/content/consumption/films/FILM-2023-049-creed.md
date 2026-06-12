@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-049
-slug: FILM-2023-049-creed
+slug: creed
 title: "Creed"
 series: consumption
 subcollection: films

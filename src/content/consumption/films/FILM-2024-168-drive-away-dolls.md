@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-168
-slug: FILM-2024-168-drive-away-dolls
+slug: drive-away-dolls
 title: "Drive-Away Dolls"
 series: consumption
 subcollection: films

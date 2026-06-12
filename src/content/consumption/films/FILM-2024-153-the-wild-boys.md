@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-153
-slug: FILM-2024-153-the-wild-boys
+slug: the-wild-boys
 title: "The Wild Boys"
 series: consumption
 subcollection: films

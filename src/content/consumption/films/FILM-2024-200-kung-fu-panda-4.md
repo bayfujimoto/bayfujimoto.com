@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-200
-slug: FILM-2024-200-kung-fu-panda-4
+slug: kung-fu-panda-4
 title: "Kung Fu Panda 4"
 series: consumption
 subcollection: films

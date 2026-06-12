@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-241
-slug: FILM-2024-241-alien
+slug: alien
 title: "Alien"
 series: consumption
 subcollection: films

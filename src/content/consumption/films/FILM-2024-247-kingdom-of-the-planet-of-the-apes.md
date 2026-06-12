@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-247
-slug: FILM-2024-247-kingdom-of-the-planet-of-the-apes
+slug: kingdom-of-the-planet-of-the-apes
 title: "Kingdom of the Planet of the Apes"
 series: consumption
 subcollection: films

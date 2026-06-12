@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-278
-slug: FILM-2024-278-pearl
+slug: pearl
 title: "Pearl"
 series: consumption
 subcollection: films

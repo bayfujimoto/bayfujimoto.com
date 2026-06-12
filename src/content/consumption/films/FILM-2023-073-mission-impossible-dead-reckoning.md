@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-073
-slug: FILM-2023-073-mission-impossible-dead-reckoning
+slug: mission-impossible-dead-reckoning
 title: "Mission: Impossible – Dead Reckoning"
 series: consumption
 subcollection: films

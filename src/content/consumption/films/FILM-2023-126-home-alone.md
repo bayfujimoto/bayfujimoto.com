@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-126
-slug: FILM-2023-126-home-alone
+slug: home-alone
 title: "Home Alone"
 series: consumption
 subcollection: films

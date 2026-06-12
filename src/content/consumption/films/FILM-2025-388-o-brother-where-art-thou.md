@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-388
-slug: FILM-2025-388-o-brother-where-art-thou
+slug: o-brother-where-art-thou
 title: "O Brother, Where Art Thou?"
 series: consumption
 subcollection: films

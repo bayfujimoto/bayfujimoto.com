@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-194
-slug: FILM-2024-194-poison
+slug: poison
 title: "Poison"
 series: consumption
 subcollection: films

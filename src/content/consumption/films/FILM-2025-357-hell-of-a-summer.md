@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-357
-slug: FILM-2025-357-hell-of-a-summer
+slug: hell-of-a-summer
 title: "Hell of a Summer"
 series: consumption
 subcollection: films

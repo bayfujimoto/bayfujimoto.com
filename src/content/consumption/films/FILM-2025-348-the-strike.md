@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-348
-slug: FILM-2025-348-the-strike
+slug: the-strike
 title: "The Strike"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-216
-slug: FILM-2024-216-problemista
+slug: problemista
 title: "Problemista"
 series: consumption
 subcollection: films

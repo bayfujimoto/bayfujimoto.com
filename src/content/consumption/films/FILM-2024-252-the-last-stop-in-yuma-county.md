@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-252
-slug: FILM-2024-252-the-last-stop-in-yuma-county
+slug: the-last-stop-in-yuma-county
 title: "The Last Stop in Yuma County"
 series: consumption
 subcollection: films

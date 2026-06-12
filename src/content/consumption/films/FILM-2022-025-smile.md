@@ -1,6 +1,6 @@
 ---
 id: FILM-2022-025
-slug: FILM-2022-025-smile
+slug: smile
 title: "Smile"
 series: consumption
 subcollection: films

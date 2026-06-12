@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-449
-slug: FILM-2026-449-rock-springs
+slug: rock-springs
 title: "Rock Springs"
 series: consumption
 subcollection: films

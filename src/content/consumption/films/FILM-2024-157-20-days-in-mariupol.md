@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-157
-slug: FILM-2024-157-20-days-in-mariupol
+slug: 20-days-in-mariupol
 title: "20 Days in Mariupol"
 series: consumption
 subcollection: films

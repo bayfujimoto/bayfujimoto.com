@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-333
-slug: FILM-2025-333-wicked
+slug: wicked
 title: "Wicked"
 series: consumption
 subcollection: films

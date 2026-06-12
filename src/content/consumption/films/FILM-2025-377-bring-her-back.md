@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-377
-slug: FILM-2025-377-bring-her-back
+slug: bring-her-back
 title: "Bring Her Back"
 series: consumption
 subcollection: films

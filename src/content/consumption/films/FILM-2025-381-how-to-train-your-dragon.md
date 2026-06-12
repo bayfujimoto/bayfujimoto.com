@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-381
-slug: FILM-2025-381-how-to-train-your-dragon
+slug: how-to-train-your-dragon
 title: "How to Train Your Dragon"
 series: consumption
 subcollection: films

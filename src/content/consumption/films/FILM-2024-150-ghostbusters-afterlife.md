@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-150
-slug: FILM-2024-150-ghostbusters-afterlife
+slug: ghostbusters-afterlife
 title: "Ghostbusters: Afterlife"
 series: consumption
 subcollection: films

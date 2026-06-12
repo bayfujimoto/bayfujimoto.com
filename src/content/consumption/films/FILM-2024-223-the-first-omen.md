@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-223
-slug: FILM-2024-223-the-first-omen
+slug: the-first-omen
 title: "The First Omen"
 series: consumption
 subcollection: films

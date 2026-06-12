@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-472
-slug: FILM-2026-472-the-drama
+slug: the-drama
 title: "The Drama"
 series: consumption
 subcollection: films

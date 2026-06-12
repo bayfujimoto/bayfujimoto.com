@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-321
-slug: FILM-2024-321-gladiator-ii
+slug: gladiator-ii
 title: "Gladiator II"
 series: consumption
 subcollection: films

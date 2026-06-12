@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-076
-slug: FILM-2023-076-blue-beetle
+slug: blue-beetle
 title: "Blue Beetle"
 series: consumption
 subcollection: films

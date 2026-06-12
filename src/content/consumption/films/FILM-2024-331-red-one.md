@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-331
-slug: FILM-2024-331-red-one
+slug: red-one
 title: "Red One"
 series: consumption
 subcollection: films

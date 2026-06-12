@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-143
-slug: FILM-2024-143-the-lord-of-the-rings-the-return-of-the-king
+slug: the-lord-of-the-rings-the-return-of-the-king
 title: "The Lord of the Rings: The Return of the King"
 series: consumption
 subcollection: films

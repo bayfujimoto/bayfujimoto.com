@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-307
-slug: FILM-2024-307-the-prestige
+slug: the-prestige
 title: "The Prestige"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-102
-slug: FILM-2023-102-dream-scenario
+slug: dream-scenario
 title: "Dream Scenario"
 series: consumption
 subcollection: films

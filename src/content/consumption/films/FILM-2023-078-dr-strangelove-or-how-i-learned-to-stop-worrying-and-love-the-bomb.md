@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-078
-slug: FILM-2023-078-dr-strangelove-or-how-i-learned-to-stop-worrying-and-love-the-bomb
+slug: dr-strangelove-or-how-i-learned-to-stop-worrying-and-love-the-bomb
 title: "Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb"
 series: consumption
 subcollection: films

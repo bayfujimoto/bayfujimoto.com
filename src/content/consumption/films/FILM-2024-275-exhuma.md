@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-275
-slug: FILM-2024-275-exhuma
+slug: exhuma
 title: "Exhuma"
 series: consumption
 subcollection: films

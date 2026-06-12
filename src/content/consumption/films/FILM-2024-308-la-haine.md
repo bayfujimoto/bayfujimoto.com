@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-308
-slug: FILM-2024-308-la-haine
+slug: la-haine
 title: "La Haine"
 series: consumption
 subcollection: films

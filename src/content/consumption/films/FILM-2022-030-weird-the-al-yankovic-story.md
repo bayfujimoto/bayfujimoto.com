@@ -1,6 +1,6 @@
 ---
 id: FILM-2022-030
-slug: FILM-2022-030-weird-the-al-yankovic-story
+slug: weird-the-al-yankovic-story
 title: "Weird: The Al Yankovic Story"
 series: consumption
 subcollection: films

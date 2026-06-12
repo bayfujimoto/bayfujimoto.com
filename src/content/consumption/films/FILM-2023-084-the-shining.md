@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-084
-slug: FILM-2023-084-the-shining
+slug: the-shining
 title: "The Shining"
 series: consumption
 subcollection: films

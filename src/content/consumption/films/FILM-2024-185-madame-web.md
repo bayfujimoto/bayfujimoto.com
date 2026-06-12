@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-185
-slug: FILM-2024-185-madame-web
+slug: madame-web
 title: "Madame Web"
 series: consumption
 subcollection: films

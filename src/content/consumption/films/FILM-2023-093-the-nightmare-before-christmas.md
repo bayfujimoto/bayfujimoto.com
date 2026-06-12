@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-093
-slug: FILM-2023-093-the-nightmare-before-christmas
+slug: the-nightmare-before-christmas
 title: "The Nightmare Before Christmas"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-171
-slug: FILM-2024-171-bob-marley-one-love
+slug: bob-marley-one-love
 title: "Bob Marley: One Love"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-261
-slug: FILM-2024-261-i-saw-the-devil
+slug: i-saw-the-devil
 title: "I Saw the Devil"
 series: consumption
 subcollection: films

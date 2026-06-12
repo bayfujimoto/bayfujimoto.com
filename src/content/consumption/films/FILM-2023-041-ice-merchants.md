@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-041
-slug: FILM-2023-041-ice-merchants
+slug: ice-merchants
 title: "Ice Merchants"
 series: consumption
 subcollection: films

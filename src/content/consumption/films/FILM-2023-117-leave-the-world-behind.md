@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-117
-slug: FILM-2023-117-leave-the-world-behind
+slug: leave-the-world-behind
 title: "Leave the World Behind"
 series: consumption
 subcollection: films

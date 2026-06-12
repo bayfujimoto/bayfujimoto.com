@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-262
-slug: FILM-2024-262-hit-man
+slug: hit-man
 title: "Hit Man"
 series: consumption
 subcollection: films

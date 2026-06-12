@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-255
-slug: FILM-2024-255-evil-does-not-exist
+slug: evil-does-not-exist
 title: "Evil Does Not Exist"
 series: consumption
 subcollection: films

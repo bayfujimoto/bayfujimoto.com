@@ -1,6 +1,6 @@
 ---
 id: FILM-2022-020
-slug: FILM-2022-020-werewolf-by-night
+slug: werewolf-by-night
 title: "Werewolf by Night"
 series: consumption
 subcollection: films

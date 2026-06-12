@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-345
-slug: FILM-2025-345-soundtrack-to-a-coup-detat
+slug: soundtrack-to-a-coup-detat
 title: "Soundtrack to a Coup d'Etat"
 series: consumption
 subcollection: films

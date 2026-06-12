@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-240
-slug: FILM-2024-240-three-colours-red
+slug: three-colours-red
 title: "Three Colours: Red"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-284
-slug: FILM-2024-284-videodrome
+slug: videodrome
 title: "Videodrome"
 series: consumption
 subcollection: films

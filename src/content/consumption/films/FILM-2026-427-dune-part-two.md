@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-427
-slug: FILM-2026-427-dune-part-two
+slug: dune-part-two
 title: "Dune: Part Two"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-266
-slug: FILM-2024-266-furiosa-a-mad-max-saga
+slug: furiosa-a-mad-max-saga
 title: "Furiosa: A Mad Max Saga"
 series: consumption
 subcollection: films

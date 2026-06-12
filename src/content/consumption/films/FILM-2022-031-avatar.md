@@ -1,6 +1,6 @@
 ---
 id: FILM-2022-031
-slug: FILM-2022-031-avatar
+slug: avatar
 title: "Avatar"
 series: consumption
 subcollection: films

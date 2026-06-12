@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-329
-slug: FILM-2024-329-carry-on
+slug: carry-on
 title: "Carry-On"
 series: consumption
 subcollection: films

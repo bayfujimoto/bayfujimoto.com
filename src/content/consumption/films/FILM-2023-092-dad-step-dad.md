@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-092
-slug: FILM-2023-092-dad-step-dad
+slug: dad-step-dad
 title: "Dad & Step-Dad"
 series: consumption
 subcollection: films

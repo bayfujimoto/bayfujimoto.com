@@ -1,6 +1,6 @@
 ---
 id: FILM-2022-028
-slug: FILM-2022-028-the-menu
+slug: the-menu
 title: "The Menu"
 series: consumption
 subcollection: films

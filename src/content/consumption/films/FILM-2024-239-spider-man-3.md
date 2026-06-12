@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-239
-slug: FILM-2024-239-spider-man-3
+slug: spider-man-3
 title: "Spider-Man 3"
 series: consumption
 subcollection: films

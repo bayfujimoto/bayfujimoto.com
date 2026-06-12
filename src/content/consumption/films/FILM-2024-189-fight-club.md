@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-189
-slug: FILM-2024-189-fight-club
+slug: fight-club
 title: "Fight Club"
 series: consumption
 subcollection: films

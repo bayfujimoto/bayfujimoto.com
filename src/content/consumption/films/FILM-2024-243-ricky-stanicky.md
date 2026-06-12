@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-243
-slug: FILM-2024-243-ricky-stanicky
+slug: ricky-stanicky
 title: "Ricky Stanicky"
 series: consumption
 subcollection: films

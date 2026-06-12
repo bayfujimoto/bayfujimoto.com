@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-315
-slug: FILM-2024-315-ponyo
+slug: ponyo
 title: "Ponyo"
 series: consumption
 subcollection: films

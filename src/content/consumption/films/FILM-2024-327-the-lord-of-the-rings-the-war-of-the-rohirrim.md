@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-327
-slug: FILM-2024-327-the-lord-of-the-rings-the-war-of-the-rohirrim
+slug: the-lord-of-the-rings-the-war-of-the-rohirrim
 title: "The Lord of the Rings: The War of the Rohirrim"
 series: consumption
 subcollection: films

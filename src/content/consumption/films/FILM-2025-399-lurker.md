@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-399
-slug: FILM-2025-399-lurker
+slug: lurker
 title: "Lurker"
 series: consumption
 subcollection: films

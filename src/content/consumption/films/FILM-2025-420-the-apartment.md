@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-420
-slug: FILM-2025-420-the-apartment
+slug: the-apartment
 title: "The Apartment"
 series: consumption
 subcollection: films

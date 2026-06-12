@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-466
-slug: FILM-2026-466-hoppers
+slug: hoppers
 title: "Hoppers"
 series: consumption
 subcollection: films

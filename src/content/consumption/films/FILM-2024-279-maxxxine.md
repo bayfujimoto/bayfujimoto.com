@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-279
-slug: FILM-2024-279-maxxxine
+slug: maxxxine
 title: "MaXXXine"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-105
-slug: FILM-2023-105-next-goal-wins
+slug: next-goal-wins
 title: "Next Goal Wins"
 series: consumption
 subcollection: films

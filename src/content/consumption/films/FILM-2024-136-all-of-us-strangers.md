@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-136
-slug: FILM-2024-136-all-of-us-strangers
+slug: all-of-us-strangers
 title: "All of Us Strangers"
 series: consumption
 subcollection: films

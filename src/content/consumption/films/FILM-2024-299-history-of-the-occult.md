@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-299
-slug: FILM-2024-299-history-of-the-occult
+slug: history-of-the-occult
 title: "History of the Occult"
 series: consumption
 subcollection: films

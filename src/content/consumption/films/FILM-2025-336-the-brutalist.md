@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-336
-slug: FILM-2025-336-the-brutalist
+slug: the-brutalist
 title: "The Brutalist"
 series: consumption
 subcollection: films

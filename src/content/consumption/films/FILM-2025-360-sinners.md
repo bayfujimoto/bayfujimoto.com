@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-360
-slug: FILM-2025-360-sinners
+slug: sinners
 title: "Sinners"
 series: consumption
 subcollection: films

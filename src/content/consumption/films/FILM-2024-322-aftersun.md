@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-322
-slug: FILM-2024-322-aftersun
+slug: aftersun
 title: "Aftersun"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-238
-slug: FILM-2024-238-the-mummy
+slug: the-mummy
 title: "The Mummy"
 series: consumption
 subcollection: films

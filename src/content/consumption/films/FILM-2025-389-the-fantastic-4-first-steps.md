@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-389
-slug: FILM-2025-389-the-fantastic-4-first-steps
+slug: the-fantastic-4-first-steps
 title: "The Fantastic 4: First Steps"
 series: consumption
 subcollection: films

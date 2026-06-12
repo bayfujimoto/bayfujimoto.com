@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-267
-slug: FILM-2024-267-the-curse
+slug: the-curse
 title: "The Curse"
 series: consumption
 subcollection: films

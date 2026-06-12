@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-248
-slug: FILM-2024-248-challengers
+slug: challengers
 title: "Challengers"
 series: consumption
 subcollection: films

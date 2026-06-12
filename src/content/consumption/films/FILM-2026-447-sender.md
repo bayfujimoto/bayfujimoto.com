@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-447
-slug: FILM-2026-447-sender
+slug: sender
 title: "Sender"
 series: consumption
 subcollection: films

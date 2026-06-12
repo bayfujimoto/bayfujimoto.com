@@ -1,6 +1,6 @@
 ---
 id: FILM-2022-007
-slug: FILM-2022-007-minions-the-rise-of-gru
+slug: minions-the-rise-of-gru
 title: "Minions: The Rise of Gru"
 series: consumption
 subcollection: films

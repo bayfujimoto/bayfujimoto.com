@@ -1,6 +1,6 @@
 ---
 id: FILM-2022-015
-slug: FILM-2022-015-high-and-low
+slug: high-and-low
 title: "High and Low"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-214
-slug: FILM-2024-214-skyfall
+slug: skyfall
 title: "Skyfall"
 series: consumption
 subcollection: films

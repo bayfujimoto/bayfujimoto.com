@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-232
-slug: FILM-2024-232-yi-yi
+slug: yi-yi
 title: "Yi Yi"
 series: consumption
 subcollection: films

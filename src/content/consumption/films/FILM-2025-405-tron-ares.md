@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-405
-slug: FILM-2025-405-tron-ares
+slug: tron-ares
 title: "TRON: Ares"
 series: consumption
 subcollection: films

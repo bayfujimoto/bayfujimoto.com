@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-254
-slug: FILM-2024-254-spider-man-homecoming
+slug: spider-man-homecoming
 title: "Spider-Man: Homecoming"
 series: consumption
 subcollection: films

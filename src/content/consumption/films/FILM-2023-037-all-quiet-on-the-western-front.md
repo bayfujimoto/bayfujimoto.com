@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-037
-slug: FILM-2023-037-all-quiet-on-the-western-front
+slug: all-quiet-on-the-western-front
 title: "All Quiet on the Western Front"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-269
-slug: FILM-2024-269-catch-me-if-you-can
+slug: catch-me-if-you-can
 title: "Catch Me If You Can"
 series: consumption
 subcollection: films

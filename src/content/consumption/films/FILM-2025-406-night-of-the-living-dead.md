@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-406
-slug: FILM-2025-406-night-of-the-living-dead
+slug: night-of-the-living-dead
 title: "Night of the Living Dead"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-098
-slug: FILM-2023-098-the-exorcist
+slug: the-exorcist
 title: "The Exorcist"
 series: consumption
 subcollection: films

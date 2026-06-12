@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-139
-slug: FILM-2024-139-destroy-all-neighbors
+slug: destroy-all-neighbors
 title: "Destroy All Neighbors"
 series: consumption
 subcollection: films

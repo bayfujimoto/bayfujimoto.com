@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-188
-slug: FILM-2024-188-blackberry
+slug: blackberry
 title: "BlackBerry"
 series: consumption
 subcollection: films

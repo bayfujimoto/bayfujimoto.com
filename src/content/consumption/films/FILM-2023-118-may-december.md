@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-118
-slug: FILM-2023-118-may-december
+slug: may-december
 title: "May December"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-231
-slug: FILM-2024-231-whiplash
+slug: whiplash
 title: "Whiplash"
 series: consumption
 subcollection: films

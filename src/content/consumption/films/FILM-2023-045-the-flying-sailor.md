@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-045
-slug: FILM-2023-045-the-flying-sailor
+slug: the-flying-sailor
 title: "The Flying Sailor"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-465
-slug: FILM-2026-465-they-will-kill-you
+slug: they-will-kill-you
 title: "They Will Kill You"
 series: consumption
 subcollection: films

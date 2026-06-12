@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-217
-slug: FILM-2024-217-kumiko-the-treasure-hunter
+slug: kumiko-the-treasure-hunter
 title: "Kumiko, the Treasure Hunter"
 series: consumption
 subcollection: films

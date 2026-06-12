@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-409
-slug: FILM-2025-409-eddington
+slug: eddington
 title: "Eddington"
 series: consumption
 subcollection: films

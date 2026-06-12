@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-047
-slug: FILM-2023-047-decision-to-leave
+slug: decision-to-leave
 title: "Decision to Leave"
 series: consumption
 subcollection: films

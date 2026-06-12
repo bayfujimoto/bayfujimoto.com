@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-040
-slug: FILM-2023-040-haulout
+slug: haulout
 title: "Haulout"
 series: consumption
 subcollection: films

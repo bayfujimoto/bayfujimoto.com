@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-151
-slug: FILM-2024-151-the-after
+slug: the-after
 title: "The After"
 series: consumption
 subcollection: films

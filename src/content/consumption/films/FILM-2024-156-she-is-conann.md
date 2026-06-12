@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-156
-slug: FILM-2024-156-she-is-conann
+slug: she-is-conann
 title: "She Is Conann"
 series: consumption
 subcollection: films

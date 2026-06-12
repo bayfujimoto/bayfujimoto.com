@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-138
-slug: FILM-2024-138-the-lord-of-the-rings-the-fellowship-of-the-ring
+slug: the-lord-of-the-rings-the-fellowship-of-the-ring
 title: "The Lord of the Rings: The Fellowship of the Ring"
 series: consumption
 subcollection: films

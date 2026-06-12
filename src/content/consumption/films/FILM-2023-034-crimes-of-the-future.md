@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-034
-slug: FILM-2023-034-crimes-of-the-future
+slug: crimes-of-the-future
 title: "Crimes of the Future"
 series: consumption
 subcollection: films

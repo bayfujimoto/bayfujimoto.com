@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-445
-slug: FILM-2026-445-chili-finger
+slug: chili-finger
 title: "Chili Finger"
 series: consumption
 subcollection: films

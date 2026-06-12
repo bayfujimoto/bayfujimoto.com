@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-476
-slug: FILM-2026-476-the-master
+slug: the-master
 title: "The Master"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-408
-slug: FILM-2025-408-frankenstein
+slug: frankenstein
 title: "Frankenstein"
 series: consumption
 subcollection: films

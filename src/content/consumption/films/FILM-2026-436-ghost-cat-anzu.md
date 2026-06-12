@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-436
-slug: FILM-2026-436-ghost-cat-anzu
+slug: ghost-cat-anzu
 title: "Ghost Cat Anzu"
 series: consumption
 subcollection: films

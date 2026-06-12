@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-079
-slug: FILM-2023-079-bottoms
+slug: bottoms
 title: "Bottoms"
 series: consumption
 subcollection: films

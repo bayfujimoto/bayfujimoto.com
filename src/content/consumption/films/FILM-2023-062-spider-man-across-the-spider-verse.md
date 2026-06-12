@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-062
-slug: FILM-2023-062-spider-man-across-the-spider-verse
+slug: spider-man-across-the-spider-verse
 title: "Spider-Man: Across the Spider-Verse"
 series: consumption
 subcollection: films

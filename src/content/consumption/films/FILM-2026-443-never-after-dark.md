@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-443
-slug: FILM-2026-443-never-after-dark
+slug: never-after-dark
 title: "Never After Dark"
 series: consumption
 subcollection: films

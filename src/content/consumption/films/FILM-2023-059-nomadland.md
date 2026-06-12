@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-059
-slug: FILM-2023-059-nomadland
+slug: nomadland
 title: "Nomadland"
 series: consumption
 subcollection: films

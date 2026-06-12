@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-176
-slug: FILM-2024-176-im-hip
+slug: im-hip
 title: "I'm Hip"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-439
-slug: FILM-2026-439-blade-runner-2049
+slug: blade-runner-2049
 title: "Blade Runner 2049"
 series: consumption
 subcollection: films

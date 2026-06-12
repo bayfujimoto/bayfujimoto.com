@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-259
-slug: FILM-2024-259-paprika
+slug: paprika
 title: "Paprika"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-039
-slug: FILM-2023-039-ant-man-and-the-wasp-quantumania
+slug: ant-man-and-the-wasp-quantumania
 title: "Ant-Man and the Wasp: Quantumania"
 series: consumption
 subcollection: films

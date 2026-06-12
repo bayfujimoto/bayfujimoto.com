@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-474
-slug: FILM-2026-474-if-i-had-legs-id-kick-you
+slug: if-i-had-legs-id-kick-you
 title: "If I Had Legs I'd Kick You"
 series: consumption
 subcollection: films

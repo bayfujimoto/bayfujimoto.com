@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-152
-slug: FILM-2024-152-the-last-repair-shop
+slug: the-last-repair-shop
 title: "The Last Repair Shop"
 series: consumption
 subcollection: films

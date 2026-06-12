@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-043
-slug: FILM-2023-043-night-ride
+slug: night-ride
 title: "Night Ride"
 series: consumption
 subcollection: films

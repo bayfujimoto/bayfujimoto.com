@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-208
-slug: FILM-2024-208-immaculate
+slug: immaculate
 title: "Immaculate"
 series: consumption
 subcollection: films

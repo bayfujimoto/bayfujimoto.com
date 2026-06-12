@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-334
-slug: FILM-2025-334-a-complete-unknown
+slug: a-complete-unknown
 title: "A Complete Unknown"
 series: consumption
 subcollection: films

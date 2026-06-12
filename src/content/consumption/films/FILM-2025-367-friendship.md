@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-367
-slug: FILM-2025-367-friendship
+slug: friendship
 title: "Friendship"
 series: consumption
 subcollection: films

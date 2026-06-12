@@ -30,6 +30,14 @@ export function renderEditItem(container, item, allItems, archive, callbacks = {
   const itemType      = item.item_type;
   const id            = item.id;
 
+  // The file this item currently lives in. If a save changes the computed path
+  // (e.g. the slug changed), the old file must be deleted so it can't linger as
+  // a same-id orphan — the source of duplicate cards in the archive.
+  let originalFilePath = null;
+  try {
+    originalFilePath = generateFilePath(series, subcollection, id, item.slug || generateSlug(itemType, item));
+  } catch { /* unresolved path — treat as no original to delete */ }
+
   // Topbar breadcrumb
   const breadcrumb = document.getElementById("admin-topbar-breadcrumb");
   if (breadcrumb) {
@@ -116,7 +124,7 @@ export function renderEditItem(container, item, allItems, archive, callbacks = {
     <span class="admin-action-hint">:w</span>
   `;
   saveAction.addEventListener("click", () =>
-    handleEditSave(formHandle, id, series, subcollection, itemType, archive, body)
+    handleEditSave(formHandle, id, series, subcollection, itemType, archive, body, originalFilePath)
   );
   actions.appendChild(saveAction);
 
@@ -168,7 +176,7 @@ export function renderEditItem(container, item, allItems, archive, callbacks = {
   });
 }
 
-function handleEditSave(formHandle, id, series, subcollection, itemType, archive, body) {
+function handleEditSave(formHandle, id, series, subcollection, itemType, archive, body, originalFilePath) {
   const data = formHandle.getData();
   data.series        = series;
   data.subcollection = subcollection;
@@ -187,9 +195,13 @@ function handleEditSave(formHandle, id, series, subcollection, itemType, archive
 
   const content = toMarkdown(data);
 
+  const change = { id, filePath, content, action: "edit" };
+  // Path changed → also delete the file the item used to live in.
+  if (originalFilePath && originalFilePath !== filePath) change.oldFilePath = originalFilePath;
+
   const { pendingChanges } = getState();
   setState({
-    pendingChanges: [...pendingChanges, { id, filePath, content, action: "edit" }],
+    pendingChanges: [...pendingChanges, change],
   });
   updateArchiveInState(archive, data, series, subcollection);
 

@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-186
-slug: FILM-2024-186-gone-girl
+slug: gone-girl
 title: "Gone Girl"
 series: consumption
 subcollection: films

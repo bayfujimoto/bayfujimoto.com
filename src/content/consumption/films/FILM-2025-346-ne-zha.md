@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-346
-slug: FILM-2025-346-ne-zha
+slug: ne-zha
 title: "Ne Zha"
 series: consumption
 subcollection: films

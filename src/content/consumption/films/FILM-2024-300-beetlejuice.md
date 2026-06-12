@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-300
-slug: FILM-2024-300-beetlejuice
+slug: beetlejuice
 title: "Beetlejuice"
 series: consumption
 subcollection: films

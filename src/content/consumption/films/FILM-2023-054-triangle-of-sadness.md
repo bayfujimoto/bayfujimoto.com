@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-054
-slug: FILM-2023-054-triangle-of-sadness
+slug: triangle-of-sadness
 title: "Triangle of Sadness"
 series: consumption
 subcollection: films

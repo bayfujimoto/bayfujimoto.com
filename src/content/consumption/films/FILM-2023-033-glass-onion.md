@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-033
-slug: FILM-2023-033-glass-onion
+slug: glass-onion
 title: "Glass Onion"
 series: consumption
 subcollection: films

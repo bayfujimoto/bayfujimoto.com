@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-061
-slug: FILM-2023-061-no-country-for-old-men
+slug: no-country-for-old-men
 title: "No Country for Old Men"
 series: consumption
 subcollection: films

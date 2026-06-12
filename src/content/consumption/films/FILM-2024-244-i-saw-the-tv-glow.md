@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-244
-slug: FILM-2024-244-i-saw-the-tv-glow
+slug: i-saw-the-tv-glow
 title: "I Saw the TV Glow"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-134
-slug: FILM-2024-134-aquaman-and-the-lost-kingdom
+slug: aquaman-and-the-lost-kingdom
 title: "Aquaman and the Lost Kingdom"
 series: consumption
 subcollection: films

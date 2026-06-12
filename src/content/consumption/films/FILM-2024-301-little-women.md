@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-301
-slug: FILM-2024-301-little-women
+slug: little-women
 title: "Little Women"
 series: consumption
 subcollection: films

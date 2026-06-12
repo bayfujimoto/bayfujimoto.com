@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-110
-slug: FILM-2023-110-green-book
+slug: green-book
 title: "Green Book"
 series: consumption
 subcollection: films

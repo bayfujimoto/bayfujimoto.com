@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-184
-slug: FILM-2024-184-uncut-gems
+slug: uncut-gems
 title: "Uncut Gems"
 series: consumption
 subcollection: films

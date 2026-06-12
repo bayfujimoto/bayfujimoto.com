@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-413
-slug: FILM-2025-413-the-babadook
+slug: the-babadook
 title: "The Babadook"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-319
-slug: FILM-2024-319-shin-godzilla
+slug: shin-godzilla
 title: "Shin Godzilla"
 series: consumption
 subcollection: films

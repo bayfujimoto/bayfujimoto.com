@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-133
-slug: FILM-2024-133-ferrari
+slug: ferrari
 title: "Ferrari"
 series: consumption
 subcollection: films

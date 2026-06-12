@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-121
-slug: FILM-2023-121-chicken-run-dawn-of-the-nugget
+slug: chicken-run-dawn-of-the-nugget
 title: "Chicken Run: Dawn of the Nugget"
 series: consumption
 subcollection: films

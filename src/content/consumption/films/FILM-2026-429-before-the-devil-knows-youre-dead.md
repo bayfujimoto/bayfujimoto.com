@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-429
-slug: FILM-2026-429-before-the-devil-knows-youre-dead
+slug: before-the-devil-knows-youre-dead
 title: "Before the Devil Knows You're Dead"
 series: consumption
 subcollection: films

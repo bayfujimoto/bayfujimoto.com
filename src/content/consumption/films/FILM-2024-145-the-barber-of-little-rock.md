@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-145
-slug: FILM-2024-145-the-barber-of-little-rock
+slug: the-barber-of-little-rock
 title: "The Barber of Little Rock"
 series: consumption
 subcollection: films

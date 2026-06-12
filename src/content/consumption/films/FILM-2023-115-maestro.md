@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-115
-slug: FILM-2023-115-maestro
+slug: maestro
 title: "Maestro"
 series: consumption
 subcollection: films

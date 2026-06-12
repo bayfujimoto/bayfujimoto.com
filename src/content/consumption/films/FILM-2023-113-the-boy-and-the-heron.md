@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-113
-slug: FILM-2023-113-the-boy-and-the-heron
+slug: the-boy-and-the-heron
 title: "The Boy and the Heron"
 series: consumption
 subcollection: films

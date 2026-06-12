@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-417
-slug: FILM-2025-417-the-secret-agent
+slug: the-secret-agent
 title: "The Secret Agent"
 series: consumption
 subcollection: films

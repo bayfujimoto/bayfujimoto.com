@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-069
-slug: FILM-2023-069-mission-impossible
+slug: mission-impossible
 title: "Mission: Impossible"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-468
-slug: FILM-2026-468-the-super-mario-galaxy-movie
+slug: the-super-mario-galaxy-movie
 title: "The Super Mario Galaxy Movie"
 series: consumption
 subcollection: films

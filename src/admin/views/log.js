@@ -214,8 +214,14 @@ async function handleCommit() {
   setState({ status: 'saving', statusMessage: 'Committing to GitHub…' });
 
   try {
+    const writes    = snapshot.map(p => ({ filePath: p.filePath, content: p.content }));
+    // Renamed edits carry the old path — stage it for deletion in the same commit.
+    const deletions = snapshot
+      .filter(p => p.oldFilePath && p.oldFilePath !== p.filePath)
+      .map(p => ({ filePath: p.oldFilePath, delete: true }));
+
     const result = await commitAll({
-      files:           snapshot.map(p => ({ filePath: p.filePath, content: p.content })),
+      files:           [...writes, ...deletions],
       countersPath:    'src/content/_id-counters.yaml',
       countersContent: toCountersYAML(counters),
       message,

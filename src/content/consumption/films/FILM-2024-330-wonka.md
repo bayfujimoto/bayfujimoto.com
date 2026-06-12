@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-330
-slug: FILM-2024-330-wonka
+slug: wonka
 title: "Wonka"
 series: consumption
 subcollection: films

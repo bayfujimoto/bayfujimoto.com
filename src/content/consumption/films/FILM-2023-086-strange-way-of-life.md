@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-086
-slug: FILM-2023-086-strange-way-of-life
+slug: strange-way-of-life
 title: "Strange Way of Life"
 series: consumption
 subcollection: films

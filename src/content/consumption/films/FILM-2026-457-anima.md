@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-457
-slug: FILM-2026-457-anima
+slug: anima
 title: "Anima"
 series: consumption
 subcollection: films

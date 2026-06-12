@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-316
-slug: FILM-2024-316-anora
+slug: anora
 title: "Anora"
 series: consumption
 subcollection: films

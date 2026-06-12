@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-415
-slug: FILM-2025-415-the-running-man
+slug: the-running-man
 title: "The Running Man"
 series: consumption
 subcollection: films

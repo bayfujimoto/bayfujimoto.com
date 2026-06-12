@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-271
-slug: FILM-2024-271-the-pop-out-ken-friends
+slug: the-pop-out-ken-friends
 title: "The Pop Out: Ken & Friends"
 series: consumption
 subcollection: films

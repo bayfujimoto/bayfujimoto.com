@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-163
-slug: FILM-2024-163-dawn-of-the-planet-of-the-apes
+slug: dawn-of-the-planet-of-the-apes
 title: "Dawn of the Planet of the Apes"
 series: consumption
 subcollection: films

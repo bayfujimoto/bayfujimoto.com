@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-295
-slug: FILM-2024-295-hundreds-of-beavers
+slug: hundreds-of-beavers
 title: "Hundreds of Beavers"
 series: consumption
 subcollection: films

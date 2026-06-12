@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-407
-slug: FILM-2025-407-the-substance
+slug: the-substance
 title: "The Substance"
 series: consumption
 subcollection: films

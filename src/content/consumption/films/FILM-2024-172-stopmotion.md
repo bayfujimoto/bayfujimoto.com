@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-172
-slug: FILM-2024-172-stopmotion
+slug: stopmotion
 title: "Stopmotion"
 series: consumption
 subcollection: films

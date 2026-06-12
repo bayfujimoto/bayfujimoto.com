@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-431
-slug: FILM-2026-431-kpop-demon-hunters
+slug: kpop-demon-hunters
 title: "KPop Demon Hunters"
 series: consumption
 subcollection: films

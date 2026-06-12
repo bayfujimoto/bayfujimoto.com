@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-435
-slug: FILM-2026-435-charade
+slug: charade
 title: "Charade"
 series: consumption
 subcollection: films

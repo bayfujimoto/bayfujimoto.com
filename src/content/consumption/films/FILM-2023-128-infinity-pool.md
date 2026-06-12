@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-128
-slug: FILM-2023-128-infinity-pool
+slug: infinity-pool
 title: "Infinity Pool"
 series: consumption
 subcollection: films

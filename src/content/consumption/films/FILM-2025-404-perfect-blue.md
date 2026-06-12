@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-404
-slug: FILM-2025-404-perfect-blue
+slug: perfect-blue
 title: "Perfect Blue"
 series: consumption
 subcollection: films

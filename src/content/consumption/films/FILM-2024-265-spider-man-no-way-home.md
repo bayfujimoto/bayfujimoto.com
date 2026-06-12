@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-265
-slug: FILM-2024-265-spider-man-no-way-home
+slug: spider-man-no-way-home
 title: "Spider-Man: No Way Home"
 series: consumption
 subcollection: films

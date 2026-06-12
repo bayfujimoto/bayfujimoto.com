@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-385
-slug: FILM-2025-385-the-wild-robot
+slug: the-wild-robot
 title: "The Wild Robot"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-097
-slug: FILM-2023-097-anatomy-of-a-fall
+slug: anatomy-of-a-fall
 title: "Anatomy of a Fall"
 series: consumption
 subcollection: films

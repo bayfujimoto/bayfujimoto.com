@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-088
-slug: FILM-2023-088-sorcerer
+slug: sorcerer
 title: "Sorcerer"
 series: consumption
 subcollection: films

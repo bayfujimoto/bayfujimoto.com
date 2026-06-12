@@ -1,6 +1,6 @@
 ---
 id: FILM-2022-006
-slug: FILM-2022-006-top-gun-maverick
+slug: top-gun-maverick
 title: "Top Gun: Maverick"
 series: consumption
 subcollection: films

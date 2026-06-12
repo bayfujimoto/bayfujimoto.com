@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-281
-slug: FILM-2024-281-abigail
+slug: abigail
 title: "Abigail"
 series: consumption
 subcollection: films

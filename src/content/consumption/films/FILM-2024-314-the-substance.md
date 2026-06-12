@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-314
-slug: FILM-2024-314-the-substance
+slug: the-substance
 title: "The Substance"
 series: consumption
 subcollection: films

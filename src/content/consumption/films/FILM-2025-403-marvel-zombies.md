@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-403
-slug: FILM-2025-403-marvel-zombies
+slug: marvel-zombies
 title: "Marvel Zombies"
 series: consumption
 subcollection: films

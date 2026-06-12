@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-064
-slug: FILM-2023-064-elemental
+slug: elemental
 title: "Elemental"
 series: consumption
 subcollection: films

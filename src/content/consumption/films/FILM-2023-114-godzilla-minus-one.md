@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-114
-slug: FILM-2023-114-godzilla-minus-one
+slug: godzilla-minus-one
 title: "Godzilla Minus One"
 series: consumption
 subcollection: films

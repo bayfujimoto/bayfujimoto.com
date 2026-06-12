@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from "fs";
+import { readFileSync, writeFileSync, mkdirSync, existsSync, unlinkSync } from "fs";
 import { resolve, dirname } from "path";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
@@ -64,8 +64,12 @@ async function githubCommitAll(files, token, owner, repo, branch, message) {
   const baseCommit = await commitRes.json();
   const baseTreeSha = baseCommit.tree.sha;
 
-  // Build tree entries — each file as a blob
-  const treeItems = await Promise.all(files.map(async ({ filePath, content }) => {
+  // Build tree entries — each file as a blob, or a deletion (sha: null) for
+  // renamed records whose old path must be removed in the same commit.
+  const treeItems = await Promise.all(files.map(async ({ filePath, content, delete: del }) => {
+    if (del) {
+      return { path: filePath, mode: "100644", type: "blob", sha: null };
+    }
     const blobRes = await fetch(`${base}/git/blobs`, {
       method: "POST",
       headers,
@@ -191,7 +195,7 @@ export function githubWritePlugin() {
           return;
         }
 
-        const { filePath, content, countersPath, countersContent } = payload;
+        const { filePath, content, countersPath, countersContent, oldFilePath } = payload;
 
         if (!filePath || !content || !countersPath || !countersContent) {
           res.writeHead(400);
@@ -205,6 +209,11 @@ export function githubWritePlugin() {
           mkdirSync(dirname(absFile), { recursive: true });
           writeFileSync(absFile, content, "utf8");
           writeFileSync(absCounters, countersContent, "utf8");
+          // Renamed record — remove the file it used to live in.
+          if (oldFilePath && oldFilePath !== filePath) {
+            const absOld = resolve(process.cwd(), oldFilePath);
+            if (existsSync(absOld)) unlinkSync(absOld);
+          }
           res.writeHead(200);
           res.end(JSON.stringify({ ok: true, mode: "local", filePath }));
         } catch (e) {

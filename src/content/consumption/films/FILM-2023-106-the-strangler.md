@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-106
-slug: FILM-2023-106-the-strangler
+slug: the-strangler
 title: "The Strangler"
 series: consumption
 subcollection: films

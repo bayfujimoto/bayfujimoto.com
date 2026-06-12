@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-438
-slug: FILM-2026-438-wake-up-dead-man
+slug: wake-up-dead-man
 title: "Wake Up Dead Man"
 series: consumption
 subcollection: films

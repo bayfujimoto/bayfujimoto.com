@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-140
-slug: FILM-2024-140-the-lord-of-the-rings-the-two-towers
+slug: the-lord-of-the-rings-the-two-towers
 title: "The Lord of the Rings: The Two Towers"
 series: consumption
 subcollection: films

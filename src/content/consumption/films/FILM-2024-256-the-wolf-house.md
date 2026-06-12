@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-256
-slug: FILM-2024-256-the-wolf-house
+slug: the-wolf-house
 title: "The Wolf House"
 series: consumption
 subcollection: films

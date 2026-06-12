@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-332
-slug: FILM-2025-332-nosferatu
+slug: nosferatu
 title: "Nosferatu"
 series: consumption
 subcollection: films

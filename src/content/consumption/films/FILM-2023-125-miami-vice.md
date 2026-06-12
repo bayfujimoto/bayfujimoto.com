@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-125
-slug: FILM-2023-125-miami-vice
+slug: miami-vice
 title: "Miami Vice"
 series: consumption
 subcollection: films

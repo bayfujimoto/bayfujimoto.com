@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-343
-slug: FILM-2025-343-companion
+slug: companion
 title: "Companion"
 series: consumption
 subcollection: films

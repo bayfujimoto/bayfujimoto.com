@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-302
-slug: FILM-2024-302-diabolique
+slug: diabolique
 title: "Diabolique"
 series: consumption
 subcollection: films

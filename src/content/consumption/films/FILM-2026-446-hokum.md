@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-446
-slug: FILM-2026-446-hokum
+slug: hokum
 title: "Hokum"
 series: consumption
 subcollection: films

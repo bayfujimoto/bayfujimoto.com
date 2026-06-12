@@ -1,6 +1,6 @@
 ---
 id: FILM-2022-027
-slug: FILM-2022-027-fire-of-love
+slug: fire-of-love
 title: "Fire of Love"
 series: consumption
 subcollection: films

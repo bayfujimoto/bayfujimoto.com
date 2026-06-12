@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-147
-slug: FILM-2024-147-the-talented-mr-ripley
+slug: the-talented-mr-ripley
 title: "The Talented Mr. Ripley"
 series: consumption
 subcollection: films

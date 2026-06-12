@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-144
-slug: FILM-2024-144-island-in-between
+slug: island-in-between
 title: "Island in Between"
 series: consumption
 subcollection: films

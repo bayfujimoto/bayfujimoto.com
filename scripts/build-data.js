@@ -63,6 +63,10 @@ function buildArchive() {
 
   const archive = { series: {}, guide: GUIDE };
 
+  // Track every frontmatter id → source file(s) so we can fail loudly on any
+  // duplicate. Two files sharing an id render as duplicate cards downstream.
+  const idIndex = new Map();
+
   // Pre-populate all series and subcollections so they exist even if empty
   for (const [seriesKey, seriesDef] of Object.entries(SERIES)) {
     archive.series[seriesKey] = {
@@ -79,6 +83,11 @@ function buildArchive() {
   for (const file of files) {
     const raw = readFileSync(file, "utf8");
     const { data } = matter(raw);
+
+    if (data.id) {
+      if (!idIndex.has(data.id)) idIndex.set(data.id, []);
+      idIndex.get(data.id).push(file);
+    }
 
     if (!data.series) {
       console.warn(`Skipping ${file} — missing series`);
@@ -146,6 +155,16 @@ function buildArchive() {
       return [k, parseInt(v, 10)];
     })
   );
+
+  // Fail loudly on any duplicate id — catches admin doubling, stray macOS
+  // " 2.md" copies, and manual mistakes before a duplicated archive ships.
+  const duplicates = [...idIndex].filter(([, paths]) => paths.length > 1);
+  if (duplicates.length) {
+    const detail = duplicates
+      .map(([id, paths]) => `  Duplicate id ${id} in:\n${paths.map(p => `    ${p}`).join("\n")}`)
+      .join("\n");
+    throw new Error(`build-data: ${duplicates.length} duplicate id(s) found —\n${detail}`);
+  }
 
   const outPath = "public/data/archive.json";
   mkdirSync(dirname(outPath), { recursive: true });

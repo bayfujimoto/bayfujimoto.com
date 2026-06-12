@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-246
-slug: FILM-2024-246-psycho
+slug: psycho
 title: "Psycho"
 series: consumption
 subcollection: films

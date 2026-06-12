@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-196
-slug: FILM-2024-196-the-wonderful-story-of-henry-sugar
+slug: the-wonderful-story-of-henry-sugar
 title: "The Wonderful Story of Henry Sugar"
 series: consumption
 subcollection: films

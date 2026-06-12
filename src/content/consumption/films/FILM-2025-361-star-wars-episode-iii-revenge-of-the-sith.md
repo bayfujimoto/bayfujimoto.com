@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-361
-slug: FILM-2025-361-star-wars-episode-iii-revenge-of-the-sith
+slug: star-wars-episode-iii-revenge-of-the-sith
 title: "Star Wars: Episode III – Revenge of the Sith"
 series: consumption
 subcollection: films

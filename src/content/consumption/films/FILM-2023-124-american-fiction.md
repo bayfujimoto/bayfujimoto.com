@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-124
-slug: FILM-2023-124-american-fiction
+slug: american-fiction
 title: "American Fiction"
 series: consumption
 subcollection: films

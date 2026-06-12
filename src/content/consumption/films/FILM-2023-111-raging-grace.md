@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-111
-slug: FILM-2023-111-raging-grace
+slug: raging-grace
 title: "Raging Grace"
 series: consumption
 subcollection: films

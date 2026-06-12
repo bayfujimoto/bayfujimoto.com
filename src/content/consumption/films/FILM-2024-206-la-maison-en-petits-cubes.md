@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-206
-slug: FILM-2024-206-la-maison-en-petits-cubes
+slug: la-maison-en-petits-cubes
 title: "La Maison en Petits Cubes"
 series: consumption
 subcollection: films

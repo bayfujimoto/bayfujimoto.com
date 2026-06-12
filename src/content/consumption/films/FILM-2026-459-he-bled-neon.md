@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-459
-slug: FILM-2026-459-he-bled-neon
+slug: he-bled-neon
 title: "He Bled Neon"
 series: consumption
 subcollection: films

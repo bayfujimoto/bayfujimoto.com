@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-074
-slug: FILM-2023-074-oppenheimer
+slug: oppenheimer
 title: "Oppenheimer"
 series: consumption
 subcollection: films

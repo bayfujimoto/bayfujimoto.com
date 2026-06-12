@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-187
-slug: FILM-2024-187-sicario
+slug: sicario
 title: "Sicario"
 series: consumption
 subcollection: films

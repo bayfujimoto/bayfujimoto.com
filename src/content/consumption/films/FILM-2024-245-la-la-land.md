@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-245
-slug: FILM-2024-245-la-la-land
+slug: la-la-land
 title: "La La Land"
 series: consumption
 subcollection: films

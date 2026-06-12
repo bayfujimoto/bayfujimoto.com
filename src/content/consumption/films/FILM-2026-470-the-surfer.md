@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-470
-slug: FILM-2026-470-the-surfer
+slug: the-surfer
 title: "The Surfer"
 series: consumption
 subcollection: films

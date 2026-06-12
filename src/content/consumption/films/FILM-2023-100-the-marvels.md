@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-100
-slug: FILM-2023-100-the-marvels
+slug: the-marvels
 title: "The Marvels"
 series: consumption
 subcollection: films

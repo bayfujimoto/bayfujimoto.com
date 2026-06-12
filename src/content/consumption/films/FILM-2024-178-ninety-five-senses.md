@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-178
-slug: FILM-2024-178-ninety-five-senses
+slug: ninety-five-senses
 title: "Ninety-Five Senses"
 series: consumption
 subcollection: films

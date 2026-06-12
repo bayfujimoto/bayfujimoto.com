@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-036
-slug: FILM-2023-036-the-banshees-of-inisherin
+slug: the-banshees-of-inisherin
 title: "The Banshees of Inisherin"
 series: consumption
 subcollection: films

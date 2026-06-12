@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-094
-slug: FILM-2023-094-the-killer
+slug: the-killer
 title: "The Killer"
 series: consumption
 subcollection: films

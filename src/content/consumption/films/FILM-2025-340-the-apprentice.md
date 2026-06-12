@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-340
-slug: FILM-2025-340-the-apprentice
+slug: the-apprentice
 title: "The Apprentice"
 series: consumption
 subcollection: films

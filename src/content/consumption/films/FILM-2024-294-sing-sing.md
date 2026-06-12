@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-294
-slug: FILM-2024-294-sing-sing
+slug: sing-sing
 title: "Sing Sing"
 series: consumption
 subcollection: films

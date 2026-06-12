@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-067
-slug: FILM-2023-067-indiana-jones-and-the-dial-of-destiny
+slug: indiana-jones-and-the-dial-of-destiny
 title: "Indiana Jones and the Dial of Destiny"
 series: consumption
 subcollection: films

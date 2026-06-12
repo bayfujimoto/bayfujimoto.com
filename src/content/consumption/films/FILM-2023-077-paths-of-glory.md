@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-077
-slug: FILM-2023-077-paths-of-glory
+slug: paths-of-glory
 title: "Paths of Glory"
 series: consumption
 subcollection: films

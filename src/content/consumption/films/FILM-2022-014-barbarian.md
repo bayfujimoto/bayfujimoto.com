@@ -1,6 +1,6 @@
 ---
 id: FILM-2022-014
-slug: FILM-2022-014-barbarian
+slug: barbarian
 title: "Barbarian"
 series: consumption
 subcollection: films

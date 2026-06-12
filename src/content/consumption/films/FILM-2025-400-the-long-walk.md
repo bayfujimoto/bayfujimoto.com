@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-400
-slug: FILM-2025-400-the-long-walk
+slug: the-long-walk
 title: "The Long Walk"
 series: consumption
 subcollection: films

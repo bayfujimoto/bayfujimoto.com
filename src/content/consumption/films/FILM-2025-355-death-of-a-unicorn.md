@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-355
-slug: FILM-2025-355-death-of-a-unicorn
+slug: death-of-a-unicorn
 title: "Death of a Unicorn"
 series: consumption
 subcollection: films

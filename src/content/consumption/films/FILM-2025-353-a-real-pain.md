@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-353
-slug: FILM-2025-353-a-real-pain
+slug: a-real-pain
 title: "A Real Pain"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2022-011
-slug: FILM-2022-011-bullet-train
+slug: bullet-train
 title: "Bullet Train"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2022-002
-slug: FILM-2022-002-the-batman
+slug: the-batman
 title: "The Batman"
 series: consumption
 subcollection: films

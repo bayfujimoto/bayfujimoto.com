@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-155
-slug: FILM-2024-155-how-to-have-sex
+slug: how-to-have-sex
 title: "How to Have Sex"
 series: consumption
 subcollection: films

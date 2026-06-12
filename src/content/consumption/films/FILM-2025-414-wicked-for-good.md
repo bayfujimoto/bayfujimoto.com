@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-414
-slug: FILM-2025-414-wicked-for-good
+slug: wicked-for-good
 title: "Wicked: For Good"
 series: consumption
 subcollection: films

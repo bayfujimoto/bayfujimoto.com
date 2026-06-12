@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-433
-slug: FILM-2026-433-28-years-later-the-bone-temple
+slug: 28-years-later-the-bone-temple
 title: "28 Years Later: The Bone Temple"
 series: consumption
 subcollection: films

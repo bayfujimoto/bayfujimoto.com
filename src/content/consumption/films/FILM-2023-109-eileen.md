@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-109
-slug: FILM-2023-109-eileen
+slug: eileen
 title: "Eileen"
 series: consumption
 subcollection: films

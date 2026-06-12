@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-320
-slug: FILM-2024-320-first-reformed
+slug: first-reformed
 title: "First Reformed"
 series: consumption
 subcollection: films

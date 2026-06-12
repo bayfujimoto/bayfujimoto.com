@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-369
-slug: FILM-2025-369-portrait-of-a-lady-on-fire
+slug: portrait-of-a-lady-on-fire
 title: "Portrait of a Lady on Fire"
 series: consumption
 subcollection: films

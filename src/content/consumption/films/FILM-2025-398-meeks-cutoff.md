@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-398
-slug: FILM-2025-398-meeks-cutoff
+slug: meeks-cutoff
 title: "Meek's Cutoff"
 series: consumption
 subcollection: films

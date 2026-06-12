@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-286
-slug: FILM-2024-286-deadpool-wolverine
+slug: deadpool-wolverine
 title: "Deadpool & Wolverine"
 series: consumption
 subcollection: films

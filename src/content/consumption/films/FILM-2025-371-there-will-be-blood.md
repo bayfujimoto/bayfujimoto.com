@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-371
-slug: FILM-2025-371-there-will-be-blood
+slug: there-will-be-blood
 title: "There Will Be Blood"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-376
-slug: FILM-2025-376-mission-impossible-the-final-reckoning
+slug: mission-impossible-the-final-reckoning
 title: "Mission: Impossible – The Final Reckoning"
 series: consumption
 subcollection: films

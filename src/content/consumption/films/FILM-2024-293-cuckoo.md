@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-293
-slug: FILM-2024-293-cuckoo
+slug: cuckoo
 title: "Cuckoo"
 series: consumption
 subcollection: films

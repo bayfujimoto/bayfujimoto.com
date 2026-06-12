@@ -93,5 +93,8 @@ export function generateFilePath(series, subcollection, id, slug) {
   const pathMap = CONTENT_DIR[series];
   const folder = typeof pathMap === "string" ? pathMap : pathMap?.[subcollection];
   if (!folder) throw new Error(`Cannot resolve path for series="${series}" subcollection="${subcollection}"`);
-  return `src/content/${folder}/${id}-${slug}.md`;
+  // Defensive: a malformed slug may already embed its own `${id}-` prefix.
+  // Strip it so the path can never double (e.g. FILM-…-FILM-…-slug.md).
+  const cleanSlug = slug.startsWith(`${id}-`) ? slug.slice(id.length + 1) : slug;
+  return `src/content/${folder}/${id}-${cleanSlug}.md`;
 }

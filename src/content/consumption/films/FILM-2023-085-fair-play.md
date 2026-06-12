@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-085
-slug: FILM-2023-085-fair-play
+slug: fair-play
 title: "Fair Play"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-411
-slug: FILM-2025-411-bugonia
+slug: bugonia
 title: "Bugonia"
 series: consumption
 subcollection: films

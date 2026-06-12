@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-213
-slug: FILM-2024-213-late-night-with-the-devil
+slug: late-night-with-the-devil
 title: "Late Night with the Devil"
 series: consumption
 subcollection: films

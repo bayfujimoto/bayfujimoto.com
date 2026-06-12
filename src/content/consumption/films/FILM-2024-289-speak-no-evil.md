@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-289
-slug: FILM-2024-289-speak-no-evil
+slug: speak-no-evil
 title: "Speak No Evil"
 series: consumption
 subcollection: films

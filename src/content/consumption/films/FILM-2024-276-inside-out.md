@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-276
-slug: FILM-2024-276-inside-out
+slug: inside-out
 title: "Inside Out"
 series: consumption
 subcollection: films

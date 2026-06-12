@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-437
-slug: FILM-2026-437-ready-or-not
+slug: ready-or-not
 title: "Ready or Not"
 series: consumption
 subcollection: films

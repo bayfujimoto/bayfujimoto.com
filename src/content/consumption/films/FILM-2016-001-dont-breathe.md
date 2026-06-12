@@ -1,6 +1,6 @@
 ---
 id: FILM-2016-001
-slug: FILM-2016-001-dont-breathe
+slug: dont-breathe
 title: "Don't Breathe"
 series: consumption
 subcollection: films

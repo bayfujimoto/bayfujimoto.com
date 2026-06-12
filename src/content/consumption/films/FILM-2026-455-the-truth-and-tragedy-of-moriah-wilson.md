@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-455
-slug: FILM-2026-455-the-truth-and-tragedy-of-moriah-wilson
+slug: the-truth-and-tragedy-of-moriah-wilson
 title: "The Truth and Tragedy of Moriah Wilson"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-306
-slug: FILM-2024-306-megalopolis
+slug: megalopolis
 title: "Megalopolis"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-191
-slug: FILM-2024-191-the-hitchhikers-guide-to-the-galaxy
+slug: the-hitchhikers-guide-to-the-galaxy
 title: "The Hitchhiker's Guide to the Galaxy"
 series: consumption
 subcollection: films

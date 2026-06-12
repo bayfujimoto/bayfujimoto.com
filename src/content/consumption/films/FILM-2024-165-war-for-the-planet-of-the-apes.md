@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-165
-slug: FILM-2024-165-war-for-the-planet-of-the-apes
+slug: war-for-the-planet-of-the-apes
 title: "War for the Planet of the Apes"
 series: consumption
 subcollection: films

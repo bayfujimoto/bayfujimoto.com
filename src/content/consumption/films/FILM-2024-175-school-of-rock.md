@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-175
-slug: FILM-2024-175-school-of-rock
+slug: school-of-rock
 title: "School of Rock"
 series: consumption
 subcollection: films

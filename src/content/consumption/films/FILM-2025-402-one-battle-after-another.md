@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-402
-slug: FILM-2025-402-one-battle-after-another
+slug: one-battle-after-another
 title: "One Battle After Another"
 series: consumption
 subcollection: films

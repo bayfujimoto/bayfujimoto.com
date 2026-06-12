@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-292
-slug: FILM-2024-292-monster
+slug: monster
 title: "Monster"
 series: consumption
 subcollection: films

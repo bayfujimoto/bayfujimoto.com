@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-237
-slug: FILM-2024-237-ken-burns-says-jazz-3-billion-times-actually-2-97-bn-in-under-3-5-minutes
+slug: ken-burns-says-jazz-3-billion-times-actually-2-97-bn-in-under-3-5-minutes
 title: "Ken Burns Says \"Jazz\" 3 Billion Times (actually 2.97 bn) in Under 3.5 Minutes"
 series: consumption
 subcollection: films

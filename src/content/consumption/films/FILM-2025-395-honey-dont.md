@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-395
-slug: FILM-2025-395-honey-dont
+slug: honey-dont
 title: "Honey Don't!"
 series: consumption
 subcollection: films

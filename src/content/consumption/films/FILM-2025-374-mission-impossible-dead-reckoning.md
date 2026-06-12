@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-374
-slug: FILM-2025-374-mission-impossible-dead-reckoning
+slug: mission-impossible-dead-reckoning
 title: "Mission: Impossible – Dead Reckoning"
 series: consumption
 subcollection: films

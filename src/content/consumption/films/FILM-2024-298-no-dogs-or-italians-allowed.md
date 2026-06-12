@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-298
-slug: FILM-2024-298-no-dogs-or-italians-allowed
+slug: no-dogs-or-italians-allowed
 title: "No Dogs or Italians Allowed"
 series: consumption
 subcollection: films

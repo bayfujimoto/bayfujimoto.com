@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-095
-slug: FILM-2023-095-monster-house
+slug: monster-house
 title: "Monster House"
 series: consumption
 subcollection: films

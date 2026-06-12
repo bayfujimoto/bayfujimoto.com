@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-351
-slug: FILM-2025-351-mad-max-fury-road
+slug: mad-max-fury-road
 title: "Mad Max: Fury Road"
 series: consumption
 subcollection: films

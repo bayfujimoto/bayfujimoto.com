@@ -1,6 +1,6 @@
 ---
 id: FILM-2022-016
-slug: FILM-2022-016-the-tragedy-of-macbeth
+slug: the-tragedy-of-macbeth
 title: "The Tragedy of Macbeth"
 series: consumption
 subcollection: films

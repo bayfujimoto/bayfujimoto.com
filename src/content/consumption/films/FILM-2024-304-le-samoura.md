@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-304
-slug: FILM-2024-304-le-samoura
+slug: le-samoura
 title: "Le Samouraï"
 series: consumption
 subcollection: films

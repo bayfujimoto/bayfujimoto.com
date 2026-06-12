@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-312
-slug: FILM-2024-312-its-whats-inside
+slug: its-whats-inside
 title: "It's What's Inside"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-082
-slug: FILM-2023-082-the-creator
+slug: the-creator
 title: "The Creator"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-475
-slug: FILM-2026-475-over-your-dead-body
+slug: over-your-dead-body
 title: "Over Your Dead Body"
 series: consumption
 subcollection: films

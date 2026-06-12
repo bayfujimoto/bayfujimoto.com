@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-215
-slug: FILM-2024-215-last-and-first-men
+slug: last-and-first-men
 title: "Last and First Men"
 series: consumption
 subcollection: films

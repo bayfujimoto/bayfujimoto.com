@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-211
-slug: FILM-2024-211-luca
+slug: luca
 title: "Luca"
 series: consumption
 subcollection: films

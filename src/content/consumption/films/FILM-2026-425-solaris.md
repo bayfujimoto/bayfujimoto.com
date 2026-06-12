@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-425
-slug: FILM-2026-425-solaris
+slug: solaris
 title: "Solaris"
 series: consumption
 subcollection: films

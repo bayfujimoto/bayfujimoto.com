@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-288
-slug: FILM-2024-288-rather
+slug: rather
 title: "Rather"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-091
-slug: FILM-2023-091-society
+slug: society
 title: "Society"
 series: consumption
 subcollection: films

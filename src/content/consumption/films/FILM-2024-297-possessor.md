@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-297
-slug: FILM-2024-297-possessor
+slug: possessor
 title: "Possessor"
 series: consumption
 subcollection: films

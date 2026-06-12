@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-202
-slug: FILM-2024-202-dune
+slug: dune
 title: "Dune"
 series: consumption
 subcollection: films

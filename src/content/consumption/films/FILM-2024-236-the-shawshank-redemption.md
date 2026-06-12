@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-236
-slug: FILM-2024-236-the-shawshank-redemption
+slug: the-shawshank-redemption
 title: "The Shawshank Redemption"
 series: consumption
 subcollection: films

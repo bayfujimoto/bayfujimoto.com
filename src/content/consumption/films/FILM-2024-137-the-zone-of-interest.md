@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-137
-slug: FILM-2024-137-the-zone-of-interest
+slug: the-zone-of-interest
 title: "The Zone of Interest"
 series: consumption
 subcollection: films

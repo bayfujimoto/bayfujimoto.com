@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-311
-slug: FILM-2024-311-interstellar
+slug: interstellar
 title: "Interstellar"
 series: consumption
 subcollection: films

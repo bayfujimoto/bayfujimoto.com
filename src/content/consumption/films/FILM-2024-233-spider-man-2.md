@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-233
-slug: FILM-2024-233-spider-man-2
+slug: spider-man-2
 title: "Spider-Man 2"
 series: consumption
 subcollection: films

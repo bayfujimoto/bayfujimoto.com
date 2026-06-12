@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-335
-slug: FILM-2025-335-rango
+slug: rango
 title: "Rango"
 series: consumption
 subcollection: films

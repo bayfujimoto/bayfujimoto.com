@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-338
-slug: FILM-2025-338-mononoke-the-movie-the-phantom-in-the-rain
+slug: mononoke-the-movie-the-phantom-in-the-rain
 title: "Mononoke the Movie: The Phantom in the Rain"
 series: consumption
 subcollection: films

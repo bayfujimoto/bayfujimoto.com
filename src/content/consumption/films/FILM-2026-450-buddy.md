@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-450
-slug: FILM-2026-450-buddy
+slug: buddy
 title: "Buddy"
 series: consumption
 subcollection: films

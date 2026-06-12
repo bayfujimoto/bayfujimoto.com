@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-081
-slug: FILM-2023-081-it-lives-inside
+slug: it-lives-inside
 title: "It Lives Inside"
 series: consumption
 subcollection: films

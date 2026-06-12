@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-180
-slug: FILM-2024-180-pachyderm
+slug: pachyderm
 title: "Pachyderm"
 series: consumption
 subcollection: films

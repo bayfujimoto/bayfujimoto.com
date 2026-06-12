@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-096
-slug: FILM-2023-096-five-nights-at-freddys
+slug: five-nights-at-freddys
 title: "Five Nights at Freddy's"
 series: consumption
 subcollection: films

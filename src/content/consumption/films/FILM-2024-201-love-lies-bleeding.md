@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-201
-slug: FILM-2024-201-love-lies-bleeding
+slug: love-lies-bleeding
 title: "Love Lies Bleeding"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-392
-slug: FILM-2025-392-architecton
+slug: architecton
 title: "Architecton"
 series: consumption
 subcollection: films

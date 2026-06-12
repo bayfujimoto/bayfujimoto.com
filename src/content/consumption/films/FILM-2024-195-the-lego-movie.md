@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-195
-slug: FILM-2024-195-the-lego-movie
+slug: the-lego-movie
 title: "The Lego Movie"
 series: consumption
 subcollection: films

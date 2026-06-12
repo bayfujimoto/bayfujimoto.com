@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-356
-slug: FILM-2025-356-conclave
+slug: conclave
 title: "Conclave"
 series: consumption
 subcollection: films

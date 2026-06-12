@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-387
-slug: FILM-2025-387-unforgiven
+slug: unforgiven
 title: "Unforgiven"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-324
-slug: FILM-2024-324-fantastic-mr-fox
+slug: fantastic-mr-fox
 title: "Fantastic Mr. Fox"
 series: consumption
 subcollection: films

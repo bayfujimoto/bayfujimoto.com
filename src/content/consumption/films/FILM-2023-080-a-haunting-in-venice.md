@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-080
-slug: FILM-2023-080-a-haunting-in-venice
+slug: a-haunting-in-venice
 title: "A Haunting in Venice"
 series: consumption
 subcollection: films

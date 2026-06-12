@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-170
-slug: FILM-2024-170-lovely-dark-and-deep
+slug: lovely-dark-and-deep
 title: "Lovely, Dark, and Deep"
 series: consumption
 subcollection: films

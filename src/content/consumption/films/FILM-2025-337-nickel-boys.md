@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-337
-slug: FILM-2025-337-nickel-boys
+slug: nickel-boys
 title: "Nickel Boys"
 series: consumption
 subcollection: films

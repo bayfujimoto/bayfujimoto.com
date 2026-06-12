@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-046
-slug: FILM-2023-046-the-boy-the-mole-the-fox-and-the-horse
+slug: the-boy-the-mole-the-fox-and-the-horse
 title: "The Boy, the Mole, the Fox and the Horse"
 series: consumption
 subcollection: films

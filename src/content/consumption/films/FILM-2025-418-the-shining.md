@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-418
-slug: FILM-2025-418-the-shining
+slug: the-shining
 title: "The Shining"
 series: consumption
 subcollection: films

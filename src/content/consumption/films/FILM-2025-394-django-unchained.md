@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-394
-slug: FILM-2025-394-django-unchained
+slug: django-unchained
 title: "Django Unchained"
 series: consumption
 subcollection: films

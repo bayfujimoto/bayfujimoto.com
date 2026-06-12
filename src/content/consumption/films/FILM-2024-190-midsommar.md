@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-190
-slug: FILM-2024-190-midsommar
+slug: midsommar
 title: "Midsommar"
 series: consumption
 subcollection: films

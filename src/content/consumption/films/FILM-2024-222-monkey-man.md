@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-222
-slug: FILM-2024-222-monkey-man
+slug: monkey-man
 title: "Monkey Man"
 series: consumption
 subcollection: films

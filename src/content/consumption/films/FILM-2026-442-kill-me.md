@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-442
-slug: FILM-2026-442-kill-me
+slug: kill-me
 title: "Kill Me"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-282
-slug: FILM-2024-282-twisters
+slug: twisters
 title: "Twisters"
 series: consumption
 subcollection: films

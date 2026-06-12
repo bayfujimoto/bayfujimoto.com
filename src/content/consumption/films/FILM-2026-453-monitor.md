@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-453
-slug: FILM-2026-453-monitor
+slug: monitor
 title: "Monitor"
 series: consumption
 subcollection: films

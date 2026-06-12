@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-290
-slug: FILM-2024-290-trap
+slug: trap
 title: "Trap"
 series: consumption
 subcollection: films

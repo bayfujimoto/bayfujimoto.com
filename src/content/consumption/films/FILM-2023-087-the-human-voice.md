@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-087
-slug: FILM-2023-087-the-human-voice
+slug: the-human-voice
 title: "The Human Voice"
 series: consumption
 subcollection: films

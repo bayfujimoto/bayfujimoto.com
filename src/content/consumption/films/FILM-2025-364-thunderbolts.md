@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-364
-slug: FILM-2025-364-thunderbolts
+slug: thunderbolts
 title: "Thunderbolts*"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-349
-slug: FILM-2025-349-the-monkey
+slug: the-monkey
 title: "The Monkey"
 series: consumption
 subcollection: films

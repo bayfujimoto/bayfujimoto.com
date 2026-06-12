@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-313
-slug: FILM-2024-313-top-gun-maverick
+slug: top-gun-maverick
 title: "Top Gun: Maverick"
 series: consumption
 subcollection: films

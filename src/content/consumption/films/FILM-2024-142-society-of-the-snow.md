@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-142
-slug: FILM-2024-142-society-of-the-snow
+slug: society-of-the-snow
 title: "Society of the Snow"
 series: consumption
 subcollection: films

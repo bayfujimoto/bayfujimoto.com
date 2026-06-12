@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-325
-slug: FILM-2024-325-juror-2
+slug: juror-2
 title: "Juror #2"
 series: consumption
 subcollection: films

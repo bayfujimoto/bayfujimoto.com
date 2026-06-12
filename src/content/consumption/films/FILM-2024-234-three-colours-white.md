@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-234
-slug: FILM-2024-234-three-colours-white
+slug: three-colours-white
 title: "Three Colours: White"
 series: consumption
 subcollection: films

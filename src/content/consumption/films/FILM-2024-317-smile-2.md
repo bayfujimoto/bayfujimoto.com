@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-317
-slug: FILM-2024-317-smile-2
+slug: smile-2
 title: "Smile 2"
 series: consumption
 subcollection: films

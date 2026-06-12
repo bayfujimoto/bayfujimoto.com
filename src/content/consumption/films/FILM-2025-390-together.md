@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-390
-slug: FILM-2025-390-together
+slug: together
 title: "Together"
 series: consumption
 subcollection: films

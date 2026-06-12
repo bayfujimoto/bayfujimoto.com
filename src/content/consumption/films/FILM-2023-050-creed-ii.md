@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-050
-slug: FILM-2023-050-creed-ii
+slug: creed-ii
 title: "Creed II"
 series: consumption
 subcollection: films

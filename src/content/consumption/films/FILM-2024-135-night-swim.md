@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-135
-slug: FILM-2024-135-night-swim
+slug: night-swim
 title: "Night Swim"
 series: consumption
 subcollection: films

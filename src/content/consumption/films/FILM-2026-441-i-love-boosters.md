@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-441
-slug: FILM-2026-441-i-love-boosters
+slug: i-love-boosters
 title: "I Love Boosters"
 series: consumption
 subcollection: films

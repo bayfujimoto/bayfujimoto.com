@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-368
-slug: FILM-2025-368-beautiful-boy
+slug: beautiful-boy
 title: "Beautiful Boy"
 series: consumption
 subcollection: films

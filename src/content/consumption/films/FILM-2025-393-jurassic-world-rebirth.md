@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-393
-slug: FILM-2025-393-jurassic-world-rebirth
+slug: jurassic-world-rebirth
 title: "Jurassic World Rebirth"
 series: consumption
 subcollection: films

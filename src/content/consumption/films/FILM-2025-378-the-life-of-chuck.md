@@ -1,6 +1,6 @@
 ---
 id: FILM-2025-378
-slug: FILM-2025-378-the-life-of-chuck
+slug: the-life-of-chuck
 title: "The Life of Chuck"
 series: consumption
 subcollection: films

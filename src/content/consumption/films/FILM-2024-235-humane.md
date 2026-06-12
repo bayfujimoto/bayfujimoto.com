@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-235
-slug: FILM-2024-235-humane
+slug: humane
 title: "Humane"
 series: consumption
 subcollection: films

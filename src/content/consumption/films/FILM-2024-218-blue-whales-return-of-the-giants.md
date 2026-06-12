@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-218
-slug: FILM-2024-218-blue-whales-return-of-the-giants
+slug: blue-whales-return-of-the-giants
 title: "Blue Whales: Return of the Giants"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2026-422
-slug: FILM-2026-422-marty-supreme
+slug: marty-supreme
 title: "Marty Supreme"
 series: consumption
 subcollection: films

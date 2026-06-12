@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-212
-slug: FILM-2024-212-road-house
+slug: road-house
 title: "Road House"
 series: consumption
 subcollection: films

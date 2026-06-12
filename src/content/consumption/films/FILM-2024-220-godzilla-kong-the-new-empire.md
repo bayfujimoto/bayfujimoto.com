@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-220
-slug: FILM-2024-220-godzilla-kong-the-new-empire
+slug: godzilla-kong-the-new-empire
 title: "Godzilla × Kong: The New Empire"
 series: consumption
 subcollection: films

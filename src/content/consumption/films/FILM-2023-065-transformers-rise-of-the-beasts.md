@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-065
-slug: FILM-2023-065-transformers-rise-of-the-beasts
+slug: transformers-rise-of-the-beasts
 title: "Transformers: Rise of the Beasts"
 series: consumption
 subcollection: films

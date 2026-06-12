@@ -1,6 +1,6 @@
 ---
 id: FILM-2024-310
-slug: FILM-2024-310-terminator-2-judgment-day
+slug: terminator-2-judgment-day
 title: "Terminator 2: Judgment Day"
 series: consumption
 subcollection: films

@@ -1,6 +1,6 @@
 ---
 id: FILM-2023-070
-slug: FILM-2023-070-mission-impossible-ghost-protocol
+slug: mission-impossible-ghost-protocol
 title: "Mission: Impossible – Ghost Protocol"
 series: consumption
 subcollection: films
