@@ -10,6 +10,7 @@
     "ingest:films:csv": "node scripts/ingest-letterboxd-csv.js",
     "ingest:books": "node scripts/ingest-goodreads.js",
     "ingest:books:csv": "node scripts/ingest-goodreads-csv.js",
+    "strip:models": "node scripts/strip-model-textures.js",
     "preview": "vite preview",
     "dev:netlify": "netlify dev"
   },
@@ -25,9 +26,14 @@
     "three": "^0.170.0"
   },
   "devDependencies": {
+    "@gltf-transform/core": "^4.4.0",
+    "@gltf-transform/extensions": "^4.4.0",
+    "@gltf-transform/functions": "^4.4.0",
+    "draco3d": "^1.5.7",
     "glob": "^11.1.0",
     "gray-matter": "^4.0.3",
     "js-yaml": "^4.1.0",
+    "meshoptimizer": "^1.1.1",
     "sharp": "^0.34.5",
     "vite": "^6.0.0"
   }

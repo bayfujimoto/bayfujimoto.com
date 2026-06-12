@@ -4,10 +4,15 @@ import { navigate } from "./router.js";
 
 const seriesInfo = {};
 
-// The placeholder series objects sitting on the desk ship with image
-// textures that slow first load. While testing, strip those and replace
-// each material with a flat untextured one. The desk itself keeps its
-// real materials. Set to false to render the object textures again.
+// The series objects sitting on the desk are rendered with flat, untextured
+// materials. Their image textures are also stripped from the GLB binaries
+// themselves (see scripts/strip-model-textures.js), which publishes
+// texture-free copies to the models/untextured/ prefix that OBJECT_BASE below
+// points at — so the textures are no longer downloaded or decoded at all.
+// This runtime pass remains as a safety net: it normalizes each material to a
+// flat MeshStandardMaterial built from the surviving baseColorFactor, so the
+// scene looks identical whether it loads a pre-stripped or full-texture file.
+// The desk itself (desk.glb) keeps its real materials and is not stripped.
 const STRIP_MODEL_TEXTURES = true;
 
 function stripTextures(root) {
@@ -74,6 +79,9 @@ export function initScene() {
   scene.add(spotLight.target);
 
   const BASE = "https://pub-0038be3e0b514b5080cb9935976102b8.r2.dev/models/";
+  // Texture-stripped copies of the series objects live under this prefix.
+  // The full-texture originals remain at BASE but are no longer loaded.
+  const OBJECT_BASE = `${BASE}untextured/`;
 
   const deskLoader = new GLTFLoader();
   deskLoader.load(`${BASE}desk.glb`, (gltf) => {
@@ -115,7 +123,7 @@ export function initScene() {
     else if (seriesId === "consumption") modelFile = "desk-consumption-sphere.glb";
     else if (seriesId === "accumulation") modelFile = "desk-accumulation-bundle.glb";
     else if (seriesId === "labor") modelFile = "desk-labor-box.glb";
-    loader.load(`${BASE}${modelFile}`, (gltf) => {
+    loader.load(`${OBJECT_BASE}${modelFile}`, (gltf) => {
       const model = gltf.scene;
       stripTextures(model);
 
