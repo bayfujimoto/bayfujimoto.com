@@ -316,6 +316,46 @@
           "label": "films",
           "items": [
             {
+              "id": "FILM-2026-510",
+              "slug": "disclosure-day-2026-2026-06-14",
+              "title": "Disclosure Day",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2026",
+              "director": "",
+              "watch_date": "2026-06-14",
+              "display_date": "June 14, 2026",
+              "sort_date": "2026-06-14",
+              "rating": 2.5,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/disclosure-day/",
+              "assets": {
+                "poster": "https://a.ltrbxd.com/resized/film-poster/1/1/5/9/2/5/1/1159251-disclosure-day-0-600-0-900-crop.jpg?v=9ae810e4bb"
+              }
+            },
+            {
+              "id": "FILM-2026-511",
+              "slug": "the-fabelmans-2022-2026-06-13",
+              "title": "The Fabelmans",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2022",
+              "director": "",
+              "watch_date": "2026-06-13",
+              "display_date": "June 13, 2026",
+              "sort_date": "2026-06-13",
+              "rating": 4.5,
+              "rewatch": true,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/the-fabelmans/1/",
+              "assets": {
+                "poster": "https://a.ltrbxd.com/resized/film-poster/7/2/1/2/8/8/721288-the-fabelmans-0-600-0-900-crop.jpg?v=93ea6717b8"
+              }
+            },
+            {
               "id": "FILM-2026-509",
               "slug": "war-of-the-worlds-2005-2026-06-12",
               "title": "War of the Worlds",
@@ -13061,7 +13101,7 @@
   },
   "_counters": {
     "EPH": 18,
-    "FILM": 509,
+    "FILM": 511,
     "BOOK": 258,
     "MUSIC": 3,
     "COFFEE": 2,
