@@ -172,6 +172,15 @@ Its purpose is to prevent drift, repetition, and silent contradictions over time
 - reference: `docs/field-schema.md`, `src/shared/field-schema.js`
 - date: 2026-06-13
 
+### Catalog card typography: register by provenance
+- status: confirmed
+- decision: On the catalog card, typographic register encodes provenance. Monospace (Commit Mono) is the default for the record's data — system codes (`id`, `type`), transcribed/given facts (creator names, `date`, `year`, `dimensions`, `extent`), and all discrete catalog tokens (`seen_via`, `origin`, `place`, `event`, etc., plus `tags` and see-also references). Serif (EB Garamond) is reserved for the archivist's voice: the `context_note` and titles the archivist devised (Creation and Accumulation records). Consumption titles, being transcribed work titles, are monospace. `rating` is a hybrid — a serif score with a monospace ` / 5` scale.
+- reason: Register encodes the transcribed-vs-authored distinction that cataloguing already marks (DACS brackets devised titles; the Leiden Conventions separate the document from editorial supply). It dovetails with the creator self-default — the same self-vs-other axis that suppresses the creator row makes a Creation title serif. Bringhurst reads monospace as the register of the document, supporting mono as the record's voice.
+- scope: the catalog card only. Elsewhere (browse, biography, CV, labor, guide) serif stays primary; this extends, not replaces, "Typography: serif-primary with Commit Mono for IDs" (2026-04-19).
+- implementation: `cell()` marks slot tokens mono; `renderCard` applies serif to the note and devised titles; `titleIsGiven()` drives the title register via a per-type `titleGiven` flag; rating is special-cased (serif score + mono scale). CSS: `.item-card__title--mono`, `.item-card__note p`, `.item-card__rider`.
+- reference: `docs/field-schema.md` (Typographic register), `src/shared/field-schema.js`, `src/app/panels.js`, `src/styles/main.css`
+- date: 2026-06-13
+
 ### Desk realism
 - status: confirmed
 - decision: The homepage desk is a literal scene with wood texture and desk lighting. It should feel like a real physical surface.

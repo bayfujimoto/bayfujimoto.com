@@ -2,7 +2,7 @@ import { navigate, replace } from "./router.js";
 import { subscribe, getState } from "./state.js";
 import { imageUrl, modelUrl } from "./image-url.js";
 import { setSeriesInfo } from "./scene.js";
-import { resolveCreator, resolveSlots } from "../shared/field-schema.js";
+import { resolveCreator, resolveSlots, titleIsGiven } from "../shared/field-schema.js";
 
 let archive = null;
 const app = document.getElementById("app");
@@ -1208,6 +1208,21 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
       fields.appendChild(row);
     };
 
+    // Rating — the score reads serif (your judgment), the " / 5" scale mono (record).
+    const ratingRow = (value) => {
+      const row = el("div", "item-card__row");
+      const l = el("span", "overlay-label");
+      l.textContent = "rating";
+      const v = el("span", "overlay-value");
+      v.appendChild(document.createTextNode(String(value)));
+      const scale = el("span", "overlay-value--mono");
+      scale.textContent = " / 5";
+      v.appendChild(scale);
+      row.appendChild(l);
+      row.appendChild(v);
+      fields.appendChild(row);
+    };
+
     // Accession — id + type, monospace codes, paired at the top.
     splitRow(["ID", item.id, true], ["type", item.item_type, true]);
 
@@ -1215,7 +1230,9 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
     const titleRow = el("div", "item-card__row item-card__row--title");
     const titleLabel = el("span", "overlay-label");
     titleLabel.textContent = "title";
-    const titleEl = el("h2", "item-card__title");
+    // Title register: monospace for transcribed work titles (Consumption),
+    // serif for titles the archivist devised (Creation / Accumulation).
+    const titleEl = el("h2", "item-card__title" + (titleIsGiven(item.item_type) ? " item-card__title--mono" : ""));
     titleEl.textContent = item.title;
     titleRow.appendChild(titleLabel);
     titleRow.appendChild(titleEl);
@@ -1224,24 +1241,27 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
     // Responsibility — role-adaptive creator, suppressed for self-authored
     // (Creation) records. Source of truth: src/shared/field-schema.js.
     const creator = resolveCreator(item);
-    if (creator) singleRow(creator.label, creator.value, false);
+    if (creator) singleRow(creator.label, creator.value, true);
 
-    // Date — its own spine row.
-    singleRow("date", item.display_date, false);
+    // Date — its own spine row (a given fact → monospace).
+    singleRow("date", item.display_date, true);
 
     // Typed slots — up to three type-specific rows. resolveSlots handles
-    // suppression and the place/event split row for ephemera.
+    // suppression and the place/event split row for ephemera; cells are mono
+    // (catalog data), with rating special-cased to a serif score + mono scale.
     resolveSlots(item).forEach(row => {
       if (row.type === "split") {
         const [a, b] = row.cells;
         splitRow([a.label, a.value, a.mono], [b.label, b.value, b.mono]);
+      } else if (row.key === "rating") {
+        ratingRow(row.value);
       } else {
         singleRow(row.label, row.value, row.mono);
       }
     });
 
     // Physical — extent + dimensions (the calibrated plate carries true size).
-    splitRow(["extent", item.extent, false], ["dimensions", dims ? `${dims.w} × ${dims.h} mm` : null, true]);
+    splitRow(["extent", item.extent, true], ["dimensions", dims ? `${dims.w} × ${dims.h} mm` : null, true]);
 
     if (item.context_note) {
       const note = el("div", "item-card__note");
@@ -1276,7 +1296,7 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
         const l = el("span", "overlay-label");
         l.textContent = "tags";
         l.style.marginTop = "0.5rem";
-        const v = el("span", "overlay-value");
+        const v = el("span", "overlay-value overlay-value--mono");
         v.textContent = item.tags.join(" · ");
         riders.appendChild(l);
         riders.appendChild(v);

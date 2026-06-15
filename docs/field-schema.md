@@ -177,6 +177,63 @@ hiding it. Open cell #3 still governs whether `rating` stays a card slot at all.
 
 ---
 
+## Typographic register
+
+Register encodes provenance: **monospace is the record's voice, serif is yours.**
+Monospace (Commit Mono) carries the transcribed and the given — what the world or the
+system supplied; serif (EB Garamond) is reserved for what you authored. This applies
+to field **values**; labels are the card's own apparatus and are unaffected. For the
+card only, it revises the site-wide "serif-primary, mono-for-IDs" rule (decisions.md).
+
+Rule **(b) — provenance + register**: serif is reserved for prose and devised titles;
+every discrete value, given or supplied, stays monospace as catalog data.
+
+**Serif (your voice):**
+- `context_note` — your prose.
+- **title**, for Creation and Accumulation records — titles you devised (the object
+  has no inherent title; you named it). Same self-vs-other axis as the creator row:
+  where the creator is suppressed because the work is yours, the title is serif.
+- `rating` — a hybrid: the score reads serif (your judgment), the ` / 5` scale
+  suffix reads mono (the record's fixed scale).
+
+**Monospace (the record):**
+- `id`, `item_type` — system codes.
+- **title**, for Consumption records — transcribed work titles (the film / book /
+  album / game / coffee is *named that*; you didn't choose it).
+- creator names — `director`, `author`, `artist`, `developer`, `roaster`, `issuer`,
+  and a Creation `creator` (a collaborator) — transcribed names of others.
+- `display_date`, `year`, `dimensions`, `extent` — given or measured facts.
+- all typed-slot tokens — `seen_via`, `edition`, `music_label`, `origin`, `process`,
+  `varietal`, `platform`, `play_status`, `place`, `event`, `camera`, `photo_series`,
+  `medium`, `material`, `related_project`, `duration`, `video_source`, `source`,
+  `note_type`.
+- `tags` and `see also` references — discrete index / navigation tokens.
+
+**Magnitude.** This makes the card *predominantly monospace*, with serif appearing
+only in the note, your own titles, and the rating score. `display_date` and the
+creator / slot rows shift from serif to mono — a deliberate, visible change. Worth
+eyeballing one card of each register (`npm run dev`).
+
+**Borderline cells — resolved:**
+
+1. `tags` → **mono** (discrete index tokens).
+2. `rating` → **serif score + mono ` / 5`** (judgment over a fixed scale).
+3. `see also` → **mono** (navigation token).
+
+**Implementation (as built).** Slot cells render mono (`cell()` in the schema); serif
+is applied in `renderCard` to the note and to devised titles. The title's register
+follows the per-type `titleGiven` flag via `titleIsGiven()` (true for Consumption →
+mono; false for Creation / Accumulation → serif). Rating is special-cased to a serif
+score with a mono ` / 5` scale. CSS: `.item-card__title--mono`, `.item-card__note p`
+(now serif), `.item-card__rider` (now mono).
+
+### Recorded decision
+
+Moved into `docs/decisions.md` as **"Catalog card typography: register by provenance"**
+(2026-06-13). This section stays the living spec.
+
+---
+
 ## Level of description (item vs. file)
 
 A "photo series" is not an item but a **file-level** record with member items —

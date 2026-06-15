@@ -79,6 +79,7 @@ export const FIELDS = {
 const MUSIC = {
   creator: { key: "artist", mode: "always" },
   slots: ["year", "music_label", "rating"],   // OPEN cell #1: slot 2 is provisional
+  titleGiven: true,
 };
 const creation = (slots, creatorLabel, opts = {}) => ({
   creator: { key: "creator", mode: "self", label: creatorLabel },
@@ -93,11 +94,11 @@ const EPHEMERA = {
 
 export const TYPES = {
   // ── Consumption ──
-  film: { creator: { key: "director",  mode: "always" }, slots: ["year", "seen_via", "rating"] },
-  book: { creator: { key: "author",    mode: "always" }, slots: ["year", "edition", "rating"] },
+  film: { creator: { key: "director",  mode: "always" }, slots: ["year", "seen_via", "rating"], titleGiven: true },
+  book: { creator: { key: "author",    mode: "always" }, slots: ["year", "edition", "rating"], titleGiven: true },
   album: MUSIC, ep: MUSIC, single: MUSIC, mix: MUSIC,
-  bag:  { creator: { key: "roaster",   mode: "always" }, slots: ["origin", "process", "varietal"] }, // coffee
-  game: { creator: { key: "developer", mode: "always" }, slots: ["platform", "play_status", "rating"] },
+  bag:  { creator: { key: "roaster",   mode: "always" }, slots: ["origin", "process", "varietal"], titleGiven: true }, // coffee
+  game: { creator: { key: "developer", mode: "always" }, slots: ["platform", "play_status", "rating"], titleGiven: true },
 
   // ── Creation (creator self-default → suppressed unless overridden) ──
   photo:     creation(["place", "camera", "photo_series"], "photographer", { physical: true }),
@@ -141,10 +142,11 @@ function cell(key, item) {
   const def = FIELDS[key];
   const value = item[key];
   // Suppress falsy values (blank string, null, numeric 0, false) so that an
-  // unrated item (rating: 0) shows no rating row — matching the card's prior
-  // splitRow behaviour, which filtered on truthiness.
+  // unrated item (rating: 0) shows no rating row.
   if (!value) return null;
-  return { key, label: def?.label ?? key, value, mono: !!def?.mono };
+  // Typographic register (rule b): every discrete catalog token renders mono.
+  // Serif is reserved for prose (note) and devised titles, handled in renderCard.
+  return { key, label: def?.label ?? key, value, mono: true };
 }
 
 /** Creator row for an item, applying the self-default / suppression rule.
@@ -208,4 +210,11 @@ export function physicalFields(itemType) {
   return ["extent", "dimensions"].map(k => ({
     id: k, label: FIELDS[k].label, example: FIELDS[k].example,
   }));
+}
+
+/** Typographic register: true when the title is a transcribed work title
+ *  (Consumption → monospace); false when the archivist devised it
+ *  (Creation / Accumulation → serif). See docs/field-schema.md. */
+export function titleIsGiven(itemType) {
+  return !!TYPES[itemType]?.titleGiven;
 }

@@ -91,10 +91,13 @@ body {
 .desk-object--guide .desk-object__label { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: var(--tracking-wider); }
 .desk-object--guide .desk-object__container { display: none; }
 
-/* ── Layer veil — accumulating blur/darkness ─────────────────────────────────── */
+/* ── Layer veil — stacked blur/darkness ──────────────────────────────────────── */
 /*
-  --depth is set inline (1, 2, 3). Drives blur + darkness accumulation.
-  Background is pure black so even depth-1 blur creates immediate legibility.
+  Each layer pushes its own veil; the veils stay stacked while deeper layers are
+  open, so darkness/blur accumulate by COUNT of layers. Each veil contributes a
+  fixed amount (not scaled by --depth) so the topmost layer always adds the same
+  increment and nothing compounds unboundedly. --depth still drives z-index only.
+  Background is pure black so even a single veil creates immediate legibility.
 */
 .layer-veil {
   position: fixed;
@@ -108,9 +111,9 @@ body {
 }
 
 .layer-veil--visible {
-  background: rgba(0, 0, 0, calc(var(--depth, 1) * 0.3));
-  backdrop-filter: blur(calc(var(--depth, 1) * 10px));
-  -webkit-backdrop-filter: blur(calc(var(--depth, 1) * 10px));
+  background: rgba(0, 0, 0, 0.47);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
 }
 
 /* ── Layer content host — transparent full-screen container ──────────────────── */
@@ -642,7 +645,9 @@ body {
 .item-card__row .overlay-value { display: inline; margin: 0; font-size: var(--text-base); }
 .item-card__row .overlay-value--mono { font-family: var(--font-mono); font-size: var(--text-sm); }
 
-/* Title — full-width serif field, the card's heading */
+/* Title — full-width heading. Serif when the archivist devised the title
+   (Creation / Accumulation); monospace when it is a transcribed work title
+   (Consumption). See docs/field-schema.md "Typographic register". */
 .item-card__title {
   font-family: var(--font-serif);
   font-size: var(--text-md);
@@ -650,19 +655,25 @@ body {
   color: var(--overlay-text);
   margin: 0;
 }
+.item-card__title--mono {
+  font-family: var(--font-mono);
+  font-size: var(--text-base);
+  letter-spacing: var(--tracking-tight, -0.01em);
+}
 
 .item-card__note {
   padding: 1.1rem 1.25rem 1.4rem;
   flex: 1;
 }
 .item-card__note .overlay-label { margin-bottom: 0.6rem; }
+/* The note is your prose — serif, the archivist's voice (Typographic register). */
 .item-card__note p {
   margin: 0;
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
+  font-family: var(--font-serif);
+  font-size: var(--text-base);
   line-height: var(--leading-loose);
   color: var(--overlay-text);
-  opacity: 0.85;
+  opacity: 0.9;
   max-width: 46ch;
 }
 
@@ -674,7 +685,7 @@ body {
   background: none;
   border: none;
   padding: 0;
-  font-family: var(--font);
+  font-family: var(--font-mono);
   font-size: var(--text-sm);
   color: var(--overlay-text);
   cursor: pointer;
