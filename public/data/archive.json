@@ -316,6 +316,286 @@
           "label": "films",
           "items": [
             {
+              "id": "FILM-2026-509",
+              "slug": "war-of-the-worlds-2005-2026-06-12",
+              "title": "War of the Worlds",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2005",
+              "director": "",
+              "watch_date": "2026-06-12",
+              "display_date": "June 12, 2026",
+              "sort_date": "2026-06-12",
+              "rating": 3,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/war-of-the-worlds/",
+              "assets": {
+                "poster": "https://a.ltrbxd.com/resized/film-poster/5/1/9/7/6/51976-war-of-the-worlds-0-600-0-900-crop.jpg?v=762a144731"
+              }
+            },
+            {
+              "id": "FILM-2026-508",
+              "slug": "war-of-the-worlds-2025-2026-06-12",
+              "title": "War of the Worlds",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2025",
+              "director": "",
+              "watch_date": "2026-06-12",
+              "display_date": "June 12, 2026",
+              "sort_date": "2026-06-12",
+              "rating": 1,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/war-of-the-worlds-2025/",
+              "assets": {
+                "poster": "https://a.ltrbxd.com/resized/film-poster/6/7/6/5/4/5/676545-war-of-the-worlds-2025-0-600-0-900-crop.jpg?v=758c330585"
+              }
+            },
+            {
+              "id": "FILM-2026-507",
+              "slug": "jaws-1975-2026-06-12",
+              "title": "Jaws",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "1975",
+              "director": "",
+              "watch_date": "2026-06-12",
+              "display_date": "June 12, 2026",
+              "sort_date": "2026-06-12",
+              "rating": 0,
+              "rewatch": true,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/jaws/",
+              "assets": {
+                "poster": "https://a.ltrbxd.com/resized/film-poster/5/1/5/4/2/51542-jaws-0-600-0-900-crop.jpg?v=03299455f6"
+              }
+            },
+            {
+              "id": "FILM-2026-496",
+              "slug": "e-t-the-extra-terrestrial-1982-2026-06-09",
+              "title": "E.T. the Extra-Terrestrial",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "1982",
+              "director": "",
+              "watch_date": "2026-06-09",
+              "display_date": "June 9, 2026",
+              "sort_date": "2026-06-09",
+              "rating": 0,
+              "rewatch": true,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/et-the-extra-terrestrial/",
+              "assets": {
+                "poster": "https://a.ltrbxd.com/resized/film-poster/5/1/5/2/0/51520-e-t-the-extra-terrestrial-0-600-0-900-crop.jpg?v=abed7069ac"
+              }
+            },
+            {
+              "id": "FILM-2026-497",
+              "slug": "close-encounters-of-the-third-kind-1977-2026-06-08",
+              "title": "Close Encounters of the Third Kind",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "1977",
+              "director": "",
+              "watch_date": "2026-06-08",
+              "display_date": "June 8, 2026",
+              "sort_date": "2026-06-08",
+              "rating": 0,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/close-encounters-of-the-third-kind/",
+              "assets": {
+                "poster": "https://a.ltrbxd.com/resized/sm/upload/4j/8g/do/5y/3Av8ZPiMrxFq9XiOjZl0tkoq9Oo-0-600-0-900-crop.jpg?v=de312c03b7"
+              }
+            },
+            {
+              "id": "FILM-2026-498",
+              "slug": "milk-serial-2024-2026-06-07",
+              "title": "Milk & Serial",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2024",
+              "director": "",
+              "watch_date": "2026-06-07",
+              "display_date": "June 7, 2026",
+              "sort_date": "2026-06-07",
+              "rating": 0,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/milk-serial/",
+              "assets": {
+                "poster": "https://a.ltrbxd.com/resized/film-poster/1/0/7/3/6/2/4/1073624-milk-serial-0-600-0-900-crop.jpg?v=aa853bd1bd"
+              }
+            },
+            {
+              "id": "FILM-2026-500",
+              "slug": "backrooms-2026-2026-05-30",
+              "title": "Backrooms",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2026",
+              "director": "",
+              "watch_date": "2026-05-30",
+              "display_date": "May 30, 2026",
+              "sort_date": "2026-05-30",
+              "rating": 2.5,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/backrooms-2026/",
+              "assets": {
+                "poster": "https://a.ltrbxd.com/resized/film-poster/9/7/6/4/1/9/976419-backrooms-2026-0-600-0-900-crop.jpg?v=f7a99e3fc8"
+              }
+            },
+            {
+              "id": "FILM-2026-499",
+              "slug": "indiana-jones-and-the-last-crusade-1989-2026-05-30",
+              "title": "Indiana Jones and the Last Crusade",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "1989",
+              "director": "",
+              "watch_date": "2026-05-30",
+              "display_date": "May 30, 2026",
+              "sort_date": "2026-05-30",
+              "rating": 0,
+              "rewatch": true,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/indiana-jones-and-the-last-crusade/",
+              "assets": {
+                "poster": "https://a.ltrbxd.com/resized/film-poster/5/1/9/6/1/51961-indiana-jones-and-the-last-crusade-0-600-0-900-crop.jpg?v=a75f6c2e01"
+              }
+            },
+            {
+              "id": "FILM-2026-501",
+              "slug": "the-texas-chain-saw-massacre-1974-2026-05-28",
+              "title": "The Texas Chain Saw Massacre",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "1974",
+              "director": "",
+              "watch_date": "2026-05-28",
+              "display_date": "May 28, 2026",
+              "sort_date": "2026-05-28",
+              "rating": 0,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/the-texas-chain-saw-massacre/",
+              "assets": {
+                "poster": "https://a.ltrbxd.com/resized/film-poster/3/1/9/8/5/31985-the-texas-chain-saw-massacre-0-600-0-900-crop.jpg?v=c63b3f1958"
+              }
+            },
+            {
+              "id": "FILM-2026-502",
+              "slug": "carrie-1976-2026-05-27",
+              "title": "Carrie",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "1976",
+              "director": "",
+              "watch_date": "2026-05-27",
+              "display_date": "May 27, 2026",
+              "sort_date": "2026-05-27",
+              "rating": 5,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/carrie-1976/",
+              "assets": {
+                "poster": "https://a.ltrbxd.com/resized/sm/upload/2c/5d/69/bc/uc3OvgmbnYaS5Y0BOjSmC1EmSz1-0-600-0-900-crop.jpg?v=52ac29973c"
+              }
+            },
+            {
+              "id": "FILM-2026-503",
+              "slug": "star-wars-the-mandalorian-and-grogu-2026-2026-05-26",
+              "title": "Star Wars: The Mandalorian and Grogu",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2026",
+              "director": "",
+              "watch_date": "2026-05-26",
+              "display_date": "May 26, 2026",
+              "sort_date": "2026-05-26",
+              "rating": 4,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/star-wars-the-mandalorian-and-grogu/",
+              "assets": {
+                "poster": "https://a.ltrbxd.com/resized/film-poster/1/1/1/1/0/7/3/1111073-star-wars-the-mandalorian-and-grogu-0-600-0-900-crop.jpg?v=5da24e2cba"
+              }
+            },
+            {
+              "id": "FILM-2026-504",
+              "slug": "raiders-of-the-lost-ark-1981-2026-05-25",
+              "title": "Raiders of the Lost Ark",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "1981",
+              "director": "",
+              "watch_date": "2026-05-25",
+              "display_date": "May 25, 2026",
+              "sort_date": "2026-05-25",
+              "rating": 0,
+              "rewatch": true,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/raiders-of-the-lost-ark/1/",
+              "assets": {
+                "poster": "https://a.ltrbxd.com/resized/film-poster/5/1/9/6/5/51965-raiders-of-the-lost-ark-0-600-0-900-crop.jpg?v=2b066bfd52"
+              }
+            },
+            {
+              "id": "FILM-2026-505",
+              "slug": "no-time-to-die-2021-2026-05-20",
+              "title": "No Time to Die",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2021",
+              "director": "",
+              "watch_date": "2026-05-20",
+              "display_date": "May 20, 2026",
+              "sort_date": "2026-05-20",
+              "rating": 3,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/no-time-to-die-2021/",
+              "assets": {
+                "poster": "https://a.ltrbxd.com/resized/film-poster/3/0/5/9/6/4/305964-no-time-to-die-0-600-0-900-crop.jpg?v=4651ce5b05"
+              }
+            },
+            {
+              "id": "FILM-2026-506",
+              "slug": "birth-2004-2026-05-19",
+              "title": "Birth",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2004",
+              "director": "",
+              "watch_date": "2026-05-19",
+              "display_date": "May 19, 2026",
+              "sort_date": "2026-05-19",
+              "rating": 4,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/birth-2004/",
+              "assets": {
+                "poster": "https://a.ltrbxd.com/resized/sm/upload/47/69/xz/jf/8iYcbxHwArwiqtPSU0aeuGawGrP-0-600-0-900-crop.jpg?v=76abf7d9b0"
+              }
+            },
+            {
               "id": "FILM-2026-494",
               "slug": "top-gun-maverick-2022-2026-05-16",
               "title": "Top Gun: Maverick",
@@ -373,7 +653,7 @@
               "assets": {
                 "poster": "https://a.ltrbxd.com/resized/film-poster/8/3/9/6/5/6/839656-blink-0-600-0-900-crop.jpg?v=1e258d7ca6"
               },
-              "format": "streaming"
+              "seen_via": "streaming"
             },
             {
               "id": "FILM-2026-492",
@@ -473,7 +753,7 @@
               "assets": {
                 "poster": "https://a.ltrbxd.com/resized/sm/upload/nw/cm/pa/ai/sGQv3ZMZBDBnl3z42Q0mEQ5uiDe-0-600-0-900-crop.jpg?v=54ee59f7cd"
               },
-              "format": "streaming"
+              "seen_via": "streaming"
             },
             {
               "id": "FILM-2026-478",
@@ -493,7 +773,7 @@
               "assets": {
                 "poster": "https://a.ltrbxd.com/resized/film-poster/5/0/8/2/2/50822-inland-empire-0-600-0-900-crop.jpg?v=b4bd226d73"
               },
-              "format": "streaming"
+              "seen_via": "streaming"
             },
             {
               "id": "FILM-2026-479",
@@ -513,7 +793,7 @@
               "assets": {
                 "poster": "https://a.ltrbxd.com/resized/film-poster/5/0/7/2/0/50720-malcolm-x-0-600-0-900-crop.jpg?v=b52be1c88a"
               },
-              "format": "streaming"
+              "seen_via": "streaming"
             },
             {
               "id": "FILM-2026-480",
@@ -553,7 +833,7 @@
               "assets": {
                 "poster": "https://a.ltrbxd.com/resized/film-poster/3/6/2/9/7/7/362977-spider-man-far-from-home-0-600-0-900-crop.jpg?v=d139fbf2ae"
               },
-              "format": "streaming"
+              "seen_via": "streaming"
             },
             {
               "id": "FILM-2026-482",
@@ -12781,7 +13061,7 @@
   },
   "_counters": {
     "EPH": 18,
-    "FILM": 495,
+    "FILM": 509,
     "BOOK": 258,
     "MUSIC": 3,
     "COFFEE": 2,

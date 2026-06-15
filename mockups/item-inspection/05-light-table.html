@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup 05 — Light table</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+/* ── Light table: item sits on a softly illuminated surface; metadata is a
+   paper slip laid beside it, slightly rotated, as if left by an archivist. */
+
+.table {
+  position: relative;
+  width: min(960px, 94vw);
+  height: min(620px, 78vh);
+  border-radius: 4px;
+  background:
+    radial-gradient(ellipse 75% 65% at 50% 45%,
+      rgba(232, 224, 208, 0.13) 0%,
+      rgba(232, 224, 208, 0.06) 45%,
+      rgba(232, 224, 208, 0.015) 75%,
+      transparent 100%);
+  border: 1px solid var(--border-dim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* faint surface grain via repeating gradient (no images) */
+.table::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(0deg,
+    transparent 0 3px, rgba(232,224,208,0.012) 3px 4px);
+  pointer-events: none;
+}
+
+.table__item {
+  width: 46%;
+  filter: drop-shadow(0 6px 22px rgba(0, 0, 0, 0.9));
+  transform: rotate(-1.2deg);
+}
+.table__item svg { width: 100%; height: auto; display: block; }
+
+/* The slip: lighter paper rectangle, mono-typed, pinned at an angle */
+.slip {
+  position: absolute;
+  right: 7%;
+  bottom: 9%;
+  width: 250px;
+  padding: 1.1rem 1.25rem 1.25rem;
+  background: rgba(232, 224, 208, 0.07);
+  border: 1px solid var(--border);
+  transform: rotate(1.6deg);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.7);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  line-height: 1.7;
+  color: var(--overlay-text);
+  letter-spacing: var(--tracking-wide);
+}
+.slip .row { display: flex; justify-content: space-between; gap: 1rem; }
+.slip .k { color: var(--overlay-muted); }
+.slip hr {
+  border: none;
+  border-top: 1px dashed var(--border-dim);
+  margin: 0.6rem 0;
+}
+.slip .note {
+  font-family: var(--font-serif);
+  font-size: var(--text-sm);
+  font-style: italic;
+  letter-spacing: var(--tracking-base);
+  color: var(--overlay-muted);
+  line-height: var(--leading-base);
+}
+/* pin hole */
+.slip::before {
+  content: '';
+  position: absolute;
+  top: 7px; left: 50%;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+}
+
+/* mm strip etched into the table edge, under the item */
+.etch {
+  position: absolute;
+  bottom: 5.5%;
+  left: 50%;
+  transform: translateX(-78%);
+  font-family: var(--font-mono);
+  font-size: 8px;
+  color: var(--overlay-faint);
+  letter-spacing: 0;
+  white-space: nowrap;
+  user-select: none;
+}
+
+@media (max-width: 600px) {
+  .table { height: 70vh; flex-direction: column; }
+  .table__item { width: 78%; }
+  .slip { position: static; transform: rotate(1.6deg); margin-top: 2rem; width: 80%; }
+  .etch { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="mock-banner">
+  <span>05 / light table — experimental</span>
+  <a href="index.html">index ↩</a>
+</div>
+
+<main class="stage">
+  <div class="table" aria-label="Item on light table: Eiffel Tower Ticket">
+    <div class="table__item" id="img"></div>
+
+    <div class="slip" role="note">
+      <div class="row"><span class="k">inv</span><span>EPH-2026-003</span></div>
+      <div class="row"><span class="k">type</span><span>ticket</span></div>
+      <div class="row"><span class="k">date</span><span>2024-08-25</span></div>
+      <div class="row"><span class="k">place</span><span>Paris, FR</span></div>
+      <div class="row"><span class="k">dims</span><span>130 × 54 mm</span></div>
+      <hr>
+      <div class="note">Thermal print, creased once. Second-level lift.</div>
+    </div>
+
+    <div class="etch" id="etch" aria-hidden="true"></div>
+  </div>
+</main>
+
+<nav class="layer-breadcrumb">
+  <span>desk</span><span class="sep">/</span>
+  <span>accumulation</span><span class="sep">/</span>
+  <span class="current">eiffel tower ticket</span>
+</nav>
+
+<script src="items.js"></script>
+<script>
+  document.getElementById('img').innerHTML = window.ITEMS.ticket.svg;
+  // etched mm strip: 0–150mm in 10mm steps aligned with item width (46% of table ≈ 130mm)
+  const etch = document.getElementById('etch');
+  let s = '';
+  for (let mm = 0; mm <= 150; mm += 10) s += String(mm).padStart(3, ' ') + ' ·';
+  etch.textContent = s;
+</script>
+</body>
+</html>

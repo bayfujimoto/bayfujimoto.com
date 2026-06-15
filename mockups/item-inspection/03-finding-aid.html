@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup 03 — Finding aid / ledger</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+/* ── Finding aid / ledger: the record dominates, the image is secondary
+   evidence. Borrows the bio-document box border language (1px border-dim,
+   2rem padding) so it reads as the same family as biography/CV inspection. */
+
+.aid {
+  width: min(880px, 92vw);
+  border: 1px solid var(--border-dim);
+  padding: 2rem;
+  display: grid;
+  grid-template-columns: 1fr 220px;
+  gap: 2.5rem;
+}
+
+.aid__head { grid-column: 1 / -1; margin-bottom: 0.5rem; }
+.aid__id {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wider);
+  color: var(--overlay-muted);
+  margin-bottom: 0.5rem;
+}
+.aid__title {
+  font-size: var(--text-xl);
+  font-weight: 400;
+  margin: 0;
+  color: var(--overlay-text);
+}
+
+/* Register rows — dotted leaders between label and value, ledger style */
+.aid__rows { border-top: 1px solid var(--border-dim); }
+.row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid var(--border-dim);
+}
+.row .meta-label { flex-shrink: 0; width: 8.5rem; }
+.row .leader {
+  flex: 1;
+  border-bottom: 1px dotted var(--overlay-faint);
+  transform: translateY(-0.3em);
+  min-width: 1.5rem;
+}
+.row .meta-value { text-align: right; }
+.row .meta-mono  { font-size: var(--text-sm); color: var(--overlay-text); }
+
+.aid__note {
+  margin-top: 1.5rem;
+  font-size: var(--text-base);
+  line-height: var(--leading-loose);
+  color: var(--fg-muted, rgba(232,224,208,0.6));
+  max-width: 48ch;
+}
+.aid__note .meta-label { display: block; margin-bottom: 0.5rem; }
+
+/* Evidence cell — deliberately small; click affordance to inspect */
+.aid__evidence {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-self: start;
+}
+.aid__thumb {
+  border: 1px solid var(--border-dim);
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 150px;
+  cursor: zoom-in;
+  transition: background var(--dur-base) var(--ease-out);
+}
+.aid__thumb:hover { background: var(--hover-bg); }
+.aid__thumb svg { width: 100%; max-height: 120px; }
+.aid__thumb-cap {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--overlay-muted);
+  letter-spacing: var(--tracking-wide);
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .aid { grid-template-columns: 1fr; padding: 1.25rem; gap: 1.5rem; }
+  .row .meta-label { width: 6.5rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="mock-banner">
+  <span>03 / finding aid — text-forward register</span>
+  <a href="index.html">index ↩</a>
+</div>
+
+<main class="stage">
+  <article class="aid" aria-label="Record: Eiffel Tower Ticket">
+    <header class="aid__head">
+      <div class="aid__id">EPH-2026-003 · accumulation · 1 item</div>
+      <h1 class="aid__title">Eiffel Tower Ticket</h1>
+    </header>
+
+    <div>
+      <div class="aid__rows">
+        <div class="row"><span class="meta-label">Type</span><span class="leader"></span><span class="meta-mono">ticket</span></div>
+        <div class="row"><span class="meta-label">Date</span><span class="leader"></span><span class="meta-value">August 25, 2024</span></div>
+        <div class="row"><span class="meta-label">Place</span><span class="leader"></span><span class="meta-value">Paris, France</span></div>
+        <div class="row"><span class="meta-label">Source</span><span class="leader"></span><span class="meta-value">Eiffel Tower</span></div>
+        <div class="row"><span class="meta-label">Dimensions</span><span class="leader"></span><span class="meta-mono">130 × 54 mm</span></div>
+        <div class="row"><span class="meta-label">Condition</span><span class="leader"></span><span class="meta-value">creased once, vertical</span></div>
+        <div class="row"><span class="meta-label">Status</span><span class="leader"></span><span class="meta-mono">draft</span></div>
+      </div>
+
+      <div class="aid__note">
+        <span class="meta-label">Context note</span>
+        Admission ticket, second-level lift. Thermal print on coated stock.
+        Retained from a visit of August 2024; kept folded in a coat pocket
+        for three weeks before entering the archive.
+      </div>
+    </div>
+
+    <aside class="aid__evidence">
+      <div class="aid__thumb" id="img" title="Inspect image"></div>
+      <div class="aid__thumb-cap">front · 1 of 1 · tap to inspect</div>
+    </aside>
+  </article>
+</main>
+
+<nav class="layer-breadcrumb">
+  <span>desk</span><span class="sep">/</span>
+  <span>accumulation</span><span class="sep">/</span>
+  <span class="current">eiffel tower ticket</span>
+</nav>
+
+<script src="items.js"></script>
+<script>
+  document.getElementById('img').innerHTML = window.ITEMS.ticket.svg;
+</script>
+</body>
+</html>

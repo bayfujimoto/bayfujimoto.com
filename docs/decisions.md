@@ -146,6 +146,32 @@ Its purpose is to prevent drift, repetition, and silent contradictions over time
 - decision: Item inspection uses a modal overlay, not a routed page.
 - reason: Everything should feel like it exists in the same physical space. The browse view behind dims and blurs heavily. Deep-linking is preserved via URL query param (e.g. `/accumulation/ephemera/?item=EPH-2025-041`).
 
+### Default item inspection: catalog card
+- status: confirmed
+- decision: The default item inspection view is a catalog card — ruled label/value fields beside a calibrated plate (standard field 325 mm, scales attached to the inside of the top and left edges with ticks pointing inward, reproduction inset at the scale origin at true proportion). The card is the terminal view: the old centered "full view" was removed. Magnification lives in the plate foot — an "overturn" text button for recto/verso plus a zoom slider (pinch on the plate drives the same value). Zooming shrinks the visible field span and redraws the plate: the reproduction enlarges from the top-left origin (clipped to the box) and the scales relabel to the new span, so the calibration stays truthful at every zoom. The scales sit on the inside of the top and left box edges (which are the container borders), ticks pointing inward, numbers on the inner side of the ticks. Biography, CV, and labor keep their custom inspection views. The `inspection:` frontmatter field remains the hook for per-record overrides later.
+- reason: The card asserts that the item is an entry in a system — material evidence over narrative — and the constant field makes physical scale comparable across the whole archive. Chosen after a seven-variant mockup comparison; see `docs/catalog-card-analysis.md`.
+- notes:
+  - Scale annotations are relational ("field 325 mm", "reduced 1:2", "enlarged 5:1") — never "1:1", because a screen millimetre is not a millimetre.
+  - Field labels use the site's own vocabulary, not borrowed typkort terms.
+  - Unrecorded fields are suppressed, never faked: no dimensions → plain image cell without scales; no reproduction → fields-only card with a "no reproduction" line.
+  - Non-published status renders as a faint stamp on the card rather than a field row.
+- date: 2026-06-12
+
+### Item card field schema: spine + typed slots
+- status: confirmed
+- decision: The catalog card's fields are defined by a single declarative schema keyed by `item_type` (`src/shared/field-schema.js`), imported by both the admin form and `renderCard`, replacing the prior union-list-with-suppression. The card is a fixed spine — accession (`id`, shown as "ID", + `item_type`), `title`, responsibility (creator), `date` — followed by up to three type-specific slots, then physical (`extent` + `dimensions`), note, and riders (`related_ids`, `tags`). Status renders as a stamp, not a row. Scope is the card-using series (Consumption, Creation, Accumulation); Labor and Identity keep their custom views.
+- sub-decisions:
+  - Creator defaults to the archive subject for Creation types and is suppressed when it equals the subject, shown only on exception (collaborator, commission, found object). Authorship is asserted once on the Creation series sheet (rule of non-repetition).
+  - `source` is split: Consumption's "where seen" becomes `seen_via`; `source` is reserved for Accumulation provenance. Carried out as an isolated data migration over the YAML records.
+  - `extent` is a literal field (count of physical pieces), decoupled from the plate's recto/verso `1/1` view control; `extent > 1` signals a file-level record.
+  - Ephemera shows `place` and `event` together in one split row; `source` (provenance) follows.
+  - Every editable field carries an `example` string rendered as the admin input's placeholder.
+  - Card-visible fields are limited to spine + slots + note + riders + tags; all other metadata stays record-only.
+- reason: The field set was implicit and triplicated across `type-fields.js`, `renderCard`, and `content-model.md`, and had already drifted (`rating` displayed but uneditable; `place`/`dimensions` editable only for ephemera yet printed for any type). A single source of truth makes the card concise and comparable and prevents future drift. Extends the "Default item inspection: catalog card" decision (2026-06-12).
+- open: music slot 2; book slot 2; whether `rating` stays a slot or becomes record-only; whether `note` records get a plate; the description-control ("described by / on") line. Tracked in `docs/field-schema.md`.
+- reference: `docs/field-schema.md`, `src/shared/field-schema.js`
+- date: 2026-06-13
+
 ### Desk realism
 - status: confirmed
 - decision: The homepage desk is a literal scene with wood texture and desk lighting. It should feel like a real physical surface.

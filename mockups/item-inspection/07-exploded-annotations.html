@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup 07 — Exploded annotations</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+/* ── Exploded annotations: metadata pinned around the item with hairlines,
+   conservation-worksheet style. Dimension callouts use technical-drawing
+   extension lines (the only variant that draws measurements on the object). */
+
+.sheet {
+  position: relative;
+  width: min(940px, 94vw);
+  height: min(600px, 76vh);
+}
+
+.sheet__lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.sheet__lines line, .sheet__lines path {
+  stroke: var(--overlay-faint);
+  stroke-width: 1;
+  fill: none;
+}
+.sheet__lines .dim { stroke: var(--overlay-muted); }
+.sheet__lines text {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  fill: var(--overlay-text);
+  letter-spacing: 0.08em;
+}
+.sheet__lines circle { fill: var(--overlay-muted); stroke: none; }
+
+.sheet__item {
+  position: absolute;
+  left: 50%; top: 46%;
+  transform: translate(-50%, -50%);
+  width: 44%;
+}
+.sheet__item svg { width: 100%; height: auto; display: block; }
+
+/* Pinned notes */
+.pin {
+  position: absolute;
+  max-width: 200px;
+  font-size: var(--text-sm);
+  line-height: var(--leading-base);
+  color: var(--overlay-text);
+}
+.pin .meta-label { display: block; margin-bottom: 0.25rem; }
+.pin.mono { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide); }
+.pin.right { text-align: right; }
+
+.pin--id     { top: 4%;  left: 2%; }
+.pin--title  { top: 2%;  right: 2%; text-align: right; }
+.pin--place  { top: 38%; left: 0%; }
+.pin--source { top: 60%; right: 0%; text-align: right; }
+.pin--note   { bottom: 0; left: 2%; max-width: 300px;
+               font-style: italic; color: var(--overlay-muted); }
+.pin--cond   { bottom: 6%; right: 2%; text-align: right; }
+
+.pin--title .t { font-size: var(--text-lg); }
+.pin--title .d { font-size: var(--text-sm); color: var(--overlay-muted); margin-top: 0.2rem; }
+
+@media (max-width: 700px) {
+  /* graceful collapse: hairlines hide, pins stack — never rely on the 2D
+     arrangement for information */
+  .sheet { height: auto; display: flex; flex-direction: column; gap: 1.25rem; padding-top: 1rem; }
+  .sheet__lines { display: none; }
+  .sheet__item { position: static; transform: none; width: 86%; margin: 0 auto; order: -1; }
+  .pin { position: static; max-width: none; text-align: left !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="mock-banner">
+  <span>07 / exploded annotations — experimental</span>
+  <a href="index.html">index ↩</a>
+</div>
+
+<main class="stage">
+  <div class="sheet" aria-label="Annotated record: Eiffel Tower Ticket">
+
+    <svg class="sheet__lines" id="lines" viewBox="0 0 940 600" preserveAspectRatio="none" aria-hidden="true">
+      <!-- hairlines: pin anchor → item edge -->
+      <line x1="150" y1="52"  x2="330" y2="225"/>
+      <circle cx="330" cy="225" r="2"/>
+      <line x1="790" y1="50"  x2="610" y2="218"/>
+      <circle cx="610" cy="218" r="2"/>
+      <line x1="120" y1="248" x2="300" y2="270"/>
+      <circle cx="300" cy="270" r="2"/>
+      <line x1="822" y1="380" x2="640" y2="300"/>
+      <circle cx="640" cy="300" r="2"/>
+      <line x1="760" y1="520" x2="588" y2="312"/>
+      <circle cx="588" cy="312" r="2"/>
+
+      <!-- dimension callouts: extension lines + measurement, drawing convention -->
+      <!-- width, below item -->
+      <line class="dim" x1="263" y1="335" x2="263" y2="372"/>
+      <line class="dim" x1="677" y1="335" x2="677" y2="372"/>
+      <line class="dim" x1="263" y1="364" x2="448" y2="364"/>
+      <line class="dim" x1="496" y1="364" x2="677" y2="364"/>
+      <text x="470" y="368" text-anchor="middle">130</text>
+      <path class="dim" d="M 263 364 l 7 -3 v 6 z M 677 364 l -7 -3 v 6 z" fill="rgba(232,224,208,0.6)"/>
+      <!-- height, right of item -->
+      <line class="dim" x1="683" y1="225" x2="718" y2="225"/>
+      <line class="dim" x1="683" y1="328" x2="718" y2="328"/>
+      <line class="dim" x1="711" y1="225" x2="711" y2="262"/>
+      <line class="dim" x1="711" y1="292" x2="711" y2="328"/>
+      <text x="711" y="281" text-anchor="middle">54</text>
+      <path class="dim" d="M 711 225 l -3 7 h 6 z M 711 328 l -3 -7 h 6 z" fill="rgba(232,224,208,0.6)"/>
+      <text x="725" y="350" text-anchor="start" fill="rgba(232,224,208,0.5)">mm</text>
+    </svg>
+
+    <div class="sheet__item" id="img"></div>
+
+    <div class="pin pin--id mono">
+      <span class="meta-label">Inv. nr</span>
+      EPH-2026-003
+    </div>
+
+    <div class="pin pin--title">
+      <div class="t">Eiffel Tower Ticket</div>
+      <div class="d">August 25, 2024</div>
+    </div>
+
+    <div class="pin pin--place">
+      <span class="meta-label">Place</span>
+      Paris, France
+    </div>
+
+    <div class="pin pin--source right">
+      <span class="meta-label">Source</span>
+      Eiffel Tower
+    </div>
+
+    <div class="pin pin--cond mono right">
+      <span class="meta-label">Condition</span>
+      creased ×1, vertical
+    </div>
+
+    <div class="pin pin--note">
+      Thermal print on coated stock. Kept folded in a coat pocket for three
+      weeks before entering the archive.
+    </div>
+  </div>
+</main>
+
+<nav class="layer-breadcrumb">
+  <span>desk</span><span class="sep">/</span>
+  <span>accumulation</span><span class="sep">/</span>
+  <span class="current">eiffel tower ticket</span>
+</nav>
+
+<script src="items.js"></script>
+<script>
+  document.getElementById('img').innerHTML = window.ITEMS.ticket.svg;
+</script>
+</body>
+</html>

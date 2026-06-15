@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup 04 — True-scale frame (305 mm)</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+/* ── True-scale frame: a constant 305 × 305 mm reference frame (LP size).
+   Every item renders at its real proportion within it. Oversized items are
+   handled three ways — switch treatments top-right. */
+
+body { overflow: hidden; }
+
+.scene {
+  position: relative;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.frame-wrap { position: relative; }
+.frame-svg { display: block; overflow: visible; }
+.frame-svg .edge  { stroke: var(--border); fill: none; }
+.frame-svg .tick  { stroke: var(--overlay-faint); }
+.frame-svg .tick-major { stroke: var(--overlay-muted); }
+.frame-svg text {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  fill: var(--overlay-muted);
+  letter-spacing: 0.05em;
+}
+.frame-svg .crop { stroke: var(--overlay-text); stroke-width: 1.2; }
+.frame-svg .ghost-box { stroke: var(--overlay-faint); stroke-dasharray: 4 4; fill: none; }
+.frame-svg .ghost-label { fill: var(--overlay-faint); font-size: 8.5px; }
+
+.item-layer {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+.item-layer svg { display: block; }
+/* Overflow treatment: item is clipped to the frame plus a halo, fading at
+   the halo edge — "bigger than the frame" without swallowing the screen. */
+.clipper {
+  position: absolute;
+  overflow: hidden;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent),
+                      linear-gradient(to bottom, transparent, black 12%, black 88%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent),
+              linear-gradient(to bottom, transparent, black 12%, black 88%, transparent);
+  mask-composite: intersect;
+}
+
+/* Bottom-right metadata — reuses the existing .layer-meta position/voice */
+.layer-meta {
+  position: fixed;
+  bottom: var(--overlay-padding);
+  right: var(--overlay-padding);
+  text-align: right;
+  max-width: min(320px, 45vw);
+  z-index: 40;
+}
+.layer-meta .title { font-size: var(--text-lg); color: var(--overlay-text); }
+.layer-meta .sub   { font-size: var(--text-sm); color: var(--overlay-muted); margin-top: 0.25rem; }
+.layer-meta .dims  {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  color: var(--overlay-text);
+  margin-top: 0.6rem;
+}
+.layer-meta .scale-note {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wider);
+  color: var(--overlay-muted);
+  margin-top: 0.3rem;
+}
+
+/* Pickers (mockup chrome) */
+.picker {
+  position: fixed; top: 3.2rem; right: var(--overlay-padding);
+  display: flex; gap: 1rem; font-family: var(--font-mono);
+  font-size: var(--text-xs); z-index: 45;
+}
+.picker.treatments { top: 5.6rem; }
+.picker .lbl { color: var(--overlay-faint); align-self: center; letter-spacing: var(--tracking-wide); }
+.picker button {
+  background: none; border: none; padding: 0.3rem 0; font: inherit;
+  letter-spacing: var(--tracking-wide); color: var(--overlay-muted);
+  cursor: pointer; min-height: 40px;
+}
+.picker button.active { color: var(--overlay-text); text-decoration: underline; text-underline-offset: 4px; }
+.picker.treatments.hidden { visibility: hidden; }
+</style>
+</head>
+<body>
+
+<div class="mock-banner">
+  <span>04 / true-scale frame — 305 mm constant</span>
+  <a href="index.html">index ↩</a>
+</div>
+
+<div class="picker" role="tablist" aria-label="Sample item">
+  <span class="lbl">item</span>
+  <button data-item="ticket" class="active">ticket 130×54</button>
+  <button data-item="lp">lp 312×312</button>
+  <button data-item="poster">poster 610×914</button>
+</div>
+<div class="picker treatments hidden" role="tablist" aria-label="Oversize treatment">
+  <span class="lbl">oversize</span>
+  <button data-mode="ratio" class="active">A ratio</button>
+  <button data-mode="overflow">B overflow</button>
+  <button data-mode="ghost">C ghost</button>
+</div>
+
+<main class="scene">
+  <div class="frame-wrap" id="wrap"></div>
+</main>
+
+<div class="layer-meta" id="meta"></div>
+
+<nav class="layer-breadcrumb">
+  <span>desk</span><span class="sep">/</span>
+  <span>accumulation</span><span class="sep">/</span>
+  <span class="current" id="crumb"></span>
+</nav>
+
+<script src="items.js"></script>
+<script>
+(function () {
+  const FRAME_MM = 305;                       // the LP-sized constant
+  const wrap = document.getElementById('wrap');
+  const meta = document.getElementById('meta');
+  const crumb = document.getElementById('crumb');
+  const NS = 'http://www.w3.org/2000/svg';
+
+  let itemKey = 'ticket';
+  let mode = 'ratio';
+
+  function framePx() {
+    return Math.min(window.innerWidth, window.innerHeight) * 0.58;
+  }
+
+  /* Tick-marked square frame. spanMM = what the frame edge represents. */
+  function buildFrame(px, spanMM, opts) {
+    const svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('class', 'frame-svg');
+    svg.setAttribute('width', px + 80);
+    svg.setAttribute('height', px + 80);
+    svg.setAttribute('viewBox', `-40 -40 ${px + 80} ${px + 80}`);
+
+    const rect = document.createElementNS(NS, 'rect');
+    rect.setAttribute('x', 0); rect.setAttribute('y', 0);
+    rect.setAttribute('width', px); rect.setAttribute('height', px);
+    rect.setAttribute('class', 'edge');
+    svg.appendChild(rect);
+
+    const step = spanMM > 600 ? 50 : 10;       // tick pitch in mm
+    const majorEvery = spanMM > 600 ? 200 : 100;
+    for (let mm = 0; mm <= spanMM; mm += step) {
+      const p = (mm / spanMM) * px;
+      const major = mm % majorEvery === 0;
+      const t = major ? 10 : 5;
+      // bottom edge
+      addLine(svg, p, px, p, px + t, major);
+      // left edge
+      addLine(svg, 0, px - p, -t, px - p, major);
+      if (major) {
+        addText(svg, p, px + 22, mm, 'middle');
+        addText(svg, -14, px - p + 3, mm, 'end');
+      }
+    }
+    addText(svg, px, -14, opts.cornerLabel || '', 'end');
+
+    if (opts.cropMarks) {
+      const L = 16;
+      [[0,0,1,1],[px,0,-1,1],[0,px,1,-1],[px,px,-1,-1]].forEach(([x,y,sx,sy]) => {
+        const m1 = document.createElementNS(NS, 'line');
+        m1.setAttribute('x1', x - sx * 6); m1.setAttribute('y1', y);
+        m1.setAttribute('x2', x - sx * (6 + L)); m1.setAttribute('y2', y);
+        m1.setAttribute('class', 'crop'); svg.appendChild(m1);
+        const m2 = document.createElementNS(NS, 'line');
+        m2.setAttribute('x1', x); m2.setAttribute('y1', y - sy * 6);
+        m2.setAttribute('x2', x); m2.setAttribute('y2', y - sy * (6 + L));
+        m2.setAttribute('class', 'crop'); svg.appendChild(m2);
+      });
+    }
+    return svg;
+  }
+
+  function addLine(svg, x1, y1, x2, y2, major) {
+    const l = document.createElementNS(NS, 'line');
+    l.setAttribute('x1', x1); l.setAttribute('y1', y1);
+    l.setAttribute('x2', x2); l.setAttribute('y2', y2);
+    l.setAttribute('class', major ? 'tick tick-major' : 'tick');
+    svg.appendChild(l);
+  }
+  function addText(svg, x, y, str, anchor) {
+    const t = document.createElementNS(NS, 'text');
+    t.setAttribute('x', x); t.setAttribute('y', y);
+    t.setAttribute('text-anchor', anchor);
+    t.textContent = str;
+    svg.appendChild(t);
+  }
+
+  function niceRatio(r) {
+    // round display reduction to a tidy archival ratio
+    const candidates = [1, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10];
+    for (const c of candidates) if (r <= c) return c;
+    return Math.ceil(r);
+  }
+
+  function render() {
+    const item = window.ITEMS[itemKey];
+    const { w, h } = item.dimensions_mm;
+    const px = framePx();
+    const oversize = w > FRAME_MM || h > FRAME_MM;
+    document.querySelector('.picker.treatments')
+      .classList.toggle('hidden', !oversize);
+
+    wrap.innerHTML = '';
+    let spanMM = FRAME_MM, scaleNote = 'scale 1:1 · frame 305 mm',
+        cropMarks = false, ghostBox = null, overflowing = false;
+    let ppmm; // px per mm for the item layer
+
+    if (!oversize) {
+      ppmm = px / FRAME_MM;
+    } else if (mode === 'ratio') {
+      const r = niceRatio(Math.max(w, h) / FRAME_MM);
+      spanMM = FRAME_MM * r;
+      ppmm = px / spanMM;
+      scaleNote = 'shown 1:' + r + ' · frame ' + spanMM + ' mm';
+    } else if (mode === 'overflow') {
+      ppmm = px / FRAME_MM;
+      cropMarks = true; overflowing = true;
+      scaleNote = 'exceeds frame · ' + (w - FRAME_MM > 0 ? '+' + (w - FRAME_MM) + ' mm w ' : '') +
+                  (h - FRAME_MM > 0 ? '+' + (h - FRAME_MM) + ' mm h' : '');
+    } else { // ghost
+      const fit = Math.max(w, h);
+      ppmm = px / fit;
+      spanMM = fit;
+      ghostBox = FRAME_MM * ppmm;
+      scaleNote = 'fitted · dashed square = 305 mm (LP)';
+    }
+
+    const frame = buildFrame(px, spanMM, {
+      cornerLabel: itemKey === 'lp' ? '≈ frame' : '',
+      cropMarks
+    });
+
+    if (ghostBox) {
+      const g = document.createElementNS(NS, 'rect');
+      g.setAttribute('x', (px - ghostBox) / 2);
+      g.setAttribute('y', px - ghostBox);   /* sits on the "floor" of the frame */
+      g.setAttribute('width', ghostBox); g.setAttribute('height', ghostBox);
+      g.setAttribute('class', 'ghost-box');
+      frame.appendChild(g);
+      const gl = document.createElementNS(NS, 'text');
+      gl.setAttribute('x', (px - ghostBox) / 2 + 6);
+      gl.setAttribute('y', px - ghostBox + 16);
+      gl.setAttribute('class', 'ghost-label');
+      gl.textContent = '305 mm';
+      frame.appendChild(gl);
+    }
+
+    wrap.appendChild(frame);
+
+    const layer = document.createElement('div');
+    layer.className = 'item-layer';
+    const iw = w * ppmm, ih = h * ppmm;
+    layer.style.width = iw + 'px';
+    layer.style.height = ih + 'px';
+    layer.innerHTML = item.svg;
+    const isvg = layer.querySelector('svg');
+    isvg.setAttribute('width', iw); isvg.setAttribute('height', ih);
+
+    if (overflowing) {
+      // clip to frame + halo; item positioned relative to the clipper
+      const HALO = 70;
+      const clip = document.createElement('div');
+      clip.className = 'clipper';
+      clip.style.left = (40 - HALO) + 'px';
+      clip.style.top = (40 - HALO) + 'px';
+      clip.style.width = (px + 2 * HALO) + 'px';
+      clip.style.height = (px + 2 * HALO) + 'px';
+      layer.style.left = (HALO + (px - iw) / 2) + 'px';
+      layer.style.top  = (HALO + (px - ih) / 2) + 'px';
+      clip.appendChild(layer);
+      wrap.appendChild(clip);
+    } else {
+      layer.style.left = (40 + (px - iw) / 2) + 'px';
+      layer.style.top  = (40 + (px - ih) / 2) + 'px';
+      wrap.appendChild(layer);
+    }
+
+    meta.innerHTML =
+      '<div class="title">' + item.title + '</div>' +
+      '<div class="sub">' + item.display_date + ' · ' + item.place + '</div>' +
+      '<div class="dims">' + window.fmtDims(item) + '</div>' +
+      '<div class="scale-note">' + scaleNote + '</div>';
+    crumb.textContent = item.title.toLowerCase();
+  }
+
+  document.querySelectorAll('.picker [data-item]').forEach(b =>
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.picker [data-item]').forEach(x => x.classList.remove('active'));
+      b.classList.add('active'); itemKey = b.dataset.item; render();
+    }));
+  document.querySelectorAll('.picker [data-mode]').forEach(b =>
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.picker [data-mode]').forEach(x => x.classList.remove('active'));
+      b.classList.add('active'); mode = b.dataset.mode; render();
+    }));
+
+  render();
+  window.addEventListener('resize', render);
+})();
+</script>
+</body>
+</html>

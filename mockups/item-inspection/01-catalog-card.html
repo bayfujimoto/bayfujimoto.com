@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup 01 — Catalog card</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+/* ── Catalog card: ruled label/value fields + calibrated plate cell.
+   The plate is a constant 0–325 mm field with scales on the top and left
+   edges; the item sits at the top-left origin at true proportion. Items
+   larger than 325 mm rescale the field by a tidy ratio (noted on the card). */
+
+.card {
+  width: min(960px, 92vw);
+  border: 1px solid var(--border);
+  background: rgba(232, 224, 208, 0.02);
+  display: grid;
+  grid-template-columns: 1fr minmax(300px, 42%);
+}
+
+/* Left column: stacked ruled fields */
+.card__fields { border-right: 1px solid var(--border-dim); }
+
+.field {
+  display: grid;
+  grid-template-columns: 7.5rem 1fr;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0.8rem 1.25rem;
+  border-bottom: 1px solid var(--border-dim);
+}
+.field--split {
+  grid-template-columns: 7.5rem 1fr 6rem 1fr;
+}
+.field .meta-value { font-size: var(--text-md); }
+.field .meta-mono  { font-size: var(--text-sm); color: var(--overlay-text); }
+
+.field--desc {
+  display: block;
+  padding: 1.1rem 1.25rem 1.4rem;
+  border-bottom: none;
+}
+.field--desc .meta-label { display: block; margin-bottom: 0.6rem; }
+.field--desc p {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: var(--leading-loose);
+  color: var(--overlay-text);
+  max-width: 42ch;
+}
+.field--desc .dims { text-decoration: underline; text-underline-offset: 3px; }
+
+/* Right column: calibrated plate cell */
+.card__plate { display: flex; flex-direction: column; }
+
+.card__plate-label {
+  padding: 0.8rem 1.25rem;
+  border-bottom: 1px solid var(--border-dim);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.card__plate-label .scale-note {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  color: var(--overlay-muted);
+  text-transform: none;
+}
+
+.card__img {
+  flex: 1;
+  padding: 1.25rem;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+.plate-svg { display: block; }
+.plate-svg .edge { stroke: var(--border-dim); fill: none; }
+.plate-svg .tick { stroke: var(--overlay-faint); }
+.plate-svg .tick-major { stroke: var(--overlay-muted); }
+.plate-svg text {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  fill: var(--overlay-muted);
+  letter-spacing: 0.05em;
+}
+.plate-svg .unit { fill: var(--overlay-faint); }
+
+.card__plate-foot {
+  border-top: 1px solid var(--border-dim);
+  padding: 0.8rem 1.25rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Corner series label, like "Ekerö" on the example card */
+.card__corner {
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wider);
+  color: var(--overlay-muted);
+  margin: 0 auto 0.75rem;
+  width: min(960px, 92vw);
+}
+
+/* Item picker (mockup chrome only) */
+.picker {
+  position: fixed;
+  top: 3.2rem; right: var(--overlay-padding);
+  display: flex; gap: 1rem;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  z-index: 45;
+}
+.picker button {
+  background: none; border: none; padding: 0.4rem 0;
+  font: inherit; letter-spacing: var(--tracking-wide);
+  color: var(--overlay-muted); cursor: pointer;
+  min-height: 44px;
+}
+.picker button.active { color: var(--overlay-text); text-decoration: underline; text-underline-offset: 4px; }
+
+@media (max-width: 600px) {
+  .picker {
+    position: static;
+    margin: 4.5rem auto 0;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .stage { padding-top: 1rem; }
+  .card { grid-template-columns: 1fr; }
+  .card__fields { border-right: none; border-bottom: 1px solid var(--border-dim); }
+  .field { grid-template-columns: 6rem 1fr; padding: 0.7rem 1rem; }
+  .field--split { grid-template-columns: 6rem 1fr; }
+  .field--split .second { grid-column: 2; }
+  .card__img { padding: 1rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="mock-banner">
+  <span>01 / catalog card — calibrated plate</span>
+  <a href="index.html">index ↩</a>
+</div>
+
+<div class="picker" role="tablist" aria-label="Sample item">
+  <button data-item="ticket" class="active">ticket 130×54</button>
+  <button data-item="lp">lp 312×312</button>
+  <button data-item="poster">poster 610×914</button>
+</div>
+
+<main class="stage">
+  <div>
+    <div class="card__corner" id="corner">accumulation</div>
+    <article class="card" aria-label="Catalog card">
+      <div class="card__fields">
+        <div class="field field--split">
+          <span class="meta-label">Inv. nr</span>
+          <span class="meta-mono" id="f-id"></span>
+          <span class="meta-label second">Type</span>
+          <span class="meta-mono second" id="f-type"></span>
+        </div>
+        <div class="field">
+          <span class="meta-label">Title</span>
+          <span class="meta-value" id="f-title"></span>
+        </div>
+        <div class="field">
+          <span class="meta-label">Place</span>
+          <span class="meta-value" id="f-place"></span>
+        </div>
+        <div class="field field--split">
+          <span class="meta-label">Date</span>
+          <span class="meta-value" id="f-date"></span>
+          <span class="meta-label second">Source</span>
+          <span class="meta-value second" id="f-source"></span>
+        </div>
+        <div class="field--desc">
+          <span class="meta-label">Description</span>
+          <p id="f-desc"></p>
+        </div>
+      </div>
+
+      <div class="card__plate">
+        <div class="card__plate-label">
+          <span class="meta-label">Typ</span>
+          <span class="scale-note" id="scale-note"></span>
+        </div>
+        <div class="card__img" id="plate"></div>
+        <div class="card__plate-foot">
+          <span class="meta-label">Neg. nr</span>
+          <span class="meta-mono" style="font-size: var(--text-xs);">1/1</span>
+        </div>
+      </div>
+    </article>
+  </div>
+</main>
+
+<nav class="layer-breadcrumb">
+  <span>desk</span><span class="sep">/</span>
+  <span id="crumb-series">accumulation</span><span class="sep">/</span>
+  <span class="current" id="crumb"></span>
+</nav>
+
+<script src="items.js"></script>
+<script>
+(function () {
+  const PLATE_MM = 325;          // constant plate field, slightly over LP size
+  const RULER = 36;              // px depth reserved for each scale (room for labels)
+  const NS = 'http://www.w3.org/2000/svg';
+  const plateBox = document.getElementById('plate');
+  let itemKey = 'ticket';
+
+  function buildPlate(item) {
+    const { w, h } = item.dimensions_mm;
+
+    // Oversize: rescale the field by a tidy integer ratio, note it on the card.
+    const ratio = Math.max(1, Math.ceil(Math.max(w, h) / PLATE_MM));
+    const spanMM = PLATE_MM * ratio;
+
+    // Plate square sized to the cell.
+    const avail = plateBox.clientWidth - 28;     // padding allowance
+    const side = Math.max(220, Math.min(avail - RULER, 420));
+    const px = mm => (mm / spanMM) * side;
+
+    const svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('class', 'plate-svg');
+    svg.setAttribute('width', side + RULER);
+    svg.setAttribute('height', side + RULER);
+    svg.setAttribute('role', 'img');
+    svg.setAttribute('aria-label',
+      item.title + ', ' + w + ' by ' + h + ' millimetres, shown on a ' +
+      spanMM + ' millimetre plate');
+
+    // Field edge
+    const rect = document.createElementNS(NS, 'rect');
+    rect.setAttribute('x', RULER); rect.setAttribute('y', RULER);
+    rect.setAttribute('width', side); rect.setAttribute('height', side);
+    rect.setAttribute('class', 'edge');
+    svg.appendChild(rect);
+
+    // Scales: top (x, left→right) and left (y, top→down), origin top-left.
+    const step = 5 * ratio, mid = 25 * ratio, major = 100 * ratio;
+    for (let mm = 0; mm <= spanMM; mm += step) {
+      const p = px(mm);
+      const isMajor = mm % major === 0, isMid = mm % mid === 0;
+      const t = isMajor ? 10 : isMid ? 6 : 3;
+      addLine(svg, RULER + p, RULER, RULER + p, RULER - t, isMajor);       // top
+      addLine(svg, RULER, RULER + p, RULER - t, RULER + p, isMajor);       // left
+      if (isMajor && mm > 0 && mm <= spanMM - major * 0.35) {
+        addText(svg, RULER + p, RULER - 16, mm, 'middle');                 // top label
+        addText(svg, RULER - 14, RULER + p + 3, mm, 'end');                // left label
+      }
+    }
+    addText(svg, RULER + 3, RULER - 16, 0, 'start');
+    const unit = addText(svg, RULER + side, RULER - 16, spanMM + ' mm', 'end');
+    unit.setAttribute('class', 'unit');
+
+    // Item at the top-left origin, true proportion.
+    const holder = document.createElementNS(NS, 'svg');
+    holder.setAttribute('x', RULER); holder.setAttribute('y', RULER);
+    holder.setAttribute('width', px(w)); holder.setAttribute('height', px(h));
+    holder.innerHTML = item.svg.replace(/^\s*<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '');
+    // carry over the original viewBox so strokes scale correctly
+    const vb = item.svg.match(/viewBox="([^"]+)"/);
+    if (vb) holder.setAttribute('viewBox', vb[1]);
+    holder.setAttribute('preserveAspectRatio', 'xMinYMin meet');
+    svg.appendChild(holder);
+
+    return { svg, ratio, spanMM };
+  }
+
+  function addLine(svg, x1, y1, x2, y2, isMajor) {
+    const l = document.createElementNS(NS, 'line');
+    l.setAttribute('x1', x1); l.setAttribute('y1', y1);
+    l.setAttribute('x2', x2); l.setAttribute('y2', y2);
+    l.setAttribute('class', isMajor ? 'tick tick-major' : 'tick');
+    svg.appendChild(l);
+  }
+  function addText(svg, x, y, str, anchor) {
+    const t = document.createElementNS(NS, 'text');
+    t.setAttribute('x', x); t.setAttribute('y', y);
+    t.setAttribute('text-anchor', anchor);
+    t.textContent = str;
+    svg.appendChild(t);
+    return t;
+  }
+
+  function setText(id, v) { document.getElementById(id).textContent = v; }
+
+  function render() {
+    const item = window.ITEMS[itemKey];
+    setText('f-id', item.id);
+    setText('f-type', item.item_type);
+    setText('f-title', item.title);
+    setText('f-place', item.place);
+    setText('f-date', item.display_date);
+    setText('f-source', item.source);
+    setText('corner', item.series);
+    setText('crumb-series', item.series);
+    setText('crumb', item.title.toLowerCase());
+    document.getElementById('f-desc').innerHTML =
+      item.context_note + ' <span class="dims">' + window.fmtDims(item) + '.</span>';
+
+    plateBox.innerHTML = '';
+    const { svg, ratio, spanMM } = buildPlate(item);
+    plateBox.appendChild(svg);
+    document.getElementById('scale-note').textContent =
+      ratio === 1 ? 'scale 1:1 · field 325 mm'
+                  : 'shown 1:' + ratio + ' · field ' + spanMM + ' mm';
+  }
+
+  document.querySelectorAll('.picker button').forEach(b =>
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.picker button').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      itemKey = b.dataset.item;
+      render();
+    }));
+
+  render();
+  window.addEventListener('resize', render);
+})();
+</script>
+</body>
+</html>

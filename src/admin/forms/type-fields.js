@@ -1,3 +1,15 @@
+// Per-type admin form groups.
+//
+// Card-using types (Consumption, Creation, Accumulation) derive their metadata
+// fields from the shared field schema (src/shared/field-schema.js), so the admin's
+// editable fields, labels, and example placeholders match the catalog card.
+// Labor and Identity keep bespoke groups — they use custom inspection views, not
+// the card.
+
+import { adminFields, physicalFields } from "../../shared/field-schema.js";
+
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+
 // Used by consumption types only — these don't use inspection modes
 function assetGroup(roles) {
   return {
@@ -33,80 +45,42 @@ export const INSPECTION_ASSETS_SENTINEL = {
   ],
 };
 
+// Build a type's metadata group from the shared schema: creator + typed slots,
+// plus extent/dimensions for physical types. Each becomes a text input whose
+// placeholder is the schema's example (the grammar reminder shown on focus).
+function schemaMetaGroup(itemType, id, label) {
+  const fields = [...adminFields(itemType), ...physicalFields(itemType)].map(f => ({
+    id: f.id,
+    label: f.label,
+    type: "text",
+    placeholder: f.example,
+  }));
+  return { id, label, fields };
+}
+
 export function getTypeGroups(itemType) {
   switch (itemType) {
 
-    // ── Consumption ──────────────────────────────────────────
-    // These types use named roles directly, not inspection modes
-
+    // ── Consumption (schema-driven) ──────────────────────────
     case "film":
-      return [
-        {
-          id: "film-meta", label: "Film",
-          fields: [
-            { id: "director", label: "director", type: "text" },
-            { id: "year",     label: "year",     type: "text", placeholder: "e.g. 2024" },
-            { id: "format",   label: "format",   type: "select",
-              options: ["theatrical", "streaming", "physical", "festival"] },
-          ],
-        },
-        assetGroupWithThumb(["poster"]),
-      ];
+      return [schemaMetaGroup("film", "film-meta", "Film"), assetGroupWithThumb(["poster"])];
 
     case "book":
-      return [
-        {
-          id: "book-meta", label: "Book",
-          fields: [
-            { id: "author", label: "author", type: "text" },
-            { id: "year",   label: "year",   type: "text", placeholder: "e.g. 2024" },
-          ],
-        },
-        assetGroupWithThumb(["cover"]),
-      ];
+      return [schemaMetaGroup("book", "book-meta", "Book"), assetGroupWithThumb(["cover"])];
 
     case "album":
     case "ep":
     case "single":
     case "mix":
-      return [
-        {
-          id: "music-meta", label: "Music",
-          fields: [
-            { id: "artist", label: "artist", type: "text" },
-            { id: "year",   label: "year",   type: "text", placeholder: "e.g. 2024" },
-          ],
-        },
-        assetGroupWithThumb(["cover"]),
-      ];
+      return [schemaMetaGroup(itemType, "music-meta", "Music"), assetGroupWithThumb(["cover"])];
 
     case "bag":
-      return [
-        {
-          id: "coffee-meta", label: "Coffee",
-          fields: [
-            { id: "roaster", label: "roaster", type: "text" },
-            { id: "origin",  label: "origin",  type: "text" },
-            { id: "process", label: "process", type: "text", placeholder: "e.g. washed, natural" },
-          ],
-        },
-        assetGroupWithThumb(["front", "back"]),
-      ];
+      return [schemaMetaGroup("bag", "coffee-meta", "Coffee"), assetGroupWithThumb(["front", "back"])];
 
     case "game":
-      return [
-        {
-          id: "game-meta", label: "Game",
-          fields: [
-            { id: "developer", label: "developer", type: "text" },
-            { id: "platform",  label: "platform",  type: "text" },
-            { id: "year",      label: "year",      type: "text", placeholder: "e.g. 2024" },
-          ],
-        },
-        assetGroupWithThumb(["cover"]),
-      ];
+      return [schemaMetaGroup("game", "game-meta", "Game"), assetGroupWithThumb(["cover"])];
 
-    // ── Labor ────────────────────────────────────────────────
+    // ── Labor (custom view; not schema-driven) ───────────────
 
     case "project":
     case "artifact":
@@ -135,18 +109,16 @@ export function getTypeGroups(itemType) {
         },
       ];
 
-    // ── Creation ─────────────────────────────────────────────
+    // ── Creation (schema-driven meta + inspection assets) ────
 
     case "sketch":
     case "photo":
     case "prototype":
     case "video":
     case "note":
-      return [
-        INSPECTION_ASSETS_SENTINEL,
-      ];
+      return [schemaMetaGroup(itemType, `${itemType}-meta`, cap(itemType)), INSPECTION_ASSETS_SENTINEL];
 
-    // ── Identity ─────────────────────────────────────────────
+    // ── Identity (custom views) ──────────────────────────────
 
     case "biography":
       return [
@@ -186,23 +158,10 @@ export function getTypeGroups(itemType) {
         },
       ];
 
-    // ── Accumulation (ephemera) ───────────────────────────────
+    // ── Accumulation / ephemera (schema-driven) ──────────────
 
     default:
       // ticket, brochure, receipt, handout, document
-      return [
-        {
-          id: "ephemera-meta", label: "Ephemera",
-          fields: [
-            { id: "place",  label: "place",  type: "text" },
-            { id: "event",  label: "event",  type: "text" },
-            { id: "source", label: "source", type: "text",
-              hint: "How / where it was acquired" },
-            { id: "dimensions", label: "dimensions", type: "text",
-              placeholder: "e.g. 89 x 54", hint: "Physical size in mm: width x height" },
-          ],
-        },
-        INSPECTION_ASSETS_SENTINEL,
-      ];
+      return [schemaMetaGroup(itemType, "ephemera-meta", "Ephemera"), INSPECTION_ASSETS_SENTINEL];
   }
 }

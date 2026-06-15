@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup 02 — Specimen plate</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+/* ── Specimen plate: item isolated center-field; mm rulers along the bottom
+   and left edges; figure caption beneath. Archaeology-report register. */
+
+.plate { display: inline-block; }
+
+.plate__grid {
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-rows: auto auto;
+  gap: 0;
+}
+
+.plate__item {
+  grid-column: 2; grid-row: 1;
+  padding: 0 0 14px 14px;   /* breathing room between item and rulers */
+}
+.plate__item svg { display: block; }
+
+.plate__ruler-y { grid-column: 1; grid-row: 1; }
+.plate__ruler-x { grid-column: 2; grid-row: 2; }
+
+.ruler text {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  fill: var(--overlay-muted);
+  letter-spacing: 0.05em;
+}
+.ruler line { stroke: var(--overlay-muted); stroke-width: 1; }
+.ruler .axis { stroke: var(--border); }
+
+.plate__caption {
+  margin-top: 2.25rem;
+  max-width: 52ch;
+  font-size: var(--text-base);
+  line-height: var(--leading-loose);
+  color: var(--overlay-text);
+}
+.plate__caption .fig {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  color: var(--overlay-muted);
+  margin-right: 0.75em;
+}
+.plate__caption .dims { font-family: var(--font-mono); font-size: var(--text-sm); }
+
+/* Item picker (mockup chrome only) */
+.picker {
+  position: fixed;
+  top: 3.2rem; right: var(--overlay-padding);
+  display: flex; gap: 1rem;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  z-index: 45;
+}
+.picker button {
+  background: none; border: none; padding: 0.4rem 0;
+  font: inherit; letter-spacing: var(--tracking-wide);
+  color: var(--overlay-muted); cursor: pointer;
+  min-height: 44px;
+}
+.picker button.active { color: var(--overlay-text); text-decoration: underline; text-underline-offset: 4px; }
+</style>
+</head>
+<body>
+
+<div class="mock-banner">
+  <span>02 / specimen plate — measurement-forward</span>
+  <a href="index.html">index ↩</a>
+</div>
+
+<div class="picker" role="tablist" aria-label="Sample item">
+  <button data-item="ticket" class="active">ticket 130×54</button>
+  <button data-item="lp">lp 312×312</button>
+</div>
+
+<main class="stage">
+  <figure class="plate" style="margin:0">
+    <div class="plate__grid" id="grid"></div>
+    <figcaption class="plate__caption" id="caption"></figcaption>
+  </figure>
+</main>
+
+<nav class="layer-breadcrumb">
+  <span>desk</span><span class="sep">/</span>
+  <span>accumulation</span><span class="sep">/</span>
+  <span class="current" id="crumb">eiffel tower ticket</span>
+</nav>
+
+<script src="items.js"></script>
+<script>
+(function () {
+  const grid = document.getElementById('grid');
+  const caption = document.getElementById('caption');
+  const crumb = document.getElementById('crumb');
+
+  // mm → px scale chosen per item so the plate fits the viewport.
+  function scaleFor(item) {
+    const maxW = Math.min(window.innerWidth * 0.7, 760);
+    const maxH = window.innerHeight * 0.55;
+    return Math.min(maxW / item.dimensions_mm.w, maxH / item.dimensions_mm.h);
+  }
+
+  // Build an SVG ruler. len in mm; horizontal or vertical.
+  function ruler(lenMM, S, horizontal) {
+    const long = lenMM * S;
+    const depth = 30;
+    const ns = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(ns, 'svg');
+    svg.setAttribute('class', 'ruler');
+    svg.setAttribute('width', horizontal ? long + 14 : depth);
+    svg.setAttribute('height', horizontal ? depth : long + 14);
+
+    const off = horizontal ? 14 : 0;          // matches item padding
+    const axis = document.createElementNS(ns, 'line');
+    if (horizontal) {
+      axis.setAttribute('x1', off); axis.setAttribute('x2', off + long);
+      axis.setAttribute('y1', 1);   axis.setAttribute('y2', 1);
+    } else {
+      axis.setAttribute('x1', depth - 1); axis.setAttribute('x2', depth - 1);
+      axis.setAttribute('y1', 0);         axis.setAttribute('y2', long);
+    }
+    axis.setAttribute('class', 'axis');
+    svg.appendChild(axis);
+
+    const step = lenMM > 200 ? 5 : 1;          // avoid tick soup on big items
+    for (let mm = 0; mm <= lenMM; mm += step) {
+      const major = mm % 50 === 0, mid = mm % 10 === 0;
+      const t = major ? 12 : mid ? 8 : 4;
+      const p = mm * S;
+      const tick = document.createElementNS(ns, 'line');
+      if (horizontal) {
+        tick.setAttribute('x1', off + p); tick.setAttribute('x2', off + p);
+        tick.setAttribute('y1', 1);       tick.setAttribute('y2', 1 + t);
+      } else {
+        tick.setAttribute('x1', depth - 1);     tick.setAttribute('x2', depth - 1 - t);
+        tick.setAttribute('y1', long - p);      tick.setAttribute('y2', long - p);
+      }
+      svg.appendChild(tick);
+      if (major) {
+        const label = document.createElementNS(ns, 'text');
+        label.textContent = mm;
+        if (horizontal) {
+          label.setAttribute('x', off + p); label.setAttribute('y', 25);
+          label.setAttribute('text-anchor', mm === 0 ? 'start' : 'middle');
+        } else {
+          label.setAttribute('x', depth - 16); label.setAttribute('y', long - p + 3);
+          label.setAttribute('text-anchor', 'end');
+        }
+        svg.appendChild(label);
+      }
+    }
+    return svg;
+  }
+
+  function render(key) {
+    const item = window.ITEMS[key];
+    const S = scaleFor(item);
+    const { w, h } = item.dimensions_mm;
+
+    grid.innerHTML = '';
+    const itemCell = document.createElement('div');
+    itemCell.className = 'plate__item';
+    itemCell.innerHTML = item.svg;
+    itemCell.querySelector('svg').setAttribute('width', w * S);
+    itemCell.querySelector('svg').setAttribute('height', h * S);
+
+    const ry = document.createElement('div'); ry.className = 'plate__ruler-y';
+    ry.appendChild(ruler(h, S, false));
+    const rx = document.createElement('div'); rx.className = 'plate__ruler-x';
+    rx.appendChild(ruler(w, S, true));
+
+    grid.appendChild(ry); grid.appendChild(itemCell); grid.appendChild(rx);
+
+    caption.innerHTML =
+      '<span class="fig">Fig. 1</span>' + item.title + ', ' + item.place +
+      '. <span class="dims">' + window.fmtDims(item) + '.</span> ' +
+      item.context_note;
+    crumb.textContent = item.title.toLowerCase();
+  }
+
+  document.querySelectorAll('.picker button').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.picker button').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      render(b.dataset.item);
+    });
+  });
+
+  render('ticket');
+  window.addEventListener('resize', () =>
+    render(document.querySelector('.picker .active').dataset.item));
+})();
+</script>
+</body>
+</html>

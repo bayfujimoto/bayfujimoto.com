@@ -15,5 +15,5 @@ rewatch: true
 letterboxd_link: https://letterboxd.com/bayf/film/spider-man-far-from-home/
 assets:
   poster: https://a.ltrbxd.com/resized/film-poster/3/6/2/9/7/7/362977-spider-man-far-from-home-0-600-0-900-crop.jpg?v=d139fbf2ae
-format: streaming
+seen_via: streaming
 ---

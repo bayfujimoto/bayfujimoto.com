@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Item inspection mockups — index</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+.idx {
+  width: min(720px, 92vw);
+  margin: 0 auto;
+  padding: 6rem 0 4rem;
+}
+.idx h1 {
+  font-size: var(--text-xl);
+  font-weight: 400;
+  margin: 0 0 0.5rem;
+}
+.idx .sub {
+  font-size: var(--text-sm);
+  color: var(--overlay-muted);
+  margin-bottom: 3rem;
+  max-width: 52ch;
+  line-height: var(--leading-loose);
+}
+.idx a.entry {
+  display: grid;
+  grid-template-columns: 3.5rem 1fr auto;
+  gap: 1.25rem;
+  align-items: baseline;
+  padding: 1rem 0.5rem;
+  border-bottom: 1px solid var(--border-dim);
+  text-decoration: none;
+  color: var(--overlay-text);
+  transition: background var(--dur-base) var(--ease-out);
+}
+.idx a.entry:hover { background: var(--hover-bg); }
+.idx .num {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--overlay-muted);
+  letter-spacing: var(--tracking-wider);
+}
+.idx .name { font-size: var(--text-md); }
+.idx .desc {
+  grid-column: 2;
+  font-size: var(--text-sm);
+  color: var(--overlay-muted);
+  line-height: var(--leading-base);
+  max-width: 46ch;
+}
+.idx .tag {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  color: var(--overlay-faint);
+}
+.idx .section {
+  margin: 2.5rem 0 0.75rem;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  color: var(--overlay-muted);
+}
+</style>
+</head>
+<body>
+
+<div class="mock-banner">
+  <span>item inspection mockups · 2026-06-12</span>
+  <span>7 variants</span>
+</div>
+
+<main class="idx">
+  <h1>Item inspection — layout studies</h1>
+  <p class="sub">Seven treatments of the same record (EPH-2026-003, Eiffel Tower
+  Ticket, 130 × 54 mm), ordered from standardized to experimental. All reuse
+  the site's tokens: vellum on black, EB Garamond, Commit Mono, hairline rules.</p>
+
+  <div class="section">Standardized</div>
+
+  <a class="entry" href="01-catalog-card.html">
+    <span class="num">01</span>
+    <span class="name">Catalog card — calibrated plate</span>
+    <span class="tag">325 mm field</span>
+    <span class="desc">Ruled label/value fields plus a measured 0–325 mm plate:
+    scales on top and left, item at the origin at true proportion. Oversize items
+    rescale the field with a declared ratio. Implemented as the production
+    default — see docs/catalog-card-analysis.md.</span>
+  </a>
+
+  <a class="entry" href="02-specimen-plate.html">
+    <span class="num">02</span>
+    <span class="name">Specimen plate</span>
+    <span class="tag">mm rulers</span>
+    <span class="desc">Item isolated center-field with calibrated mm rulers along
+    bottom and left edges; figure caption beneath. Switch ticket/LP top-right.</span>
+  </a>
+
+  <a class="entry" href="03-finding-aid.html">
+    <span class="num">03</span>
+    <span class="name">Finding aid / ledger</span>
+    <span class="tag">text dims</span>
+    <span class="desc">Text-forward register with dotted leaders; the image is a
+    small evidence cell. Borrows the biography/CV box border language.</span>
+  </a>
+
+  <div class="section">Scale system</div>
+
+  <a class="entry" href="04-true-scale.html">
+    <span class="num">04</span>
+    <span class="name">True-scale frame (305 mm)</span>
+    <span class="tag">3 oversize modes</span>
+    <span class="desc">A constant LP-sized frame; every item at real proportion.
+    Pick the poster, then compare ratio / overflow / ghost treatments.</span>
+  </a>
+
+  <div class="section">Experimental</div>
+
+  <a class="entry" href="05-light-table.html">
+    <span class="num">05</span>
+    <span class="name">Light table</span>
+    <span class="tag">archivist's slip</span>
+    <span class="desc">Item on an illuminated surface; metadata on a pinned paper
+    slip; mm strip etched into the table edge.</span>
+  </a>
+
+  <a class="entry" href="06-microfiche.html">
+    <span class="num">06</span>
+    <span class="name">Microfiche frame</span>
+    <span class="tag">edge codes</span>
+    <span class="desc">Film cell with sprockets and burned-in edge codes; adjacent
+    series items as ghost frames. Dimensions live in the bottom-right edge code.</span>
+  </a>
+
+  <a class="entry" href="07-exploded-annotations.html">
+    <span class="num">07</span>
+    <span class="name">Exploded annotations</span>
+    <span class="tag">dim callouts</span>
+    <span class="desc">Metadata pinned around the item with hairlines; technical-
+    drawing extension lines carry the measurements. Collapses to a stack on mobile.</span>
+  </a>
+</main>
+
+</body>
+</html>

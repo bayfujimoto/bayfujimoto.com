@@ -2,6 +2,7 @@ import { navigate, replace } from "./router.js";
 import { subscribe, getState } from "./state.js";
 import { imageUrl, modelUrl } from "./image-url.js";
 import { setSeriesInfo } from "./scene.js";
+import { resolveCreator, resolveSlots } from "../shared/field-schema.js";
 
 let archive = null;
 const app = document.getElementById("app");
@@ -1017,6 +1018,121 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
 
 // ── Item sheet ────────────────────────────────────────────────────────────────
 
+// Standard plate field for the catalog-card inspection, in mm (LP-and-a-bit).
+// Items outside [PLATE_SMALL_MM, PLATE_MM] get an integer-related field with
+// the relation declared on the card ("reduced 1:3" / "enlarged 5:1").
+const PLATE_MM = 325;
+const PLATE_SMALL_MM = 50;
+
+function parseDimensions(item) {
+  if (!item.dimensions) return null;
+  const [w, h] = item.dimensions.split("x").map(s => parseFloat(s.trim()));
+  return (w > 0 && h > 0) ? { w, h } : null;
+}
+
+// Build the calibrated plate: an SVG field with mm scales attached to the
+// inside of the top and left edges (ticks point inward), and the reproduction
+// inset from the origin so the scales stay clear of it. The scales are
+// presentational; the typed dimensions row stays canonical.
+// Pick a tidy major-tick step (1/2/5 × 10ⁿ) giving ~4 majors across the span.
+function niceStep(span) {
+  const target = span / 4;
+  const pow = Math.pow(10, Math.floor(Math.log10(target)));
+  const cands = [1, 2, 5, 10].map(c => c * pow);
+  return cands.reduce((a, b) => Math.abs(b - target) < Math.abs(a - target) ? b : a);
+}
+
+// Build the calibrated plate. Scales sit on the inside of the top and left
+// box edges with ticks pointing inward and numbers on the inner side of the
+// ticks. The box edges are the container borders. `zoom` shrinks the visible
+// field span (the reproduction enlarges from the origin and the scales adjust);
+// the reproduction is clipped to the box. `img` is reused across redraws so the
+// scan is not re-fetched while dragging the zoom slider.
+function buildPlate(item, dims, sidePx, img, zoom = 1) {
+  const NS = "http://www.w3.org/2000/svg";
+  const INSET = 32; // gutter inside the box for inward ticks + their numbers
+
+  // Base field span: standard 325; integer reduction for oversize; 5:1 field
+  // for very small items so a stamp does not become a speck.
+  const maxDim = Math.max(dims.w, dims.h);
+  let ratio = 1;
+  if (maxDim > PLATE_MM) ratio = Math.ceil(maxDim / PLATE_MM);
+  else if (maxDim < PLATE_SMALL_MM) ratio = 1 / 5;
+  const baseSpan = PLATE_MM * ratio;
+  const spanMM = baseSpan / zoom;       // effective visible field
+
+  const origin = INSET;                 // scale 0 + reproduction corner
+  const extent = sidePx - INSET;        // run from origin to the far border
+  const px = mm => (mm / spanMM) * extent;
+
+  const svg = document.createElementNS(NS, "svg");
+  svg.setAttribute("class", "item-card__plate-svg");
+  svg.setAttribute("viewBox", `0 0 ${sidePx} ${sidePx}`);
+  svg.style.maxWidth = `${sidePx}px`;
+  svg.setAttribute("aria-hidden", "true"); // dims are read from the fields column
+
+  // Box edge sits on the container borders.
+  const edge = document.createElementNS(NS, "rect");
+  edge.setAttribute("x", 0.5); edge.setAttribute("y", 0.5);
+  edge.setAttribute("width", sidePx - 1); edge.setAttribute("height", sidePx - 1);
+  edge.setAttribute("class", "plate-edge");
+  svg.appendChild(edge);
+
+  // Reproduction at the origin, true proportion of the field, clipped to box.
+  const fo = document.createElementNS(NS, "foreignObject");
+  fo.setAttribute("x", origin); fo.setAttribute("y", origin);
+  fo.setAttribute("width", Math.max(1, px(dims.w)));
+  fo.setAttribute("height", Math.max(1, px(dims.h)));
+  const repro = el("div", "item-card__repro");
+  if (img.parentElement) img.parentElement.removeChild(img);
+  repro.appendChild(img);
+  fo.appendChild(repro);
+  svg.appendChild(fo);
+
+  const tick = (x1, y1, x2, y2, major) => {
+    const l = document.createElementNS(NS, "line");
+    l.setAttribute("x1", x1); l.setAttribute("y1", y1);
+    l.setAttribute("x2", x2); l.setAttribute("y2", y2);
+    l.setAttribute("class", major ? "plate-tick plate-tick--major" : "plate-tick");
+    svg.appendChild(l);
+  };
+  const label = (x, y, str, anchor) => {
+    const t = document.createElementNS(NS, "text");
+    t.setAttribute("x", x); t.setAttribute("y", y);
+    t.setAttribute("text-anchor", anchor);
+    t.textContent = str;
+    svg.appendChild(t);
+  };
+
+  // Ticks hang inward from the top and left borders; numbers on the inner
+  // (field) side of the ticks.
+  const major = niceStep(spanMM);
+  const minor = major / 5;
+  const nMinor = Math.floor(spanMM / minor + 1e-6);
+  for (let k = 0; k <= nMinor; k++) {
+    const mm = k * minor;
+    const p = origin + px(mm);
+    if (p > sidePx + 0.5) break;
+    const isMajor = k % 5 === 0;
+    const t = isMajor ? 11 : 6;
+    tick(p, 0, p, t, isMajor);   // top edge → down
+    tick(0, p, t, p, isMajor);   // left edge → right
+    if (isMajor) {
+      const val = Math.round(mm);
+      label(p, t + 11, val, "middle"); // top scale: number below the tick
+      if (k > 0) label(t + 3, p + 3, val, "start"); // left scale: right of tick
+    }
+  }
+
+  // Scale note: relational, never a false "1:1" — a screen mm is not a mm.
+  let scaleNote = `field ${Math.round(spanMM)} mm`;
+  if (ratio > 1) scaleNote += ` · reduced 1:${ratio}`;
+  else if (ratio < 1) scaleNote += ` · enlarged 5:1`;
+  if (zoom > 1.01) scaleNote += ` · ${zoom.toFixed(1)}×`;
+
+  return { svg, scaleNote, spanMM, pxPerMM: extent / spanMM, origin };
+}
+
 function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
   const s = archive.series[seriesKey];
   let allItems;
@@ -1031,196 +1147,303 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
   let currentIdx = allItems.findIndex(i => i.id === itemId);
   if (currentIdx === -1) currentIdx = 0;
 
-  let maxDim = 0;
-  for (const item of allItems) {
-    if (item.dimensions) {
-      const [wMm, hMm] = item.dimensions.split("x").map(s => parseFloat(s.trim()));
-      if (wMm && hMm) maxDim = Math.max(maxDim, wMm, hMm);
-    }
-  }
-
-  function applyRelativeSize(img, item) {
-    if (maxDim > 0 && item.dimensions) {
-      const [wMm, hMm] = item.dimensions.split("x").map(s => parseFloat(s.trim()));
-      if (wMm && hMm) {
-        const scale = Math.max(wMm, hMm) / maxDim;
-        img.style.maxWidth  = `${Math.round(scale * 70)}vw`;
-        img.style.maxHeight = `${Math.round(scale * 70)}vh`;
-        return;
-      }
-    }
-    img.style.maxWidth  = "35vw";
-    img.style.maxHeight = "35vh";
-  }
-
   const veil = makeVeil(() => {
     navigate({ layer: "browse", series: seriesKey, subcollection: subKey, view: viewSlug || null, item: null });
   });
 
   const content = makeContent();
 
-  const metaEl = el("div", "layer-meta");
-  metaEl.setAttribute("aria-label", "Item metadata");
-
   function renderContent(idx) {
     currentIdx = idx;
     const item = allItems[idx];
-    const hasPrev = idx > 0;
-    const hasNext = idx < allItems.length - 1;
 
     content.innerHTML = "";
+    renderCard(item);
+    renderChrome(item, idx);
+  }
 
-    // Centered image
-    const center = el("div", "layer-center");
-
-    const primary = primaryAsset(item);
-    let showingFront = true;
-    let frontImg = null;
-    let backImg = null;
-    let zoomScale = 1;
-
-    if (primary) {
-      frontImg = el("img", `item-image${item.assets?.back ? " item-image--flippable" : ""}`);
-      frontImg.src = imageUrl(primary, "original");
-      frontImg.alt = item.title;
-      frontImg.draggable = false;
-      applyRelativeSize(frontImg, item);
-
-      if (item.assets?.back) {
-        frontImg.setAttribute("title", "Click to flip");
-        frontImg.addEventListener("click", () => {
-          showingFront = !showingFront;
-          frontImg.hidden = !showingFront;
-          backImg.hidden = showingFront;
-        });
-
-        backImg = el("img", "item-image item-image--flippable");
-        backImg.src = imageUrl(item.assets.back, "original");
-        backImg.alt = `${item.title} (back)`;
-        backImg.draggable = false;
-        backImg.hidden = true;
-        backImg.setAttribute("title", "Click to flip");
-        applyRelativeSize(backImg, item);
-        backImg.addEventListener("click", () => {
-          showingFront = !showingFront;
-          frontImg.hidden = !showingFront;
-          backImg.hidden = showingFront;
-        });
-        center.appendChild(backImg);
+  // ── Catalog-card inspection ─────────────────────────────────────────────────
+  function renderCard(item) {
+    const wrap = el("div", "item-card-wrap");
+    // Clicking the surround (not the card) exits, like the veil.
+    wrap.addEventListener("click", (e) => {
+      if (e.target === wrap) {
+        navigate({ layer: "browse", series: seriesKey, subcollection: subKey, view: viewSlug || null, item: null });
       }
-
-      // Scroll to zoom
-      function applyZoom(delta) {
-        zoomScale = Math.min(4, Math.max(1, zoomScale + delta));
-        const style = `scale(${zoomScale})`;
-        frontImg.style.transform = style;
-        if (backImg) backImg.style.transform = style;
-      }
-
-      center.addEventListener("wheel", (e) => {
-        e.preventDefault();
-        applyZoom(e.deltaY < 0 ? 0.15 : -0.15);
-      }, { passive: false });
-
-      // Pinch-to-zoom via pointer events
-      let ptrs = new Map();
-      let lastDist = null;
-      center.addEventListener("pointerdown", (e) => { ptrs.set(e.pointerId, e); });
-      center.addEventListener("pointermove", (e) => {
-        ptrs.set(e.pointerId, e);
-        if (ptrs.size === 2) {
-          const [a, b] = [...ptrs.values()];
-          const dist = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
-          if (lastDist !== null) {
-            applyZoom((dist - lastDist) * 0.008);
-          }
-          lastDist = dist;
-        }
-      });
-      center.addEventListener("pointerup", (e) => {
-        ptrs.delete(e.pointerId);
-        if (ptrs.size < 2) lastDist = null;
-      });
-      center.addEventListener("pointercancel", (e) => {
-        ptrs.delete(e.pointerId);
-        if (ptrs.size < 2) lastDist = null;
-      });
-
-      center.appendChild(frontImg);
-    }
-
-    content.appendChild(center);
-
-    // Metadata overlay — bottom right (persistent element, populated in place)
-    metaEl.innerHTML = "";
-
-    const titleEl = el("p", "overlay-title");
-    titleEl.textContent = item.title;
-    metaEl.appendChild(titleEl);
-
-    const metaFields = [
-      ["date",   item.display_date],
-      ["type",   item.item_type],
-      ["year",   item.year],
-      ["director", item.director],
-      ["author", item.author],
-      ["artist", item.artist],
-      ["rating", item.rating],
-      ["place",      item.place],
-      ["event",      item.event],
-      ["source",     item.source],
-      ["dimensions", item.dimensions ? `${item.dimensions} mm` : null],
-    ];
-
-    metaFields.forEach(([label, value]) => {
-      if (!value) return;
-      const fieldEl = el("div", "overlay-field");
-      const labelEl = el("span", "overlay-label");
-      labelEl.textContent = label;
-      const valueEl = el("span", "overlay-value");
-      valueEl.textContent = value;
-      fieldEl.appendChild(labelEl);
-      fieldEl.appendChild(valueEl);
-      metaEl.appendChild(fieldEl);
     });
 
+    const card = el("article", "item-card");
+    card.setAttribute("aria-label", `Record ${item.id}: ${item.title}`);
+
+    // ── Fields column — catalog card: ruled label/value fields, paired
+    //    two-up into split rows where the data is compact (see mockup 01).
+    const fields = el("div", "item-card__fields");
+
+    const dims = parseDimensions(item);
+
+    // A label/value pair as a fragment, ready to drop into a 2- or 4-col row.
+    const pair = (label, value, mono) => {
+      const frag = document.createDocumentFragment();
+      const l = el("span", "overlay-label");
+      l.textContent = label;
+      const v = el("span", `overlay-value${mono ? " overlay-value--mono" : ""}`);
+      v.textContent = value;
+      frag.appendChild(l);
+      frag.appendChild(v);
+      return frag;
+    };
+    const singleRow = (label, value, mono) => {
+      if (!value) return; // unrecorded fields are suppressed, never faked
+      const row = el("div", "item-card__row");
+      row.appendChild(pair(label, value, mono));
+      fields.appendChild(row);
+    };
+    // Two pairs side by side; degrades to a single row if one side is absent.
+    const splitRow = (a, b) => {
+      const present = [a, b].filter(p => p && p[1]);
+      if (present.length === 0) return;
+      if (present.length === 1) { singleRow(...present[0]); return; }
+      const row = el("div", "item-card__row item-card__row--split");
+      present.forEach(p => row.appendChild(pair(...p)));
+      fields.appendChild(row);
+    };
+
+    // Accession — id + type, monospace codes, paired at the top.
+    splitRow(["ID", item.id, true], ["type", item.item_type, true]);
+
+    // Title — its own full-width field, kept as the card's heading.
+    const titleRow = el("div", "item-card__row item-card__row--title");
+    const titleLabel = el("span", "overlay-label");
+    titleLabel.textContent = "title";
+    const titleEl = el("h2", "item-card__title");
+    titleEl.textContent = item.title;
+    titleRow.appendChild(titleLabel);
+    titleRow.appendChild(titleEl);
+    fields.appendChild(titleRow);
+
+    // Responsibility — role-adaptive creator, suppressed for self-authored
+    // (Creation) records. Source of truth: src/shared/field-schema.js.
+    const creator = resolveCreator(item);
+    if (creator) singleRow(creator.label, creator.value, false);
+
+    // Date — its own spine row.
+    singleRow("date", item.display_date, false);
+
+    // Typed slots — up to three type-specific rows. resolveSlots handles
+    // suppression and the place/event split row for ephemera.
+    resolveSlots(item).forEach(row => {
+      if (row.type === "split") {
+        const [a, b] = row.cells;
+        splitRow([a.label, a.value, a.mono], [b.label, b.value, b.mono]);
+      } else {
+        singleRow(row.label, row.value, row.mono);
+      }
+    });
+
+    // Physical — extent + dimensions (the calibrated plate carries true size).
+    splitRow(["extent", item.extent, false], ["dimensions", dims ? `${dims.w} × ${dims.h} mm` : null, true]);
+
     if (item.context_note) {
-      const note = el("p", "overlay-note");
-      note.textContent = item.context_note;
-      metaEl.appendChild(note);
+      const note = el("div", "item-card__note");
+      const l = el("span", "overlay-label");
+      l.textContent = "note";
+      const p = el("p");
+      p.textContent = item.context_note;
+      note.appendChild(l);
+      note.appendChild(p);
+      fields.appendChild(note);
     }
 
-    if (item.related_ids?.length) {
-      const relLabel = el("span", "overlay-label");
-      relLabel.textContent = "related";
-      relLabel.style.marginTop = "0.75rem";
-      metaEl.appendChild(relLabel);
-      item.related_ids.forEach(id => {
-        const rel = allItems.find(i => i.id === id);
-        const relBtn = el("button", "overlay-value");
-        relBtn.style.cssText = "background:none;border:none;padding:0;font-family:inherit;cursor:pointer;text-decoration:underline;text-align:right;";
-        relBtn.textContent = rel ? rel.title : id;
-        relBtn.addEventListener("click", () => {
-          const i = allItems.findIndex(it => it.id === id);
-          if (i !== -1) navItem(i);
+    if (item.related_ids?.length || item.tags?.length) {
+      const riders = el("div", "item-card__riders");
+      if (item.related_ids?.length) {
+        const l = el("span", "overlay-label");
+        l.textContent = "see also";
+        riders.appendChild(l);
+        item.related_ids.forEach(rid => {
+          const rel = allItems.find(i => i.id === rid);
+          const btn = el("button", "item-card__rider");
+          btn.type = "button";
+          btn.textContent = rel ? rel.title : rid;
+          btn.addEventListener("click", () => {
+            const i = allItems.findIndex(it => it.id === rid);
+            if (i !== -1) navItem(i);
+          });
+          riders.appendChild(btn);
         });
-        metaEl.appendChild(relBtn);
+      }
+      if (item.tags?.length) {
+        const l = el("span", "overlay-label");
+        l.textContent = "tags";
+        l.style.marginTop = "0.5rem";
+        const v = el("span", "overlay-value");
+        v.textContent = item.tags.join(" · ");
+        riders.appendChild(l);
+        riders.appendChild(v);
+      }
+      fields.appendChild(riders);
+    }
+
+    card.appendChild(fields);
+
+    // ── Plate column
+    const plateCol = el("div", "item-card__plate");
+    const plateHead = el("div", "item-card__plate-head");
+    const plateLabel = el("span", "overlay-label");
+    plateLabel.textContent = "plate";
+    const scaleNote = el("span", "item-card__scale-note");
+    plateHead.appendChild(plateLabel);
+    plateHead.appendChild(scaleNote);
+    plateCol.appendChild(plateHead);
+
+    const field = el("div", "item-card__field");
+    plateCol.appendChild(field);
+
+    const primary = primaryAsset(item);
+    const back = item.assets?.back || null;
+
+    const showNone = () => {
+      field.innerHTML = "";
+      const none = el("div", "item-card__none");
+      none.textContent = "no reproduction";
+      field.appendChild(none);
+      scaleNote.textContent = "";
+    };
+
+    const PLATE_PX = 416; // internal viewBox size; scales responsively
+
+    // The reproduction <img> persists across zoom redraws (no re-fetch).
+    let reproImg = null;
+    let showingBack = false;
+    if (primary) {
+      reproImg = el("img");
+      reproImg.src = imageUrl(primary, "original");
+      reproImg.alt = item.title;
+      reproImg.draggable = false;
+      reproImg.addEventListener("error", showNone, { once: true });
+    }
+
+    let plateState = null; // { origin, pxPerMM, spanMM, scaleNote } for crosshair
+
+    // Redraw the calibrated plate at a given zoom (field span shrinks as zoom
+    // grows; the reproduction enlarges from the origin and the scales adjust).
+    const renderPlate = (zoom) => {
+      field.innerHTML = "";
+      const plate = buildPlate(item, dims, PLATE_PX, reproImg, zoom);
+      plateState = plate;
+      scaleNote.textContent = plate.scaleNote;
+      field.appendChild(plate.svg);
+    };
+
+    if (primary && dims) {
+      renderPlate(1);
+
+      // Crosshair readout — pointer position in field mm. Enhancement only;
+      // the typed dimensions row remains the canonical record of size.
+      field.addEventListener("pointermove", (e) => {
+        if (!plateState) return;
+        const r = field.getBoundingClientRect();
+        const svgSize = Math.min(r.width, r.height);
+        const unit = svgSize / PLATE_PX; // px per viewBox unit
+        const x = ((e.clientX - r.left) / unit - plateState.origin) / plateState.pxPerMM;
+        const y = ((e.clientY - r.top) / unit - plateState.origin) / plateState.pxPerMM;
+        scaleNote.textContent =
+          (x >= 0 && y >= 0 && x <= plateState.spanMM && y <= plateState.spanMM)
+            ? `${Math.round(x)} × ${Math.round(y)} mm`
+            : plateState.scaleNote;
       });
+      field.addEventListener("pointerleave", () => {
+        if (plateState) scaleNote.textContent = plateState.scaleNote;
+      });
+    } else if (primary) {
+      // Dimensions not recorded: a plain reproduction cell, no fake scales.
+      const plain = el("div", "item-card__repro item-card__plain");
+      plain.appendChild(reproImg);
+      field.appendChild(plain);
+      scaleNote.textContent = "dimensions not recorded";
+    } else {
+      showNone();
     }
 
-    if (item.tags?.length) {
-      const tagLabel = el("span", "overlay-label");
-      tagLabel.textContent = "tags";
-      tagLabel.style.marginTop = "0.5rem";
-      const tagVal = el("span", "overlay-value");
-      tagVal.textContent = item.tags.join(" · ");
-      metaEl.appendChild(tagLabel);
-      metaEl.appendChild(tagVal);
+    if (primary) {
+      const foot = el("div", "item-card__plate-foot");
+
+      const controls = el("div", "item-card__plate-controls");
+      const assetLabel = el("span", "item-card__asset-label");
+      if (back) {
+        const flip = el("button", "item-card__flip");
+        flip.type = "button";
+        flip.textContent = "overturn";
+        flip.setAttribute("aria-label", "Overturn: show the other side");
+        flip.addEventListener("click", () => {
+          showingBack = !showingBack;
+          if (reproImg) reproImg.src = imageUrl(showingBack ? back : primary, "original");
+          assetLabel.textContent = showingBack ? "verso" : "recto";
+        });
+        controls.appendChild(flip);
+      }
+      assetLabel.textContent = back ? "recto" : "1/1";
+      controls.appendChild(assetLabel);
+      foot.appendChild(controls);
+
+      // Zoom slider — only meaningful when there is a calibrated field to
+      // rescale. Dragging shrinks the field span and enlarges the item.
+      if (dims) {
+        const zoomWrap = el("label", "item-card__zoom-wrap");
+        const zoomLabel = el("span", "item-card__asset-label");
+        zoomLabel.textContent = "zoom";
+        const zoom = el("input", "item-card__zoom-slider");
+        zoom.type = "range";
+        zoom.min = "1"; zoom.max = "6"; zoom.step = "0.05"; zoom.value = "1";
+        zoom.setAttribute("aria-label", "Zoom plate");
+        zoom.addEventListener("input", () => renderPlate(parseFloat(zoom.value)));
+        zoomWrap.appendChild(zoomLabel);
+        zoomWrap.appendChild(zoom);
+        foot.appendChild(zoomWrap);
+
+        // Pinch on the plate drives the same value.
+        const ptrs = new Map();
+        let lastDist = null;
+        field.addEventListener("pointerdown", (e) => { ptrs.set(e.pointerId, e); });
+        field.addEventListener("pointermove", (e) => {
+          if (!ptrs.has(e.pointerId)) return;
+          ptrs.set(e.pointerId, e);
+          if (ptrs.size === 2) {
+            const [a, b] = [...ptrs.values()];
+            const dist = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+            if (lastDist !== null) {
+              const v = Math.min(6, Math.max(1, parseFloat(zoom.value) + (dist - lastDist) * 0.01));
+              zoom.value = String(v);
+              renderPlate(v);
+            }
+            lastDist = dist;
+          }
+        });
+        const endPinch = (e) => { ptrs.delete(e.pointerId); if (ptrs.size < 2) lastDist = null; };
+        field.addEventListener("pointerup", endPinch);
+        field.addEventListener("pointercancel", endPinch);
+      }
+
+      plateCol.appendChild(foot);
     }
 
-    const idEl = el("div", "overlay-id");
-    idEl.textContent = item.id;
-    metaEl.appendChild(idEl);
+    card.appendChild(plateCol);
+
+    // Status stamp — the card wears its status rather than listing it.
+    if (item.status && item.status !== "published") {
+      const stamp = el("span", "item-card__stamp");
+      stamp.textContent = item.status;
+      card.appendChild(stamp);
+    }
+
+    wrap.appendChild(card);
+    content.appendChild(wrap);
+  }
+
+  // ── Shared chrome: breadcrumb + prev/next ───────────────────────────────────
+  function renderChrome(item, idx) {
+    const hasPrev = idx > 0;
+    const hasNext = idx < allItems.length - 1;
 
     // Breadcrumb — bottom left
     const isFlatItem = FLAT_URL_SERIES.has(seriesKey);
@@ -1271,15 +1494,9 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
 
   const cleanup = () => {
     document.removeEventListener("keydown", onKey);
-    metaEl.remove();
   };
 
   renderContent(currentIdx);
-
-  const depth = layerStack.length + 1;
-  metaEl.style.zIndex = depth * 10 + 2;
-  metaEl.style.transition = "opacity 0.2s var(--ease-base)";
-  document.body.appendChild(metaEl);
 
   return { veil, content, cleanup };
 }

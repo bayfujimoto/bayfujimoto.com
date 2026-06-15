@@ -584,6 +584,309 @@ body {
 
 .item-image--flippable { cursor: pointer; }
 
+/* ── Item card — default inspection view ─────────────────────────────────────── */
+/*
+  Catalog-card inspection: ruled label/value fields beside a calibrated plate
+  (standard field 325 mm, item at the top-left origin at true proportion).
+  Records without dimensions degrade to a plain image cell; records without a
+  reproduction degrade to fields only. Tapping the plate escalates to the
+  full centered view (zoom/flip live there).
+*/
+.item-card-wrap {
+  position: fixed;
+  inset: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem var(--overlay-padding) 6rem; /* bottom clears breadcrumb */
+  pointer-events: auto;
+}
+
+.item-card {
+  position: relative;
+  width: min(960px, 100%);
+  margin: auto; /* keeps centering while allowing scroll overflow */
+  border: 1px solid var(--border);
+  background: rgba(232, 224, 208, 0.02);
+  display: grid;
+  grid-template-columns: 1fr minmax(300px, 42%);
+  text-align: left;
+}
+
+.item-card__fields {
+  border-right: 1px solid var(--border-dim);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Field labels read as catalog stamps — monospace throughout the column */
+.item-card__fields .overlay-label,
+.item-card__plate-head .overlay-label {
+  font-family: var(--font-mono);
+}
+
+.item-card__row {
+  display: grid;
+  grid-template-columns: 7.5rem 1fr;
+  align-items: baseline;
+  gap: 0.4rem 1rem;
+  padding: 0.7rem 1.25rem;
+  border-bottom: 1px solid var(--border-dim);
+}
+/* Two label/value pairs side by side, like the mockup's split fields */
+.item-card__row--split { grid-template-columns: 7.5rem 1fr 6rem 1fr; }
+
+.item-card__row .overlay-label { display: inline; margin: 0; }
+.item-card__row .overlay-value { display: inline; margin: 0; font-size: var(--text-base); }
+.item-card__row .overlay-value--mono { font-family: var(--font-mono); font-size: var(--text-sm); }
+
+/* Title — full-width serif field, the card's heading */
+.item-card__title {
+  font-family: var(--font-serif);
+  font-size: var(--text-md);
+  font-weight: var(--weight-normal);
+  color: var(--overlay-text);
+  margin: 0;
+}
+
+.item-card__note {
+  padding: 1.1rem 1.25rem 1.4rem;
+  flex: 1;
+}
+.item-card__note .overlay-label { margin-bottom: 0.6rem; }
+.item-card__note p {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: var(--leading-loose);
+  color: var(--overlay-text);
+  opacity: 0.85;
+  max-width: 46ch;
+}
+
+.item-card__riders {
+  padding: 0.8rem 1.25rem 1rem;
+  border-top: 1px solid var(--border-dim);
+}
+.item-card__rider {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--font);
+  font-size: var(--text-sm);
+  color: var(--overlay-text);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-right: 1rem;
+}
+.item-card__rider:hover { opacity: 0.7; }
+
+/* Plate column */
+.item-card__plate {
+  display: flex;
+  flex-direction: column;
+}
+.item-card__plate-head {
+  padding: 0.8rem 1.25rem;
+  border-bottom: 1px solid var(--border-dim);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+}
+.item-card__scale-note {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  color: var(--overlay-muted);
+  white-space: nowrap;
+}
+
+.item-card__field {
+  flex: 1;
+  /* No padding: the plate box edges (and their ticks) sit on the container
+     borders. The "no reproduction" / plain-image states center within. */
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.item-card__plate-svg { display: block; width: 100%; height: auto; }
+.item-card__plate-svg .plate-edge  { stroke: var(--border-dim); fill: none; }
+.item-card__plate-svg .plate-tick  { stroke: rgba(232, 224, 208, 0.28); }
+.item-card__plate-svg .plate-tick--major { stroke: var(--overlay-muted); }
+.item-card__plate-svg text {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  fill: var(--overlay-muted);
+  letter-spacing: 0.05em;
+}
+
+/* Reproduction cell — clips the image so slider/pinch zoom stays contained */
+.item-card__repro {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.item-card__repro img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: top left;
+  /* photographic assets need a barely-lighter ground to read on black */
+  background: var(--hover-bg);
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* Plain image cell (no dimensions recorded) */
+.item-card__plain { width: auto; height: auto; max-width: 100%; }
+.item-card__plain img {
+  max-width: 100%;
+  max-height: 48vh;
+  width: auto;
+  height: auto;
+}
+
+.item-card__none {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  color: var(--overlay-muted);
+  padding: 3rem 0;
+}
+
+.item-card__plate-foot {
+  border-top: 1px solid var(--border-dim);
+  padding: 0.4rem 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  min-height: 44px;
+}
+.item-card__plate-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.item-card__flip {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  color: var(--overlay-muted);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+.item-card__flip:hover { color: var(--overlay-text); }
+
+/* Zoom slider — magnifies the reproduction within its cell */
+.item-card__zoom-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  cursor: pointer;
+}
+.item-card__zoom-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: clamp(80px, 10vw, 140px);
+  height: 44px; /* touch target */
+  background: transparent;
+  cursor: pointer;
+}
+.item-card__zoom-slider::-webkit-slider-runnable-track {
+  height: 1px;
+  background: var(--border);
+}
+.item-card__zoom-slider::-moz-range-track {
+  height: 1px;
+  background: var(--border);
+}
+.item-card__zoom-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 11px;
+  height: 11px;
+  margin-top: -5px; /* centers thumb on the 1px track */
+  border: 1px solid var(--overlay-muted);
+  border-radius: 0;
+  background: var(--bg);
+}
+.item-card__zoom-slider::-moz-range-thumb {
+  width: 11px;
+  height: 11px;
+  border: 1px solid var(--overlay-muted);
+  border-radius: 0;
+  background: var(--bg);
+}
+.item-card__zoom-slider:hover::-webkit-slider-thumb,
+.item-card__zoom-slider:focus-visible::-webkit-slider-thumb {
+  border-color: var(--overlay-text);
+}
+.item-card__zoom-slider:hover::-moz-range-thumb,
+.item-card__zoom-slider:focus-visible::-moz-range-thumb {
+  border-color: var(--overlay-text);
+}
+.item-card__zoom-slider:focus-visible { outline: 1px solid var(--border); outline-offset: 2px; }
+.item-card__asset-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--overlay-muted);
+  opacity: 0.6;
+}
+
+/* Status stamp — archival documents wear their status */
+.item-card__stamp {
+  position: absolute;
+  top: 1.1rem;
+  right: 1.25rem;
+  transform: rotate(-8deg);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  color: var(--overlay-muted);
+  border: 1px solid var(--border);
+  padding: 0.15rem 0.5rem;
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+@media (max-width: 600px) {
+  .item-card-wrap { padding: 2rem var(--overlay-padding) 7rem; }
+  /* viewBox scales down ~0.75 on small screens; keep tick labels legible */
+  .item-card__plate-svg text { font-size: 12px; }
+  .item-card { grid-template-columns: 1fr; }
+  .item-card__fields { border-right: none; border-bottom: 1px solid var(--border-dim); }
+  .item-card__row { grid-template-columns: 6rem 1fr; padding: 0.6rem 1rem; }
+  /* Split rows stack their two pairs into two grid rows on narrow screens */
+  .item-card__row--split { grid-template-columns: 6rem 1fr; }
+  .item-card__note, .item-card__riders { padding-left: 1rem; padding-right: 1rem; }
+  .item-card__field { padding: 1rem; }
+  .item-card__plain img { max-height: 50vh; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .item-card-wrap { scroll-behavior: auto; }
+}
+
 /* ── Item nav — left/right screen edges ──────────────────────────────────────── */
 .layer-nav {
   position: fixed;

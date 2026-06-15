@@ -10,14 +10,15 @@
           "items": [
             {
               "id": "BIO-2026-001",
-              "slug": "biography-v1",
+              "slug": "biography-v2",
               "title": "Biography",
               "series": "identity",
               "subcollection": "biography",
               "item_type": "biography",
               "status": "published",
-              "display_date": 2026,
-              "sort_date": "2026-01-01",
+              "display_date": "April 2026",
+              "sort_date": "2026-05-01",
+              "version": 2,
               "roles": [
                 "Designer",
                 "Researcher"
@@ -28,7 +29,34 @@
                   "label": "GitHub",
                   "url": "https://github.com/bayfujimoto"
                 }
-              ]
+              ],
+              "short_bio": "Bay Fujimoto is a designer and researcher based in Houston, Texas. He studied architecture at Rice University and works at Low Design Office.",
+              "long_bio": "His practice sits at the intersection of design, technology, and material culture. Trained as an architect, he is drawn to the conditions under which objects, spaces, and systems acquire meaning through use rather than through intent — the scuff on a handrail, the shortcut worn into a lawn, the form that outlasts its original purpose.\n\nAt Rice University he studied the formal and cultural logic of buildings as objects, and the ways institutions shape the people who move through them. He completed a semester abroad through the Rice School of Architecture Paris program, where he began thinking more seriously about the relationship between archival practices and design research.\n\nAt Low Design Office he works on projects that take their constraints seriously — material, budgetary, organizational — and finds in those constraints the conditions for something honest. He is interested in work that resists the reduction of design to styling or to the management of appearances.\n\nThis site is an attempt to document that work in a form closer to an archive than a portfolio: less argument, more evidence."
+            },
+            {
+              "id": "BIO-2025-001",
+              "slug": "biography-v1",
+              "title": "Biography",
+              "series": "identity",
+              "subcollection": "biography",
+              "item_type": "biography",
+              "status": "published",
+              "display_date": "September 2025",
+              "sort_date": "2025-09-01",
+              "version": 1,
+              "roles": [
+                "Architecture Student",
+                "Designer"
+              ],
+              "location": "Houston, TX",
+              "links": [
+                {
+                  "label": "GitHub",
+                  "url": "https://github.com/bayfujimoto"
+                }
+              ],
+              "short_bio": "Bay Fujimoto is a designer and architecture student based in Houston, Texas. He is completing a Bachelor of Architecture at Rice University.",
+              "long_bio": "His work sits at the intersection of architectural history, design research, and material culture. He is interested in how buildings and objects are used, accumulated, and remembered — the ways in which ordinary things carry traces of the lives they have been part of.\n\nAt Rice University he has studied the formal logic of buildings as objects, the history of modernism's institutional forms, and the relationship between design and everyday life. A semester abroad in Paris through the Rice School of Architecture deepened his interest in archival research as a design method.\n\nAlongside academic work he has taken on design and research projects across professional and independent contexts. He is drawn to work that is specific rather than universal, that takes the particular conditions of a problem seriously rather than defaulting to generic solutions.\n\nThis site is an ongoing attempt to keep a record of that work — not as a portfolio, but as an archive."
             }
           ]
         },
@@ -44,6 +72,7 @@
               "status": "published",
               "display_date": "August 2025",
               "sort_date": "2025-08-06",
+              "category": "employment",
               "title": "Low Design Office",
               "organization": "Low Design Office",
               "role": "Junior Designer",
@@ -97,6 +126,7 @@
               "status": "published",
               "display_date": "Sept 2023 - June 2024",
               "sort_date": "2024-06-02",
+              "category": "employment",
               "title": "SHoP Architects",
               "context_note": "Supported project team through the schematic and design development phases for high-end residential projects. Completed sheets for the finished design development package in Revit.\n\nCreated design studies for facade iterations and worked with consultants on coordinating facade details.\n\nParticipated in consultant meetings for landscape, MEP, civil, facade, and structure.\n\nAssisted the fabrication team with developing physical models.",
               "tags": [
@@ -132,6 +162,7 @@
               "display_date": "2021 - 2023",
               "title": "Weiss Architecture",
               "context_note": "Independently translated 2D AutoCAD drawings into a detailed 3D model and produced high-quality renderings to support design visualization and client presentations.\n\nParticipated in site visits and client presentations.",
+              "category": "employment",
               "tags": [
                 "summer"
               ],
@@ -201,66 +232,78 @@
       "subcollections": {},
       "items": [
         {
-          "id": "PROJ-2026-001",
+          "id": "PROJ-2026-003",
           "slug": "wencun-village",
           "series": "labor",
           "item_type": "project",
           "status": "published",
           "display_date": "Spring 2025",
           "sort_date": "2025-05-01",
-          "inspection": "gallery",
-          "assets": {
-            "thumbnail": "PROJ-2026-001-gallery-01-thumb.jpg",
-            "gallery": [
-              {
-                "file": "PROJ-2026-001-gallery-01.png",
-                "thumbnail": "PROJ-2026-001-gallery-01-thumb.jpg",
-                "caption": "caption 1",
-                "alt": "alt text 1"
-              },
-              {
-                "file": "PROJ-2026-001-gallery-02.png",
-                "thumbnail": "PROJ-2026-001-gallery-02-thumb.jpg",
-                "caption": "caption 2",
-                "alt": "alt text 2"
-              }
-            ]
-          },
           "title": "Wencun Village",
           "context": "academic",
           "role": "Student",
-          "organization": "Rice University"
-        },
-        {
-          "id": "PROJ-2026-002",
-          "slug": "dere-stress",
-          "series": "labor",
-          "item_type": "project",
-          "status": "draft",
-          "display_date": "Fall 2021",
-          "sort_date": "2021-12-20",
-          "title": "de/re stress",
-          "context": "academic",
-          "role": "Student",
           "organization": "Rice University",
-          "inspection": "gallery",
+          "thesis": "Set in the village of Wencun, China, this calligraphy library and workshop bridges past and present through hybrid construction approach. The building is rooted in traditional brickwork techniques, but integrates contemporary technologies to enhance ventilation and lighting.",
+          "model": "PROJ-2026-003-model.glb",
           "assets": {
-            "thumbnail": "PROJ-2026-002-gallery-01-thumb.jpg",
-            "gallery": [
-              {
-                "file": "PROJ-2026-002-gallery-01.png",
-                "thumbnail": "PROJ-2026-002-gallery-01-thumb.jpg",
-                "caption": "caption 1",
-                "alt": "alt text 1"
-              },
-              {
-                "file": "PROJ-2026-002-gallery-02.png",
-                "thumbnail": "PROJ-2026-002-gallery-02-thumb.jpg",
-                "caption": "caption 1",
-                "alt": "alt text 1"
-              }
-            ]
-          }
+            "thumbnail": "PROJ-2026-003-img-01-thumb.jpg"
+          },
+          "subitems": [
+            {
+              "type": "image",
+              "file": "PROJ-2026-003-img-01.jpeg",
+              "thumbnail": "PROJ-2026-003-img-01-thumb.jpg",
+              "caption": "Render at night"
+            },
+            {
+              "type": "image",
+              "file": "PROJ-2026-003-img-02.jpeg",
+              "thumbnail": "PROJ-2026-003-img-02-thumb.jpg",
+              "caption": "Inspired by Professor Wang Shu’s daily calligraphy practice, I generated hundreds of hand-drawn, imaginary characters, letting gesture and repetition guide form. These marks, though unreadable, became a generative language for the architecture itself to influence proportions, rhythms, and porosity."
+            },
+            {
+              "type": "image",
+              "file": "PROJ-2026-003-img-03.jpeg",
+              "thumbnail": "PROJ-2026-003-img-03-thumb.jpg",
+              "caption": "The form became rationalized over time to carve out larger spaces and to simplify circulation."
+            },
+            {
+              "type": "image",
+              "file": "PROJ-2026-003-img-04.jpeg",
+              "thumbnail": "PROJ-2026-003-img-04-thumb.jpg",
+              "caption": "A 1:4 scale model, designed parametrically, tested brick’s capability to create double curvature forms. Over 600 bricks were cast to create the model."
+            },
+            {
+              "type": "image",
+              "file": "PROJ-2026-003-img-05.jpeg",
+              "thumbnail": "PROJ-2026-003-img-05-thumb.jpg",
+              "caption": "Oblique plan drawing reveals the linear layout of program."
+            },
+            {
+              "type": "image",
+              "file": "PROJ-2026-003-img-06.jpeg",
+              "thumbnail": "PROJ-2026-003-img-06-thumb.jpg",
+              "caption": "Unrolled elevations illustrate the textural effects of rotated brickwork. The brick walls are parametrically designed, with rotated and offset units that create a porous surface for natural ventilation and different lighting conditions based on the program."
+            },
+            {
+              "type": "image",
+              "file": "PROJ-2026-003-img-07.jpeg",
+              "thumbnail": "PROJ-2026-003-img-07-thumb.jpg",
+              "caption": "The building sits on an existing pond that irrigates the nearby rice paddy."
+            },
+            {
+              "type": "image",
+              "file": "PROJ-2026-003-img-08.jpeg",
+              "thumbnail": "PROJ-2026-003-img-08-thumb.jpg",
+              "caption": ""
+            },
+            {
+              "type": "image",
+              "file": "PROJ-2026-003-img-09.jpeg",
+              "thumbnail": "PROJ-2026-003-img-09-thumb.jpg",
+              "caption": "The architecture embraces slowness and tactility: its thick walls, deep eaves, and hand-laid bonds speak to a collective memory of making."
+            }
+          ]
         }
       ]
     },
@@ -272,6 +315,226 @@
         "films": {
           "label": "films",
           "items": [
+            {
+              "id": "FILM-2026-493",
+              "slug": "blink-2022-2026-05-11",
+              "title": "Blink",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2022",
+              "director": "",
+              "watch_date": "2026-05-11",
+              "display_date": "May 11, 2026",
+              "sort_date": "2026-05-11",
+              "rating": 0,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/blink-2022/",
+              "assets": {
+                "poster": "https://a.ltrbxd.com/resized/film-poster/8/3/9/6/5/6/839656-blink-0-600-0-900-crop.jpg?v=1e258d7ca6"
+              }
+            },
+            {
+              "id": "FILM-2026-492",
+              "slug": "obsession-2025-2026-05-06",
+              "title": "Obsession",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2025",
+              "director": "",
+              "watch_date": "2026-05-06",
+              "display_date": "May 6, 2026",
+              "sort_date": "2026-05-06",
+              "rating": 4.5,
+              "rewatch": true,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/obsession-2025-2/1/",
+              "assets": {
+                "poster": "https://a.ltrbxd.com/resized/film-poster/1/2/3/4/4/7/2/1234472-obsession-2025-2-0-600-0-900-crop.jpg?v=cff6fc00b6"
+              }
+            },
+            {
+              "id": "FILM-2026-489",
+              "slug": "playtime-1967-2026-05-05",
+              "title": "PlayTime",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "1967",
+              "director": "",
+              "watch_date": "2026-05-05",
+              "display_date": "May 5, 2026",
+              "sort_date": "2026-05-05",
+              "rating": 0,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/playtime/",
+              "assets": {
+                "poster": "https://a.ltrbxd.com/resized/sm/upload/bi/e2/9h/of/ivRkXDUcdBZxQiYw5R99ZJM0CpA-0-600-0-900-crop.jpg?v=5ab043bd2f"
+              }
+            },
+            {
+              "id": "FILM-2026-490",
+              "slug": "mishima-a-life-in-four-chapters-1985-2026-05-04",
+              "title": "Mishima: A Life in Four Chapters",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "1985",
+              "director": "",
+              "watch_date": "2026-05-04",
+              "display_date": "May 4, 2026",
+              "sort_date": "2026-05-04",
+              "rating": 0,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/mishima-a-life-in-four-chapters/",
+              "assets": {
+                "poster": "https://a.ltrbxd.com/resized/film-poster/3/4/8/2/9/34829-mishima-a-life-in-four-chapters-0-600-0-900-crop.jpg?v=1bed76a9ae"
+              }
+            },
+            {
+              "id": "FILM-2026-491",
+              "slug": "boogie-nights-1997-2026-05-02",
+              "title": "Boogie Nights",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "1997",
+              "director": "",
+              "watch_date": "2026-05-02",
+              "display_date": "May 2, 2026",
+              "sort_date": "2026-05-02",
+              "rating": 4.5,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/boogie-nights/",
+              "assets": {
+                "poster": "https://a.ltrbxd.com/resized/film-poster/4/9/0/0/7/49007-boogie-nights-0-600-0-900-crop.jpg?v=57bef85dc6"
+              }
+            },
+            {
+              "id": "FILM-2026-477",
+              "slug": "the-social-network-2010-2026-04-30",
+              "title": "The Social Network",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2010",
+              "director": "",
+              "watch_date": "2026-04-30",
+              "display_date": "April 30, 2026",
+              "sort_date": "2026-04-30",
+              "rating": 0,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/the-social-network/",
+              "assets": {
+                "poster": "https://a.ltrbxd.com/resized/sm/upload/nw/cm/pa/ai/sGQv3ZMZBDBnl3z42Q0mEQ5uiDe-0-600-0-900-crop.jpg?v=54ee59f7cd"
+              }
+            },
+            {
+              "id": "FILM-2026-478",
+              "slug": "inland-empire-2006-2026-04-29",
+              "title": "Inland Empire",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2006",
+              "director": "",
+              "watch_date": "2026-04-29",
+              "display_date": "April 29, 2026",
+              "sort_date": "2026-04-29",
+              "rating": 0,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/inland-empire/",
+              "assets": {
+                "poster": "https://a.ltrbxd.com/resized/film-poster/5/0/8/2/2/50822-inland-empire-0-600-0-900-crop.jpg?v=b4bd226d73"
+              }
+            },
+            {
+              "id": "FILM-2026-479",
+              "slug": "malcolm-x-1992-2026-04-27",
+              "title": "Malcolm X",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "1992",
+              "director": "",
+              "watch_date": "2026-04-27",
+              "display_date": "April 27, 2026",
+              "sort_date": "2026-04-27",
+              "rating": 5,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/malcolm-x-1992/",
+              "assets": {
+                "poster": "https://a.ltrbxd.com/resized/film-poster/5/0/7/2/0/50720-malcolm-x-0-600-0-900-crop.jpg?v=b52be1c88a"
+              }
+            },
+            {
+              "id": "FILM-2026-480",
+              "slug": "one-spoon-of-chocolate-2025-2026-04-26",
+              "title": "One Spoon of Chocolate",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2025",
+              "director": "",
+              "watch_date": "2026-04-26",
+              "display_date": "April 26, 2026",
+              "sort_date": "2026-04-26",
+              "rating": 1.5,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/one-spoon-of-chocolate/",
+              "assets": {
+                "poster": "https://a.ltrbxd.com/resized/film-poster/1/1/7/3/8/7/7/1173877-one-spoon-of-chocolate-0-600-0-900-crop.jpg?v=5192bfa03f"
+              }
+            },
+            {
+              "id": "FILM-2026-481",
+              "slug": "spider-man-far-from-home-2019-2026-04-24",
+              "title": "Spider-Man: Far From Home",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2019",
+              "director": "",
+              "watch_date": "2026-04-24",
+              "display_date": "April 24, 2026",
+              "sort_date": "2026-04-24",
+              "rating": 4.5,
+              "rewatch": true,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/spider-man-far-from-home/",
+              "assets": {
+                "poster": "https://a.ltrbxd.com/resized/film-poster/3/6/2/9/7/7/362977-spider-man-far-from-home-0-600-0-900-crop.jpg?v=d139fbf2ae"
+              }
+            },
+            {
+              "id": "FILM-2026-482",
+              "slug": "lee-cronins-the-mummy-2026-2026-04-22",
+              "title": "Lee Cronin's The Mummy",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2026",
+              "director": "",
+              "watch_date": "2026-04-22",
+              "display_date": "April 22, 2026",
+              "sort_date": "2026-04-22",
+              "rating": 3,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/lee-cronins-the-mummy/",
+              "assets": {
+                "poster": "https://a.ltrbxd.com/resized/film-poster/1/1/8/6/3/1/8/1186318-lee-cronins-the-mummy-0-600-0-900-crop.jpg?v=75239f90de"
+              }
+            },
             {
               "id": "FILM-2026-476",
               "slug": "FILM-2026-476-the-master",
@@ -12393,21 +12656,6 @@
       "subcollections": {},
       "items": [
         {
-          "id": "EPH-2026-018",
-          "slug": "austin-tx-usa-2025-06-01",
-          "series": "accumulation",
-          "item_type": "ticket",
-          "status": "draft",
-          "display_date": "June 1, 2025",
-          "sort_date": "2025-06-01",
-          "title": "The Life of Chuck",
-          "place": "Austin, TX, USA",
-          "event": "Film screening",
-          "source": "Alamo Drafthouse, South Lamar",
-          "inspection": "card",
-          "context_note": "Commemorative ticket"
-        },
-        {
           "id": "EPH-2026-017",
           "slug": "houston-texas-usa-2025-04-27",
           "series": "accumulation",
@@ -12423,57 +12671,8 @@
           "assets": {
             "front": "EPH-2026-017-front.jpg",
             "thumbnail": "EPH-2026-017-front-thumb.jpg"
-          }
-        },
-        {
-          "id": "EPH-2026-015",
-          "slug": "shanghai-china-2025-03-19",
-          "series": "accumulation",
-          "item_type": "document",
-          "status": "draft",
-          "display_date": "March 19, 2025",
-          "sort_date": "2025-03-19",
-          "title": "Sukothai Hotel",
-          "place": "Shanghai, China",
-          "inspection": "card",
-          "assets": {
-            "front": "EPH-2026-015-front.jpg",
-            "thumbnail": "EPH-2026-015-front-thumb.jpg"
-          }
-        },
-        {
-          "id": "EPH-2026-014",
-          "slug": "france-2024-11-16",
-          "series": "accumulation",
-          "item_type": "document",
-          "status": "draft",
-          "display_date": "November 16, 2024",
-          "sort_date": "2024-11-16",
-          "title": "Commemorative Bill",
-          "place": "France",
-          "source": "Villa Savoye",
-          "inspection": "card",
-          "assets": {
-            "front": "EPH-2026-014-front.jpg",
-            "thumbnail": "EPH-2026-014-front-thumb.jpg"
-          }
-        },
-        {
-          "id": "EPH-2026-013",
-          "slug": "paris-france-2024-11-08",
-          "series": "accumulation",
-          "item_type": "ticket",
-          "status": "draft",
-          "display_date": "November 8, 2024",
-          "sort_date": "2024-11-08",
-          "title": "Smile 2",
-          "place": "Paris, France",
-          "source": "mk2",
-          "inspection": "card",
-          "assets": {
-            "front": "EPH-2026-013-front.jpg",
-            "thumbnail": "EPH-2026-013-front-thumb.jpg"
-          }
+          },
+          "dimensions": "62 x 88"
         },
         {
           "id": "EPH-2026-012",
@@ -12489,122 +12688,8 @@
           "assets": {
             "front": "EPH-2026-012-front.jpg",
             "thumbnail": "EPH-2026-012-front-thumb.jpg"
-          }
-        },
-        {
-          "id": "EPH-2026-011",
-          "slug": "copenhagen-denmark-2024-11-01",
-          "series": "accumulation",
-          "item_type": "document",
-          "status": "draft",
-          "display_date": "November 2024",
-          "sort_date": "2024-11-01",
-          "title": "Cat Patches",
-          "place": "Copenhagen, Denmark",
-          "inspection": "card",
-          "assets": {
-            "front": "EPH-2026-011-front.jpg",
-            "thumbnail": "EPH-2026-011-front-thumb.jpg"
-          }
-        },
-        {
-          "id": "EPH-2026-010",
-          "slug": "paris-france-2024-10-12",
-          "series": "accumulation",
-          "item_type": "brochure",
-          "status": "draft",
-          "display_date": "October 12, 2024",
-          "sort_date": "2024-10-12",
-          "title": "Olga de Amaral",
-          "place": "Paris, France",
-          "source": "Fondation Cartier",
-          "inspection": "card",
-          "assets": {
-            "front": "EPH-2026-010-front.jpg",
-            "thumbnail": "EPH-2026-010-front-thumb.jpg"
-          }
-        },
-        {
-          "id": "EPH-2026-009",
-          "slug": "paris-france-2024-10-01",
-          "series": "accumulation",
-          "item_type": "brochure",
-          "status": "draft",
-          "display_date": "October 2024",
-          "sort_date": "2024-10-01",
-          "title": "Damien Deroubaix",
-          "place": "Paris, France",
-          "source": "National Library",
-          "inspection": "card",
-          "assets": {
-            "front": "EPH-2026-009-front.jpg",
-            "thumbnail": "EPH-2026-009-front-thumb.jpg"
-          }
-        },
-        {
-          "id": "EPH-2026-008",
-          "slug": "paris-france-2024-09-04",
-          "series": "accumulation",
-          "item_type": "ticket",
-          "status": "draft",
-          "display_date": "September 4, 2024",
-          "sort_date": "2024-09-04",
-          "title": "Paralympics Wheelchair Tennis",
-          "place": "Paris, France",
-          "event": "2024 Paralympic Games",
-          "inspection": "card",
-          "assets": {
-            "front": "EPH-2026-008-front.jpg",
-            "thumbnail": "EPH-2026-008-front-thumb.jpg"
-          }
-        },
-        {
-          "id": "EPH-2026-004",
-          "slug": "paris-france-2024-08-25",
-          "series": "accumulation",
-          "item_type": "ticket",
-          "status": "draft",
-          "display_date": "August 25, 2024",
-          "sort_date": "2024-08-25",
-          "title": "Eiffel Tower Ticket",
-          "context_note": "Special ticket celebrating the 2024 Olympics.",
-          "place": "Paris, France",
-          "source": "Eiffel Tower",
-          "inspection": "card",
-          "assets": {
-            "front": "EPH-2026-004-front.jpg",
-            "thumbnail": "EPH-2026-004-front-thumb.jpg"
-          }
-        },
-        {
-          "id": "EPH-2026-003",
-          "slug": "paris-france-2024-08-25",
-          "series": "accumulation",
-          "item_type": "ticket",
-          "status": "draft",
-          "display_date": "August 25, 2024",
-          "sort_date": "2024-08-25",
-          "title": "Eiffel Tower Ticket",
-          "place": "Paris, France",
-          "source": "Eiffel Tower"
-        },
-        {
-          "id": "EPH-2026-007",
-          "slug": "boston-massachusetts-2024-05-06",
-          "series": "accumulation",
-          "item_type": "ticket",
-          "status": "draft",
-          "display_date": "May 6, 2024",
-          "sort_date": "2024-05-06",
-          "title": "New England Aquarium",
-          "context_note": "From a weekend trip to Boston after a big deadline at work.",
-          "place": "Boston, Massachusetts",
-          "source": "New England Aquarium",
-          "inspection": "card",
-          "assets": {
-            "front": "EPH-2026-007-front.jpg",
-            "thumbnail": "EPH-2026-007-front-thumb.jpg"
-          }
+          },
+          "dimensions": "76 x 76"
         },
         {
           "id": "EPH-2026-016",
@@ -12623,7 +12708,8 @@
           "assets": {
             "front": "EPH-2026-016-front.jpg",
             "thumbnail": "EPH-2026-016-front-thumb.jpg"
-          }
+          },
+          "dimensions": "76 x 103"
         },
         {
           "id": "EPH-2026-006",
@@ -12641,24 +12727,8 @@
           "assets": {
             "front": "EPH-2026-006-front.jpg",
             "thumbnail": "EPH-2026-006-front-thumb.jpg"
-          }
-        },
-        {
-          "id": "EPH-2026-005",
-          "slug": "houston-texas-usa-2023-09-01",
-          "series": "accumulation",
-          "item_type": "ticket",
-          "status": "draft",
-          "display_date": "September 01, 2023",
-          "sort_date": "2023-09-01",
-          "title": "MFAH Ticket",
-          "place": "Houston, Texas, USA",
-          "source": "Museum of Fine Arts, Houston",
-          "inspection": "card",
-          "assets": {
-            "front": "EPH-2026-005-front.jpg",
-            "thumbnail": "EPH-2026-005-front-thumb.jpg"
-          }
+          },
+          "dimensions": "54 x 85"
         }
       ]
     }
@@ -12671,8 +12741,8 @@
   },
   "_counters": {
     "EPH": 18,
-    "FILM": 476,
-    "BOOK": 252,
+    "FILM": 493,
+    "BOOK": 258,
     "MUSIC": 3,
     "COFFEE": 2,
     "GAME": 2,
@@ -12681,7 +12751,7 @@
     "PROTO": 2,
     "VIDEO": 2,
     "NOTE": 2,
-    "PROJ": 2,
+    "PROJ": 3,
     "BIO": 1,
     "CV": 6,
     "CONTACT": 3

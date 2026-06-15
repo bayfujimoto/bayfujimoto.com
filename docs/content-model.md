@@ -1,5 +1,10 @@
 # Content Model
 
+> The fields a record stores. What the **catalog card displays** — the per-type
+> field selection, ordering, labels, and example placeholders — is governed by
+> `docs/field-schema.md` and encoded in `src/shared/field-schema.js`. This file
+> describes the underlying data; that one describes the card.
+
 ## Shared fields
 These fields should exist in most or all records.
 
@@ -23,6 +28,8 @@ Recommended:
 - people
 - places
 - source
+- extent
+- dimensions
 - related_ids
 - assets
 - visibility
@@ -66,6 +73,15 @@ Fields:
 - related items
 - richer contextual note
 - inspection behavior info
+
+## Level of description (item vs. file)
+
+Records are item-level by default. A grouped record — a photo series, a multi-page
+document, a contact sheet — is **file-level**: it carries an `extent` greater than
+one ("12 photographs"), and its members are item-level records linked back with
+`part_of`. On the card, `extent > 1` is the quiet signal that you are looking at a
+collection rather than a single object; the calibrated plate never stretches across
+several objects (that breaks the scale logic). See `docs/field-schema.md`.
 
 ## Identity records
 
@@ -137,7 +153,7 @@ Required:
 - watch_date
 - year
 - director if known
-- format or source if useful
+- seen_via (where it was seen: theatrical, streaming, physical, festival)
 
 Optional:
 - rating
@@ -210,6 +226,10 @@ Optional:
 - tags
 
 ## Creation records
+
+Creator defaults to the archive subject; record a `creator` only when the work is
+not solely yours (a collaborator, a commission). The card suppresses the creator
+row otherwise. See `docs/field-schema.md`.
 
 ### Prototype
 Required:
@@ -292,6 +312,7 @@ Required:
 Optional:
 - place
 - event
+- extent: count of physical pieces (e.g. "1 ticket", "3 prints")
 - dimensions: physical size in mm as "W x H" (e.g. "89 x 54"). Used to render thumbnails at true relative size in the browse strip. Items without this field fall back to natural image aspect ratio.
 - front/back assets
 - note
