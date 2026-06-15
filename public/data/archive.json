@@ -364,7 +364,7 @@
               "item_type": "film",
               "status": "published",
               "year": "2005",
-              "director": "",
+              "director": "Steven Spielberg",
               "watch_date": "2026-06-12",
               "display_date": "June 12, 2026",
               "sort_date": "2026-06-12",
@@ -373,7 +373,8 @@
               "letterboxd_link": "https://letterboxd.com/bayf/film/war-of-the-worlds/",
               "assets": {
                 "poster": "https://a.ltrbxd.com/resized/film-poster/5/1/9/7/6/51976-war-of-the-worlds-0-600-0-900-crop.jpg?v=762a144731"
-              }
+              },
+              "seen_via": "streaming"
             },
             {
               "id": "FILM-2026-508",
@@ -384,7 +385,7 @@
               "item_type": "film",
               "status": "published",
               "year": "2025",
-              "director": "",
+              "director": "Rich Lee",
               "watch_date": "2026-06-12",
               "display_date": "June 12, 2026",
               "sort_date": "2026-06-12",
@@ -393,7 +394,8 @@
               "letterboxd_link": "https://letterboxd.com/bayf/film/war-of-the-worlds-2025/",
               "assets": {
                 "poster": "https://a.ltrbxd.com/resized/film-poster/6/7/6/5/4/5/676545-war-of-the-worlds-2025-0-600-0-900-crop.jpg?v=758c330585"
-              }
+              },
+              "seen_via": "streaming"
             },
             {
               "id": "FILM-2026-507",
@@ -404,7 +406,7 @@
               "item_type": "film",
               "status": "published",
               "year": "1975",
-              "director": "",
+              "director": "Steven Spielberg",
               "watch_date": "2026-06-12",
               "display_date": "June 12, 2026",
               "sort_date": "2026-06-12",
@@ -413,7 +415,8 @@
               "letterboxd_link": "https://letterboxd.com/bayf/film/jaws/",
               "assets": {
                 "poster": "https://a.ltrbxd.com/resized/film-poster/5/1/5/4/2/51542-jaws-0-600-0-900-crop.jpg?v=03299455f6"
-              }
+              },
+              "seen_via": "streaming"
             },
             {
               "id": "FILM-2026-496",
@@ -424,7 +427,7 @@
               "item_type": "film",
               "status": "published",
               "year": "1982",
-              "director": "",
+              "director": "Steven Spielberg",
               "watch_date": "2026-06-09",
               "display_date": "June 9, 2026",
               "sort_date": "2026-06-09",
@@ -433,7 +436,8 @@
               "letterboxd_link": "https://letterboxd.com/bayf/film/et-the-extra-terrestrial/",
               "assets": {
                 "poster": "https://a.ltrbxd.com/resized/film-poster/5/1/5/2/0/51520-e-t-the-extra-terrestrial-0-600-0-900-crop.jpg?v=abed7069ac"
-              }
+              },
+              "seen_via": "streaming"
             },
             {
               "id": "FILM-2026-497",
@@ -444,7 +448,7 @@
               "item_type": "film",
               "status": "published",
               "year": "1977",
-              "director": "",
+              "director": "Steven Spielberg",
               "watch_date": "2026-06-08",
               "display_date": "June 8, 2026",
               "sort_date": "2026-06-08",
@@ -453,7 +457,8 @@
               "letterboxd_link": "https://letterboxd.com/bayf/film/close-encounters-of-the-third-kind/",
               "assets": {
                 "poster": "https://a.ltrbxd.com/resized/sm/upload/4j/8g/do/5y/3Av8ZPiMrxFq9XiOjZl0tkoq9Oo-0-600-0-900-crop.jpg?v=de312c03b7"
-              }
+              },
+              "seen_via": "streaming"
             },
             {
               "id": "FILM-2026-498",
@@ -464,7 +469,7 @@
               "item_type": "film",
               "status": "published",
               "year": "2024",
-              "director": "",
+              "director": "Curry Barker",
               "watch_date": "2026-06-07",
               "display_date": "June 7, 2026",
               "sort_date": "2026-06-07",
@@ -473,7 +478,8 @@
               "letterboxd_link": "https://letterboxd.com/bayf/film/milk-serial/",
               "assets": {
                 "poster": "https://a.ltrbxd.com/resized/film-poster/1/0/7/3/6/2/4/1073624-milk-serial-0-600-0-900-crop.jpg?v=aa853bd1bd"
-              }
+              },
+              "seen_via": "streaming"
             },
             {
               "id": "FILM-2026-500",
@@ -484,7 +490,7 @@
               "item_type": "film",
               "status": "published",
               "year": "2026",
-              "director": "",
+              "director": "Kane Parsons",
               "watch_date": "2026-05-30",
               "display_date": "May 30, 2026",
               "sort_date": "2026-05-30",
@@ -493,7 +499,8 @@
               "letterboxd_link": "https://letterboxd.com/bayf/film/backrooms-2026/",
               "assets": {
                 "poster": "https://a.ltrbxd.com/resized/film-poster/9/7/6/4/1/9/976419-backrooms-2026-0-600-0-900-crop.jpg?v=f7a99e3fc8"
-              }
+              },
+              "seen_via": "theatrical"
             },
             {
               "id": "FILM-2026-499",
@@ -13102,7 +13109,7 @@
   "_counters": {
     "EPH": 18,
     "FILM": 511,
-    "BOOK": 258,
+    "BOOK": 261,
     "MUSIC": 3,
     "COFFEE": 2,
     "GAME": 2,
