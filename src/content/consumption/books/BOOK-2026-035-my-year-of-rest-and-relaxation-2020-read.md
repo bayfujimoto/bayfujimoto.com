@@ -13,5 +13,10 @@ display_date: "July 27, 2020"
 sort_date: "2020-07-27"
 rating: 3
 goodreads_link: "https://www.goodreads.com/book/show/44279110"
-
+isbn13: "9780525522133"
+isbn: "0525522131"
+dimensions: 136 x 210
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/isbn/9780525522133-L.jpg"
 ---

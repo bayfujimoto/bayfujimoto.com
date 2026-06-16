@@ -13,5 +13,8 @@ display_date: "December 28, 2025"
 sort_date: "2025-12-28"
 rating: 5
 goodreads_link: "https://www.goodreads.com/book/show/220505376"
-
+dimensions: 134 x 210
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/id/12376585-L.jpg"
 ---

@@ -12,5 +12,10 @@ date_read: "2025-12-05"
 display_date: "December 5, 2025"
 sort_date: "2025-12-05"
 goodreads_link: "https://www.goodreads.com/book/show/25898216"
-
+isbn13: "9781568584638"
+isbn: "1568584636"
+dimensions: 155 x 235
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/isbn/9781568584638-L.jpg"
 ---

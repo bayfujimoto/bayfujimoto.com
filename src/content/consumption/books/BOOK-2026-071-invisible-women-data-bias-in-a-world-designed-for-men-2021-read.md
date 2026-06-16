@@ -12,5 +12,10 @@ date_read: "2021-12-21"
 display_date: "December 21, 2021"
 sort_date: "2021-12-21"
 goodreads_link: "https://www.goodreads.com/book/show/41104077"
-
+isbn13: "9781419729072"
+isbn: "1419729071"
+dimensions: 156 x 235
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/isbn/9781419729072-L.jpg"
 ---

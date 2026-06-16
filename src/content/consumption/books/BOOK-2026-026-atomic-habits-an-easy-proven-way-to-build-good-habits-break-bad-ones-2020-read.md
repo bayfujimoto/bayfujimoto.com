@@ -13,5 +13,8 @@ display_date: "June 29, 2020"
 sort_date: "2020-06-29"
 rating: 5
 goodreads_link: "https://www.goodreads.com/book/show/40121378"
-
+dimensions: 155 x 210
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/id/12539702-L.jpg"
 ---

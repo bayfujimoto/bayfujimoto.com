@@ -13,6 +13,7 @@ import { join } from "path";
 import { glob } from "glob";
 import csv from "csv-parser";
 import { createReadStream } from "fs";
+import { resolveCover, cleanIsbn } from "./utils/book-covers.js";
 
 const CONTENT_DIR = "src/content/consumption/books";
 const COUNTERS_PATH = "src/content/_id-counters.yaml";
@@ -77,6 +78,12 @@ function buildMarkdown(fields) {
     ? `assets:\n  cover: "${fields.cover}"`
     : "";
 
+  const isbnLines = [
+    fields.isbn13 ? `isbn13: "${fields.isbn13}"` : "",
+    fields.isbn ? `isbn: "${fields.isbn}"` : "",
+  ].filter(Boolean).join("\n");
+  const isbnYaml = isbnLines ? "\n" + isbnLines : "";
+
   const yearLine = fields.year ? `year: "${fields.year}"\n` : "";
   const ratingLine = fields.rating > 0 ? `rating: ${fields.rating}\n` : "";
 
@@ -92,7 +99,7 @@ author: "${fields.author.replace(/"/g, '\\"')}"
 ${yearLine}date_read: "${fields.date_read}"
 display_date: "${fields.display_date}"
 sort_date: "${fields.sort_date}"
-${ratingLine}goodreads_link: "${fields.goodreads_link}"${tagsYaml}
+${ratingLine}goodreads_link: "${fields.goodreads_link}"${isbnYaml}${tagsYaml}
 ${assetsYaml ? "\n" + assetsYaml : ""}
 ---`;
 
@@ -144,7 +151,7 @@ async function main() {
     createReadStream(CSV_PATH)
       .pipe(csv())
       .on("data", (row) => rows.push(row))
-      .on("end", () => {
+      .on("end", async () => {
         console.log(`[ingest-goodreads-csv] ${rows.length} rows in CSV`);
 
         // Filter to only "read" shelf entries with a date read
@@ -181,6 +188,12 @@ async function main() {
           const rating = parseInt(row["My Rating"], 10) || 0;
           const year = row["Year Published"] || "";
           const slug = buildSlug(title, year, dateRead);
+          const isbn13 = cleanIsbn(row.ISBN13);
+          const isbn = cleanIsbn(row.ISBN);
+
+          // Resolve a full-res cover (Open Library / Google Books by ISBN, then
+          // title). Best-effort — returns null on miss, leaving cover blank.
+          const resolved = await resolveCover({ title, author, isbn13, isbn });
 
           const id = nextId(counters);
           const sortDateStr = dateRead.toISOString().split("T")[0];
@@ -196,14 +209,17 @@ async function main() {
             sort_date: sortDateStr,
             rating,
             goodreads_link,
-            cover: "",
+            isbn13,
+            isbn,
+            cover: resolved ? resolved.url : "",
             tags: [],
           };
 
           const outPath = join(CONTENT_DIR, `${id}-${slug}.md`);
           writeFileSync(outPath, buildMarkdown(fields));
           newCount++;
-          console.log(`[ingest-goodreads-csv] + "${title}" by ${author} — ${sortDateStr}`);
+          const coverNote = resolved ? ` [cover: ${resolved.source}]` : "";
+          console.log(`[ingest-goodreads-csv] + "${title}" by ${author} — ${sortDateStr}${coverNote}`);
         }
 
         if (newCount > 0) {

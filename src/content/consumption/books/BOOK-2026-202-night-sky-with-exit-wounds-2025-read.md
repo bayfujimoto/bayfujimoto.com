@@ -12,5 +12,8 @@ date_read: "2025-03-30"
 display_date: "March 30, 2025"
 sort_date: "2025-03-30"
 goodreads_link: "https://www.goodreads.com/book/show/23841432"
-
+dimensions: 128 x 210
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/id/10312542-L.jpg"
 ---

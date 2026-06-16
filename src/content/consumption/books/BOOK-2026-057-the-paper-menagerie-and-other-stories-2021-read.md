@@ -13,5 +13,10 @@ display_date: "April 21, 2021"
 sort_date: "2021-04-21"
 rating: 5
 goodreads_link: "https://www.goodreads.com/book/show/24885533"
-
+isbn13: "9781481442541"
+isbn: "1481442546"
+dimensions: 156 x 235
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/isbn/9781481442541-L.jpg"
 ---

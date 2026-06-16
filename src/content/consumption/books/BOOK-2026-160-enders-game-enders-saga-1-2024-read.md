@@ -13,6 +13,8 @@ display_date: "November 4, 2024"
 sort_date: "2024-11-04"
 rating: 0
 goodreads_link: "https://www.goodreads.com/book/show/1950052"
+dimensions: 159 x 235
+dimensions_estimated: true
 assets:
-  cover: "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1768601176l/1950052._SX50_.jpg"
+  cover: "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1768601176l/1950052.jpg"
 ---

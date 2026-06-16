@@ -13,5 +13,8 @@ display_date: "January 23, 2018"
 sort_date: "2018-01-23"
 rating: 5
 goodreads_link: "https://www.goodreads.com/book/show/8315374"
-
+dimensions: 141 x 210
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/id/11592698-L.jpg"
 ---

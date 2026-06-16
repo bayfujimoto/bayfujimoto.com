@@ -13,5 +13,10 @@ display_date: "August 17, 2020"
 sort_date: "2020-08-17"
 rating: 2
 goodreads_link: "https://www.goodreads.com/book/show/44318414"
-
+isbn13: "9780062963673"
+isbn: "0062963678"
+dimensions: 156 x 235
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/isbn/9780062963673-L.jpg"
 ---

@@ -13,5 +13,10 @@ display_date: "August 13, 2020"
 sort_date: "2020-08-13"
 rating: 4
 goodreads_link: "https://www.goodreads.com/book/show/42973186"
-
+isbn13: "9781612197500"
+isbn: "1612197507"
+dimensions: 139 x 210
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/id/8750439-L.jpg"
 ---

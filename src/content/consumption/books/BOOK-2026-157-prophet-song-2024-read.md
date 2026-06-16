@@ -13,5 +13,8 @@ display_date: "September 16, 2024"
 sort_date: "2024-09-16"
 rating: 4
 goodreads_link: "https://www.goodreads.com/book/show/158875813"
-
+dimensions: 140 x 210
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/id/14825862-L.jpg"
 ---

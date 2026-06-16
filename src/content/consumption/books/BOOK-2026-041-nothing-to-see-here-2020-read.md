@@ -13,5 +13,10 @@ display_date: "August 23, 2020"
 sort_date: "2020-08-23"
 rating: 4
 goodreads_link: "https://www.goodreads.com/book/show/42519313"
-
+isbn13: "9780062913487"
+isbn: "0062913484"
+dimensions: 139 x 210
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/isbn/9780062913487-L.jpg"
 ---

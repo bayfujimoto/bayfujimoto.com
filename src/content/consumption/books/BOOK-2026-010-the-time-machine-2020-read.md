@@ -13,5 +13,8 @@ display_date: "January 1, 2020"
 sort_date: "2020-01-01"
 rating: 3
 goodreads_link: "https://www.goodreads.com/book/show/2493"
-
+dimensions: 140 x 210
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/id/9009316-L.jpg"
 ---

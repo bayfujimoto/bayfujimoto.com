@@ -13,5 +13,8 @@ display_date: "June 15, 2025"
 sort_date: "2025-06-15"
 rating: 5
 goodreads_link: "https://www.goodreads.com/book/show/53180064"
-
+dimensions: 152 x 235
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/id/11048597-L.jpg"
 ---

@@ -12,5 +12,10 @@ date_read: "2020-01-01"
 display_date: "January 1, 2020"
 sort_date: "2020-01-01"
 goodreads_link: "https://www.goodreads.com/book/show/22632"
-
+isbn13: "9780872205543"
+isbn: "0872205541"
+dimensions: 135 x 210
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/isbn/9780872205543-L.jpg"
 ---

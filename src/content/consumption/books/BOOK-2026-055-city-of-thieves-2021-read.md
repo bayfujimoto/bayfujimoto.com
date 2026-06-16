@@ -13,5 +13,10 @@ display_date: "March 20, 2021"
 sort_date: "2021-03-20"
 rating: 4
 goodreads_link: "https://www.goodreads.com/book/show/1971304"
-
+isbn13: "9780670018703"
+isbn: "0670018708"
+dimensions: 148 x 235
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/isbn/9780670018703-L.jpg"
 ---

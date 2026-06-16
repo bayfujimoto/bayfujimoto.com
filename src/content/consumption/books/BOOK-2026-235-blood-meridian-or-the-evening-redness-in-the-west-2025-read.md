@@ -12,5 +12,8 @@ date_read: "2025-11-05"
 display_date: "November 5, 2025"
 sort_date: "2025-11-05"
 goodreads_link: "https://www.goodreads.com/book/show/8889448"
-
+dimensions: 136 x 210
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/id/419991-L.jpg"
 ---

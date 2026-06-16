@@ -12,5 +12,8 @@ date_read: "2024-08-18"
 display_date: "August 18, 2024"
 sort_date: "2024-08-18"
 goodreads_link: "https://www.goodreads.com/book/show/34326633"
-
+dimensions: 139 x 210
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/id/2421405-L.jpg"
 ---

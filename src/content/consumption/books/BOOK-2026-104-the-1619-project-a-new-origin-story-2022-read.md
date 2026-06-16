@@ -12,5 +12,10 @@ date_read: "2022-10-19"
 display_date: "October 19, 2022"
 sort_date: "2022-10-19"
 goodreads_link: "https://www.goodreads.com/book/show/57717410"
-
+isbn13: "9780593230572"
+isbn: "0593230574"
+dimensions: 156 x 235
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/isbn/9780593230572-L.jpg"
 ---

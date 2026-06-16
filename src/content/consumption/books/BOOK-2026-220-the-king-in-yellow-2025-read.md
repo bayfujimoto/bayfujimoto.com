@@ -13,5 +13,10 @@ display_date: "July 28, 2025"
 sort_date: "2025-07-28"
 rating: 4
 goodreads_link: "https://www.goodreads.com/book/show/32277642"
-
+isbn13: "9781539053446"
+isbn: "153905344X"
+dimensions: 122 x 210
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/id/4752788-L.jpg"
 ---

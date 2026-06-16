@@ -12,5 +12,10 @@ date_read: "2023-12-29"
 display_date: "December 29, 2023"
 sort_date: "2023-12-29"
 goodreads_link: "https://www.goodreads.com/book/show/50202953"
-
+isbn13: "9781635575637"
+isbn: "163557563X"
+dimensions: 166 x 235
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/isbn/9781635575637-L.jpg"
 ---

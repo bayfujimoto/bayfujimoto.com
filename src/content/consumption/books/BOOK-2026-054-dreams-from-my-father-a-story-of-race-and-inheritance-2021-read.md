@@ -13,5 +13,10 @@ display_date: "March 12, 2021"
 sort_date: "2021-03-12"
 rating: 3
 goodreads_link: "https://www.goodreads.com/book/show/88061"
-
+isbn13: "9781921351433"
+isbn: "1921351438"
+dimensions: 135 x 210
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/isbn/9781921351433-L.jpg"
 ---

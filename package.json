@@ -10,6 +10,8 @@
     "ingest:films:csv": "node scripts/ingest-letterboxd-csv.js",
     "ingest:books": "node scripts/ingest-goodreads.js",
     "ingest:books:csv": "node scripts/ingest-goodreads-csv.js",
+    "enrich:books:covers": "node scripts/enrich-book-covers.js",
+    "enrich:books:dimensions": "node scripts/enrich-book-dimensions.js",
     "strip:models": "node scripts/strip-model-textures.js",
     "preview": "vite preview",
     "dev:netlify": "netlify dev"

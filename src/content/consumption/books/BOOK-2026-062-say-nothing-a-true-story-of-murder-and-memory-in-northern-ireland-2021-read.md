@@ -13,5 +13,10 @@ display_date: "July 18, 2021"
 sort_date: "2021-07-18"
 rating: 5
 goodreads_link: "https://www.goodreads.com/book/show/40163119"
-
+isbn13: "9780385521314"
+isbn: "0385521316"
+dimensions: 157 x 235
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/isbn/9780385521314-L.jpg"
 ---

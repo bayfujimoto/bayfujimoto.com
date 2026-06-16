@@ -13,5 +13,8 @@ display_date: "January 24, 2015"
 sort_date: "2015-01-24"
 rating: 5
 goodreads_link: "https://www.goodreads.com/book/show/18401393"
-
+dimensions: 135 x 210
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/id/11447888-L.jpg"
 ---

@@ -13,5 +13,8 @@ display_date: "July 29, 2019"
 sort_date: "2019-07-29"
 rating: 4
 goodreads_link: "https://www.goodreads.com/book/show/42170293"
-
+dimensions: 140 x 210
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/id/6305971-L.jpg"
 ---

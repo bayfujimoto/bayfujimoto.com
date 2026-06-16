@@ -13,5 +13,8 @@ display_date: "November 3, 2020"
 sort_date: "2020-11-03"
 rating: 4
 goodreads_link: "https://www.goodreads.com/book/show/32331524"
-
+dimensions: 140 x 210
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/id/7254516-L.jpg"
 ---

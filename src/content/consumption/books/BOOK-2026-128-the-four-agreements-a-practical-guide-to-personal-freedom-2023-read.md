@@ -12,5 +12,10 @@ date_read: "2023-11-22"
 display_date: "November 22, 2023"
 sort_date: "2023-11-22"
 goodreads_link: "https://www.goodreads.com/book/show/6596"
-
+isbn13: "9781878424501"
+isbn: "1878424505"
+dimensions: 161 x 235
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/isbn/9781878424501-L.jpg"
 ---

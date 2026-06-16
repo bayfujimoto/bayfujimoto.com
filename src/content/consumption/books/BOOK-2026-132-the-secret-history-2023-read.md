@@ -13,5 +13,10 @@ display_date: "December 23, 2023"
 sort_date: "2023-12-23"
 rating: 5
 goodreads_link: "https://www.goodreads.com/book/show/29044"
-
+isbn13: "9781400031702"
+isbn: "1400031702"
+dimensions: 136 x 210
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/isbn/9781400031702-L.jpg"
 ---

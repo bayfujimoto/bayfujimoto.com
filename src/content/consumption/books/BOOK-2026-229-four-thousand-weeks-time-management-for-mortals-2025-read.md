@@ -13,5 +13,10 @@ display_date: "September 11, 2025"
 sort_date: "2025-09-11"
 rating: 4
 goodreads_link: "https://www.goodreads.com/book/show/54785515"
-
+isbn13: "9780374159122"
+isbn: "0374159122"
+dimensions: 153 x 235
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/isbn/9780374159122-L.jpg"
 ---

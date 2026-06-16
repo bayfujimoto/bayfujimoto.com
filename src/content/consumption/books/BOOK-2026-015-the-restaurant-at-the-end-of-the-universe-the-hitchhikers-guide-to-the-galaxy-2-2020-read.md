@@ -13,5 +13,8 @@ display_date: "May 27, 2020"
 sort_date: "2020-05-27"
 rating: 3
 goodreads_link: "https://www.goodreads.com/book/show/39108567"
-
+dimensions: 133 x 210
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/id/12714921-L.jpg"
 ---

@@ -12,5 +12,10 @@ date_read: "2024-06-18"
 display_date: "June 18, 2024"
 sort_date: "2024-06-18"
 goodreads_link: "https://www.goodreads.com/book/show/61686012"
-
+isbn13: "9780593595275"
+isbn: "0593595270"
+dimensions: 156 x 235
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/isbn/9780593595275-L.jpg"
 ---

@@ -13,5 +13,10 @@ display_date: "February 1, 2021"
 sort_date: "2021-02-01"
 rating: 4
 goodreads_link: "https://www.goodreads.com/book/show/16299"
-
+isbn13: "9780312330873"
+isbn: "0312330871"
+dimensions: 134 x 210
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/isbn/9780312330873-L.jpg"
 ---

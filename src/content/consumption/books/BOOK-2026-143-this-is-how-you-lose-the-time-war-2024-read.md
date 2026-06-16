@@ -13,5 +13,8 @@ display_date: "May 11, 2024"
 sort_date: "2024-05-11"
 rating: 5
 goodreads_link: "https://www.goodreads.com/book/show/43352954"
-
+dimensions: 139 x 210
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/id/8665647-L.jpg"
 ---

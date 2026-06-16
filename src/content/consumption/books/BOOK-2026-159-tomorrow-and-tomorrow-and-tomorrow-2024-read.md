@@ -13,5 +13,10 @@ display_date: "October 1, 2024"
 sort_date: "2024-10-01"
 rating: 3
 goodreads_link: "https://www.goodreads.com/book/show/58784475"
-
+isbn13: "9780735243347"
+isbn: "0735243344"
+dimensions: 155 x 235
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/isbn/9780735243347-L.jpg"
 ---

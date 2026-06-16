@@ -13,5 +13,8 @@ display_date: "July 31, 2020"
 sort_date: "2020-07-31"
 rating: 4
 goodreads_link: "https://www.goodreads.com/book/show/50534595"
-
+dimensions: 138 x 210
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/id/4289014-L.jpg"
 ---

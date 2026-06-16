@@ -13,5 +13,9 @@ display_date: "August 17, 2025"
 sort_date: "2025-08-17"
 rating: 3
 goodreads_link: "https://www.goodreads.com/book/show/68428"
-
+isbn13: "9780765311788"
+dimensions: 155 x 235
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/isbn/9780765311788-L.jpg"
 ---

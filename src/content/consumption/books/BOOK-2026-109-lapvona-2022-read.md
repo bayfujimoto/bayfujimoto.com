@@ -13,5 +13,8 @@ display_date: "November 20, 2022"
 sort_date: "2022-11-20"
 rating: 3
 goodreads_link: "https://www.goodreads.com/book/show/59693959"
-
+dimensions: 139 x 210
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/id/12780849-L.jpg"
 ---

@@ -13,5 +13,10 @@ display_date: "May 22, 2020"
 sort_date: "2020-05-22"
 rating: 4
 goodreads_link: "https://www.goodreads.com/book/show/17665637"
-
+isbn13: "9780811220071"
+isbn: "0811220079"
+dimensions: 134 x 210
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/id/14611513-L.jpg"
 ---

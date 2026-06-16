@@ -12,5 +12,10 @@ date_read: "2020-07-14"
 display_date: "July 14, 2020"
 sort_date: "2020-07-14"
 goodreads_link: "https://www.goodreads.com/book/show/41717572"
-
+isbn13: "9781580058827"
+isbn: "1580058825"
+dimensions: 140 x 210
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/isbn/9781580058827-L.jpg"
 ---

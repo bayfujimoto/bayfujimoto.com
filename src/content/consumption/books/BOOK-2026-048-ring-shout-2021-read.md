@@ -13,5 +13,10 @@ display_date: "January 2, 2021"
 sort_date: "2021-01-02"
 rating: 3
 goodreads_link: "https://www.goodreads.com/book/show/49247242"
-
+isbn13: "9781250767028"
+isbn: "1250767024"
+dimensions: 147 x 235
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/isbn/9781250767028-L.jpg"
 ---

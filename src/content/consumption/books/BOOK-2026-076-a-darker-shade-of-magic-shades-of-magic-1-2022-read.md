@@ -13,5 +13,10 @@ display_date: "February 13, 2022"
 sort_date: "2022-02-13"
 rating: 4
 goodreads_link: "https://www.goodreads.com/book/show/22055262"
-
+isbn13: "9780765376459"
+isbn: "0765376458"
+dimensions: 156 x 235
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/isbn/9780765376459-L.jpg"
 ---

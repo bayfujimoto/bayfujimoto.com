@@ -12,5 +12,10 @@ date_read: "2020-07-21"
 display_date: "July 21, 2020"
 sort_date: "2020-07-21"
 goodreads_link: "https://www.goodreads.com/book/show/4069"
-
+isbn13: "9780807014295"
+isbn: "080701429X"
+dimensions: 127 x 210
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/isbn/9780807014295-L.jpg"
 ---

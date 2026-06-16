@@ -13,5 +13,8 @@ display_date: "August 17, 2020"
 sort_date: "2020-08-17"
 rating: 5
 goodreads_link: "https://www.goodreads.com/book/show/34466963"
-
+dimensions: 154 x 235
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/id/8814155-L.jpg"
 ---

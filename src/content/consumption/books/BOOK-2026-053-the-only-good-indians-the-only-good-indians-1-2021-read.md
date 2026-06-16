@@ -13,5 +13,10 @@ display_date: "March 5, 2021"
 sort_date: "2021-03-05"
 rating: 2
 goodreads_link: "https://www.goodreads.com/book/show/52180399"
-
+isbn13: "9781982136451"
+isbn: "1982136456"
+dimensions: 152 x 235
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/isbn/9781982136451-L.jpg"
 ---

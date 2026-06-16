@@ -13,5 +13,10 @@ display_date: "November 22, 2023"
 sort_date: "2023-11-22"
 rating: 4
 goodreads_link: "https://www.goodreads.com/book/show/25561888"
-
+isbn13: "9781508503736"
+isbn: "1508503737"
+dimensions: 140 x 210
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/isbn/9781508503736-L.jpg"
 ---

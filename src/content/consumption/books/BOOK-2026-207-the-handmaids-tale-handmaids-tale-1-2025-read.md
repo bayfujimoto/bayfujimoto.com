@@ -13,6 +13,8 @@ display_date: "May 11, 2025"
 sort_date: "2025-05-11"
 rating: 0
 goodreads_link: "https://www.goodreads.com/book/show/50885244"
+dimensions: 137 x 210
+dimensions_estimated: true
 assets:
-  cover: "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1651677426l/50885244._SY75_.jpg"
+  cover: "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1651677426l/50885244.jpg"
 ---

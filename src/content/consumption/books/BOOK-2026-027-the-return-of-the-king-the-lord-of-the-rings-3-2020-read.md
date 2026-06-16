@@ -13,5 +13,10 @@ display_date: "July 4, 2020"
 sort_date: "2020-07-04"
 rating: 5
 goodreads_link: "https://www.goodreads.com/book/show/49891"
-
+isbn13: "9780618002245"
+isbn: "0618002243"
+dimensions: 134 x 210
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/isbn/9780618002245-L.jpg"
 ---

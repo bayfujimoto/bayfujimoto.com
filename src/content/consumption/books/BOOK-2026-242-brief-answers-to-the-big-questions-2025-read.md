@@ -12,5 +12,10 @@ date_read: "2025-12-11"
 display_date: "December 11, 2025"
 sort_date: "2025-12-11"
 goodreads_link: "https://www.goodreads.com/book/show/40277241"
-
+isbn13: "9781984819192"
+isbn: "1984819194"
+dimensions: 160 x 235
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/isbn/9781984819192-L.jpg"
 ---

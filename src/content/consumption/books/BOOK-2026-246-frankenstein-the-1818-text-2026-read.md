@@ -13,5 +13,10 @@ display_date: "February 12, 2026"
 sort_date: "2026-02-12"
 rating: 4
 goodreads_link: "https://www.goodreads.com/book/show/35031085"
-
+isbn13: "9780143131847"
+isbn: "0143131842"
+dimensions: 137 x 210
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/isbn/9780143131847-L.jpg"
 ---

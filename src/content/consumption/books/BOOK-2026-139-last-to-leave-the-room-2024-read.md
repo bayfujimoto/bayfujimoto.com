@@ -12,5 +12,10 @@ date_read: "2024-03-03"
 display_date: "March 3, 2024"
 sort_date: "2024-03-03"
 goodreads_link: "https://www.goodreads.com/book/show/65213922"
-
+isbn13: "9781250282613"
+isbn: "1250282616"
+dimensions: 154 x 235
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/isbn/9781250282613-L.jpg"
 ---

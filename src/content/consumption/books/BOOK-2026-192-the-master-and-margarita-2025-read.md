@@ -12,5 +12,8 @@ date_read: "2025-01-15"
 display_date: "January 15, 2025"
 sort_date: "2025-01-15"
 goodreads_link: "https://www.goodreads.com/book/show/339472"
-
+dimensions: 120 x 210
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/id/15013644-L.jpg"
 ---

@@ -13,5 +13,8 @@ display_date: "August 21, 2021"
 sort_date: "2021-08-21"
 rating: 2
 goodreads_link: "https://www.goodreads.com/book/show/43798285"
-
+dimensions: 155 x 235
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/id/10712767-L.jpg"
 ---

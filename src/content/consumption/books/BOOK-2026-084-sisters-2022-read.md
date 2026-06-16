@@ -13,5 +13,10 @@ display_date: "April 4, 2022"
 sort_date: "2022-04-04"
 rating: 4
 goodreads_link: "https://www.goodreads.com/book/show/50788186"
-
+isbn13: "9780593188958"
+isbn: "0593188950"
+dimensions: 134 x 210
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/isbn/9780593188958-L.jpg"
 ---

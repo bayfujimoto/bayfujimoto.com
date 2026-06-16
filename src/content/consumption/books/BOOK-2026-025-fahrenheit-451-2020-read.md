@@ -13,5 +13,10 @@ display_date: "June 26, 2020"
 sort_date: "2020-06-26"
 rating: 3
 goodreads_link: "https://www.goodreads.com/book/show/16280156"
-
+isbn13: "9780345342966"
+isbn: "0345342968"
+dimensions: 105 x 174
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/isbn/9780345342966-L.jpg"
 ---

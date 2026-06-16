@@ -12,6 +12,7 @@ import { existsSync, writeFileSync, readFileSync } from "fs";
 import { join } from "path";
 import { glob } from "glob";
 import RSSParser from "rss-parser";
+import { stripGoodreadsSize } from "./utils/book-covers.js";
 
 const CONTENT_DIR = "src/content/consumption/books";
 const COUNTERS_PATH = "src/content/_id-counters.yaml";
@@ -145,7 +146,8 @@ function extractRating(item) {
 function extractCover(item) {
   const content = item.content || item["content:encoded"] || "";
   const m = content.match(/<img[^>]+src="([^">]+)"/);
-  return m ? m[1] : "";
+  // Strip the Goodreads size token so new records store the full-res cover.
+  return m ? stripGoodreadsSize(m[1]) : "";
 }
 
 function extractBookId(item) {

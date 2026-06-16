@@ -13,5 +13,10 @@ display_date: "June 16, 2020"
 sort_date: "2020-06-16"
 rating: 4
 goodreads_link: "https://www.goodreads.com/book/show/25899336"
-
+isbn13: "9780812988413"
+isbn: "0812988418"
+dimensions: 142 x 210
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/isbn/9780812988413-L.jpg"
 ---

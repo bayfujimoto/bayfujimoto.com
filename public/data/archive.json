@@ -10200,7 +10200,14 @@
               "display_date": "February 12, 2026",
               "sort_date": "2026-02-12",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/35031085"
+              "goodreads_link": "https://www.goodreads.com/book/show/35031085",
+              "isbn13": "9780143131847",
+              "isbn": "0143131842",
+              "dimensions": "137 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780143131847-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-244",
@@ -10216,7 +10223,12 @@
               "display_date": "December 28, 2025",
               "sort_date": "2025-12-28",
               "rating": 5,
-              "goodreads_link": "https://www.goodreads.com/book/show/220505376"
+              "goodreads_link": "https://www.goodreads.com/book/show/220505376",
+              "dimensions": "134 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/12376585-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-242",
@@ -10231,7 +10243,14 @@
               "date_read": "2025-12-11",
               "display_date": "December 11, 2025",
               "sort_date": "2025-12-11",
-              "goodreads_link": "https://www.goodreads.com/book/show/40277241"
+              "goodreads_link": "https://www.goodreads.com/book/show/40277241",
+              "isbn13": "9781984819192",
+              "isbn": "1984819194",
+              "dimensions": "160 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9781984819192-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-241",
@@ -10246,7 +10265,14 @@
               "date_read": "2025-12-05",
               "display_date": "December 5, 2025",
               "sort_date": "2025-12-05",
-              "goodreads_link": "https://www.goodreads.com/book/show/25898216"
+              "goodreads_link": "https://www.goodreads.com/book/show/25898216",
+              "isbn13": "9781568584638",
+              "isbn": "1568584636",
+              "dimensions": "155 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9781568584638-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-239",
@@ -10262,7 +10288,14 @@
               "display_date": "December 4, 2025",
               "sort_date": "2025-12-04",
               "rating": 3,
-              "goodreads_link": "https://www.goodreads.com/book/show/7790524"
+              "goodreads_link": "https://www.goodreads.com/book/show/7790524",
+              "isbn13": "9780141041155",
+              "isbn": "0141041153",
+              "dimensions": "137 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780141041155-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-235",
@@ -10277,7 +10310,12 @@
               "date_read": "2025-11-05",
               "display_date": "November 5, 2025",
               "sort_date": "2025-11-05",
-              "goodreads_link": "https://www.goodreads.com/book/show/8889448"
+              "goodreads_link": "https://www.goodreads.com/book/show/8889448",
+              "dimensions": "136 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/419991-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-233",
@@ -10293,7 +10331,14 @@
               "display_date": "September 25, 2025",
               "sort_date": "2025-09-25",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/341631"
+              "goodreads_link": "https://www.goodreads.com/book/show/341631",
+              "isbn13": "9780553378290",
+              "isbn": "0553378295",
+              "dimensions": "139 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780553378290-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-230",
@@ -10309,7 +10354,14 @@
               "display_date": "September 11, 2025",
               "sort_date": "2025-09-11",
               "rating": 2,
-              "goodreads_link": "https://www.goodreads.com/book/show/2429135"
+              "goodreads_link": "https://www.goodreads.com/book/show/2429135",
+              "isbn13": "9780670069019",
+              "isbn": "0670069019",
+              "dimensions": "152 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780670069019-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-229",
@@ -10325,7 +10377,14 @@
               "display_date": "September 11, 2025",
               "sort_date": "2025-09-11",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/54785515"
+              "goodreads_link": "https://www.goodreads.com/book/show/54785515",
+              "isbn13": "9780374159122",
+              "isbn": "0374159122",
+              "dimensions": "153 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780374159122-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-227",
@@ -10341,7 +10400,14 @@
               "display_date": "September 10, 2025",
               "sort_date": "2025-09-10",
               "rating": 2,
-              "goodreads_link": "https://www.goodreads.com/book/show/39945240"
+              "goodreads_link": "https://www.goodreads.com/book/show/39945240",
+              "isbn13": "9780143133582",
+              "isbn": "0143133586",
+              "dimensions": "177 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780143133582-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-225",
@@ -10357,7 +10423,13 @@
               "display_date": "August 17, 2025",
               "sort_date": "2025-08-17",
               "rating": 3,
-              "goodreads_link": "https://www.goodreads.com/book/show/68428"
+              "goodreads_link": "https://www.goodreads.com/book/show/68428",
+              "isbn13": "9780765311788",
+              "dimensions": "155 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780765311788-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-224",
@@ -10373,7 +10445,12 @@
               "display_date": "August 16, 2025",
               "sort_date": "2025-08-16",
               "rating": 3,
-              "goodreads_link": "https://www.goodreads.com/book/show/43612456"
+              "goodreads_link": "https://www.goodreads.com/book/show/43612456",
+              "dimensions": "136 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/488237-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-222",
@@ -10389,7 +10466,14 @@
               "display_date": "August 1, 2025",
               "sort_date": "2025-08-01",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/17645"
+              "goodreads_link": "https://www.goodreads.com/book/show/17645",
+              "isbn13": "9781841957173",
+              "isbn": "1841957178",
+              "dimensions": "155 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9781841957173-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-220",
@@ -10405,7 +10489,14 @@
               "display_date": "July 28, 2025",
               "sort_date": "2025-07-28",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/32277642"
+              "goodreads_link": "https://www.goodreads.com/book/show/32277642",
+              "isbn13": "9781539053446",
+              "isbn": "153905344X",
+              "dimensions": "122 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/4752788-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-218",
@@ -10420,7 +10511,14 @@
               "date_read": "2025-07-19",
               "display_date": "July 19, 2025",
               "sort_date": "2025-07-19",
-              "goodreads_link": "https://www.goodreads.com/book/show/34068470"
+              "goodreads_link": "https://www.goodreads.com/book/show/34068470",
+              "isbn13": "9780393089059",
+              "isbn": "0393089053",
+              "dimensions": "154 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780393089059-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-214",
@@ -10436,7 +10534,14 @@
               "display_date": "June 16, 2025",
               "sort_date": "2025-06-16",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/199635125"
+              "goodreads_link": "https://www.goodreads.com/book/show/199635125",
+              "isbn13": "9780063337879",
+              "isbn": "0063337878",
+              "dimensions": "157 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/14845882-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-213",
@@ -10452,7 +10557,12 @@
               "display_date": "June 15, 2025",
               "sort_date": "2025-06-15",
               "rating": 5,
-              "goodreads_link": "https://www.goodreads.com/book/show/53180064"
+              "goodreads_link": "https://www.goodreads.com/book/show/53180064",
+              "dimensions": "152 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/11048597-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-210",
@@ -10468,7 +10578,14 @@
               "display_date": "June 1, 2025",
               "sort_date": "2025-06-01",
               "rating": 2,
-              "goodreads_link": "https://www.goodreads.com/book/show/15839976"
+              "goodreads_link": "https://www.goodreads.com/book/show/15839976",
+              "isbn13": "9780345539786",
+              "isbn": "0345539788",
+              "dimensions": "155 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780345539786-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-208",
@@ -10501,8 +10618,10 @@
               "sort_date": "2025-05-11",
               "rating": 0,
               "goodreads_link": "https://www.goodreads.com/book/show/50885244",
+              "dimensions": "137 x 210",
+              "dimensions_estimated": true,
               "assets": {
-                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1651677426l/50885244._SY75_.jpg"
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1651677426l/50885244.jpg"
               }
             },
             {
@@ -10519,7 +10638,14 @@
               "display_date": "May 1, 2025",
               "sort_date": "2025-05-01",
               "rating": 3,
-              "goodreads_link": "https://www.goodreads.com/book/show/40180098"
+              "goodreads_link": "https://www.goodreads.com/book/show/40180098",
+              "isbn13": "9780393356687",
+              "isbn": "039335668X",
+              "dimensions": "140 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780393356687-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-202",
@@ -10534,7 +10660,12 @@
               "date_read": "2025-03-30",
               "display_date": "March 30, 2025",
               "sort_date": "2025-03-30",
-              "goodreads_link": "https://www.goodreads.com/book/show/23841432"
+              "goodreads_link": "https://www.goodreads.com/book/show/23841432",
+              "dimensions": "128 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/10312542-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-199",
@@ -10549,7 +10680,12 @@
               "date_read": "2025-03-27",
               "display_date": "March 27, 2025",
               "sort_date": "2025-03-27",
-              "goodreads_link": "https://www.goodreads.com/book/show/60841708"
+              "goodreads_link": "https://www.goodreads.com/book/show/60841708",
+              "dimensions": "137 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/14843121-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-197",
@@ -10580,7 +10716,14 @@
               "display_date": "March 3, 2025",
               "sort_date": "2025-03-03",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/123008485"
+              "goodreads_link": "https://www.goodreads.com/book/show/123008485",
+              "isbn13": "9781804710449",
+              "isbn": "180471044X",
+              "dimensions": "134 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/13190092-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-192",
@@ -10595,7 +10738,12 @@
               "date_read": "2025-01-15",
               "display_date": "January 15, 2025",
               "sort_date": "2025-01-15",
-              "goodreads_link": "https://www.goodreads.com/book/show/339472"
+              "goodreads_link": "https://www.goodreads.com/book/show/339472",
+              "dimensions": "120 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/15013644-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-191",
@@ -10611,7 +10759,14 @@
               "display_date": "January 7, 2025",
               "sort_date": "2025-01-07",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/61884779"
+              "goodreads_link": "https://www.goodreads.com/book/show/61884779",
+              "isbn13": "9781250830913",
+              "isbn": "1250830915",
+              "dimensions": "153 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9781250830913-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-188",
@@ -10642,7 +10797,14 @@
               "display_date": "December 29, 2024",
               "sort_date": "2024-12-29",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/44146682"
+              "goodreads_link": "https://www.goodreads.com/book/show/44146682",
+              "isbn13": "9781593765804",
+              "isbn": "1593765800",
+              "dimensions": "140 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9781593765804-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-185",
@@ -10659,8 +10821,10 @@
               "sort_date": "2024-12-28",
               "rating": 0,
               "goodreads_link": "https://www.goodreads.com/book/show/35396824",
+              "dimensions": "136 x 210",
+              "dimensions_estimated": true,
               "assets": {
-                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1497055684l/35396824._SY75_.jpg"
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1497055684l/35396824.jpg"
               }
             },
             {
@@ -10677,7 +10841,14 @@
               "display_date": "December 23, 2024",
               "sort_date": "2024-12-23",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/203163914"
+              "goodreads_link": "https://www.goodreads.com/book/show/203163914",
+              "isbn13": "9780316427012",
+              "isbn": "0316427012",
+              "dimensions": "151 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780316427012-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-181",
@@ -10723,7 +10894,14 @@
               "date_read": "2024-12-22",
               "display_date": "December 22, 2024",
               "sort_date": "2024-12-22",
-              "goodreads_link": "https://www.goodreads.com/book/show/27161964"
+              "goodreads_link": "https://www.goodreads.com/book/show/27161964",
+              "isbn13": "9780345811363",
+              "isbn": "0345811364",
+              "dimensions": "161 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780345811363-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-174",
@@ -10739,7 +10917,14 @@
               "display_date": "December 12, 2024",
               "sort_date": "2024-12-12",
               "rating": 3,
-              "goodreads_link": "https://www.goodreads.com/book/show/17333223"
+              "goodreads_link": "https://www.goodreads.com/book/show/17333223",
+              "isbn13": "9780316055437",
+              "isbn": "0316055433",
+              "dimensions": "152 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780316055437-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-172",
@@ -10754,7 +10939,14 @@
               "date_read": "2024-11-13",
               "display_date": "November 13, 2024",
               "sort_date": "2024-11-13",
-              "goodreads_link": "https://www.goodreads.com/book/show/46041168"
+              "goodreads_link": "https://www.goodreads.com/book/show/46041168",
+              "isbn13": "9780811228039",
+              "isbn": "0811228037",
+              "dimensions": "154 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/8798943-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-170",
@@ -10771,8 +10963,10 @@
               "sort_date": "2024-11-04",
               "rating": 0,
               "goodreads_link": "https://www.goodreads.com/book/show/13259261",
+              "dimensions": "129 x 210",
+              "dimensions_estimated": true,
               "assets": {
-                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1333349737l/13259261._SY75_.jpg"
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1333349737l/13259261.jpg"
               }
             },
             {
@@ -10790,8 +10984,10 @@
               "sort_date": "2024-11-04",
               "rating": 0,
               "goodreads_link": "https://www.goodreads.com/book/show/40604658",
+              "dimensions": "118 x 210",
+              "dimensions_estimated": true,
               "assets": {
-                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1529604411l/40604658._SY75_.jpg"
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1529604411l/40604658.jpg"
               }
             },
             {
@@ -10809,8 +11005,10 @@
               "sort_date": "2024-11-04",
               "rating": 0,
               "goodreads_link": "https://www.goodreads.com/book/show/1950052",
+              "dimensions": "159 x 235",
+              "dimensions_estimated": true,
               "assets": {
-                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1768601176l/1950052._SX50_.jpg"
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1768601176l/1950052.jpg"
               }
             },
             {
@@ -10827,7 +11025,14 @@
               "display_date": "October 1, 2024",
               "sort_date": "2024-10-01",
               "rating": 3,
-              "goodreads_link": "https://www.goodreads.com/book/show/58784475"
+              "goodreads_link": "https://www.goodreads.com/book/show/58784475",
+              "isbn13": "9780735243347",
+              "isbn": "0735243344",
+              "dimensions": "155 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780735243347-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-157",
@@ -10843,7 +11048,12 @@
               "display_date": "September 16, 2024",
               "sort_date": "2024-09-16",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/158875813"
+              "goodreads_link": "https://www.goodreads.com/book/show/158875813",
+              "dimensions": "140 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/14825862-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-155",
@@ -10858,7 +11068,12 @@
               "date_read": "2024-08-18",
               "display_date": "August 18, 2024",
               "sort_date": "2024-08-18",
-              "goodreads_link": "https://www.goodreads.com/book/show/34326633"
+              "goodreads_link": "https://www.goodreads.com/book/show/34326633",
+              "dimensions": "139 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/2421405-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-152",
@@ -10873,7 +11088,14 @@
               "date_read": "2024-08-13",
               "display_date": "August 13, 2024",
               "sort_date": "2024-08-13",
-              "goodreads_link": "https://www.goodreads.com/book/show/58536046"
+              "goodreads_link": "https://www.goodreads.com/book/show/58536046",
+              "isbn13": "9780063227934",
+              "isbn": "0063227932",
+              "dimensions": "147 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780063227934-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-150",
@@ -10888,7 +11110,14 @@
               "date_read": "2024-08-01",
               "display_date": "August 1, 2024",
               "sort_date": "2024-08-01",
-              "goodreads_link": "https://www.goodreads.com/book/show/60143381"
+              "goodreads_link": "https://www.goodreads.com/book/show/60143381",
+              "isbn13": "9781506482057",
+              "isbn": "1506482058",
+              "dimensions": "157 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9781506482057-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-149",
@@ -10904,7 +11133,14 @@
               "display_date": "July 23, 2024",
               "sort_date": "2024-07-23",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/20447658"
+              "goodreads_link": "https://www.goodreads.com/book/show/20447658",
+              "isbn13": "9780385353496",
+              "isbn": "0385353499",
+              "dimensions": "152 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780385353496-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-147",
@@ -10919,7 +11155,14 @@
               "date_read": "2024-07-21",
               "display_date": "July 21, 2024",
               "sort_date": "2024-07-21",
-              "goodreads_link": "https://www.goodreads.com/book/show/25387716"
+              "goodreads_link": "https://www.goodreads.com/book/show/25387716",
+              "isbn13": "9781590517406",
+              "isbn": "1590517406",
+              "dimensions": "151 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9781590517406-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-145",
@@ -10934,7 +11177,14 @@
               "date_read": "2024-06-18",
               "display_date": "June 18, 2024",
               "sort_date": "2024-06-18",
-              "goodreads_link": "https://www.goodreads.com/book/show/61686012"
+              "goodreads_link": "https://www.goodreads.com/book/show/61686012",
+              "isbn13": "9780593595275",
+              "isbn": "0593595270",
+              "dimensions": "156 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780593595275-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-143",
@@ -10950,7 +11200,12 @@
               "display_date": "May 11, 2024",
               "sort_date": "2024-05-11",
               "rating": 5,
-              "goodreads_link": "https://www.goodreads.com/book/show/43352954"
+              "goodreads_link": "https://www.goodreads.com/book/show/43352954",
+              "dimensions": "139 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/8665647-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-141",
@@ -10966,7 +11221,14 @@
               "display_date": "April 29, 2024",
               "sort_date": "2024-04-29",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/51791252"
+              "goodreads_link": "https://www.goodreads.com/book/show/51791252",
+              "isbn13": "9780525536291",
+              "isbn": "0525536299",
+              "dimensions": "156 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780525536291-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-139",
@@ -10981,7 +11243,14 @@
               "date_read": "2024-03-03",
               "display_date": "March 3, 2024",
               "sort_date": "2024-03-03",
-              "goodreads_link": "https://www.goodreads.com/book/show/65213922"
+              "goodreads_link": "https://www.goodreads.com/book/show/65213922",
+              "isbn13": "9781250282613",
+              "isbn": "1250282616",
+              "dimensions": "154 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9781250282613-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-137",
@@ -10996,7 +11265,14 @@
               "date_read": "2024-02-04",
               "display_date": "February 4, 2024",
               "sort_date": "2024-02-04",
-              "goodreads_link": "https://www.goodreads.com/book/show/58476152"
+              "goodreads_link": "https://www.goodreads.com/book/show/58476152",
+              "isbn13": "9781951142995",
+              "isbn": "1951142993",
+              "dimensions": "136 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9781951142995-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-136",
@@ -11011,7 +11287,14 @@
               "date_read": "2024-02-04",
               "display_date": "February 4, 2024",
               "sort_date": "2024-02-04",
-              "goodreads_link": "https://www.goodreads.com/book/show/40147915"
+              "goodreads_link": "https://www.goodreads.com/book/show/40147915",
+              "isbn13": "9781984817372",
+              "isbn": "198481737X",
+              "dimensions": "159 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9781984817372-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-133",
@@ -11026,7 +11309,14 @@
               "date_read": "2023-12-29",
               "display_date": "December 29, 2023",
               "sort_date": "2023-12-29",
-              "goodreads_link": "https://www.goodreads.com/book/show/50202953"
+              "goodreads_link": "https://www.goodreads.com/book/show/50202953",
+              "isbn13": "9781635575637",
+              "isbn": "163557563X",
+              "dimensions": "166 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9781635575637-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-132",
@@ -11042,7 +11332,14 @@
               "display_date": "December 23, 2023",
               "sort_date": "2023-12-23",
               "rating": 5,
-              "goodreads_link": "https://www.goodreads.com/book/show/29044"
+              "goodreads_link": "https://www.goodreads.com/book/show/29044",
+              "isbn13": "9781400031702",
+              "isbn": "1400031702",
+              "dimensions": "136 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9781400031702-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-129",
@@ -11058,7 +11355,14 @@
               "display_date": "November 22, 2023",
               "sort_date": "2023-11-22",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/25561888"
+              "goodreads_link": "https://www.goodreads.com/book/show/25561888",
+              "isbn13": "9781508503736",
+              "isbn": "1508503737",
+              "dimensions": "140 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9781508503736-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-128",
@@ -11073,7 +11377,14 @@
               "date_read": "2023-11-22",
               "display_date": "November 22, 2023",
               "sort_date": "2023-11-22",
-              "goodreads_link": "https://www.goodreads.com/book/show/6596"
+              "goodreads_link": "https://www.goodreads.com/book/show/6596",
+              "isbn13": "9781878424501",
+              "isbn": "1878424505",
+              "dimensions": "161 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9781878424501-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-125",
@@ -11088,7 +11399,14 @@
               "date_read": "2023-11-11",
               "display_date": "November 11, 2023",
               "sort_date": "2023-11-11",
-              "goodreads_link": "https://www.goodreads.com/book/show/58848151"
+              "goodreads_link": "https://www.goodreads.com/book/show/58848151",
+              "isbn13": "9781538737897",
+              "isbn": "1538737892",
+              "dimensions": "170 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9781538737897-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-124",
@@ -11104,7 +11422,13 @@
               "display_date": "November 11, 2023",
               "sort_date": "2023-11-11",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/9361589"
+              "goodreads_link": "https://www.goodreads.com/book/show/9361589",
+              "isbn13": "9780385534635",
+              "dimensions": "152 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780385534635-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-121",
@@ -11120,7 +11444,14 @@
               "display_date": "November 2, 2023",
               "sort_date": "2023-11-02",
               "rating": 2,
-              "goodreads_link": "https://www.goodreads.com/book/show/60177373"
+              "goodreads_link": "https://www.goodreads.com/book/show/60177373",
+              "isbn13": "9781668002179",
+              "isbn": "1668002175",
+              "dimensions": "155 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9781668002179-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-120",
@@ -11136,7 +11467,14 @@
               "display_date": "October 19, 2023",
               "sort_date": "2023-10-19",
               "rating": 2,
-              "goodreads_link": "https://www.goodreads.com/book/show/53387949"
+              "goodreads_link": "https://www.goodreads.com/book/show/53387949",
+              "isbn13": "9781984825025",
+              "isbn": "198482502X",
+              "dimensions": "154 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9781984825025-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-117",
@@ -11151,7 +11489,14 @@
               "date_read": "2023-10-05",
               "display_date": "October 5, 2023",
               "sort_date": "2023-10-05",
-              "goodreads_link": "https://www.goodreads.com/book/show/59364113"
+              "goodreads_link": "https://www.goodreads.com/book/show/59364113",
+              "isbn13": "9781982163327",
+              "isbn": "1982163321",
+              "dimensions": "140 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9781982163327-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-116",
@@ -11166,7 +11511,14 @@
               "date_read": "2023-06-24",
               "display_date": "June 24, 2023",
               "sort_date": "2023-06-24",
-              "goodreads_link": "https://www.goodreads.com/book/show/59148726"
+              "goodreads_link": "https://www.goodreads.com/book/show/59148726",
+              "isbn13": "9780385548519",
+              "isbn": "0385548516",
+              "dimensions": "156 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780385548519-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-113",
@@ -11182,7 +11534,14 @@
               "display_date": "February 7, 2023",
               "sort_date": "2023-02-07",
               "rating": 3,
-              "goodreads_link": "https://www.goodreads.com/book/show/52578297"
+              "goodreads_link": "https://www.goodreads.com/book/show/52578297",
+              "isbn13": "9780525559474",
+              "isbn": "0525559477",
+              "dimensions": "156 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780525559474-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-111",
@@ -11197,7 +11556,14 @@
               "date_read": "2022-11-27",
               "display_date": "November 27, 2022",
               "sort_date": "2022-11-27",
-              "goodreads_link": "https://www.goodreads.com/book/show/60041102"
+              "goodreads_link": "https://www.goodreads.com/book/show/60041102",
+              "isbn13": "9781637740422",
+              "isbn": "1637740425",
+              "dimensions": "157 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9781637740422-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-109",
@@ -11213,7 +11579,12 @@
               "display_date": "November 20, 2022",
               "sort_date": "2022-11-20",
               "rating": 3,
-              "goodreads_link": "https://www.goodreads.com/book/show/59693959"
+              "goodreads_link": "https://www.goodreads.com/book/show/59693959",
+              "dimensions": "139 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/12780849-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-107",
@@ -11243,7 +11614,12 @@
               "date_read": "2022-11-01",
               "display_date": "November 1, 2022",
               "sort_date": "2022-11-01",
-              "goodreads_link": "https://www.goodreads.com/book/show/40603783"
+              "goodreads_link": "https://www.goodreads.com/book/show/40603783",
+              "dimensions": "135 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/8443905-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-104",
@@ -11258,7 +11634,14 @@
               "date_read": "2022-10-19",
               "display_date": "October 19, 2022",
               "sort_date": "2022-10-19",
-              "goodreads_link": "https://www.goodreads.com/book/show/57717410"
+              "goodreads_link": "https://www.goodreads.com/book/show/57717410",
+              "isbn13": "9780593230572",
+              "isbn": "0593230574",
+              "dimensions": "156 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780593230572-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-102",
@@ -11273,7 +11656,14 @@
               "date_read": "2022-09-10",
               "display_date": "September 10, 2022",
               "sort_date": "2022-09-10",
-              "goodreads_link": "https://www.goodreads.com/book/show/45892276"
+              "goodreads_link": "https://www.goodreads.com/book/show/45892276",
+              "isbn13": "9781250297198",
+              "isbn": "1250297192",
+              "dimensions": "153 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9781250297198-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-100",
@@ -11289,7 +11679,14 @@
               "display_date": "August 27, 2022",
               "sort_date": "2022-08-27",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/53345896"
+              "goodreads_link": "https://www.goodreads.com/book/show/53345896",
+              "isbn13": "9781846276989",
+              "isbn": "1846276985",
+              "dimensions": "141 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9781846276989-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-098",
@@ -11304,7 +11701,14 @@
               "date_read": "2022-08-23",
               "display_date": "August 23, 2022",
               "sort_date": "2022-08-23",
-              "goodreads_link": "https://www.goodreads.com/book/show/52845775"
+              "goodreads_link": "https://www.goodreads.com/book/show/52845775",
+              "isbn13": "9781984820365",
+              "isbn": "1984820362",
+              "dimensions": "156 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9781984820365-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-097",
@@ -11320,7 +11724,14 @@
               "display_date": "August 23, 2022",
               "sort_date": "2022-08-23",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/43868109"
+              "goodreads_link": "https://www.goodreads.com/book/show/43868109",
+              "isbn13": "9780385545686",
+              "isbn": "0385545681",
+              "dimensions": "155 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780385545686-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-095",
@@ -11335,7 +11746,14 @@
               "date_read": "2022-08-08",
               "display_date": "August 8, 2022",
               "sort_date": "2022-08-08",
-              "goodreads_link": "https://www.goodreads.com/book/show/7672"
+              "goodreads_link": "https://www.goodreads.com/book/show/7672",
+              "isbn13": "9780060541835",
+              "isbn": "0060541830",
+              "dimensions": "108 x 174",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780060541835-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-093",
@@ -11351,7 +11769,14 @@
               "display_date": "July 30, 2022",
               "sort_date": "2022-07-30",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/55643292"
+              "goodreads_link": "https://www.goodreads.com/book/show/55643292",
+              "isbn13": "9780316542159",
+              "isbn": "0316542156",
+              "dimensions": "156 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780316542159-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-090",
@@ -11366,7 +11791,14 @@
               "date_read": "2022-06-23",
               "display_date": "June 23, 2022",
               "sort_date": "2022-06-23",
-              "goodreads_link": "https://www.goodreads.com/book/show/42046112"
+              "goodreads_link": "https://www.goodreads.com/book/show/42046112",
+              "isbn13": "9781524759780",
+              "isbn": "1524759783",
+              "dimensions": "155 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9781524759780-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-088",
@@ -11382,7 +11814,14 @@
               "display_date": "June 10, 2022",
               "sort_date": "2022-06-10",
               "rating": 3,
-              "goodreads_link": "https://www.goodreads.com/book/show/58724923"
+              "goodreads_link": "https://www.goodreads.com/book/show/58724923",
+              "isbn13": "9781250819345",
+              "isbn": "1250819342",
+              "dimensions": "156 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9781250819345-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-086",
@@ -11397,7 +11836,14 @@
               "date_read": "2022-05-26",
               "display_date": "May 26, 2022",
               "sort_date": "2022-05-26",
-              "goodreads_link": "https://www.goodreads.com/book/show/30753841"
+              "goodreads_link": "https://www.goodreads.com/book/show/30753841",
+              "isbn13": "9781476753836",
+              "isbn": "1476753830",
+              "dimensions": "187 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9781476753836-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-084",
@@ -11413,7 +11859,14 @@
               "display_date": "April 4, 2022",
               "sort_date": "2022-04-04",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/50788186"
+              "goodreads_link": "https://www.goodreads.com/book/show/50788186",
+              "isbn13": "9780593188958",
+              "isbn": "0593188950",
+              "dimensions": "134 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780593188958-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-081",
@@ -11429,7 +11882,14 @@
               "display_date": "March 5, 2022",
               "sort_date": "2022-03-05",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/31287693"
+              "goodreads_link": "https://www.goodreads.com/book/show/31287693",
+              "isbn13": "9780008173067",
+              "isbn": "0008173060",
+              "dimensions": "133 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780008173067-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-080",
@@ -11445,7 +11905,14 @@
               "display_date": "February 25, 2022",
               "sort_date": "2022-02-25",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/33385229"
+              "goodreads_link": "https://www.goodreads.com/book/show/33385229",
+              "isbn13": "9780062457790",
+              "isbn": "0062457799",
+              "dimensions": "140 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780062457790-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-077",
@@ -11461,7 +11928,14 @@
               "display_date": "February 19, 2022",
               "sort_date": "2022-02-19",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/52476830"
+              "goodreads_link": "https://www.goodreads.com/book/show/52476830",
+              "isbn13": "9781984881663",
+              "isbn": "1984881663",
+              "dimensions": "156 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9781984881663-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-076",
@@ -11477,7 +11951,14 @@
               "display_date": "February 13, 2022",
               "sort_date": "2022-02-13",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/22055262"
+              "goodreads_link": "https://www.goodreads.com/book/show/22055262",
+              "isbn13": "9780765376459",
+              "isbn": "0765376458",
+              "dimensions": "156 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780765376459-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-073",
@@ -11493,7 +11974,14 @@
               "display_date": "January 18, 2022",
               "sort_date": "2022-01-18",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/18143977"
+              "goodreads_link": "https://www.goodreads.com/book/show/18143977",
+              "isbn13": "9781476746586",
+              "isbn": "1476746583",
+              "dimensions": "151 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9781476746586-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-072",
@@ -11509,7 +11997,14 @@
               "display_date": "January 1, 2022",
               "sort_date": "2022-01-01",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/54493401"
+              "goodreads_link": "https://www.goodreads.com/book/show/54493401",
+              "isbn13": "9780593135204",
+              "isbn": "0593135202",
+              "dimensions": "156 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780593135204-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-071",
@@ -11524,7 +12019,14 @@
               "date_read": "2021-12-21",
               "display_date": "December 21, 2021",
               "sort_date": "2021-12-21",
-              "goodreads_link": "https://www.goodreads.com/book/show/41104077"
+              "goodreads_link": "https://www.goodreads.com/book/show/41104077",
+              "isbn13": "9781419729072",
+              "isbn": "1419729071",
+              "dimensions": "156 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9781419729072-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-070",
@@ -11540,7 +12042,14 @@
               "display_date": "November 21, 2021",
               "sort_date": "2021-11-21",
               "rating": 3,
-              "goodreads_link": "https://www.goodreads.com/book/show/168668"
+              "goodreads_link": "https://www.goodreads.com/book/show/168668",
+              "isbn13": "9780684833392",
+              "isbn": "0684833395",
+              "dimensions": "138 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780684833392-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-069",
@@ -11556,7 +12065,12 @@
               "display_date": "November 20, 2021",
               "sort_date": "2021-11-20",
               "rating": 3,
-              "goodreads_link": "https://www.goodreads.com/book/show/41160292"
+              "goodreads_link": "https://www.goodreads.com/book/show/41160292",
+              "dimensions": "142 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/8793546-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-068",
@@ -11572,7 +12086,14 @@
               "display_date": "October 24, 2021",
               "sort_date": "2021-10-24",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/31370662"
+              "goodreads_link": "https://www.goodreads.com/book/show/31370662",
+              "isbn13": "9781489214621",
+              "isbn": "1489214623",
+              "dimensions": "154 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/14175764-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-067",
@@ -11588,7 +12109,12 @@
               "display_date": "October 16, 2021",
               "sort_date": "2021-10-16",
               "rating": 2,
-              "goodreads_link": "https://www.goodreads.com/book/show/43982054"
+              "goodreads_link": "https://www.goodreads.com/book/show/43982054",
+              "dimensions": "156 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/11328148-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-066",
@@ -11604,7 +12130,14 @@
               "display_date": "September 7, 2021",
               "sort_date": "2021-09-07",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/51166519"
+              "goodreads_link": "https://www.goodreads.com/book/show/51166519",
+              "isbn13": "9780062913197",
+              "isbn": "0062913190",
+              "dimensions": "155 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780062913197-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-065",
@@ -11620,7 +12153,12 @@
               "display_date": "August 21, 2021",
               "sort_date": "2021-08-21",
               "rating": 2,
-              "goodreads_link": "https://www.goodreads.com/book/show/43798285"
+              "goodreads_link": "https://www.goodreads.com/book/show/43798285",
+              "dimensions": "155 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/10712767-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-064",
@@ -11636,7 +12174,14 @@
               "display_date": "August 8, 2021",
               "sort_date": "2021-08-08",
               "rating": 5,
-              "goodreads_link": "https://www.goodreads.com/book/show/472331"
+              "goodreads_link": "https://www.goodreads.com/book/show/472331",
+              "isbn13": "9780930289232",
+              "isbn": "0930289234",
+              "dimensions": "142 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780930289232-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-063",
@@ -11652,7 +12197,14 @@
               "display_date": "July 27, 2021",
               "sort_date": "2021-07-27",
               "rating": 5,
-              "goodreads_link": "https://www.goodreads.com/book/show/17061"
+              "goodreads_link": "https://www.goodreads.com/book/show/17061",
+              "isbn13": "9780061139376",
+              "isbn": "0061139378",
+              "dimensions": "137 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780061139376-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-062",
@@ -11668,7 +12220,14 @@
               "display_date": "July 18, 2021",
               "sort_date": "2021-07-18",
               "rating": 5,
-              "goodreads_link": "https://www.goodreads.com/book/show/40163119"
+              "goodreads_link": "https://www.goodreads.com/book/show/40163119",
+              "isbn13": "9780385521314",
+              "isbn": "0385521316",
+              "dimensions": "157 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780385521314-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-061",
@@ -11684,7 +12243,14 @@
               "display_date": "July 10, 2021",
               "sort_date": "2021-07-10",
               "rating": 5,
-              "goodreads_link": "https://www.goodreads.com/book/show/52655061"
+              "goodreads_link": "https://www.goodreads.com/book/show/52655061",
+              "isbn13": "9781948062473",
+              "isbn": "194806247X",
+              "dimensions": "137 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/12003763-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-060",
@@ -11716,7 +12282,14 @@
               "display_date": "May 23, 2021",
               "sort_date": "2021-05-23",
               "rating": 5,
-              "goodreads_link": "https://www.goodreads.com/book/show/19288043"
+              "goodreads_link": "https://www.goodreads.com/book/show/19288043",
+              "isbn13": "9780307588371",
+              "isbn": "0307588378",
+              "dimensions": "137 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780307588371-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-058",
@@ -11732,7 +12305,14 @@
               "display_date": "May 1, 2021",
               "sort_date": "2021-05-01",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/18045891"
+              "goodreads_link": "https://www.goodreads.com/book/show/18045891",
+              "isbn13": "9780297851530",
+              "isbn": "0297851535",
+              "dimensions": "135 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780297851530-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-057",
@@ -11748,7 +12328,14 @@
               "display_date": "April 21, 2021",
               "sort_date": "2021-04-21",
               "rating": 5,
-              "goodreads_link": "https://www.goodreads.com/book/show/24885533"
+              "goodreads_link": "https://www.goodreads.com/book/show/24885533",
+              "isbn13": "9781481442541",
+              "isbn": "1481442546",
+              "dimensions": "156 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9781481442541-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-056",
@@ -11763,7 +12350,14 @@
               "date_read": "2021-04-12",
               "display_date": "April 12, 2021",
               "sort_date": "2021-04-12",
-              "goodreads_link": "https://www.goodreads.com/book/show/41880609"
+              "goodreads_link": "https://www.goodreads.com/book/show/41880609",
+              "isbn13": "9780525562023",
+              "isbn": "0525562028",
+              "dimensions": "157 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780525562023-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-055",
@@ -11779,7 +12373,14 @@
               "display_date": "March 20, 2021",
               "sort_date": "2021-03-20",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/1971304"
+              "goodreads_link": "https://www.goodreads.com/book/show/1971304",
+              "isbn13": "9780670018703",
+              "isbn": "0670018708",
+              "dimensions": "148 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780670018703-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-054",
@@ -11795,7 +12396,14 @@
               "display_date": "March 12, 2021",
               "sort_date": "2021-03-12",
               "rating": 3,
-              "goodreads_link": "https://www.goodreads.com/book/show/88061"
+              "goodreads_link": "https://www.goodreads.com/book/show/88061",
+              "isbn13": "9781921351433",
+              "isbn": "1921351438",
+              "dimensions": "135 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9781921351433-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-053",
@@ -11811,7 +12419,14 @@
               "display_date": "March 5, 2021",
               "sort_date": "2021-03-05",
               "rating": 2,
-              "goodreads_link": "https://www.goodreads.com/book/show/52180399"
+              "goodreads_link": "https://www.goodreads.com/book/show/52180399",
+              "isbn13": "9781982136451",
+              "isbn": "1982136456",
+              "dimensions": "152 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9781982136451-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-052",
@@ -11827,7 +12442,14 @@
               "display_date": "February 1, 2021",
               "sort_date": "2021-02-01",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/16299"
+              "goodreads_link": "https://www.goodreads.com/book/show/16299",
+              "isbn13": "9780312330873",
+              "isbn": "0312330871",
+              "dimensions": "134 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780312330873-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-051",
@@ -11842,7 +12464,14 @@
               "date_read": "2021-01-21",
               "display_date": "January 21, 2021",
               "sort_date": "2021-01-21",
-              "goodreads_link": "https://www.goodreads.com/book/show/51178017"
+              "goodreads_link": "https://www.goodreads.com/book/show/51178017",
+              "isbn13": "9781250209283",
+              "isbn": "1250209285",
+              "dimensions": "152 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9781250209283-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-050",
@@ -11858,7 +12487,14 @@
               "display_date": "January 16, 2021",
               "sort_date": "2021-01-16",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/1091582"
+              "goodreads_link": "https://www.goodreads.com/book/show/1091582",
+              "isbn13": "9780345407856",
+              "isbn": "0345407857",
+              "dimensions": "140 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780345407856-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-049",
@@ -11873,7 +12509,14 @@
               "date_read": "2021-01-05",
               "display_date": "January 5, 2021",
               "sort_date": "2021-01-05",
-              "goodreads_link": "https://www.goodreads.com/book/show/29889255"
+              "goodreads_link": "https://www.goodreads.com/book/show/29889255",
+              "isbn13": "9780143111580",
+              "isbn": "0143111582",
+              "dimensions": "147 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780143111580-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-048",
@@ -11889,7 +12532,14 @@
               "display_date": "January 2, 2021",
               "sort_date": "2021-01-02",
               "rating": 3,
-              "goodreads_link": "https://www.goodreads.com/book/show/49247242"
+              "goodreads_link": "https://www.goodreads.com/book/show/49247242",
+              "isbn13": "9781250767028",
+              "isbn": "1250767024",
+              "dimensions": "147 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9781250767028-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-047",
@@ -11905,7 +12555,14 @@
               "display_date": "January 2, 2021",
               "sort_date": "2021-01-02",
               "rating": 5,
-              "goodreads_link": "https://www.goodreads.com/book/show/17934530"
+              "goodreads_link": "https://www.goodreads.com/book/show/17934530",
+              "isbn13": "9780374104092",
+              "isbn": "0374104093",
+              "dimensions": "143 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780374104092-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-046",
@@ -11921,7 +12578,14 @@
               "display_date": "December 28, 2020",
               "sort_date": "2020-12-28",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/7244"
+              "goodreads_link": "https://www.goodreads.com/book/show/7244",
+              "isbn13": "9780060786502",
+              "isbn": "0060786507",
+              "dimensions": "142 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780060786502-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-045",
@@ -11936,7 +12600,14 @@
               "date_read": "2020-11-10",
               "display_date": "November 10, 2020",
               "sort_date": "2020-11-10",
-              "goodreads_link": "https://www.goodreads.com/book/show/33516538"
+              "goodreads_link": "https://www.goodreads.com/book/show/33516538",
+              "isbn13": "9780735222786",
+              "isbn": "0735222789",
+              "dimensions": "137 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/8814831-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-044",
@@ -11952,7 +12623,14 @@
               "display_date": "November 4, 2020",
               "sort_date": "2020-11-04",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/38058832"
+              "goodreads_link": "https://www.goodreads.com/book/show/38058832",
+              "isbn13": "9781101870617",
+              "isbn": "1101870613",
+              "dimensions": "138 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9781101870617-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-043",
@@ -11968,7 +12646,12 @@
               "display_date": "November 3, 2020",
               "sort_date": "2020-11-03",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/32331524"
+              "goodreads_link": "https://www.goodreads.com/book/show/32331524",
+              "dimensions": "140 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/7254516-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-042",
@@ -11984,7 +12667,12 @@
               "display_date": "September 6, 2020",
               "sort_date": "2020-09-06",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/42270835"
+              "goodreads_link": "https://www.goodreads.com/book/show/42270835",
+              "dimensions": "139 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/8747820-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-041",
@@ -12000,7 +12688,14 @@
               "display_date": "August 23, 2020",
               "sort_date": "2020-08-23",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/42519313"
+              "goodreads_link": "https://www.goodreads.com/book/show/42519313",
+              "isbn13": "9780062913487",
+              "isbn": "0062913484",
+              "dimensions": "139 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780062913487-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-040",
@@ -12016,7 +12711,14 @@
               "display_date": "August 17, 2020",
               "sort_date": "2020-08-17",
               "rating": 2,
-              "goodreads_link": "https://www.goodreads.com/book/show/44318414"
+              "goodreads_link": "https://www.goodreads.com/book/show/44318414",
+              "isbn13": "9780062963673",
+              "isbn": "0062963678",
+              "dimensions": "156 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780062963673-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-039",
@@ -12032,7 +12734,12 @@
               "display_date": "August 17, 2020",
               "sort_date": "2020-08-17",
               "rating": 5,
-              "goodreads_link": "https://www.goodreads.com/book/show/34466963"
+              "goodreads_link": "https://www.goodreads.com/book/show/34466963",
+              "dimensions": "154 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/8814155-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-038",
@@ -12048,7 +12755,14 @@
               "display_date": "August 13, 2020",
               "sort_date": "2020-08-13",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/42973186"
+              "goodreads_link": "https://www.goodreads.com/book/show/42973186",
+              "isbn13": "9781612197500",
+              "isbn": "1612197507",
+              "dimensions": "139 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/8750439-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-037",
@@ -12064,7 +12778,14 @@
               "display_date": "August 7, 2020",
               "sort_date": "2020-08-07",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/9850443"
+              "goodreads_link": "https://www.goodreads.com/book/show/9850443",
+              "isbn13": "9780062041265",
+              "isbn": "0062041266",
+              "dimensions": "156 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780062041265-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-036",
@@ -12080,7 +12801,12 @@
               "display_date": "July 31, 2020",
               "sort_date": "2020-07-31",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/50534595"
+              "goodreads_link": "https://www.goodreads.com/book/show/50534595",
+              "dimensions": "138 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/4289014-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-035",
@@ -12096,7 +12822,14 @@
               "display_date": "July 27, 2020",
               "sort_date": "2020-07-27",
               "rating": 3,
-              "goodreads_link": "https://www.goodreads.com/book/show/44279110"
+              "goodreads_link": "https://www.goodreads.com/book/show/44279110",
+              "isbn13": "9780525522133",
+              "isbn": "0525522131",
+              "dimensions": "136 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780525522133-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-034",
@@ -12111,7 +12844,14 @@
               "date_read": "2020-07-21",
               "display_date": "July 21, 2020",
               "sort_date": "2020-07-21",
-              "goodreads_link": "https://www.goodreads.com/book/show/4069"
+              "goodreads_link": "https://www.goodreads.com/book/show/4069",
+              "isbn13": "9780807014295",
+              "isbn": "080701429X",
+              "dimensions": "127 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780807014295-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-033",
@@ -12127,7 +12867,12 @@
               "display_date": "July 18, 2020",
               "sort_date": "2020-07-18",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/38819529"
+              "goodreads_link": "https://www.goodreads.com/book/show/38819529",
+              "dimensions": "126 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/14627509-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-032",
@@ -12142,7 +12887,14 @@
               "date_read": "2020-07-14",
               "display_date": "July 14, 2020",
               "sort_date": "2020-07-14",
-              "goodreads_link": "https://www.goodreads.com/book/show/41717572"
+              "goodreads_link": "https://www.goodreads.com/book/show/41717572",
+              "isbn13": "9781580058827",
+              "isbn": "1580058825",
+              "dimensions": "140 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9781580058827-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-031",
@@ -12158,7 +12910,14 @@
               "display_date": "July 13, 2020",
               "sort_date": "2020-07-13",
               "rating": 1,
-              "goodreads_link": "https://www.goodreads.com/book/show/17887932"
+              "goodreads_link": "https://www.goodreads.com/book/show/17887932",
+              "isbn13": "9781440567674",
+              "isbn": "1440567670",
+              "dimensions": "165 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9781440567674-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-030",
@@ -12174,7 +12933,12 @@
               "display_date": "July 13, 2020",
               "sort_date": "2020-07-13",
               "rating": 5,
-              "goodreads_link": "https://www.goodreads.com/book/show/45695810"
+              "goodreads_link": "https://www.goodreads.com/book/show/45695810",
+              "dimensions": "137 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/11326818-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-029",
@@ -12205,7 +12969,14 @@
               "date_read": "2020-07-08",
               "display_date": "July 8, 2020",
               "sort_date": "2020-07-08",
-              "goodreads_link": "https://www.goodreads.com/book/show/12082644"
+              "goodreads_link": "https://www.goodreads.com/book/show/12082644",
+              "isbn13": "9780062074249",
+              "isbn": "0062074245",
+              "dimensions": "132 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780062074249-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-027",
@@ -12221,7 +12992,14 @@
               "display_date": "July 4, 2020",
               "sort_date": "2020-07-04",
               "rating": 5,
-              "goodreads_link": "https://www.goodreads.com/book/show/49891"
+              "goodreads_link": "https://www.goodreads.com/book/show/49891",
+              "isbn13": "9780618002245",
+              "isbn": "0618002243",
+              "dimensions": "134 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780618002245-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-026",
@@ -12237,7 +13015,12 @@
               "display_date": "June 29, 2020",
               "sort_date": "2020-06-29",
               "rating": 5,
-              "goodreads_link": "https://www.goodreads.com/book/show/40121378"
+              "goodreads_link": "https://www.goodreads.com/book/show/40121378",
+              "dimensions": "155 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/12539702-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-025",
@@ -12253,7 +13036,14 @@
               "display_date": "June 26, 2020",
               "sort_date": "2020-06-26",
               "rating": 3,
-              "goodreads_link": "https://www.goodreads.com/book/show/16280156"
+              "goodreads_link": "https://www.goodreads.com/book/show/16280156",
+              "isbn13": "9780345342966",
+              "isbn": "0345342968",
+              "dimensions": "105 x 174",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780345342966-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-024",
@@ -12269,7 +13059,12 @@
               "display_date": "June 25, 2020",
               "sort_date": "2020-06-25",
               "rating": 5,
-              "goodreads_link": "https://www.goodreads.com/book/show/43611499"
+              "goodreads_link": "https://www.goodreads.com/book/show/43611499",
+              "dimensions": "139 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/12722746-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-023",
@@ -12285,7 +13080,14 @@
               "display_date": "June 20, 2020",
               "sort_date": "2020-06-20",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/16694"
+              "goodreads_link": "https://www.goodreads.com/book/show/16694",
+              "isbn13": "9780618002238",
+              "isbn": "0618002235",
+              "dimensions": "138 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780618002238-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-022",
@@ -12301,7 +13103,14 @@
               "display_date": "June 16, 2020",
               "sort_date": "2020-06-16",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/25899336"
+              "goodreads_link": "https://www.goodreads.com/book/show/25899336",
+              "isbn13": "9780812988413",
+              "isbn": "0812988418",
+              "dimensions": "142 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780812988413-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-021",
@@ -12317,7 +13126,14 @@
               "display_date": "June 14, 2020",
               "sort_date": "2020-06-14",
               "rating": 3,
-              "goodreads_link": "https://www.goodreads.com/book/show/423092"
+              "goodreads_link": "https://www.goodreads.com/book/show/423092",
+              "isbn13": "9780618002221",
+              "isbn": "0618002227",
+              "dimensions": "140 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780618002221-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-020",
@@ -12332,7 +13148,14 @@
               "date_read": "2020-06-13",
               "display_date": "June 13, 2020",
               "sort_date": "2020-06-13",
-              "goodreads_link": "https://www.goodreads.com/book/show/81779"
+              "goodreads_link": "https://www.goodreads.com/book/show/81779",
+              "isbn13": "9780140449273",
+              "isbn": "0140449272",
+              "dimensions": "133 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780140449273-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-019",
@@ -12348,7 +13171,14 @@
               "display_date": "June 10, 2020",
               "sort_date": "2020-06-10",
               "rating": 3,
-              "goodreads_link": "https://www.goodreads.com/book/show/26312997"
+              "goodreads_link": "https://www.goodreads.com/book/show/26312997",
+              "isbn13": "9780544456259",
+              "isbn": "0544456254",
+              "dimensions": "139 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/8138393-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-018",
@@ -12364,7 +13194,14 @@
               "display_date": "June 8, 2020",
               "sort_date": "2020-06-08",
               "rating": 5,
-              "goodreads_link": "https://www.goodreads.com/book/show/26137012"
+              "goodreads_link": "https://www.goodreads.com/book/show/26137012",
+              "isbn13": "9781101967805",
+              "isbn": "1101967803",
+              "dimensions": "121 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/14875135-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-017",
@@ -12396,7 +13233,12 @@
               "display_date": "May 30, 2020",
               "sort_date": "2020-05-30",
               "rating": 3,
-              "goodreads_link": "https://www.goodreads.com/book/show/50902608"
+              "goodreads_link": "https://www.goodreads.com/book/show/50902608",
+              "dimensions": "137 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/911109-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-015",
@@ -12412,7 +13254,12 @@
               "display_date": "May 27, 2020",
               "sort_date": "2020-05-27",
               "rating": 3,
-              "goodreads_link": "https://www.goodreads.com/book/show/39108567"
+              "goodreads_link": "https://www.goodreads.com/book/show/39108567",
+              "dimensions": "133 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/12714921-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-014",
@@ -12428,7 +13275,14 @@
               "display_date": "May 22, 2020",
               "sort_date": "2020-05-22",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/17665637"
+              "goodreads_link": "https://www.goodreads.com/book/show/17665637",
+              "isbn13": "9780811220071",
+              "isbn": "0811220079",
+              "dimensions": "134 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/14611513-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-013",
@@ -12444,7 +13298,14 @@
               "display_date": "May 21, 2020",
               "sort_date": "2020-05-21",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/13259262"
+              "goodreads_link": "https://www.goodreads.com/book/show/13259262",
+              "isbn13": "9781451678192",
+              "isbn": "1451678193",
+              "dimensions": "108 x 174",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9781451678192-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-012",
@@ -12460,7 +13321,14 @@
               "display_date": "May 17, 2020",
               "sort_date": "2020-05-17",
               "rating": 5,
-              "goodreads_link": "https://www.goodreads.com/book/show/350540"
+              "goodreads_link": "https://www.goodreads.com/book/show/350540",
+              "isbn13": "9780307387899",
+              "isbn": "0307387895",
+              "dimensions": "136 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780307387899-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-011",
@@ -12476,7 +13344,14 @@
               "display_date": "January 1, 2020",
               "sort_date": "2020-01-01",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/7726420"
+              "goodreads_link": "https://www.goodreads.com/book/show/7726420",
+              "isbn13": "9780307379207",
+              "isbn": "0307379205",
+              "dimensions": "150 x 235",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780307379207-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-010",
@@ -12492,7 +13367,12 @@
               "display_date": "January 1, 2020",
               "sort_date": "2020-01-01",
               "rating": 3,
-              "goodreads_link": "https://www.goodreads.com/book/show/2493"
+              "goodreads_link": "https://www.goodreads.com/book/show/2493",
+              "dimensions": "140 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/9009316-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-009",
@@ -12508,7 +13388,14 @@
               "display_date": "January 1, 2020",
               "sort_date": "2020-01-01",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/60931"
+              "goodreads_link": "https://www.goodreads.com/book/show/60931",
+              "isbn13": "9780807083697",
+              "isbn": "0807083690",
+              "dimensions": "142 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780807083697-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-008",
@@ -12523,7 +13410,14 @@
               "date_read": "2020-01-01",
               "display_date": "January 1, 2020",
               "sort_date": "2020-01-01",
-              "goodreads_link": "https://www.goodreads.com/book/show/22632"
+              "goodreads_link": "https://www.goodreads.com/book/show/22632",
+              "isbn13": "9780872205543",
+              "isbn": "0872205541",
+              "dimensions": "135 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/isbn/9780872205543-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-007",
@@ -12539,7 +13433,12 @@
               "display_date": "July 29, 2019",
               "sort_date": "2019-07-29",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/42170293"
+              "goodreads_link": "https://www.goodreads.com/book/show/42170293",
+              "dimensions": "140 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/6305971-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-006",
@@ -12555,7 +13454,12 @@
               "display_date": "July 29, 2019",
               "sort_date": "2019-07-29",
               "rating": 5,
-              "goodreads_link": "https://www.goodreads.com/book/show/42410904"
+              "goodreads_link": "https://www.goodreads.com/book/show/42410904",
+              "dimensions": "139 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/11972784-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-005",
@@ -12571,7 +13475,12 @@
               "display_date": "April 17, 2019",
               "sort_date": "2019-04-17",
               "rating": 4,
-              "goodreads_link": "https://www.goodreads.com/book/show/6485609"
+              "goodreads_link": "https://www.goodreads.com/book/show/6485609",
+              "dimensions": "118 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/6507069-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-004",
@@ -12586,7 +13495,12 @@
               "date_read": "2018-01-23",
               "display_date": "January 23, 2018",
               "sort_date": "2018-01-23",
-              "goodreads_link": "https://www.goodreads.com/book/show/11571298"
+              "goodreads_link": "https://www.goodreads.com/book/show/11571298",
+              "dimensions": "129 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/15162168-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-003",
@@ -12602,7 +13516,12 @@
               "display_date": "January 23, 2018",
               "sort_date": "2018-01-23",
               "rating": 5,
-              "goodreads_link": "https://www.goodreads.com/book/show/8315374"
+              "goodreads_link": "https://www.goodreads.com/book/show/8315374",
+              "dimensions": "141 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/11592698-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-002",
@@ -12618,7 +13537,12 @@
               "display_date": "January 24, 2015",
               "sort_date": "2015-01-24",
               "rating": 5,
-              "goodreads_link": "https://www.goodreads.com/book/show/18401393"
+              "goodreads_link": "https://www.goodreads.com/book/show/18401393",
+              "dimensions": "135 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/11447888-L.jpg"
+              }
             },
             {
               "id": "BOOK-2026-001",
@@ -12634,7 +13558,12 @@
               "display_date": "September 26, 2014",
               "sort_date": "2014-09-26",
               "rating": 3,
-              "goodreads_link": "https://www.goodreads.com/book/show/8690609"
+              "goodreads_link": "https://www.goodreads.com/book/show/8690609",
+              "dimensions": "116 x 210",
+              "dimensions_estimated": true,
+              "assets": {
+                "cover": "https://covers.openlibrary.org/b/id/12947700-L.jpg"
+              }
             }
           ]
         },

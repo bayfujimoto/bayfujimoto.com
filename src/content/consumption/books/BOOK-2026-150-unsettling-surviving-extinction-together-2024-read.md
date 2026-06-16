@@ -12,5 +12,10 @@ date_read: "2024-08-01"
 display_date: "August 1, 2024"
 sort_date: "2024-08-01"
 goodreads_link: "https://www.goodreads.com/book/show/60143381"
-
+isbn13: "9781506482057"
+isbn: "1506482058"
+dimensions: 157 x 235
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/isbn/9781506482057-L.jpg"
 ---

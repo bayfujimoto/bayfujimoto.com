@@ -836,6 +836,9 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
     const GRID_ROWS = 3;
     const gridWrap = el("div", "item-grid-wrap");
     const grid = el("div", "item-grid");
+    // Books render their covers at (estimated) true physical scale, inset and
+    // top-left aligned — scoped via this modifier so other grids are unaffected.
+    if (activeSubKey === "books") grid.classList.add("item-grid--books");
     grid.setAttribute("role", "list");
     grid.setAttribute("aria-label", `${activeSub.label} items`);
 
@@ -1129,6 +1132,8 @@ function buildPlate(item, dims, sidePx, img, zoom = 1) {
   if (ratio > 1) scaleNote += ` · reduced 1:${ratio}`;
   else if (ratio < 1) scaleNote += ` · enlarged 5:1`;
   if (zoom > 1.01) scaleNote += ` · ${zoom.toFixed(1)}×`;
+  // Books are sized by format, not measured — mark the field as an estimate.
+  if (item.dimensions_estimated) scaleNote += " · est.";
 
   return { svg, scaleNote, spanMM, pxPerMM: extent / spanMM, origin };
 }
@@ -1261,7 +1266,10 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
     });
 
     // Physical — extent + dimensions (the calibrated plate carries true size).
-    splitRow(["extent", item.extent, true], ["dimensions", dims ? `${dims.w} × ${dims.h} mm` : null, true]);
+    // A leading "≈" flags an estimated size (books, sized by format) so the mm
+    // plate is not read as a measurement.
+    const dimText = dims ? `${item.dimensions_estimated ? "≈ " : ""}${dims.w} × ${dims.h} mm` : null;
+    splitRow(["extent", item.extent, true], ["dimensions", dimText, true]);
 
     if (item.context_note) {
       const note = el("div", "item-card__note");

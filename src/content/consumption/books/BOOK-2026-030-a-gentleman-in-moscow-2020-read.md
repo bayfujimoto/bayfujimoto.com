@@ -13,5 +13,8 @@ display_date: "July 13, 2020"
 sort_date: "2020-07-13"
 rating: 5
 goodreads_link: "https://www.goodreads.com/book/show/45695810"
-
+dimensions: 137 x 210
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/id/11326818-L.jpg"
 ---

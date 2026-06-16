@@ -13,5 +13,10 @@ display_date: "September 7, 2021"
 sort_date: "2021-09-07"
 rating: 4
 goodreads_link: "https://www.goodreads.com/book/show/51166519"
-
+isbn13: "9780062913197"
+isbn: "0062913190"
+dimensions: 155 x 235
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/isbn/9780062913197-L.jpg"
 ---

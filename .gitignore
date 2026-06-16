@@ -22,3 +22,6 @@ public/assets/
 *.webp
 *.glb
 *.gltf
+
+# Goodreads export — read by ingest/enrichment, never committed
+Goodreads Library Export.csv

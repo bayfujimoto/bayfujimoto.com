@@ -13,5 +13,8 @@ display_date: "September 6, 2020"
 sort_date: "2020-09-06"
 rating: 4
 goodreads_link: "https://www.goodreads.com/book/show/42270835"
-
+dimensions: 139 x 210
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/id/8747820-L.jpg"
 ---

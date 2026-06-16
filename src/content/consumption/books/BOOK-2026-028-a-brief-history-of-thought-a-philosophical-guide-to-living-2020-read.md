@@ -12,5 +12,10 @@ date_read: "2020-07-08"
 display_date: "July 8, 2020"
 sort_date: "2020-07-08"
 goodreads_link: "https://www.goodreads.com/book/show/12082644"
-
+isbn13: "9780062074249"
+isbn: "0062074245"
+dimensions: 132 x 210
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/isbn/9780062074249-L.jpg"
 ---

@@ -13,5 +13,10 @@ display_date: "December 29, 2024"
 sort_date: "2024-12-29"
 rating: 4
 goodreads_link: "https://www.goodreads.com/book/show/44146682"
-
+isbn13: "9781593765804"
+isbn: "1593765800"
+dimensions: 140 x 210
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/isbn/9781593765804-L.jpg"
 ---

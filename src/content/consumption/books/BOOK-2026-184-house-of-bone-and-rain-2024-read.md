@@ -13,5 +13,10 @@ display_date: "December 23, 2024"
 sort_date: "2024-12-23"
 rating: 4
 goodreads_link: "https://www.goodreads.com/book/show/203163914"
-
+isbn13: "9780316427012"
+isbn: "0316427012"
+dimensions: 151 x 235
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/isbn/9780316427012-L.jpg"
 ---

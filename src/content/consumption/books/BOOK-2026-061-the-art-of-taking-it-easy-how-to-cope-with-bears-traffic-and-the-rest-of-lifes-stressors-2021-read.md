@@ -13,5 +13,10 @@ display_date: "July 10, 2021"
 sort_date: "2021-07-10"
 rating: 5
 goodreads_link: "https://www.goodreads.com/book/show/52655061"
-
+isbn13: "9781948062473"
+isbn: "194806247X"
+dimensions: 137 x 210
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/id/12003763-L.jpg"
 ---

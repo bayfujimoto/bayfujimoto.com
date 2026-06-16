@@ -13,5 +13,10 @@ display_date: "July 23, 2024"
 sort_date: "2024-07-23"
 rating: 4
 goodreads_link: "https://www.goodreads.com/book/show/20447658"
-
+isbn13: "9780385353496"
+isbn: "0385353499"
+dimensions: 152 x 235
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/isbn/9780385353496-L.jpg"
 ---

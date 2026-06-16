@@ -13,5 +13,9 @@ display_date: "November 11, 2023"
 sort_date: "2023-11-11"
 rating: 4
 goodreads_link: "https://www.goodreads.com/book/show/9361589"
-
+isbn13: "9780385534635"
+dimensions: 152 x 235
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/isbn/9780385534635-L.jpg"
 ---

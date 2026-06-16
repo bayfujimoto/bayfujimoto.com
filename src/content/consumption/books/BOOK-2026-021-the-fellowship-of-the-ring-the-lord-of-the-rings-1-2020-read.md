@@ -13,5 +13,10 @@ display_date: "June 14, 2020"
 sort_date: "2020-06-14"
 rating: 3
 goodreads_link: "https://www.goodreads.com/book/show/423092"
-
+isbn13: "9780618002221"
+isbn: "0618002227"
+dimensions: 140 x 210
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/isbn/9780618002221-L.jpg"
 ---

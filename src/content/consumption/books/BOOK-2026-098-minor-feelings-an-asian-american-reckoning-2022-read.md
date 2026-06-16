@@ -12,5 +12,10 @@ date_read: "2022-08-23"
 display_date: "August 23, 2022"
 sort_date: "2022-08-23"
 goodreads_link: "https://www.goodreads.com/book/show/52845775"
-
+isbn13: "9781984820365"
+isbn: "1984820362"
+dimensions: 156 x 235
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/isbn/9781984820365-L.jpg"
 ---

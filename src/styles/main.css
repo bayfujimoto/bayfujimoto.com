@@ -564,6 +564,23 @@ body {
   max-height: 100%;
 }
 
+/* Books grid: covers sized to (estimated) true physical scale, inset with a little
+   padding and anchored to the top-left of each cell — reads like objects on a shelf.
+   Scoped to books so the film/music/ephemera grids are untouched. The per-item size
+   comes from the shared dimension scaling in panels.js (renderContent). */
+.item-grid--books .item-grid__cell {
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 0.6rem;
+}
+.item-grid--books .item-grid__btn {
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+.item-grid--books .item-grid__thumb {
+  object-position: left top;
+}
+
 .item-grid__text {
   font-size: var(--text-xs);
   max-width: 80px;
@@ -640,6 +657,8 @@ body {
 }
 /* Two label/value pairs side by side, like the mockup's split fields */
 .item-card__row--split { grid-template-columns: 7.5rem 1fr 6rem 1fr; }
+/* Title row: top-align the label with the top of the (large) title text */
+.item-card__row--title { align-items: start; }
 
 .item-card__row .overlay-label { display: inline; margin: 0; }
 .item-card__row .overlay-value { display: inline; margin: 0; font-size: var(--text-base); }
@@ -650,14 +669,16 @@ body {
    (Consumption). See docs/field-schema.md "Typographic register". */
 .item-card__title {
   font-family: var(--font-serif);
-  font-size: var(--text-md);
+  font-size: var(--text-xl);
   font-weight: var(--weight-normal);
+  line-height: 1.15;
   color: var(--overlay-text);
   margin: 0;
 }
 .item-card__title--mono {
   font-family: var(--font-mono);
-  font-size: var(--text-base);
+  font-size: var(--text-lg);
+  line-height: 1.2;
   letter-spacing: var(--tracking-tight, -0.01em);
 }
 

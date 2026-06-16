@@ -13,5 +13,10 @@ display_date: "June 8, 2020"
 sort_date: "2020-06-08"
 rating: 5
 goodreads_link: "https://www.goodreads.com/book/show/26137012"
-
+isbn13: "9781101967805"
+isbn: "1101967803"
+dimensions: 121 x 210
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/id/14875135-L.jpg"
 ---

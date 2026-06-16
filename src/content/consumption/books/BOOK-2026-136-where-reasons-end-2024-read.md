@@ -12,5 +12,10 @@ date_read: "2024-02-04"
 display_date: "February 4, 2024"
 sort_date: "2024-02-04"
 goodreads_link: "https://www.goodreads.com/book/show/40147915"
-
+isbn13: "9781984817372"
+isbn: "198481737X"
+dimensions: 159 x 235
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/isbn/9781984817372-L.jpg"
 ---

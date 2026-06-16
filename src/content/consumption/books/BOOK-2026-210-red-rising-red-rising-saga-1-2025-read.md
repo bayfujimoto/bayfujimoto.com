@@ -13,5 +13,10 @@ display_date: "June 1, 2025"
 sort_date: "2025-06-01"
 rating: 2
 goodreads_link: "https://www.goodreads.com/book/show/15839976"
-
+isbn13: "9780345539786"
+isbn: "0345539788"
+dimensions: 155 x 235
+dimensions_estimated: true
+assets:
+  cover: "https://covers.openlibrary.org/b/isbn/9780345539786-L.jpg"
 ---

@@ -65,6 +65,10 @@ export const FIELDS = {
   video_source: { label: "source",     example: "e.g. iPhone 14, handheld" }, // capture device; distinct key from provenance `source`
   note_type:    { label: "note_type",  example: "sketch / written note / idea / draft" },
   source:       { label: "source",     example: "e.g. kept from the trip; gift from M." }, // Accumulation provenance
+
+  // ── book identifiers (record-only; back the cover lookup, not a card row) ──
+  isbn13:       { label: "ISBN-13",    mono: true },
+  isbn:         { label: "ISBN",       mono: true },
 };
 
 // ── Per-type config ──────────────────────────────────────────────────────────
@@ -130,6 +134,8 @@ export const RECORD_ONLY = new Set([
   "approximate_date",                          // feeds date-certainty display, not its own row
   "brew_method", "grinder", "ratio", "dose",   // coffee log detail
   "rewatch", "playtime", "tools", "collaborators",
+  "isbn13", "isbn",                            // book identifiers; back cover lookup, not a card row
+  "dimensions_estimated",                      // flags a format-estimated size (books), not measured
 ]);
 
 // ── Resolvers (pure; consumers build the DOM) ────────────────────────────────
