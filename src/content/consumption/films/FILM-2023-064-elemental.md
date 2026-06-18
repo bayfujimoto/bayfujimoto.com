@@ -14,5 +14,6 @@ sort_date: "2023-06-17"
 rating: 2
 rewatch: false
 letterboxd_link: "https://boxd.it/4roNkd"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/m5/2v/be/p5/elemental-1200-1200-675-675-crop-000000.jpg?v=854f77eca1"
 ---

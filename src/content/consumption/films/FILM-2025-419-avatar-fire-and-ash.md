@@ -18,5 +18,6 @@ tags:
   - "@ del amo amc"
   - "imax"
   - "3d"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/j0/xq/n1/lt/pN3eaCl3sqwrerU8UNdp40F2mK0-1200-1200-675-675-crop-000000.jpg?v=f01bc937c1"
 ---

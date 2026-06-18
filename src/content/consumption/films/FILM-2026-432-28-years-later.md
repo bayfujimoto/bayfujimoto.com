@@ -15,5 +15,6 @@ rating: 2.5
 rewatch: false
 letterboxd_link: "https://letterboxd.com/bayf/film/28-years-later/"
 assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/9/9/2/7/8/6/tmdb/8BzWajQ8KttLpX4HIXLbtkdMK91-1200-1200-675-675-crop-000000.jpg?v=c2ea392611"
   poster: "https://a.ltrbxd.com/resized/film-poster/9/9/2/7/8/6/992786-28-years-later-0-600-0-900-crop.jpg?v=014e09c066"
 ---

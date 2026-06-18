@@ -14,5 +14,6 @@ sort_date: "2023-03-25"
 rating: 0
 rewatch: false
 letterboxd_link: "https://boxd.it/424y8L"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/wp/bs/m0/17/john-wick-1200-1200-675-675-crop-000000.jpg?v=a0df875fb4"
 ---

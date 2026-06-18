@@ -17,5 +17,6 @@ letterboxd_link: "https://boxd.it/84wWSp"
 tags:
   - "@ pathé palace"
   - "dolby atmos"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/7/5/4/1/1/5/tmdb/p04MAoWKYZSv5puMtrl4LmT4pD5-1200-1200-675-675-crop-000000.jpg?v=584330d000"
 ---

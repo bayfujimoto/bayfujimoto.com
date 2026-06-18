@@ -14,5 +14,6 @@ sort_date: "2025-05-19"
 rating: 5
 rewatch: true
 letterboxd_link: "https://boxd.it/9KqVMJ"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/4/6/0/8/3/0/tmdb/ulPs1hyDtE22lkDvFk5yUT6EWIW-1200-1200-675-675-crop-000000.jpg?v=cdd8333978"
 ---

@@ -16,5 +16,6 @@ rewatch: true
 letterboxd_link: "https://boxd.it/6F36BZ"
 tags:
   - "@ plane"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/2/9/3/4/6/5/tmdb/mP1ORf8BGcG0bdtHYhqUt9yUhUT-1200-1200-675-675-crop-000000.jpg?v=b3d16f2989"
 ---

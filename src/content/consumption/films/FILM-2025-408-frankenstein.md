@@ -18,5 +18,6 @@ tags:
   - "watched w/ my mom"
   - "@ alamo south lamar"
   - "dolby atmos"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/9/5/8/1/0/0/tmdb/kETew39Vc9nImO7ATKPC5yysbmF-1200-1200-675-675-crop-000000.jpg?v=711ab94807"
 ---

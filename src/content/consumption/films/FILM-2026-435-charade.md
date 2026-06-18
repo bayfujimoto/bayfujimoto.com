@@ -15,5 +15,6 @@ rating: 4
 rewatch: false
 letterboxd_link: "https://letterboxd.com/bayf/film/charade/"
 assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/9j/m6/8v/ia/charade-1200-1200-675-675-crop-000000.jpg?v=7b431c14e1"
   poster: "https://a.ltrbxd.com/resized/film-poster/4/9/1/2/9/49129-charade-0-600-0-900-crop.jpg?v=33e133ab90"
 ---

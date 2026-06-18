@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/4Y1Oqn"
 tags:
   - "@ alamo manhattan"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/69/v1/la/oi/sorcerer-1200-1200-675-675-crop-000000.jpg?v=56b00457f1"
 ---

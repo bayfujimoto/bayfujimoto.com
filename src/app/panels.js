@@ -832,13 +832,20 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
       years = groupByYear(activeSub?.items || []);
     }
 
-    // Item grid — column-major, horizontally scrolling, grouped by year
-    const GRID_ROWS = 3;
+    // Item grid — column-major, horizontally scrolling, grouped by year.
+    // Films pack 4 per column (vs 3 elsewhere); their cells are scaled to 3/4
+    // height in CSS so the grid's overall height is unchanged.
+    const GRID_ROWS = activeSubKey === "films" ? 4 : 3;
     const gridWrap = el("div", "item-grid-wrap");
     const grid = el("div", "item-grid");
     // Books render their covers at (estimated) true physical scale, inset and
     // top-left aligned — scoped via this modifier so other grids are unaffected.
     if (activeSubKey === "books") grid.classList.add("item-grid--books");
+    // Films render as landscape 16:9 backdrop cards with a hover/focus title
+    // reveal (ported from the prior WordPress movie archive). Scoped via this
+    // modifier so other grids keep their square cells.
+    const isFilms = activeSubKey === "films";
+    if (isFilms) grid.classList.add("item-grid--films");
     grid.setAttribute("role", "list");
     grid.setAttribute("aria-label", `${activeSub.label} items`);
 
@@ -864,7 +871,8 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
 
       const cells = el("div", "item-grid__cells");
       const colCount = Math.ceil(yearItems.length / GRID_ROWS);
-      cells.style.gridTemplateRows = `repeat(${GRID_ROWS}, var(--item-grid-cell-height, 160px))`;
+      const rowHeight = isFilms ? "var(--film-cell-height)" : "var(--item-grid-cell-height, 160px)";
+      cells.style.gridTemplateRows = `repeat(${GRID_ROWS}, ${rowHeight})`;
 
       yearItems.forEach((item, i) => {
         const col = Math.floor(i / GRID_ROWS) + 1;
@@ -880,28 +888,50 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
         btn.dataset.itemId = item.id;
         btn.setAttribute("aria-label", item.title);
 
-        const thumbSrc = imageUrl(item.assets?.thumbnail, "thumbnail") || imageUrl(primaryAsset(item), "original");
-        if (thumbSrc) {
-          const img = el("img", "item-grid__thumb");
-          img.src = thumbSrc;
-          img.alt = "";
-          img.loading = "lazy";
-
-          if (item.dimensions && maxDim > 0) {
-            const [wMm, hMm] = item.dimensions.split("x").map(s => parseFloat(s.trim()));
-            if (wMm && hMm) {
-              // Scale relative to the largest item: largest fills ~90% of cell, others shrink proportionally
-              const scale = Math.max(wMm, hMm) / maxDim * 0.9;
-              img.style.width = `${Math.round(scale * 100)}%`;
-              img.style.height = `${Math.round(scale * 100)}%`;
-            }
+        if (isFilms) {
+          // Backdrop fills the 16:9 cell (cover); fall back to a "no reproduction"
+          // placeholder. Poster is intentionally ignored here — film cards are backdrops.
+          const backdrop = imageUrl(item.assets?.backdrop, "original");
+          if (backdrop) {
+            const img = el("img", "item-grid__thumb item-grid__thumb--backdrop");
+            img.src = backdrop;
+            img.alt = "";
+            img.loading = "lazy";
+            btn.appendChild(img);
+          } else {
+            const ph = el("span", "item-grid__noimg");
+            ph.textContent = "no reproduction";
+            btn.appendChild(ph);
           }
-
-          btn.appendChild(img);
+          // Title overlay: hidden by default, revealed on hover/keyboard focus,
+          // always visible on touch (CSS). aria-label on the button covers SR users.
+          const title = el("span", "item-grid__title");
+          title.textContent = item.title;
+          btn.appendChild(title);
         } else {
-          const txt = el("span", "item-grid__text");
-          txt.textContent = item.title;
-          btn.appendChild(txt);
+          const thumbSrc = imageUrl(item.assets?.thumbnail, "thumbnail") || imageUrl(primaryAsset(item), "original");
+          if (thumbSrc) {
+            const img = el("img", "item-grid__thumb");
+            img.src = thumbSrc;
+            img.alt = "";
+            img.loading = "lazy";
+
+            if (item.dimensions && maxDim > 0) {
+              const [wMm, hMm] = item.dimensions.split("x").map(s => parseFloat(s.trim()));
+              if (wMm && hMm) {
+                // Scale relative to the largest item: largest fills ~90% of cell, others shrink proportionally
+                const scale = Math.max(wMm, hMm) / maxDim * 0.9;
+                img.style.width = `${Math.round(scale * 100)}%`;
+                img.style.height = `${Math.round(scale * 100)}%`;
+              }
+            }
+
+            btn.appendChild(img);
+          } else {
+            const txt = el("span", "item-grid__text");
+            txt.textContent = item.title;
+            btn.appendChild(txt);
+          }
         }
 
         btn.addEventListener("click", () => {

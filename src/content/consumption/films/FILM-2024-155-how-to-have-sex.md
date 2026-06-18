@@ -17,5 +17,6 @@ letterboxd_link: "https://boxd.it/5KWGtf"
 tags:
   - "live q&a"
   - "@ alamo brooklyn"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/of/sw/9v/nx/how-to-have-sex-1200-1200-675-675-crop-000000.jpg?v=b8d05a6210"
 ---

@@ -15,5 +15,6 @@ rating: 4
 rewatch: false
 letterboxd_link: "https://letterboxd.com/bayf/film/star-wars-the-mandalorian-and-grogu/"
 assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/1/1/1/1/0/7/3/tmdb/y3sU5eti9O5M2TbGl2yh95FcDHj-1200-1200-675-675-crop-000000.jpg?v=93ab09d25d"
   poster: "https://a.ltrbxd.com/resized/film-poster/1/1/1/1/0/7/3/1111073-star-wars-the-mandalorian-and-grogu-0-600-0-900-crop.jpg?v=5da24e2cba"
 ---

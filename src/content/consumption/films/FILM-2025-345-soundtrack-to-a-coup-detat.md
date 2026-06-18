@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/8UMIg7"
 tags:
   - "@ rice cinema"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/5m/ea/lf/4d/SoundtracktoaCoup-1200-1200-675-675-crop-000000.jpg?v=5de1d5b73b"
 ---

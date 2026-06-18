@@ -17,5 +17,6 @@ letterboxd_link: "https://boxd.it/6Zkjcx"
 tags:
   - "@ cinemark cedar park"
   - "3d"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/4/6/2/8/7/0/tmdb/53yyhK8gQbALqXFJP5pQQ3JNz1r-1200-1200-675-675-crop-000000.jpg?v=daa2ffc1e6"
 ---

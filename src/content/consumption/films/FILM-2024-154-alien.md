@@ -14,5 +14,6 @@ sort_date: "2024-02-02"
 rating: 4.5
 rewatch: false
 letterboxd_link: "https://boxd.it/5Krz25"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/ty/tt/43/of/alien-1979-1200-1200-675-675-crop-000000.jpg?v=e67d042122"
 ---

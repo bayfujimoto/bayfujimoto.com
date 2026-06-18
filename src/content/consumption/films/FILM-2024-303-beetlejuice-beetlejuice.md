@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/7je6aV"
 tags:
   - "@ ugc les halles"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/8/2/3/6/4/8/tmdb/6yqhxQzLlb3ajJ50AoRyUKhng1i-1200-1200-675-675-crop-000000.jpg?v=20fe9b4c5c"
 ---

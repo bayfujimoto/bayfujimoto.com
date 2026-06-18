@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/6oDT6P"
 tags:
   - "@ alamo manhattan"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/py/3e/ef/co/fall%20guy-1200-1200-675-675-crop-000000.jpg?v=7384150e1d"
 ---

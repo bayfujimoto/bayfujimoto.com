@@ -19,5 +19,6 @@ tags:
   - "@ alamo lakeline"
   - "hdr"
   - "dolby atmos"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/5/4/3/9/6/7/tmdb/oZ5C67bMVBVg1QnrYNemiumeIVb-1200-1200-675-675-crop-000000.jpg?v=e9f093d92d"
 ---

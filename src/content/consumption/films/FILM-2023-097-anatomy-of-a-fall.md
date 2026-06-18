@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/565tQJ"
 tags:
   - "@ alamo manhattan"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/wt/mj/4u/pj/anatomy-1200-1200-675-675-crop-000000.jpg?v=b1310de47c"
 ---

@@ -17,5 +17,6 @@ letterboxd_link: "https://boxd.it/7uLIPn"
 tags:
   - "3d"
   - "@ cinematheque francaise"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/5/1/7/7/6/tmdb/bWpwUuSNAh3ZIDbud58tN1L0fTX-1200-1200-675-675-crop-000000.jpg?v=a469934b7e"
 ---

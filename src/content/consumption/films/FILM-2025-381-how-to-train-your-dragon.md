@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/ab8ex9"
 tags:
   - "@ alamo south lamar"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/9/8/0/1/1/6/tmdb/bCMBjnjVR6SjgKERUFCcTHOmhib-1200-1200-675-675-crop-000000.jpg?v=92bbc58590"
 ---

@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/6rfnRt"
 tags:
   - "@ home"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/uc/ob/iv/a3/IMG_3436-1200-1200-675-675-crop-000000.jpg?v=9772946d3c"
 ---

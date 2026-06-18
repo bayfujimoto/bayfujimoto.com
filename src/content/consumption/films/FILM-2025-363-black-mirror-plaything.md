@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/9zHurT"
 tags:
   - "@ home"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/xu/n8/d1/47/plaything-1200-1200-675-675-crop-000000.jpg?v=46a6982c8b"
 ---

@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/5a3gcj"
 tags:
   - "@ alamo brooklyn"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/3t/1d/hb/ay/saltburn-1200-1200-675-675-crop-000000.jpg?v=61f464c6c9"
 ---

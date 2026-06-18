@@ -19,5 +19,6 @@ tags:
   - "watched w/ my mom"
   - "dolby atmos"
   - "hdr"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/9/5/7/0/5/0/tmdb/hO9Ab750T4eFuitc4B4GdUySFjW-1200-1200-675-675-crop-000000.jpg?v=e6e515d3c7"
 ---

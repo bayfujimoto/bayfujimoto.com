@@ -16,5 +16,6 @@ rewatch: true
 letterboxd_link: "https://boxd.it/5sWDYR"
 tags:
   - "@ regal essex market"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/7/0/6/0/8/3/tmdb/xwzJiqdDIlXYeUkPjbOvXZicig2-1200-1200-675-675-crop-000000.jpg?v=dac88cdd7f"
 ---

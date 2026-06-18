@@ -18,5 +18,6 @@ tags:
   - "@ alamo mueller"
   - "watched w/ my mom"
   - "cried"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/5/3/1/3/1/6/tmdb/rMjSSvCVyHVKaG1rOmOOIXlCp0z-1200-1200-675-675-crop-000000.jpg?v=e9ef7063e2"
 ---

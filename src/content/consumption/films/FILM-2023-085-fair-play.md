@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/4WFjPD"
 tags:
   - "@ alamo manhattan"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/an/9k/uk/36/fair-play-1200-1200-675-675-crop-000000.jpg?v=89475b490c"
 ---

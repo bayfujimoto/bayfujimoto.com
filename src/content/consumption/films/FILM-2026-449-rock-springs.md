@@ -15,5 +15,6 @@ rating: 4
 rewatch: false
 letterboxd_link: "https://letterboxd.com/bayf/film/rock-springs-2026/"
 assets:
+  backdrop: "https://image.tmdb.org/t/p/w1280/wivMNppNIsJ3sF7RSzEuRl1J61n.jpg"
   poster: "https://a.ltrbxd.com/resized/film-poster/1/2/5/8/7/2/7/1258727-rock-springs-2026-0-600-0-900-crop.jpg?v=591d1cab95"
 ---

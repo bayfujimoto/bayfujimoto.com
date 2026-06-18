@@ -14,5 +14,6 @@ sort_date: "2023-11-10"
 rating: 0
 rewatch: true
 letterboxd_link: "https://boxd.it/592aIx"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/2e/jp/au/5k/ring-1200-1200-675-675-crop-000000.jpg?v=ddf128efee"
 ---

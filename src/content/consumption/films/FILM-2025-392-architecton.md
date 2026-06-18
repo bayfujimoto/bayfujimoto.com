@@ -17,5 +17,6 @@ letterboxd_link: "https://boxd.it/aB8lL7"
 tags:
   - "@ alamo south lamar"
   - "watched w/ my mom"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/9o/ha/wk/6f/Architecton-1200-1200-675-675-crop-000000.jpg?v=5fe54688ca"
 ---

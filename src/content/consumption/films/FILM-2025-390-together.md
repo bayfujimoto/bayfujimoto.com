@@ -18,5 +18,6 @@ tags:
   - "@ alamo south lamar"
   - "35mm"
   - "watched w/ my mom"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/1/1/2/5/3/9/7/tmdb/uBB1aMga5ngZxsUQL5k36zeW3pB-1200-1200-675-675-crop-000000.jpg?v=e30d8240cf"
 ---

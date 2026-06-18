@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/5Z9Grv"
 tags:
   - "@ home"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/b0/iz/eb/dq/fight-club-1200-1200-675-675-crop-000000.jpg?v=1e6ef6695e"
 ---

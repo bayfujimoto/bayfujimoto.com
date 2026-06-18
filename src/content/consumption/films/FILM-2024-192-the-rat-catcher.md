@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/5Zgyhr"
 tags:
   - "@ home"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/qx/47/hw/gx/rat%20catcher-1200-1200-675-675-crop-000000.jpg?v=a39156d5f4"
 ---

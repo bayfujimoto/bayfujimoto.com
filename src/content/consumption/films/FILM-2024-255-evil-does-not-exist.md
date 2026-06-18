@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/6wmwqZ"
 tags:
   - "@ brooklyn academy of music"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/cb/v9/65/wl/evil-1200-1200-675-675-crop-000000.jpg?v=3811fd94d9"
 ---

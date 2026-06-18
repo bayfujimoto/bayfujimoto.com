@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/c1NLNH"
 tags:
   - "@ alamo lakeline"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/o0/kh/h8/na/wba-1200-1200-675-675-crop-000000.jpg?v=addf08cc56"
 ---

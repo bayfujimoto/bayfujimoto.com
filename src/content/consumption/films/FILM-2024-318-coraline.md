@@ -17,5 +17,6 @@ letterboxd_link: "https://boxd.it/7LwTiH"
 tags:
   - "@ pathé massy"
   - "3d"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/4/2/7/7/9/tmdb/hofnlIyF6bePkgQOpcuRWLvzf15-1200-1200-675-675-crop-000000.jpg?v=5ad6dfb45a"
 ---

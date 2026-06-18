@@ -19,6 +19,7 @@ import matter from "gray-matter";
 import RSSParser from "rss-parser";
 import { watchedDateToCentral } from "./utils/letterboxd-timezone.js";
 import { fetchBackdrop } from "./utils/tmdb.js";
+import { fetchLetterboxdBackdrop } from "./utils/letterboxd-backdrop.js";
 
 const CONTENT_DIR = "src/content/consumption/films";
 const COUNTERS_PATH = "src/content/_id-counters.yaml";
@@ -232,7 +233,11 @@ async function main() {
     const rating = extractRating(item);
     const rewatch = item.rewatch === "Yes";
     const poster = extractPoster(item);
-    const backdrop = await fetchBackdrop(title, year);
+    // Prefer the backdrop Letterboxd shows for this film (the member's chosen
+    // alternative when set); fall back to TMDB. Both are full https URLs.
+    const backdrop =
+      (await fetchLetterboxdBackdrop(letterboxd_link)) ||
+      (await fetchBackdrop(title, year));
 
     const id = nextId(counters);
 

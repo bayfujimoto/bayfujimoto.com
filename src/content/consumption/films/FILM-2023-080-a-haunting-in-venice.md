@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/4RwoPb"
 tags:
   - "@ alamo manhattan"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/k9/mt/hi/os/IMG_2902-1200-1200-675-675-crop-000000.jpg?v=de2602984a"
 ---

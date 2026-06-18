@@ -17,5 +17,6 @@ letterboxd_link: "https://boxd.it/71BRhD"
 tags:
   - "@ home"
   - "watched w/ my dad"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/j2/2f/mh/js/w74S1zre7PEbdCXIYDvjGHk9qhx-1200-1200-675-675-crop-000000.jpg?v=ff1a21b807"
 ---

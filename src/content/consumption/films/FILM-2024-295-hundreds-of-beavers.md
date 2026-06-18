@@ -18,5 +18,6 @@ tags:
   - "@ home"
   - "watched w/ my mom"
   - "watched w/ my dad"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/9/1/9/0/6/8/tmdb/nhHWrkaYvJhCawMAdF2RlVOzYKp-1200-1200-675-675-crop-000000.jpg?v=7a5372b419"
 ---

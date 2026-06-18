@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/67VoYf"
 tags:
   - "@ alamo brooklyn"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/31/0y/ek/6r/1q6Cx3RqP2Tq7WHGr32hKqrWafm-1200-1200-675-675-crop-000000.jpg?v=274c1b31bb"
 ---

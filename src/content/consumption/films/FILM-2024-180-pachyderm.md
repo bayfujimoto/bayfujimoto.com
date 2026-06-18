@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/5UY8h9"
 tags:
   - "@ alamo brooklyn"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/3t/5q/ca/f6/Pachyderm-1200-1200-675-675-crop-000000.jpg?v=882f946ecb"
 ---

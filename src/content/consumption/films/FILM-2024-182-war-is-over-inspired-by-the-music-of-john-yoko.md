@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/5UY7UJ"
 tags:
   - "@ alamo brooklyn"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/fy/qm/42/5g/war%20is%20over-1200-1200-675-675-crop-000000.jpg?v=5ae67491ec"
 ---

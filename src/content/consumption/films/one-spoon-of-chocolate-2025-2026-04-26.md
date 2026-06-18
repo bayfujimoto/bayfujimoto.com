@@ -15,5 +15,6 @@ rating: 1.5
 rewatch: false
 letterboxd_link: "https://letterboxd.com/bayf/film/one-spoon-of-chocolate/"
 assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/1/1/7/3/8/7/7/tmdb/5CdoqLaj2VjMkfXMwUtUwziQJDX-1200-1200-675-675-crop-000000.jpg?v=3ed4115de5"
   poster: "https://a.ltrbxd.com/resized/film-poster/1/1/7/3/8/7/7/1173877-one-spoon-of-chocolate-0-600-0-900-crop.jpg?v=5192bfa03f"
 ---

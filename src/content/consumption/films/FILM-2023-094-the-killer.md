@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/54cfnz"
 tags:
   - "@ alamo manhattan"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/r7/0z/1x/xf/the-killer-2023-1200-1200-675-675-crop-000000.jpg?v=15dadbb22c"
 ---

@@ -14,5 +14,6 @@ sort_date: "2025-07-07"
 rating: 4.5
 rewatch: true
 letterboxd_link: "https://boxd.it/ag3da9"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/x1/ne/1h/4u/sinners-1200-1200-675-675-crop-000000.jpg?v=60c0af98f0"
 ---

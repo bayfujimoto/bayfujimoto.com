@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/5gYNzN"
 tags:
   - "@ alamo manhattan"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/j4/55/mc/0y/raging%20grace-1200-1200-675-675-crop-000000.jpg?v=0fbf84847a"
 ---

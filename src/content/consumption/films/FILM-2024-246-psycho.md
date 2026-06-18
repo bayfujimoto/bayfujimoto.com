@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/6senAJ"
 tags:
   - "@ alamo manhattan"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/0o/2e/y3/39/psycho-1200-1200-675-675-crop-000000.jpg?v=f3bb2c1d1d"
 ---

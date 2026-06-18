@@ -17,5 +17,6 @@ letterboxd_link: "https://boxd.it/6yvsjB"
 tags:
   - "@ amc lincoln center"
   - "imax"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/7/0/5/2/2/1/tmdb/tWMDdYvM22RZ1tk40fseAH0uMZs-1200-1200-675-675-crop-000000.jpg?v=c7443cac8e"
 ---

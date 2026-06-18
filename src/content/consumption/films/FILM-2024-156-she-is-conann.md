@@ -17,5 +17,6 @@ letterboxd_link: "https://boxd.it/5Lwf61"
 tags:
   - "live q&a"
   - "@ alamo manhattan"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/6/4/7/5/8/4/tmdb/pbacvtoCehwQzyn9iWDuiim0N7m-1200-1200-675-675-crop-000000.jpg?v=0ce4b421c4"
 ---

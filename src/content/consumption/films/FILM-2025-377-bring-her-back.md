@@ -17,5 +17,6 @@ letterboxd_link: "https://boxd.it/9RrWcR"
 tags:
   - "@ cinemark cedar park"
   - "watched w/ my mom"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/1/0/3/7/6/2/7/tmdb/obtEtmRbaa6Y0GETpDklXuvUiIT-1200-1200-675-675-crop-000000.jpg?v=a5e83f9f3b"
 ---

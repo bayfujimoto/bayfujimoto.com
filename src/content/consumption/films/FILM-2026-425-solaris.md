@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/cyEewd"
 tags:
   - "@ home"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/ib/ad/we/f3/solaris-1200-1200-675-675-crop-000000.jpg?v=a1adff1505"
 ---

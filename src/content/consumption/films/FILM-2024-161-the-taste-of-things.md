@@ -17,5 +17,6 @@ letterboxd_link: "https://boxd.it/5P4D65"
 tags:
   - "live q&a"
   - "@ film at lincoln center"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/rx/ym/ut/34/pot-1200-1200-675-675-crop-000000.jpg?v=39d170ce55"
 ---

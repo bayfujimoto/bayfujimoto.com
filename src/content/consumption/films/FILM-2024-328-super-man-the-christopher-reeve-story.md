@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/85DPVf"
 tags:
   - "@ plane"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/hv/tb/9e/z9/Christopher-Reeve-1-1200-1200-675-675-crop-000000.jpg?v=33fb4ec36a"
 ---

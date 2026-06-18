@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/551EeT"
 tags:
   - "@ alamo manhattan"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/fv/8z/8n/ef/five-nights-freddies-1200-1200-675-675-crop-000000.jpg?v=c7fa6eee72"
 ---

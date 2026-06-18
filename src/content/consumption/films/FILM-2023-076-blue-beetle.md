@@ -17,5 +17,6 @@ letterboxd_link: "https://boxd.it/4KJ9wB"
 tags:
   - "@ alamo lakeline"
   - "watched w/ my mom"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/kc/xr/qr/v5/blue-beetle-1200-1200-675-675-crop-000000.jpg?v=a20cbdf4e6"
 ---

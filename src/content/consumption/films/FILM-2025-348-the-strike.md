@@ -17,5 +17,6 @@ letterboxd_link: "https://boxd.it/8Zm20T"
 tags:
   - "@ rice cinema"
   - "live q&a"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/wk/y5/n1/nm/rsPjwPMGy5QgX7WusByCXWuhTSB-1200-1200-675-675-crop-000000.jpg?v=b220243eff"
 ---

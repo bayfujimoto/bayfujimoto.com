@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/4Z0Uax"
 tags:
   - "@ alamo manhattan"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/6a/wr/h9/xk/dark%20harvest-1200-1200-675-675-crop-000000.jpg?v=ac485baa77"
 ---

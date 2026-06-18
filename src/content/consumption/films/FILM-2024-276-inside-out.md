@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/6OK7F1"
 tags:
   - "@ home"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/b5/4z/eo/e7/inside-out-2015-1200-1200-675-675-crop-000000.jpg?v=a6967f7121"
 ---

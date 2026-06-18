@@ -17,5 +17,6 @@ letterboxd_link: "https://boxd.it/c2DGjh"
 tags:
   - "watched w/ my mom"
   - "@ alamo south lamar"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/1/1/0/4/3/4/8/tmdb/NPJlNm5PixViH4dmH7pBnAgkzy-1200-1200-675-675-crop-000000.jpg?v=a48f74bf3c"
 ---

@@ -17,5 +17,6 @@ letterboxd_link: "https://boxd.it/71Uzlv"
 tags:
   - "@ alamo village"
   - "watched w/ my mom"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/bd/4t/jj/zo/trap-1200-1200-675-675-crop-000000.jpg?v=a6363887cb"
 ---

@@ -17,5 +17,6 @@ letterboxd_link: "https://boxd.it/8uJjbV"
 tags:
   - "@ regal katy fwy"
   - "imax"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/jx/rq/sh/k6/mN3a8MVeF57XBJCZGthr1nQlkjk-1200-1200-675-675-crop-000000.jpg?v=5e4be71ae8"
 ---

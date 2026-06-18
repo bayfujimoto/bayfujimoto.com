@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/69RpDd"
 tags:
   - "@ alamo manhattan"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/lv/xw/p2/ih/kumiko-1200-1200-675-675-crop-000000.jpg?v=416d022a9a"
 ---

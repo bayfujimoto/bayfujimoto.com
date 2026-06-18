@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/5gNoW1"
 tags:
   - "@ alamo manhattan"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/xe/bw/zr/tt/SILENTNIGHT_Unit_220401_00097RC-1200-1200-675-675-crop-000000.jpg?v=bf8afe4bba"
 ---

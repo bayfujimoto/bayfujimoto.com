@@ -15,5 +15,6 @@ rating: 4.5
 rewatch: false
 letterboxd_link: "https://letterboxd.com/bayf/film/hoppers/"
 assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/1/2/0/7/5/5/7/tmdb/1oqNHtVupMgMQyLcY22vpG5DF58-1200-1200-675-675-crop-000000.jpg?v=cd0c03bd6b"
   poster: "https://a.ltrbxd.com/resized/film-poster/1/2/0/7/5/5/7/1207557-hoppers-0-600-0-900-crop.jpg?v=7711e7b5a7"
 ---

@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/7KbVwv"
 tags:
   - "@ mk2 nation"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/9/5/9/5/4/0/tmdb/ajgUexgMLh7hLM6Lkl5sXFvLbQC-1200-1200-675-675-crop-000000.jpg?v=a990ae9f9a"
 ---

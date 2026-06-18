@@ -19,5 +19,6 @@ tags:
   - "live q&a"
   - "watched w/ my mom"
   - "35mm"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/hh/oc/1s/jt/6LnCtvAjTFmlPnNRtHt9E4ZjswD-1200-1200-675-675-crop-000000.jpg?v=3d737a3cdd"
 ---

@@ -15,5 +15,6 @@ rating: 0
 rewatch: true
 letterboxd_link: "https://letterboxd.com/bayf/film/indiana-jones-and-the-last-crusade/"
 assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/5/1/9/6/1/tmdb/7KGdTzKux4fp5sW7hUM33NWqBU1-1200-1200-675-675-crop-000000.jpg?v=6a9f14e7f0"
   poster: "https://a.ltrbxd.com/resized/film-poster/5/1/9/6/1/51961-indiana-jones-and-the-last-crusade-0-600-0-900-crop.jpg?v=a75f6c2e01"
 ---

@@ -16,5 +16,6 @@ rewatch: true
 letterboxd_link: "https://boxd.it/99Ft5z"
 tags:
   - "@ plane"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/50/tw/wa/80/mad-max-fury-road-1200-1200-675-675-crop-000000.jpg?v=1a543f4e46"
 ---

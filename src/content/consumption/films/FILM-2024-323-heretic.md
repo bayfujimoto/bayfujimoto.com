@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/7VKwR3"
 tags:
   - "@ mk2 bibliotheque"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/1/0/2/5/3/3/1/tmdb/xRyNUmykcRlC1yctv5UPsiSZzTb-1200-1200-675-675-crop-000000.jpg?v=9bca790229"
 ---

@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/5f50al"
 tags:
   - "@ plane"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/tq/qx/6u/a5/green-book-1200-1200-675-675-crop-000000.jpg?v=0999c32e8f"
 ---

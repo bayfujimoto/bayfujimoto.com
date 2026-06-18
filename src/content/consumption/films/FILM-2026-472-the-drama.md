@@ -15,5 +15,6 @@ rating: 4
 rewatch: false
 letterboxd_link: "https://letterboxd.com/bayf/film/the-drama/"
 assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/6o/d7/gp/q6/5qzLJcwua0ETNYgGRIXu40i4lKK-1200-1200-675-675-crop-000000.jpg?v=75557b55bb"
   poster: "https://a.ltrbxd.com/resized/film-poster/1/2/0/5/4/9/4/1205494-the-drama-0-600-0-900-crop.jpg?v=2320acafd5"
 ---

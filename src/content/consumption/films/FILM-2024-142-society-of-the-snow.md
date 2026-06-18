@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/5EcDwp"
 tags:
   - "@ home"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/g3/xz/v1/kl/socienty-snow-1200-1200-675-675-crop-000000.jpg?v=a6a501d6b9"
 ---

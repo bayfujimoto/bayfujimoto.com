@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/5V4qtT"
 tags:
   - "@ home"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/2z/0q/fx/mn/puss-in-boots-last-wish-1200-1200-675-675-crop-000000.jpg?v=61b7291ac4"
 ---

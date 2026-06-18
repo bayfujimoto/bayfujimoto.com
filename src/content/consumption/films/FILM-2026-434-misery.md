@@ -15,5 +15,6 @@ rating: 4.5
 rewatch: false
 letterboxd_link: "https://letterboxd.com/bayf/film/misery/"
 assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/5/0/8/4/6/tmdb/wD4vOTkcxfBOQ6SKIGo71vr7TXD-1200-1200-675-675-crop-000000.jpg?v=2f878ed6fc"
   poster: "https://a.ltrbxd.com/resized/film-poster/5/0/8/4/6/50846-misery-0-600-0-900-crop.jpg?v=f079fc8138"
 ---

@@ -17,5 +17,6 @@ letterboxd_link: "https://boxd.it/6WLVgJ"
 tags:
   - "@ home"
   - "watched w/ my mom"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/7e/bn/an/g1/aliens-1200-1200-675-675-crop-000000.jpg?v=95d4d011df"
 ---

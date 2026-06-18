@@ -16,5 +16,6 @@ rewatch: true
 letterboxd_link: "https://boxd.it/4VLUzZ"
 tags:
   - "@ alamo manhattan"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/ks/lg/c0/z4/doctor-sleep-1200-1200-675-675-crop-000000.jpg?v=4292bf2468"
 ---

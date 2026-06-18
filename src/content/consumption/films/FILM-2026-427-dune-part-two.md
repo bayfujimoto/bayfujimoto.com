@@ -15,5 +15,6 @@ rating: 4.5
 rewatch: true
 letterboxd_link: "https://letterboxd.com/bayf/film/dune-part-two/2/"
 assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/6/1/7/4/4/3/tmdb/24Ov8wnusgnzXwjV1eDm0Lzo5da-1200-1200-675-675-crop-000000.jpg?v=7807982fa6"
   poster: "https://a.ltrbxd.com/resized/film-poster/6/1/7/4/4/3/617443-dune-part-two-0-600-0-900-crop.jpg?v=cc533700f8"
 ---

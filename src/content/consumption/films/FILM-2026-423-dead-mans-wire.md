@@ -18,5 +18,6 @@ tags:
   - "watched w/ my mom"
   - "@ alamo south lamar"
   - "livestream q&a"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/1/1/4/7/2/5/1/tmdb/hH3SYvlrsISBDwnn649YYofswr-1200-1200-675-675-crop-000000.jpg?v=86ae831c45"
 ---

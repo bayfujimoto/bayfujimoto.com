@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/7RjaB3"
 tags:
   - "@ mk2 nation"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/85/h2/uy/p3/gladiator%202-1200-1200-675-675-crop-000000.jpg?v=35462ea2c8"
 ---

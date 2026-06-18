@@ -17,5 +17,6 @@ letterboxd_link: "https://boxd.it/6Du9gB"
 tags:
   - "@ regal times square"
   - "4dx / d-box"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/7/0/5/2/2/1/tmdb/tWMDdYvM22RZ1tk40fseAH0uMZs-1200-1200-675-675-crop-000000.jpg?v=c7443cac8e"
 ---

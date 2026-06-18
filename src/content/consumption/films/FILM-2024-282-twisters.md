@@ -18,5 +18,6 @@ tags:
   - "@ cinemark pflugerville"
   - "watched w/ my mom"
   - "4dx / d-box"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/6/4/1/6/0/8/tmdb/18MUq7quXDTTe9oVYzqb9CbcT5K-1200-1200-675-675-crop-000000.jpg?v=a13c22714d"
 ---

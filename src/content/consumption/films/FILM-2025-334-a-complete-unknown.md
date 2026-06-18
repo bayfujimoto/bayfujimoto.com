@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/8rpVPH"
 tags:
   - "@ regal katy fwy"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/5/8/6/5/8/3/tmdb/4WHRiFgbsAuSJ79fyr8pTXkj4G2-1200-1200-675-675-crop-000000.jpg?v=a5736672e8"
 ---

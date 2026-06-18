@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/5QIKY3"
 tags:
   - "@ home"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/id/j7/ah/3i/war-for-the-planet-of-the-apes-1200-1200-675-675-crop-000000.jpg?v=b28b9bea27"
 ---

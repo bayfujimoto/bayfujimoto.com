@@ -17,5 +17,6 @@ letterboxd_link: "https://boxd.it/8mZDk9"
 tags:
   - "@ amc lakeline"
   - "watched w/ my mom"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/3/3/7/0/3/6/tmdb/fyZ6SDUS4o9jp2EHxfZa3qS9ean-1200-1200-675-675-crop-000000.jpg?v=fcd439ede5"
 ---

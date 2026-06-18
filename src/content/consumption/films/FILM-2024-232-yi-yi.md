@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/6jZVSZ"
 tags:
   - "@ film at lincoln center"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/yc/mc/ep/c9/yi-yi-1200-1200-675-675-crop-000000.jpg?v=b55a45939d"
 ---

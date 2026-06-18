@@ -14,5 +14,6 @@ sort_date: "2023-06-28"
 rating: 2.5
 rewatch: false
 letterboxd_link: "https://boxd.it/4rp5Hf"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/ko/id/qv/k4/transformers-1200-1200-675-675-crop-000000.jpg?v=2d6b2fb4aa"
 ---

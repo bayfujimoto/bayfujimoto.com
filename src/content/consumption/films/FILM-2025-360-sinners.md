@@ -17,5 +17,6 @@ letterboxd_link: "https://boxd.it/9x9yYr"
 tags:
   - "@ regal katy fwy"
   - "imax"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/x1/ne/1h/4u/sinners-1200-1200-675-675-crop-000000.jpg?v=60c0af98f0"
 ---

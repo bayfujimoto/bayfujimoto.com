@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/6BUo3h"
 tags:
   - "@ alamo manhattan"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/3j/1m/pc/b8/spider-man-1200-1200-675-675-crop-000000.jpg?v=e9571e778c"
 ---

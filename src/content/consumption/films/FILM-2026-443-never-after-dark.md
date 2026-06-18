@@ -15,5 +15,6 @@ rating: 5
 rewatch: false
 letterboxd_link: "https://letterboxd.com/bayf/film/never-after-dark/"
 assets:
+  backdrop: "https://image.tmdb.org/t/p/w1280/f0DtHFBZwcR2ag2WoAosAwz7kCz.jpg"
   poster: "https://a.ltrbxd.com/resized/film-poster/1/4/9/6/1/6/7/1496167-never-after-dark-0-600-0-900-crop.jpg?v=b7606651cc"
 ---

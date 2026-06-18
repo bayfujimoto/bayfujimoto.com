@@ -14,5 +14,6 @@ sort_date: "2023-04-03"
 rating: 3.5
 rewatch: false
 letterboxd_link: "https://boxd.it/44xvGB"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/yu/xu/6f/m1/5LVROyoFaTvGoXDYf9gq7NVU8Sj-1200-1200-675-675-crop-000000.jpg?v=8f518c14b6"
 ---

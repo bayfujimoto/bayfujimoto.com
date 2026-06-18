@@ -17,5 +17,6 @@ letterboxd_link: "https://boxd.it/a6p21f"
 tags:
   - "@ home"
   - "watched w/ my mom"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/cr/e4/du/gf/28-days-later-1200-1200-675-675-crop-000000.jpg?v=67c70256aa"
 ---

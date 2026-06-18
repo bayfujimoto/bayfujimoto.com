@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/54Hszb"
 tags:
   - "@ alamo manhattan"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/y3/bv/34/w2/monster-house-175-1200-1200-675-675-crop-000000.jpg?v=f359e07b1e"
 ---

@@ -15,5 +15,6 @@ rating: 5
 rewatch: false
 letterboxd_link: "https://letterboxd.com/bayf/film/ghost-cat-anzu/"
 assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/9/2/8/9/0/7/tmdb/5UflxaeyTHeJ9np6vV3N9fVRB8C-1200-1200-675-675-crop-000000.jpg?v=4b97effcf6"
   poster: "https://a.ltrbxd.com/resized/film-poster/9/2/8/9/0/7/928907-ghost-cat-anzu-0-600-0-900-crop.jpg?v=eee0ba6762"
 ---

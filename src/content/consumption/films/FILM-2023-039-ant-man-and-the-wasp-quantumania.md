@@ -14,5 +14,6 @@ sort_date: "2023-02-19"
 rating: 2.5
 rewatch: false
 letterboxd_link: "https://boxd.it/3SFhD7"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/4e/v8/5x/1u/ant-man-and-the-wasp-quantumania-1200-1200-675-675-crop-000000.jpg?v=c4b9e3eb13"
 ---

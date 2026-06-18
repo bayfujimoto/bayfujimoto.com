@@ -14,5 +14,6 @@ sort_date: "2023-01-10"
 rating: 4
 rewatch: false
 letterboxd_link: "https://boxd.it/3HmZuV"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/nw/ib/zb/m3/glass-onion-a-knives-out-mystery-1200-1200-675-675-crop-000000.jpg?v=f5259913a8"
 ---

@@ -14,5 +14,6 @@ sort_date: "2023-01-20"
 rating: 0
 rewatch: false
 letterboxd_link: "https://boxd.it/3JYyJ9"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/l4/7m/g2/wa/crimes-of-future-2022-1200-1200-675-675-crop-000000.jpg?v=2764ae72dc"
 ---

@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/8Zz4zH"
 tags:
   - "@ regal edwards greenway"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/sk/pb/7i/s9/whc8Bf63nGPL2hqEwjRFMmjmwmu-1200-1200-675-675-crop-000000.jpg?v=957bff6e50"
 ---

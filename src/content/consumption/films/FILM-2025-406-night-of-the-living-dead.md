@@ -18,5 +18,6 @@ tags:
   - "watched w/ my mom"
   - "@ alamo lakeline"
   - "director's cut"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/3/9/7/9/3/tmdb/rk9W8tGQYfe06BPl4V7bfz1J2z9-1200-1200-675-675-crop-000000.jpg?v=298b51ffd1"
 ---

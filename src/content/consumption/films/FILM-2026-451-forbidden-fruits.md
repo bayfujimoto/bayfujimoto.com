@@ -15,5 +15,6 @@ rating: 3.5
 rewatch: false
 letterboxd_link: "https://letterboxd.com/bayf/film/forbidden-fruits-2026/"
 assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/ro/ux/7u/hq/fruits-1200-1200-675-675-crop-000000.jpg?v=254c62c940"
   poster: "https://a.ltrbxd.com/resized/film-poster/1/3/2/7/7/7/5/1327775-forbidden-fruits-2026-0-600-0-900-crop.jpg?v=5da60e1c9a"
 ---

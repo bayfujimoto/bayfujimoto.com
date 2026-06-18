@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/5ntYEv"
 tags:
   - "@ alamo manhattan"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/yp/z4/la/qy/miami-vice-1200-1200-675-675-crop-000000.jpg?v=b1d5d80d22"
 ---

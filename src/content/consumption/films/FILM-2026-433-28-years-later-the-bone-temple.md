@@ -15,5 +15,6 @@ rating: 3.5
 rewatch: false
 letterboxd_link: "https://letterboxd.com/bayf/film/28-years-later-the-bone-temple/"
 assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/1/1/5/6/4/0/9/tmdb/wVOgNmrVojRgeY72soOo1Y5mHO7-1200-1200-675-675-crop-000000.jpg?v=355cb897f0"
   poster: "https://a.ltrbxd.com/resized/film-poster/1/1/5/6/4/0/9/1156409-28-years-later-the-bone-temple-0-600-0-900-crop.jpg?v=131058c6ff"
 ---

@@ -17,5 +17,6 @@ letterboxd_link: "https://boxd.it/bSo4fB"
 tags:
   - "watched w/ my mom"
   - "@ home"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/8n/5k/0j/t4/the-babadook-1200-1200-675-675-crop-000000.jpg?v=a8a93c11f2"
 ---

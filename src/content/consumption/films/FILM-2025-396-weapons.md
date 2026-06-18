@@ -18,5 +18,6 @@ tags:
   - "watched w/ my mom"
   - "@ alamo lakeline"
   - "dolby atmos"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/l7/cx/wv/3u/sQUvdgUcAX3YR5otU1RuCkIPaJX-1200-1200-675-675-crop-000000.jpg?v=0d9de97e26"
 ---

@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/6nuvV3"
 tags:
   - "@ alamo manhattan"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/kg/73/n5/eo/the-mummy-1200-1200-675-675-crop-000000.jpg?v=ba30ca1520"
 ---

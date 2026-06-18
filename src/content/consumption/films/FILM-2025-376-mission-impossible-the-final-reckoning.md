@@ -17,5 +17,6 @@ letterboxd_link: "https://boxd.it/9QCobj"
 tags:
   - "@ bob bullock"
   - "imax"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/5/0/3/4/0/3/tmdb/nLejsHRi3VnsHy7yZ38YHeJWz95-1200-1200-675-675-crop-000000.jpg?v=ebf8bc0be0"
 ---

@@ -17,5 +17,6 @@ letterboxd_link: "https://boxd.it/6vfZ9b"
 tags:
   - "live q&a"
   - "@ alamo manhattan"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/ze/t0/u4/rj/TheLastStopinYumaCounty-WellGoUSA-OfficialStill-1340x754-7-1200-1200-675-675-crop-000000.jpg?v=faf4a602c7"
 ---

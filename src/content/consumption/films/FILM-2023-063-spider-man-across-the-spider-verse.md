@@ -14,5 +14,6 @@ sort_date: "2023-06-09"
 rating: 4
 rewatch: true
 letterboxd_link: "https://boxd.it/4m7WrN"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/22/gj/k3/ql/spider-verse-1200-1200-675-675-crop-000000.jpg?v=259dfdc695"
 ---

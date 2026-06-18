@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/5RWzoP"
 tags:
   - "@ home"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/ww/kz/nd/19/fargo-1200-1200-675-675-crop-000000.jpg?v=683482948f"
 ---

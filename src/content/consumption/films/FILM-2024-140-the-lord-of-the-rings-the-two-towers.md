@@ -16,5 +16,6 @@ rewatch: true
 letterboxd_link: "https://boxd.it/5Da3nX"
 tags:
   - "@ alamo manhattan"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/l5/j6/zw/ib/lotr-the-two-towers-1200-1200-675-675-crop-000000.jpg?v=c3ae1188ea"
 ---

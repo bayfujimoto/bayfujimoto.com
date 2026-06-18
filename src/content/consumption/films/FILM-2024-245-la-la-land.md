@@ -16,5 +16,6 @@ rewatch: true
 letterboxd_link: "https://boxd.it/6s0l31"
 tags:
   - "@ home"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/a6/th/cz/kf/la-la-land-1200-1200-675-675-crop-000000.jpg?v=874a46b231"
 ---

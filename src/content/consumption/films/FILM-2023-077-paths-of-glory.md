@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/4OYuyJ"
 tags:
   - "@ alamo manhattan"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/y6/ra/j1/o7/paths-of-glory-1200-1200-675-675-crop-000000.jpg?v=d8777ff289"
 ---

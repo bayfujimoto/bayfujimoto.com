@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/5UYinV"
 tags:
   - "@ alamo brooklyn"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/te/6g/go/2v/Wild_Summon_Divers2-1200-1200-675-675-crop-000000.jpg?v=46bfdb5ba8"
 ---

@@ -16,5 +16,6 @@ rewatch: true
 letterboxd_link: "https://boxd.it/5P4FNv"
 tags:
   - "@ home"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/h9/wk/52/ro/rise-planet-of-the-apes-110-1200-1200-675-675-crop-000000.jpg?v=ba7346832b"
 ---

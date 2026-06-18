@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/7LAzVn"
 tags:
   - "@ maison du japon"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/sm/cu/z2/1z/shin-godzilla-1200-1200-675-675-crop-000000.jpg?v=6d76af80c8"
 ---

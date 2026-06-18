@@ -14,5 +14,6 @@ sort_date: "2025-05-13"
 rating: 4.5
 rewatch: false
 letterboxd_link: "https://boxd.it/9HbLaj"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/4q/zh/pr/q9/election-1200-1200-675-675-crop-000000.jpg?v=739956e6c7"
 ---

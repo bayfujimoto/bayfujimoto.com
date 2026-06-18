@@ -16,6 +16,7 @@ import { join, resolve } from "path";
 import { createInterface } from "readline";
 import { watchedDateToCentral } from "./utils/letterboxd-timezone.js";
 import { fetchBackdrop } from "./utils/tmdb.js";
+import { fetchLetterboxdBackdrop } from "./utils/letterboxd-backdrop.js";
 
 // --- CSV parser (no external dep needed for simple CSVs, but we use csv-parser) ---
 import csvParser from "csv-parser";
@@ -176,7 +177,11 @@ async function main() {
 
     // Letterboxd poster from RSS isn't available in CSV export; leave blank
     const poster = "";
-    const backdrop = await fetchBackdrop(title, year);
+    // Prefer the backdrop Letterboxd shows for this film (the member's chosen
+    // alternative when set); fall back to TMDB. Both are full https URLs.
+    const backdrop =
+      (await fetchLetterboxdBackdrop(letterboxd_link)) ||
+      (await fetchBackdrop(title, year));
 
     const id = nextId(counters);
 

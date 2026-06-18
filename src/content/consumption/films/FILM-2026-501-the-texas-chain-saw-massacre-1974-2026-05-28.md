@@ -15,5 +15,6 @@ rating: 0
 rewatch: false
 letterboxd_link: "https://letterboxd.com/bayf/film/the-texas-chain-saw-massacre/"
 assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/3/1/9/8/5/tmdb/euCXIa7xXMRZCgNqqzEP74qcwEz-1200-1200-675-675-crop-000000.jpg?v=9a118ad010"
   poster: "https://a.ltrbxd.com/resized/film-poster/3/1/9/8/5/31985-the-texas-chain-saw-massacre-0-600-0-900-crop.jpg?v=c63b3f1958"
 ---

@@ -17,5 +17,6 @@ letterboxd_link: "https://boxd.it/bd9IkH"
 tags:
   - "70mm"
   - "@ alamo south lamar"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/9/5/1/2/7/7/tmdb/ev06XwWLSoTG2DkLlsllAhlWGsk-1200-1200-675-675-crop-000000.jpg?v=cf6bcc5601"
 ---

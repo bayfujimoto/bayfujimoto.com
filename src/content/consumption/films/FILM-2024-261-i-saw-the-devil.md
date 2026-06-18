@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/6zoUGN"
 tags:
   - "@ alamo manhattan"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/dl/mo/ob/og/i-saw-the-devil-1200-1200-675-675-crop-000000.jpg?v=dbdd482dbb"
 ---

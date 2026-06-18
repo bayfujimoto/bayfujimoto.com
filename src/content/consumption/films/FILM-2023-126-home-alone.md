@@ -14,5 +14,6 @@ sort_date: "2023-12-24"
 rating: 0
 rewatch: false
 letterboxd_link: "https://boxd.it/5oTVuD"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/p9/kb/nu/yr/home-alone-1200-1200-675-675-crop-000000.jpg?v=8d16e0af19"
 ---

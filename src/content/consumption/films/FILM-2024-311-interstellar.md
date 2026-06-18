@@ -16,5 +16,6 @@ rewatch: true
 letterboxd_link: "https://boxd.it/7vJ5Dn"
 tags:
   - "@ pathé les fauvettes"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/1/1/7/6/2/1/tmdb/dhnlmqSCXcbdD3hABJa2Ccyc7qa-1200-1200-675-675-crop-000000.jpg?v=9f6079898f"
 ---

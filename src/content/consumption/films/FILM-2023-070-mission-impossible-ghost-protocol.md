@@ -14,5 +14,6 @@ sort_date: "2023-07-16"
 rating: 4
 rewatch: true
 letterboxd_link: "https://boxd.it/4wO6HF"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/t6/76/gl/f0/mission-impossible-ghost-protocol-1200-1200-675-675-crop-000000.jpg?v=5dc653fe92"
 ---

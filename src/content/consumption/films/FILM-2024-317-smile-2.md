@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/7LeslD"
 tags:
   - "@ ugc bercy"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/9/9/2/3/6/0/tmdb/lDPrE6ASD4x8feRQukYtUY0KI4D-1200-1200-675-675-crop-000000.jpg?v=9e87da79c0"
 ---

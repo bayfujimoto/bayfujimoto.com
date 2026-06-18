@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/4XVk1F"
 tags:
   - "@ alamo manhattan"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/by/ie/vm/7s/strange-1200-1200-675-675-crop-000000.jpg?v=de6796aa1c"
 ---

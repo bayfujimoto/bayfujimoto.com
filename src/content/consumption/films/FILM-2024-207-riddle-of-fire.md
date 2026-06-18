@@ -17,5 +17,6 @@ letterboxd_link: "https://boxd.it/66f1fD"
 tags:
   - "live q&a"
   - "@ alamo manhattan"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/ue/yd/dq/p3/riddle-1200-1200-675-675-crop-000000.jpg?v=9e69b335d0"
 ---

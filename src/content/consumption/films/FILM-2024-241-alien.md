@@ -16,5 +16,6 @@ rewatch: true
 letterboxd_link: "https://boxd.it/6odR67"
 tags:
   - "@ alamo manhattan"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/ty/tt/43/of/alien-1979-1200-1200-675-675-crop-000000.jpg?v=e67d042122"
 ---

@@ -15,5 +15,6 @@ rating: 3.5
 rewatch: false
 letterboxd_link: "https://letterboxd.com/bayf/film/buddy-2026/"
 assets:
+  backdrop: "https://image.tmdb.org/t/p/w1280/z1VcsfkSHhByeqloNnu7m0YRB9v.jpg"
   poster: "https://a.ltrbxd.com/resized/film-poster/1/3/8/9/7/1/4/1389714-buddy-2026-0-600-0-900-crop.jpg?v=be7ea948e0"
 ---

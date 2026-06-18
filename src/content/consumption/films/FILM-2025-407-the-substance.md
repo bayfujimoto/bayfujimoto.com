@@ -17,5 +17,6 @@ letterboxd_link: "https://boxd.it/brW8BL"
 tags:
   - "@ home"
   - "watched w/ my mom"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/8/3/8/1/4/0/tmdb/b0itXhS69X33BvLi7uWjUZQs9MB-1200-1200-675-675-crop-000000.jpg?v=46cd0509f4"
 ---

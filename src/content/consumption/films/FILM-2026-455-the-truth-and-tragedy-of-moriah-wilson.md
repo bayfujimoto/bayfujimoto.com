@@ -15,5 +15,6 @@ rating: 0
 rewatch: false
 letterboxd_link: "https://letterboxd.com/bayf/film/the-truth-and-tragedy-of-moriah-wilson/"
 assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/1/4/9/6/2/9/7/tmdb/xQFxoGYtwMBAq89DPa9gUcLlOdA-1200-1200-675-675-crop-000000.jpg?v=aa7c73c784"
   poster: "https://a.ltrbxd.com/resized/film-poster/1/4/9/6/2/9/7/1496297-the-truth-and-tragedy-of-moriah-wilson-0-600-0-900-crop.jpg?v=fba730264c"
 ---

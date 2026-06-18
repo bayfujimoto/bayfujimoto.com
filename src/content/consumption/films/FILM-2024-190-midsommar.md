@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/5Z9wLv"
 tags:
   - "@ home"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/5q/jr/xl/0r/midsommar-1200-1200-675-675-crop-000000.jpg?v=620571be01"
 ---

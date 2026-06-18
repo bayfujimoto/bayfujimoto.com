@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/5UY7eN"
 tags:
   - "@ alamo brooklyn"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/k7/dg/62/25/letter%20to%20a%20pig-1200-1200-675-675-crop-000000.jpg?v=39f28459d5"
 ---

@@ -14,5 +14,6 @@ sort_date: "2022-10-25"
 rating: 0
 rewatch: false
 letterboxd_link: "https://boxd.it/3mFY3X"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/4w/l8/yd/df/wOe1RnoJelVCADEgq3oK1Hd5wtZ-1200-1200-675-675-crop-000000.jpg?v=4bedef8251"
 ---

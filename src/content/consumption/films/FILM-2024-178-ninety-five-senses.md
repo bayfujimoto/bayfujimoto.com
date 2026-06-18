@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/5UY7pV"
 tags:
   - "@ alamo brooklyn"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/rk/up/4a/0j/NinetyFiveSenses-1200-1200-675-675-crop-000000.jpg?v=0ce99cbb62"
 ---

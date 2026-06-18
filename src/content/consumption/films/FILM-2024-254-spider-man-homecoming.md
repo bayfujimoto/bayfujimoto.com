@@ -16,5 +16,6 @@ rewatch: true
 letterboxd_link: "https://boxd.it/6w0hn3"
 tags:
   - "@ alamo manhattan"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/lb/g8/9t/dr/spider-man-homecoming-1200-1200-675-675-crop-000000.jpg?v=a0c830f403"
 ---

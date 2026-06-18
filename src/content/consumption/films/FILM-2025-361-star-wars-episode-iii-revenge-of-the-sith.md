@@ -17,5 +17,6 @@ letterboxd_link: "https://boxd.it/9x9up3"
 tags:
   - "@ regal edwards greenway"
   - "4dx / d-box"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/uw/c3/ob/q6/revenge-of-the-sith-1200-1200-675-675-crop-000000.jpg?v=369b9ff7cb"
 ---

@@ -14,5 +14,6 @@ sort_date: "2024-05-27"
 rating: 2.5
 rewatch: false
 letterboxd_link: "https://boxd.it/6z1syv"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/0h/wj/af/20/the-descent-1200-1200-675-675-crop-000000.jpg?v=02cd3cb4d1"
 ---

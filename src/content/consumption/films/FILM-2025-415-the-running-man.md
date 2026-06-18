@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/bYf33b"
 tags:
   - "@ alamo mueller"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/7/1/6/1/7/8/tmdb/rn2s85HbpmNdl9HtBhTNFIpPkWY-1200-1200-675-675-crop-000000.jpg?v=3c3aa58d27"
 ---

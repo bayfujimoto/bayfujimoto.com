@@ -17,5 +17,6 @@ letterboxd_link: "https://boxd.it/bRwAA9"
 tags:
   - "watched w/ my mom"
   - "@ alamo lakeline"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/1/0/9/2/7/7/8/tmdb/iz8dXCkgB7T0hIseSRhNApcn6CG-1200-1200-675-675-crop-000000.jpg?v=2688600c63"
 ---

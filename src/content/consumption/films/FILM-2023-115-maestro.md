@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/5if9tX"
 tags:
   - "@ alamo manhattan"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/d4/zc/k5/ps/Maestro2-1200-1200-675-675-crop-000000.jpg?v=a80b640668"
 ---

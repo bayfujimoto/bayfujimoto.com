@@ -15,5 +15,6 @@ rating: 3
 rewatch: false
 letterboxd_link: "https://letterboxd.com/bayf/film/wake-up-dead-man/"
 assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/7/2/9/1/1/3/tmdb/fSNZCHoHUrAtd6kc2PXV9pnAZU1-1200-1200-675-675-crop-000000.jpg?v=72af8ab04e"
   poster: "https://a.ltrbxd.com/resized/film-poster/7/2/9/1/1/3/729113-wake-up-dead-man-0-600-0-900-crop.jpg?v=85f3366617"
 ---

@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/5Mq9hz"
 tags:
   - "@ alamo manhattan"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/w5/vf/ru/qm/past-lives-1200-1200-675-675-crop-000000.jpg?v=2ff888a5e1"
 ---

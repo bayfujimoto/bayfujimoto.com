@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/7ppfsZ"
 tags:
   - "@ ugc danton paris"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/5/2/0/3/2/8/tmdb/ijikYgRODrPB8Yd4C119qGI8TyX-1200-1200-675-675-crop-000000.jpg?v=8170bb03e4"
 ---

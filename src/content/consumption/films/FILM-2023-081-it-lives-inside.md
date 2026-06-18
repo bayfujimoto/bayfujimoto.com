@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/4SGZOt"
 tags:
   - "@ alamo manhattan"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/s9/n9/qm/wz/it%20lives%20inside-1200-1200-675-675-crop-000000.jpg?v=db081daf14"
 ---

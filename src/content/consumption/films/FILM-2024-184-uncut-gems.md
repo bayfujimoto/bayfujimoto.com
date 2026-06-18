@@ -16,5 +16,6 @@ rewatch: false
 letterboxd_link: "https://boxd.it/5WlT5f"
 tags:
   - "@ home"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/jr/zc/xo/iw/uncut-gems-1200-1200-675-675-crop-000000.jpg?v=3ae14b9389"
 ---

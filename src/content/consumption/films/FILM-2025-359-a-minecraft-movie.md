@@ -18,5 +18,6 @@ tags:
   - "@ regal edwards greenway"
   - "4dx / d-box"
   - "3d"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/alternative-backdrop/8/5/4/6/9/1/tmdb/56lv8d5yst1SBhw1uR3iGFd1R43-1200-1200-675-675-crop-000000.jpg?v=b1f047567f"
 ---

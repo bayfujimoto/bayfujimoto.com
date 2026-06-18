@@ -17,5 +17,6 @@ letterboxd_link: "https://boxd.it/ay7QMB"
 tags:
   - "@ home"
   - "watched w/ my mom"
-
+assets:
+  backdrop: "https://a.ltrbxd.com/resized/sm/upload/cm/l4/c8/re/the-suicide-squad-1200-1200-675-675-crop-000000.jpg?v=4c7c300153"
 ---
