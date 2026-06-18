@@ -9,11 +9,7 @@ status: published
 display_date: 2021
 sort_date: "2021-06-01"
 developer: ZA/UM
-platform: PC
+platform: mac
 year: "2019"
-tags: []
-context_note: >
-assets:
-  cover:
-  thumbnail:
+play_status: completed
 ---
