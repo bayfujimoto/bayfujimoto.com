@@ -345,7 +345,7 @@
               "item_type": "film",
               "status": "published",
               "year": "1999",
-              "director": "",
+              "director": "M. Night Shyamalan",
               "watch_date": "2026-06-15",
               "display_date": "June 15, 2026",
               "sort_date": "2026-06-15",
@@ -355,7 +355,8 @@
               "assets": {
                 "backdrop": "https://a.ltrbxd.com/resized/sm/upload/bn/hc/0u/en/sixthsense-1200-1200-675-675-crop-000000.jpg?v=96b2ba2a1e",
                 "poster": "https://a.ltrbxd.com/resized/film-poster/5/1/4/0/7/51407-the-sixth-sense-0-600-0-900-crop.jpg?v=ab482dfeb6"
-              }
+              },
+              "seen_via": "streaming"
             },
             {
               "id": "FILM-2026-510",
@@ -366,7 +367,7 @@
               "item_type": "film",
               "status": "published",
               "year": "2026",
-              "director": "",
+              "director": "Steven Spielberg",
               "watch_date": "2026-06-14",
               "display_date": "June 14, 2026",
               "sort_date": "2026-06-14",
@@ -376,7 +377,8 @@
               "assets": {
                 "backdrop": "https://a.ltrbxd.com/resized/alternative-backdrop/1/1/5/9/2/5/1/tmdb/qzGeUGQaNgZtckvWLZjoWItgYIG-1200-1200-675-675-crop-000000.jpg?v=d721258ac9",
                 "poster": "https://a.ltrbxd.com/resized/film-poster/1/1/5/9/2/5/1/1159251-disclosure-day-0-600-0-900-crop.jpg?v=9ae810e4bb"
-              }
+              },
+              "seen_via": "theatrical, imax"
             },
             {
               "id": "FILM-2026-511",
@@ -11544,6 +11546,28 @@
           "label": "books",
           "items": [
             {
+              "id": "BOOK-2026-262",
+              "slug": "butchers-crossing-2026-read",
+              "title": "Butcher's Crossing",
+              "series": "consumption",
+              "subcollection": "books",
+              "item_type": "book",
+              "status": "published",
+              "author": "John  Williams",
+              "year": "1960",
+              "date_read": "2026-05-16",
+              "display_date": "May 16, 2026",
+              "sort_date": "2026-05-16",
+              "rating": 0,
+              "goodreads_link": "https://www.goodreads.com/book/show/457228",
+              "assets": {
+                "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1320530482l/457228.jpg"
+              },
+              "tags": [
+                "western"
+              ]
+            },
+            {
               "id": "BOOK-2026-250",
               "slug": "the-expert-of-subtle-revisions-2026-read",
               "title": "The Expert of Subtle Revisions",
@@ -15426,7 +15450,7 @@
   "_counters": {
     "EPH": 18,
     "FILM": 513,
-    "BOOK": 261,
+    "BOOK": 264,
     "MUSIC": 3,
     "COFFEE": 2,
     "GAME": 2,
