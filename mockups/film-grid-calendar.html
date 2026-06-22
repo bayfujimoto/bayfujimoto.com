@@ -1,0 +1,523 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Consumption · Films · 2024 — calendar grid mockups</title>
+<style>
+  :root{
+    --bg:#000; --vellum:#e8e0d0;
+    --fg:var(--vellum);
+    --muted:rgba(232,224,208,.5);
+    --faint:rgba(232,224,208,.22);
+    --line:rgba(232,224,208,.14);
+    --line-dim:rgba(232,224,208,.08);
+    --hover:rgba(232,224,208,.06);
+    --mono:'Commit Mono',ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+    --serif:'EB Garamond',Georgia,'Times New Roman',serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--serif)}
+  body{padding:0 0 4rem}
+
+  /* ── Masthead ───────────────────────────────────────────── */
+  .mast{padding:1.4rem 1.6rem .9rem;border-bottom:1px solid var(--line)}
+  .mast__kicker{font-family:var(--mono);font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+  .mast__title{font-size:1.5rem;font-weight:400;margin:.25rem 0 .15rem;letter-spacing:.01em}
+  .mast__sub{font-family:var(--mono);font-size:.72rem;letter-spacing:.04em;color:var(--muted)}
+  .mast__sub b{color:var(--fg);font-weight:400}
+
+  /* ── Control panel ──────────────────────────────────────── */
+  .controls{position:sticky;top:0;z-index:30;background:rgba(0,0,0,.86);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);padding:.7rem 1.6rem;display:flex;flex-wrap:wrap;gap:1.1rem 1.6rem;align-items:flex-end}
+  .ctrl{display:flex;flex-direction:column;gap:.3rem}
+  .ctrl__label{font-family:var(--mono);font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:2px;overflow:hidden}
+  .seg button{appearance:none;background:transparent;color:var(--muted);border:0;border-left:1px solid var(--line);
+    font-family:var(--mono);font-size:.7rem;letter-spacing:.04em;padding:.34rem .6rem;cursor:pointer;min-height:30px;white-space:nowrap}
+  .seg button:first-child{border-left:0}
+  .seg button:hover{background:var(--hover);color:var(--fg)}
+  .seg button[aria-pressed="true"]{background:var(--vellum);color:#000}
+  .controls__note{font-family:var(--mono);font-size:.62rem;color:var(--faint);letter-spacing:.04em;max-width:24ch;line-height:1.5}
+
+  /* ── Stage / scroller ───────────────────────────────────── */
+  .stagewrap{padding:1.4rem 1.6rem}
+  .phone{margin:0 auto;border:1px solid var(--line);border-radius:26px;padding:10px;width:392px;max-width:100%;
+    box-shadow:0 0 0 1px rgba(0,0,0,.6),0 24px 60px rgba(0,0,0,.6)}
+  .phone__notch{width:120px;height:5px;border-radius:3px;background:var(--line);margin:2px auto 10px}
+  .stage{
+    --u:82px;                 /* base cell height */
+    --capH:0px;
+    overflow-x:auto;overflow-y:hidden;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;
+    padding-bottom:.8rem;
+  }
+  .stage[data-size="s"]{--u:60px}
+  .stage[data-size="m"]{--u:84px}
+  .stage[data-size="l"]{--u:112px}
+  .stage[data-title="below"]{--capH:22px}
+  .stage[data-title="below"][data-date="show"]{--capH:38px}
+  .phone .stage{--u:54px}
+  .phone .stage[data-size="l"]{--u:66px}
+  .stage::-webkit-scrollbar{height:9px}
+  .stage::-webkit-scrollbar-track{background:var(--line-dim)}
+  .stage::-webkit-scrollbar-thumb{background:var(--faint);border-radius:5px}
+
+  /* ── Generic film cell ──────────────────────────────────── */
+  .fc{position:relative;display:flex;flex-direction:column;scroll-snap-align:start}
+  .fc__img{position:relative;width:100%;height:var(--u);background:#0c0c0c;overflow:hidden;border:1px solid var(--line-dim)}
+  .fc__img img{width:100%;height:100%;object-fit:cover;display:block}
+  .fc__noimg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    font-family:var(--mono);font-size:.55rem;color:var(--faint);letter-spacing:.06em;text-align:center;padding:.3rem}
+  /* rewatch tick */
+  .fc__re{position:absolute;top:4px;left:4px;font-family:var(--mono);font-size:.5rem;color:var(--vellum);
+    background:rgba(0,0,0,.55);padding:0 3px;border-radius:1px;letter-spacing:.04em}
+  /* caption below */
+  .fc__cap{height:var(--capH);overflow:hidden;padding-top:3px;display:flex;flex-direction:column;justify-content:flex-start}
+  .fc__title{font-family:var(--serif);font-size:.74rem;line-height:1.15;color:var(--fg);
+    white-space:nowrap;text-overflow:ellipsis;overflow:hidden}
+  .fc__date{font-family:var(--mono);font-size:.58rem;letter-spacing:.04em;color:var(--muted);margin-top:1px}
+  .stage[data-title="hidden"] .fc__cap{display:none}
+  .stage[data-title="overlay"] .fc__cap{display:none}
+  .stage[data-title="below"][data-date="hide"] .fc__date{display:none}
+  .stage:not([data-date="show"]) .fc__date{display:none}
+  /* overlay reveal */
+  .fc__ov{position:absolute;left:0;right:0;bottom:0;padding:14px 6px 4px;pointer-events:none;
+    background:linear-gradient(to top,rgba(0,0,0,.88),rgba(0,0,0,.45) 55%,transparent);
+    opacity:0;transform:translateY(4px);transition:opacity .15s,transform .15s}
+  .fc__ov .fc__title{white-space:normal}
+  .stage[data-title="overlay"] .fc__img:hover .fc__ov,
+  .stage[data-title="overlay"] .fc:focus-within .fc__ov{opacity:1;transform:none}
+  @media (hover:none){.stage[data-title="overlay"] .fc__ov{opacity:1;transform:none}}
+  /* +N badge */
+  .fc__badge{position:absolute;right:4px;bottom:4px;font-family:var(--mono);font-size:.56rem;
+    background:rgba(0,0,0,.7);border:1px solid var(--line);color:var(--vellum);padding:0 4px;border-radius:2px;letter-spacing:.03em}
+  /* stack (tiled thumbs in one cell) */
+  .fc__stack{position:absolute;inset:0;display:grid;gap:1px}
+  .fc__stack img{width:100%;height:100%;object-fit:cover}
+  .fc__stack--2{grid-template-columns:1fr 1fr}
+  .fc__stack--3{grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr}
+  .fc__stack--3 img:first-child{grid-column:1/3}
+  .fc__stack--4{grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr}
+  .fc__stack--many{grid-template-columns:repeat(3,1fr);grid-template-rows:1fr 1fr}
+  .fc__stackmore{display:flex;align-items:center;justify-content:center;background:#111;
+    font-family:var(--mono);font-size:.6rem;color:var(--muted)}
+
+  /* ── Empty-day cell ─────────────────────────────────────── */
+  .empty{display:flex;align-items:flex-start;justify-content:flex-end;
+    border:1px solid transparent;font-family:var(--mono);font-size:.58rem;color:var(--faint);
+    padding:3px 4px 0 0;user-select:none}
+  .stage[data-empty="faint"] .empty{border-color:var(--line-dim);background:repeating-linear-gradient(135deg,transparent,transparent 6px,rgba(232,224,208,.025) 6px,rgba(232,224,208,.025) 7px)}
+  .stage[data-empty="number"] .empty{color:var(--faint)}
+  .stage[data-empty="blank"] .empty{color:transparent;border-color:transparent;background:none}
+
+  /* ── Month label chips ──────────────────────────────────── */
+  .mlabel{font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+
+  /* ════ LAYOUT 1 · WEEK GRID ═════════════════════════════ */
+  .week{display:grid;grid-auto-flow:column;grid-template-rows:auto repeat(7,calc(var(--u) + var(--capH)));
+    grid-auto-columns:calc(var(--u)*16/9);gap:4px;align-items:start;width:max-content}
+  .week .wk-month{grid-row:1;font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--muted);white-space:nowrap;padding-bottom:2px;align-self:end}
+  .week .cell{width:calc(var(--u)*16/9)}
+  .week .empty{height:var(--u);width:calc(var(--u)*16/9)}
+  .week__dows{position:sticky;left:0;z-index:2}
+
+  /* row of weekday initials at far left */
+  .weekrow{display:grid;grid-template-rows:auto repeat(7,calc(var(--u) + var(--capH)));gap:4px;
+    margin-right:8px;align-items:center;width:max-content}
+  .weekrow span{grid-row:auto;font-family:var(--mono);font-size:.56rem;color:var(--muted);text-align:center}
+  .week-shell{display:flex;align-items:start}
+
+  /* ════ LAYOUT 2 · MONTH BLOCKS ══════════════════════════ */
+  .months{display:flex;gap:1.6rem;width:max-content;align-items:start}
+  .month{display:flex;flex-direction:column}
+  .month__hd{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.45rem;gap:1rem}
+  .month__name{font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--fg)}
+  .month__count{font-family:var(--mono);font-size:.6rem;color:var(--muted)}
+  .month__dows{display:grid;grid-template-columns:repeat(7,var(--mcw));gap:3px;margin-bottom:3px}
+  .month__dows span{font-family:var(--mono);font-size:.5rem;color:var(--faint);text-align:right;padding-right:2px}
+  .month__grid{--mcw:calc(var(--u)*16/9*.62);display:grid;grid-template-columns:repeat(7,var(--mcw));
+    grid-auto-rows:calc(var(--u)*.62 + var(--capH));gap:3px}
+  .month .fc__img{height:calc(var(--u)*.62)}
+  .month .empty{height:calc(var(--u)*.62);width:var(--mcw)}
+  .month .fc{width:var(--mcw)}
+  .month__grid{--mcw:calc(var(--u)*16/9*.62)}
+
+  /* ════ LAYOUT 3 · DAY STRIP ═════════════════════════════ */
+  .strip{display:flex;align-items:start;gap:5px;width:max-content;height:auto}
+  .strip .fc{height:auto}
+  .strip .fc__img{height:calc(var(--u)*1.7)}
+  .strip .cell{width:calc(var(--u)*1.7*16/9)}
+  .strip .fc{width:calc(var(--u)*1.7*16/9)}
+  .strip .empty{width:calc(var(--u)*.42);height:calc(var(--u)*1.7);writing-mode:vertical-rl;
+    align-items:flex-end;justify-content:flex-start;padding:4px 0 0 0;text-orientation:mixed}
+  .strip .strip-month{align-self:stretch;display:flex;align-items:flex-end;padding:0 2px 6px;
+    border-left:1px solid var(--line);margin-left:3px}
+  .strip .strip-month span{writing-mode:vertical-rl;font-family:var(--mono);font-size:.6rem;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  /* widen: multiple backdrops side by side in one day */
+  .fc--wide .fc__img{display:flex}
+  .fc--wide .fc__img img{width:auto;height:100%}
+
+  /* ════ LAYOUT 4 · PACKED + GAPS ═════════════════════════ */
+  .packed{display:grid;grid-template-rows:repeat(4,calc(var(--u)*.78 + var(--capH)));
+    grid-auto-flow:column;gap:5px;width:max-content;align-items:start}
+  .packed .fc__img{height:calc(var(--u)*.78)}
+  .packed .cell,.packed .fc{width:calc(var(--u)*.78*16/9)}
+  .gap{align-self:stretch;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    border-left:1px dashed var(--line);border-right:1px dashed var(--line);
+    font-family:var(--mono);font-size:.56rem;color:var(--faint);letter-spacing:.06em;text-align:center;
+    padding:0 .4rem;white-space:nowrap}
+  .gap b{color:var(--muted);font-weight:400;font-size:.7rem;display:block}
+
+  .emptytag{font-family:var(--mono)}
+
+  .legend{padding:.4rem 1.6rem 0;font-family:var(--mono);font-size:.62rem;color:var(--muted);letter-spacing:.03em}
+  @media (max-width:600px){
+    .controls{padding:.6rem .9rem;gap:.8rem 1rem}
+    .mast{padding:1rem .9rem .7rem}
+    .stagewrap{padding:1rem .6rem}
+  }
+</style>
+</head>
+<body>
+  <header class="mast">
+    <div class="mast__kicker">Consumption · Films · Calendar grid — design mockups</div>
+    <h1 class="mast__title">A year of watching, 2024</h1>
+    <div class="mast__sub"><b>201</b> films · <b>160</b> of 366 days · backdrops from the live archive · real watch dates</div>
+  </header>
+
+  <section class="controls" id="controls">
+    <div class="ctrl">
+      <span class="ctrl__label">Layout</span>
+      <div class="seg" data-opt="layout">
+        <button data-val="week" aria-pressed="true">Week grid</button>
+        <button data-val="months">Month blocks</button>
+        <button data-val="strip">Day strip</button>
+        <button data-val="packed">Packed + gaps</button>
+      </div>
+    </div>
+    <div class="ctrl">
+      <span class="ctrl__label">View</span>
+      <div class="seg" data-opt="view">
+        <button data-val="desktop" aria-pressed="true">Desktop</button>
+        <button data-val="mobile">Mobile</button>
+      </div>
+    </div>
+    <div class="ctrl">
+      <span class="ctrl__label">Title</span>
+      <div class="seg" data-opt="title">
+        <button data-val="below" aria-pressed="true">Below</button>
+        <button data-val="overlay">Overlay</button>
+        <button data-val="hidden">Hidden</button>
+      </div>
+    </div>
+    <div class="ctrl">
+      <span class="ctrl__label">Date</span>
+      <div class="seg" data-opt="date">
+        <button data-val="show" aria-pressed="true">Show</button>
+        <button data-val="hide">Hide</button>
+      </div>
+    </div>
+    <div class="ctrl">
+      <span class="ctrl__label">Empty days</span>
+      <div class="seg" data-opt="empty">
+        <button data-val="number" aria-pressed="true">Number</button>
+        <button data-val="faint">Faint</button>
+        <button data-val="blank">Blank</button>
+      </div>
+    </div>
+    <div class="ctrl">
+      <span class="ctrl__label">Multi-film day</span>
+      <div class="seg" data-opt="multi">
+        <button data-val="stack" aria-pressed="true">Stack</button>
+        <button data-val="widen">Widen</button>
+        <button data-val="badge">+N badge</button>
+      </div>
+    </div>
+    <div class="ctrl">
+      <span class="ctrl__label">Cell size</span>
+      <div class="seg" data-opt="size">
+        <button data-val="s">S</button>
+        <button data-val="m" aria-pressed="true">M</button>
+        <button data-val="l">L</button>
+      </div>
+    </div>
+    <div class="controls__note" id="note"></div>
+  </section>
+
+  <div class="legend" id="legend"></div>
+  <div class="stagewrap" id="stagewrap"></div>
+
+<script>
+const FILMS = [{"title":"The Lighthouse","year":"2019","watch_date":"2024-01-01","rating":"4","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/q3/nd/ae/zn/the-lighthouse-1200-1200-675-675-crop-000000.jpg?v=d3734cdd04"},{"title":"Wonka","year":"2023","watch_date":"2024-01-01","rating":"5","rewatch":true,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/7/0/6/0/8/3/tmdb/xwzJiqdDIlXYeUkPjbOvXZicig2-1200-1200-675-675-crop-000000.jpg?v=dac88cdd7f"},{"title":"Ferrari","year":"2023","watch_date":"2024-01-02","rating":"3.5","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/3/0/1/5/5/2/tmdb/xMb9kOnYVgg11AngRS6PRgmp8Tv-1200-1200-675-675-crop-000000.jpg?v=43baa296b0"},{"title":"Aquaman and the Lost Kingdom","year":"2023","watch_date":"2024-01-03","rating":"3.5","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/15/rm/6d/rc/aquaman-1200-1200-675-675-crop-000000.jpg?v=960333343c"},{"title":"Night Swim","year":"2024","watch_date":"2024-01-04","rating":"3","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/qp/cx/4q/wi/night-swim-1200-1200-675-675-crop-000000.jpg?v=f648abb095"},{"title":"All of Us Strangers","year":"2023","watch_date":"2024-01-05","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/oq/ge/iu/1v/all%20of%20us%20t-1200-1200-675-675-crop-000000.jpg?v=36bc3a6038"},{"title":"The Zone of Interest","year":"2023","watch_date":"2024-01-14","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/s2/ig/hp/hx/bq9FpkTw9I3s1cSRuZxQibM2xOx-1200-1200-675-675-crop-000000.jpg?v=6259278de6"},{"title":"The Lord of the Rings: The Fellowship of the Ring","year":"2001","watch_date":"2024-01-15","rating":"5","rewatch":true,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/5/1/9/3/0/tmdb/ejYVOIeyIV3u2OfZ3XONnfFcs03-1200-1200-675-675-crop-000000.jpg?v=a3e386d77f"},{"title":"Destroy All Neighbors","year":"2024","watch_date":"2024-01-16","rating":"2.5","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/y9/1g/k3/id/thumb_197ACFA7-0807-40EA-8F81-A261029DBB5D-1200-1200-675-675-crop-000000.jpg?v=e25e64c3c8"},{"title":"The Lord of the Rings: The Two Towers","year":"2002","watch_date":"2024-01-18","rating":"5","rewatch":true,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/l5/j6/zw/ib/lotr-the-two-towers-1200-1200-675-675-crop-000000.jpg?v=c3ae1188ea"},{"title":"Mean Girls","year":"2024","watch_date":"2024-01-19","rating":"4","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/ta/de/4e/a2/mean%20girls-1200-1200-675-675-crop-000000.jpg?v=e7db1f77f6"},{"title":"Society of the Snow","year":"2023","watch_date":"2024-01-20","rating":"4","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/g3/xz/v1/kl/socienty-snow-1200-1200-675-675-crop-000000.jpg?v=a6a501d6b9"},{"title":"The Lord of the Rings: The Return of the King","year":"2003","watch_date":"2024-01-21","rating":"5","rewatch":true,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/5/1/9/2/8/tmdb/pm0RiwNpSja8gR0BTWpxo5a9Bbl-1200-1200-675-675-crop-000000.jpg?v=73e2abe288"},{"title":"Island in Between","year":"2023","watch_date":"2024-01-23","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/30/e4/vs/ox/IslandInBetween1-1200-1200-675-675-crop-000000.jpg?v=cf2720babb"},{"title":"The Barber of Little Rock","year":"2023","watch_date":"2024-01-23","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/c8/ap/9g/ud/TheBarnerOfLittleRock-1200-1200-675-675-crop-000000.jpg?v=6d72942de6"},{"title":"I.S.S.","year":"2023","watch_date":"2024-01-25","rating":"3.5","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/a9/fl/ux/jz/ISS-1200-1200-675-675-crop-000000.jpg?v=e6a6516fac"},{"title":"The Talented Mr. Ripley","year":"1999","watch_date":"2024-01-26","rating":"4.5","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/bu/72/zf/nq/the-talented-mr-ripley-1200-1200-675-675-crop-000000.jpg?v=3fc6f4747b"},{"title":"River","year":"2023","watch_date":"2024-01-27","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/wo/m9/oa/7k/river-1200-1200-675-675-crop-000000.jpg?v=a957d903e1"},{"title":"The Matrix","year":"1999","watch_date":"2024-01-28","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/o3/er/ey/ie/matrix-1200-1200-675-675-crop-000000.jpg?v=eea86a2195"},{"title":"Ghostbusters: Afterlife","year":"2021","watch_date":"2024-01-29","rating":"2.5","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/9o/rr/8p/fn/yAPLoyZtGzbZOZHldFKnb8l79sU-1200-1200-675-675-crop-000000.jpg?v=ba9d29e266"},{"title":"The After","year":"2023","watch_date":"2024-01-31","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/73/px/8t/by/TheAfter-1200-1200-675-675-crop-000000.jpg?v=14fb89ced3"},{"title":"The Last Repair Shop","year":"2023","watch_date":"2024-01-31","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/7h/3m/g7/vv/TheLastRepairShop-1200-1200-675-675-crop-000000.jpg?v=b222a5f45b"},{"title":"The Wild Boys","year":"2017","watch_date":"2024-02-01","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/dy/2n/xy/ka/wildboys-1200-1200-675-675-crop-000000.jpg?v=ad8c833970"},{"title":"Alien","year":"1979","watch_date":"2024-02-02","rating":"4.5","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/ty/tt/43/of/alien-1979-1200-1200-675-675-crop-000000.jpg?v=e67d042122"},{"title":"How to Have Sex","year":"2023","watch_date":"2024-02-03","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/of/sw/9v/nx/how-to-have-sex-1200-1200-675-675-crop-000000.jpg?v=b8d05a6210"},{"title":"She Is Conann","year":"2023","watch_date":"2024-02-04","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/6/4/7/5/8/4/tmdb/pbacvtoCehwQzyn9iWDuiim0N7m-1200-1200-675-675-crop-000000.jpg?v=0ce4b421c4"},{"title":"20 Days in Mariupol","year":"2023","watch_date":"2024-02-05","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/ml/eh/s0/v5/6Yq1msL1ce7AOy7Vtqs71PjhqkJ-1200-1200-675-675-crop-000000.jpg?v=5df155140e"},{"title":"Past Lives","year":"2023","watch_date":"2024-02-06","rating":"3.5","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/w5/vf/ru/qm/past-lives-1200-1200-675-675-crop-000000.jpg?v=2ff888a5e1"},{"title":"Eternal Sunshine of the Spotless Mind","year":"2004","watch_date":"2024-02-08","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/2w/va/23/lr/esotsm-1200-1200-675-675-crop-000000.jpg?v=11483523ca"},{"title":"Dune","year":"2021","watch_date":"2024-02-09","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/3/7/1/3/7/8/tmdb/bpeGvYm8VBNqrw5EXcvrimWMCR4-1200-1200-675-675-crop-000000.jpg?v=19280bae5a"},{"title":"The Taste of Things","year":"2023","watch_date":"2024-02-10","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/rx/ym/ut/34/pot-1200-1200-675-675-crop-000000.jpg?v=39d170ce55"},{"title":"Rise of the Planet of the Apes","year":"2011","watch_date":"2024-02-12","rating":"0","rewatch":true,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/h9/wk/52/ro/rise-planet-of-the-apes-110-1200-1200-675-675-crop-000000.jpg?v=ba7346832b"},{"title":"Dawn of the Planet of the Apes","year":"2014","watch_date":"2024-02-14","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/3f/jp/tr/c4/dawn-planet-apes-1200-1200-675-675-crop-000000.jpg?v=49076ef694"},{"title":"Lisa Frankenstein","year":"2024","watch_date":"2024-02-15","rating":"3.5","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/r1/8o/hm/le/lK5EUC8KkgwQ5W7nFTc198ZgB4J-1200-1200-675-675-crop-000000.jpg?v=0380a9c3c2"},{"title":"War for the Planet of the Apes","year":"2017","watch_date":"2024-02-16","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/id/j7/ah/3i/war-for-the-planet-of-the-apes-1200-1200-675-675-crop-000000.jpg?v=b28b9bea27"},{"title":"Perfect Days","year":"2023","watch_date":"2024-02-17","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/6t/ak/0b/ch/bKyGc7BA0fe2D3mPedUAbtKjPZO-1200-1200-675-675-crop-000000.jpg?v=316e86c854"},{"title":"Fargo","year":"1996","watch_date":"2024-02-18","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/ww/kz/nd/19/fargo-1200-1200-675-675-crop-000000.jpg?v=683482948f"},{"title":"Drive-Away Dolls","year":"2024","watch_date":"2024-02-19","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/m8/af/r7/no/wwv5hTBwNBhCvl8UWhyrgl02oE6-1200-1200-675-675-crop-000000.jpg?v=1a254b7b25"},{"title":"The Big Lebowski","year":"1998","watch_date":"2024-02-19","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/9h/c4/sh/ks/big-1200-1200-675-675-crop-000000.jpg?v=7f19a9b023"},{"title":"Lovely, Dark, and Deep","year":"2023","watch_date":"2024-02-20","rating":"3.5","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/2x/e5/9m/zy/lovely-1200-1200-675-675-crop-000000.jpg?v=dd94760e86"},{"title":"Bob Marley: One Love","year":"2024","watch_date":"2024-02-22","rating":"3.5","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/om/b9/5e/mn/a9pLp9JQ3kBNTsCKp1ySP9OMjFz-1200-1200-675-675-crop-000000.jpg?v=540ad21de6"},{"title":"Stopmotion","year":"2023","watch_date":"2024-02-23","rating":"4","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/mj/w6/jz/ky/stopmotion-1200-1200-675-675-crop-000000.jpg?v=a90729126d"},{"title":"Drive-Away Dolls","year":"2024","watch_date":"2024-02-24","rating":"0","rewatch":true,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/m8/af/r7/no/wwv5hTBwNBhCvl8UWhyrgl02oE6-1200-1200-675-675-crop-000000.jpg?v=1a254b7b25"},{"title":"Love, Death & Robots: Bad Travelling","year":"2022","watch_date":"2024-02-24","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/d0/la/xg/3f/bad%20travelling-1200-1200-675-675-crop-000000.jpg?v=dd35a0c8b0"},{"title":"School of Rock","year":"2003","watch_date":"2024-02-24","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/vf/yb/9d/an/school-of-rock-1200-1200-675-675-crop-000000.jpg?v=eccf413ad4"},{"title":"I'm Hip","year":"2023","watch_date":"2024-02-25","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/hk/h4/di/x4/i&#039;m%20hip-1200-1200-675-675-crop-000000.jpg?v=6222492d41"},{"title":"Letter to a Pig","year":"2022","watch_date":"2024-02-25","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/k7/dg/62/25/letter%20to%20a%20pig-1200-1200-675-675-crop-000000.jpg?v=39f28459d5"},{"title":"Ninety-Five Senses","year":"2022","watch_date":"2024-02-25","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/rk/up/4a/0j/NinetyFiveSenses-1200-1200-675-675-crop-000000.jpg?v=0ce99cbb62"},{"title":"Our Uniform","year":"2023","watch_date":"2024-02-25","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/wm/t1/y0/iz/OurUniform-1200-1200-675-675-crop-000000.jpg?v=d909aa7a2e"},{"title":"Pachyderm","year":"2022","watch_date":"2024-02-25","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/3t/5q/ca/f6/Pachyderm-1200-1200-675-675-crop-000000.jpg?v=882f946ecb"},{"title":"Puss in Boots: The Last Wish","year":"2022","watch_date":"2024-02-25","rating":"4","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/2z/0q/fx/mn/puss-in-boots-last-wish-1200-1200-675-675-crop-000000.jpg?v=61b7291ac4"},{"title":"WAR IS OVER! Inspired by the Music of John & Yoko","year":"2023","watch_date":"2024-02-25","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/fy/qm/42/5g/war%20is%20over-1200-1200-675-675-crop-000000.jpg?v=5ae67491ec"},{"title":"Wild Summon","year":"2023","watch_date":"2024-02-25","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/te/6g/go/2v/Wild_Summon_Divers2-1200-1200-675-675-crop-000000.jpg?v=46bfdb5ba8"},{"title":"Uncut Gems","year":"2019","watch_date":"2024-02-28","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/jr/zc/xo/iw/uncut-gems-1200-1200-675-675-crop-000000.jpg?v=3ae14b9389"},{"title":"Madame Web","year":"2024","watch_date":"2024-02-29","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/2r/v9/d2/tg/madame%20web-1200-1200-675-675-crop-000000.jpg?v=8c5f410c79"},{"title":"Gone Girl","year":"2014","watch_date":"2024-03-01","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/6g/ja/bv/xf/gone-girl-1200-1200-675-675-crop-000000.jpg?v=19f256dfa8"},{"title":"Sicario","year":"2015","watch_date":"2024-03-04","rating":"4","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/21/i8/nu/tn/sicario-2015-1200-1200-675-675-crop-000000.jpg?v=1e124ce215"},{"title":"BlackBerry","year":"2023","watch_date":"2024-03-05","rating":"4","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/bq/5d/xu/4q/ildlTuGi8HHFLKOY9Rgl7md0TfV-1200-1200-675-675-crop-000000.jpg?v=1c02fa6292"},{"title":"Fight Club","year":"1999","watch_date":"2024-03-05","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/b0/iz/eb/dq/fight-club-1200-1200-675-675-crop-000000.jpg?v=1e6ef6695e"},{"title":"Midsommar","year":"2019","watch_date":"2024-03-05","rating":"2.5","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/5q/jr/xl/0r/midsommar-1200-1200-675-675-crop-000000.jpg?v=620571be01"},{"title":"The Hitchhiker's Guide to the Galaxy","year":"2005","watch_date":"2024-03-05","rating":"3.5","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/4u/d1/rb/nu/hitchhikers-guide-galaxy-2005-1200-1200-675-675-crop-000000.jpg?v=ffc1742ff4"},{"title":"The Rat Catcher","year":"2023","watch_date":"2024-03-05","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/qx/47/hw/gx/rat%20catcher-1200-1200-675-675-crop-000000.jpg?v=a39156d5f4"},{"title":"The Swan","year":"2023","watch_date":"2024-03-05","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/gn/6k/rh/kn/the%20swan-1200-1200-675-675-crop-000000.jpg?v=907e926a45"},{"title":"Poison","year":"2023","watch_date":"2024-03-06","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/0f/qm/c7/qx/poison-1200-1200-675-675-crop-000000.jpg?v=50e110f994"},{"title":"The Lego Movie","year":"2014","watch_date":"2024-03-06","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/1/0/5/1/8/8/tmdb/d4zaHEoI1yrpeQxBkulo8H9FEQP-1200-1200-675-675-crop-000000.jpg?v=500c7e755c"},{"title":"The Wonderful Story of Henry Sugar","year":"2023","watch_date":"2024-03-06","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/8c/mm/ly/59/The_Wonderful_Story_of_Henry_Sugar_n_00_21_26_13-1200-1200-675-675-crop-000000.jpg?v=bbe9f66c3d"},{"title":"The Witch","year":"2015","watch_date":"2024-03-07","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/ii/1v/z8/lk/the-witch-1200-1200-675-675-crop-000000.jpg?v=06f9adfe9a"},{"title":"Dune","year":"2021","watch_date":"2024-03-09","rating":"0","rewatch":true,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/3/7/1/3/7/8/tmdb/bpeGvYm8VBNqrw5EXcvrimWMCR4-1200-1200-675-675-crop-000000.jpg?v=19280bae5a"},{"title":"Dune: Part Two","year":"2024","watch_date":"2024-03-09","rating":"5","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/6/1/7/4/4/3/tmdb/24Ov8wnusgnzXwjV1eDm0Lzo5da-1200-1200-675-675-crop-000000.jpg?v=7807982fa6"},{"title":"Kung Fu Panda 4","year":"2024","watch_date":"2024-03-10","rating":"2","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/sh/gd/63/3u/kung%20fu-1200-1200-675-675-crop-000000.jpg?v=bfcec56c23"},{"title":"Love Lies Bleeding","year":"2024","watch_date":"2024-03-12","rating":"4.5","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/fl/qd/9q/0w/love%20lies-1200-1200-675-675-crop-000000.jpg?v=b0499369a2"},{"title":"Dune","year":"1984","watch_date":"2024-03-14","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/yr/85/5l/zp/dune-1200-1200-675-675-crop-000000.jpg?v=1998773db9"},{"title":"Se7en","year":"1995","watch_date":"2024-03-16","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/5/1/3/4/5/tmdb/dYjZ27hDw2QFaEIfzbNGwW0IkV9-1200-1200-675-675-crop-000000.jpg?v=5fc129f637"},{"title":"Dune: Part Two","year":"2024","watch_date":"2024-03-17","rating":"5","rewatch":true,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/6/1/7/4/4/3/tmdb/24Ov8wnusgnzXwjV1eDm0Lzo5da-1200-1200-675-675-crop-000000.jpg?v=7807982fa6"},{"title":"Zodiac","year":"2007","watch_date":"2024-03-17","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/07/2h/dm/69/zodiac-1200-1200-675-675-crop-000000.jpg?v=e2ccb1a88a"},{"title":"La Maison en Petits Cubes","year":"2008","watch_date":"2024-03-20","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/4x/bx/l0/3b/masion-1200-1200-675-675-crop-000000.jpg?v=7870101330"},{"title":"Riddle of Fire","year":"2023","watch_date":"2024-03-20","rating":"4","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/ue/yd/dq/p3/riddle-1200-1200-675-675-crop-000000.jpg?v=9e69b335d0"},{"title":"Immaculate","year":"2024","watch_date":"2024-03-21","rating":"3","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/b6/i3/vx/zo/immaculate-1200-1200-675-675-crop-000000.jpg?v=4af8f05890"},{"title":"First Reformed","year":"2017","watch_date":"2024-03-22","rating":"5","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/7z/nb/kw/h1/first-reformed-1200-1200-675-675-crop-000000.jpg?v=7839d88e99"},{"title":"Immaculate","year":"2024","watch_date":"2024-03-23","rating":"3","rewatch":true,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/b6/i3/vx/zo/immaculate-1200-1200-675-675-crop-000000.jpg?v=4af8f05890"},{"title":"Luca","year":"2021","watch_date":"2024-03-23","rating":"0","rewatch":true,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/4/3/8/7/2/2/tmdb/tJf2o4gseaNo58KDQSaStu7H4Vf-1200-1200-675-675-crop-000000.jpg?v=8e54ffda38"},{"title":"Road House","year":"2024","watch_date":"2024-03-23","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/qq/63/jk/e8/dOlqAnFggBXoq9TYVoK1SvwCWt0-1200-1200-675-675-crop-000000.jpg?v=8a9e195bd9"},{"title":"Late Night with the Devil","year":"2023","watch_date":"2024-03-24","rating":"4","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/31/0y/ek/6r/1q6Cx3RqP2Tq7WHGr32hKqrWafm-1200-1200-675-675-crop-000000.jpg?v=274c1b31bb"},{"title":"Skyfall","year":"2012","watch_date":"2024-03-24","rating":"0","rewatch":true,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/2/6/7/7/9/tmdb/lnAqZDaP0yejFsuHZqeTGJOeRov-1200-1200-675-675-crop-000000.jpg?v=3af008d7b0"},{"title":"Last and First Men","year":"2020","watch_date":"2024-03-26","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/7w/a0/gi/22/first%20and%20last-1200-1200-675-675-crop-000000.jpg?v=2af2b444c8"},{"title":"Problemista","year":"2023","watch_date":"2024-03-27","rating":"4","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/6j/bp/i4/w5/prob-1200-1200-675-675-crop-000000.jpg?v=2b8b0c4dcf"},{"title":"Kumiko, the Treasure Hunter","year":"2014","watch_date":"2024-03-28","rating":"2","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/lv/xw/p2/ih/kumiko-1200-1200-675-675-crop-000000.jpg?v=416d022a9a"},{"title":"Blue Whales: Return of the Giants","year":"2023","watch_date":"2024-03-30","rating":"0","rewatch":false,"backdrop":"https://image.tmdb.org/t/p/w1280/stXyO1gITPss9E3cMguPq3n4C1l.jpg"},{"title":"Worlds Beyond Earth","year":"2020","watch_date":"2024-03-30","rating":"0","rewatch":false,"backdrop":null},{"title":"Godzilla × Kong: The New Empire","year":"2024","watch_date":"2024-04-04","rating":"3.5","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/7/3/9/5/2/2/tmdb/a3AzYS2JiZ9GdHiAxDTmIajKgH0-1200-1200-675-675-crop-000000.jpg?v=f94da92497"},{"title":"The Thing","year":"1982","watch_date":"2024-04-06","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/5/1/1/5/5/tmdb/9wMpq46dKTPiXq4CnotFmjaufih-1200-1200-675-675-crop-000000.jpg?v=3170fe82ce"},{"title":"Monkey Man","year":"2024","watch_date":"2024-04-07","rating":"3","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/ka/ly/yp/rr/monkey-man-1200-1200-675-675-crop-000000.jpg?v=39110197d4"},{"title":"The First Omen","year":"2024","watch_date":"2024-04-10","rating":"3.5","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/3/7/0/1/7/8/tmdb/c83cohDRnadMyZjaKgCQMM0Dyo2-1200-1200-675-675-crop-000000.jpg?v=34c3fb77eb"},{"title":"La Chimera","year":"2023","watch_date":"2024-04-12","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/s4/qu/cr/yr/la-chimera-1200-1200-675-675-crop-000000.jpg?v=01fedaa12c"},{"title":"Sasquatch Sunset","year":"2024","watch_date":"2024-04-13","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/dz/ra/y4/8a/8IUYL32AdfWLFVadGTHdLmxvWvz-1200-1200-675-675-crop-000000.jpg?v=93cd59296f"},{"title":"Titane","year":"2021","watch_date":"2024-04-13","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/5g/me/s2/md/770BABCB-6657-4426-A10E-CC362AA9ADCF-1200-1200-675-675-crop-000000.jpg?v=67e83427dc"},{"title":"Civil War","year":"2024","watch_date":"2024-04-14","rating":"4.5","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/7t/3p/p9/1j/l02SyGL4QaRAy000ZY28IlSiBOx-1200-1200-675-675-crop-000000.jpg?v=85ba445b22"},{"title":"Three Colours: Blue","year":"1993","watch_date":"2024-04-14","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/xr/zj/pc/7k/blue-1200-1200-675-675-crop-000000.jpg?v=80d68de00f"},{"title":"Spider-Man","year":"2002","watch_date":"2024-04-16","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/5/1/5/6/1/tmdb/2PDTWfuBWQKVC7aPAqJK5UCpz08-1200-1200-675-675-crop-000000.jpg?v=3a82b37ae8"},{"title":"Whiplash","year":"2014","watch_date":"2024-04-18","rating":"5","rewatch":true,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/1/7/1/3/8/4/tmdb/vNXGrknx4GjWLgmuNTftWZluIUl-1200-1200-675-675-crop-000000.jpg?v=7ab2be709f"},{"title":"Whiplash","year":"2013","watch_date":"2024-04-18","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/tl/a3/ye/e7/u3O6BZmn8KsRg2V2caUn8opJMHA-1200-1200-675-675-crop-000000.jpg?v=ed107bdaf5"},{"title":"Yi Yi","year":"2000","watch_date":"2024-04-20","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/yc/mc/ep/c9/yi-yi-1200-1200-675-675-crop-000000.jpg?v=b55a45939d"},{"title":"Spider-Man 2","year":"2004","watch_date":"2024-04-22","rating":"4.5","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/w2/of/wm/ou/jz6NCADCgj4dWU8RM81Xvrokey4-1200-1200-675-675-crop-000000.jpg?v=c9c668bc42"},{"title":"Three Colours: White","year":"1994","watch_date":"2024-04-24","rating":"3.5","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/5/1/9/4/1/tmdb/2eBL3wXDZqemW8SJ1RNxqtx6bgJ-1200-1200-675-675-crop-000000.jpg?v=634982f95c"},{"title":"Humane","year":"2024","watch_date":"2024-04-27","rating":"2.5","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/3k/id/jj/zy/humane-1200-1200-675-675-crop-000000.jpg?v=ca8be0ea0c"},{"title":"The Shawshank Redemption","year":"1994","watch_date":"2024-04-27","rating":"3.5","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/1y/23/4e/ir/shawshank-redemption-1200-1200-675-675-crop-000000.jpg?v=a59d283bca"},{"title":"Ken Burns Says \\\"Jazz\\\" 3 Billion Times (actually 2.97 bn) in Under 3.5 Minutes","year":"2015","watch_date":"2024-04-28","rating":"0","rewatch":false,"backdrop":null},{"title":"The Mummy","year":"1999","watch_date":"2024-04-28","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/kg/73/n5/eo/the-mummy-1200-1200-675-675-crop-000000.jpg?v=ba30ca1520"},{"title":"Spider-Man 3","year":"2007","watch_date":"2024-04-29","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/8l/e8/c8/6l/spider-man-3-1200-1200-675-675-crop-000000.jpg?v=8c1980ede4"},{"title":"Three Colours: Red","year":"1994","watch_date":"2024-04-30","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/5l/fs/4y/sp/red-1200-1200-675-675-crop-000000.jpg?v=35996ace23"},{"title":"Alien","year":"1979","watch_date":"2024-05-01","rating":"4.5","rewatch":true,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/ty/tt/43/of/alien-1979-1200-1200-675-675-crop-000000.jpg?v=e67d042122"},{"title":"The Fall Guy","year":"2024","watch_date":"2024-05-02","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/py/3e/ef/co/fall%20guy-1200-1200-675-675-crop-000000.jpg?v=7384150e1d"},{"title":"Ricky Stanicky","year":"2024","watch_date":"2024-05-08","rating":"4","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/uc/ob/iv/a3/IMG_3436-1200-1200-675-675-crop-000000.jpg?v=9772946d3c"},{"title":"I Saw the TV Glow","year":"2024","watch_date":"2024-05-09","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/ul/t1/g4/by/is%20aw%20the%20tv-1200-1200-675-675-crop-000000.jpg?v=7fc0e4ded3"},{"title":"La La Land","year":"2016","watch_date":"2024-05-10","rating":"4.5","rewatch":true,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/a6/th/cz/kf/la-la-land-1200-1200-675-675-crop-000000.jpg?v=874a46b231"},{"title":"Psycho","year":"1960","watch_date":"2024-05-11","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/0o/2e/y3/39/psycho-1200-1200-675-675-crop-000000.jpg?v=f3bb2c1d1d"},{"title":"Kingdom of the Planet of the Apes","year":"2024","watch_date":"2024-05-12","rating":"3.5","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/62/f0/gf/so/fypydCipcWDKDTTCoPucBsdGYXW-1200-1200-675-675-crop-000000.jpg?v=af972bf69e"},{"title":"Challengers","year":"2024","watch_date":"2024-05-14","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/1v/t5/ny/lk/MV5BYWRmZWM2ZTktMzE1Ny00NmQyLWE3ZDItZTk5MjY5OGQ5NzdhXkEyXkFqcGdeQXVyMTUzMTg2ODkz._V1_-1200-1200-675-675-crop-000000.jpg?v=bc9f57c5b8"},{"title":"Next Floor","year":"2008","watch_date":"2024-05-17","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/fg/5f/s4/1m/5qsKbN3xpfpLgcQHK2VxxSp1bwo-1200-1200-675-675-crop-000000.jpg?v=b8af54c48d"},{"title":"Other Side of the Box","year":"2018","watch_date":"2024-05-17","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/sz/tg/d4/q5/TheOtherSideOfTheBox-1200-1200-675-675-crop-000000.jpg?v=9b69032fae"},{"title":"Mad Max: Fury Road","year":"2015","watch_date":"2024-05-18","rating":"5","rewatch":true,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/50/tw/wa/80/mad-max-fury-road-1200-1200-675-675-crop-000000.jpg?v=1a543f4e46"},{"title":"The Last Stop in Yuma County","year":"2023","watch_date":"2024-05-18","rating":"3.5","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/ze/t0/u4/rj/TheLastStopinYumaCounty-WellGoUSA-OfficialStill-1340x754-7-1200-1200-675-675-crop-000000.jpg?v=faf4a602c7"},{"title":"Challengers","year":"2024","watch_date":"2024-05-20","rating":"5","rewatch":true,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/1v/t5/ny/lk/MV5BYWRmZWM2ZTktMzE1Ny00NmQyLWE3ZDItZTk5MjY5OGQ5NzdhXkEyXkFqcGdeQXVyMTUzMTg2ODkz._V1_-1200-1200-675-675-crop-000000.jpg?v=bc9f57c5b8"},{"title":"Spider-Man: Homecoming","year":"2017","watch_date":"2024-05-20","rating":"4.5","rewatch":true,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/lb/g8/9t/dr/spider-man-homecoming-1200-1200-675-675-crop-000000.jpg?v=a0c830f403"},{"title":"Evil Does Not Exist","year":"2023","watch_date":"2024-05-21","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/cb/v9/65/wl/evil-1200-1200-675-675-crop-000000.jpg?v=3811fd94d9"},{"title":"The Wolf House","year":"2018","watch_date":"2024-05-22","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/cx/hn/io/dc/wolfhouse-1200-1200-675-675-crop-000000.jpg?v=b69529b8f2"},{"title":"Challengers","year":"2024","watch_date":"2024-05-24","rating":"5","rewatch":true,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/1v/t5/ny/lk/MV5BYWRmZWM2ZTktMzE1Ny00NmQyLWE3ZDItZTk5MjY5OGQ5NzdhXkEyXkFqcGdeQXVyMTUzMTg2ODkz._V1_-1200-1200-675-675-crop-000000.jpg?v=bc9f57c5b8"},{"title":"Furiosa: A Mad Max Saga","year":"2024","watch_date":"2024-05-26","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/7/0/5/2/2/1/tmdb/tWMDdYvM22RZ1tk40fseAH0uMZs-1200-1200-675-675-crop-000000.jpg?v=c7443cac8e"},{"title":"Paprika","year":"2006","watch_date":"2024-05-26","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/mp/6e/wk/u5/paprika-1200-1200-675-675-crop-000000.jpg?v=81f8a07d6b"},{"title":"The Descent","year":"2005","watch_date":"2024-05-27","rating":"2.5","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/0h/wj/af/20/the-descent-1200-1200-675-675-crop-000000.jpg?v=02cd3cb4d1"},{"title":"I Saw the Devil","year":"2010","watch_date":"2024-05-28","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/dl/mo/ob/og/i-saw-the-devil-1200-1200-675-675-crop-000000.jpg?v=dbdd482dbb"},{"title":"Hit Man","year":"2023","watch_date":"2024-05-29","rating":"4","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/cv/bq/9d/bj/hit%20man-1200-1200-675-675-crop-000000.jpg?v=882727895a"},{"title":"It's Such a Beautiful Day","year":"2012","watch_date":"2024-06-02","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/ym/ov/sp/az/its-such-a-beautiful-day-1200-1200-675-675-crop-000000.jpg?v=5dbfdbc9d2"},{"title":"ME","year":"2024","watch_date":"2024-06-02","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/y1/au/kn/gv/IMG_2131-1200-1200-675-675-crop-000000.jpg?v=b205319e6d"},{"title":"Spider-Man: No Way Home","year":"2021","watch_date":"2024-06-04","rating":"5","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/3j/1m/pc/b8/spider-man-1200-1200-675-675-crop-000000.jpg?v=e9571e778c"},{"title":"Furiosa: A Mad Max Saga","year":"2024","watch_date":"2024-06-07","rating":"4","rewatch":true,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/7/0/5/2/2/1/tmdb/tWMDdYvM22RZ1tk40fseAH0uMZs-1200-1200-675-675-crop-000000.jpg?v=c7443cac8e"},{"title":"The Curse","year":"2023","watch_date":"2024-06-10","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/5f/uh/s3/ox/curse-1200-1200-675-675-crop-000000.jpg?v=9a7dc32d9c"},{"title":"Top Gun: Maverick","year":"2022","watch_date":"2024-06-11","rating":"5","rewatch":true,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/2/9/3/4/6/5/tmdb/mP1ORf8BGcG0bdtHYhqUt9yUhUT-1200-1200-675-675-crop-000000.jpg?v=b3d16f2989"},{"title":"Catch Me If You Can","year":"2002","watch_date":"2024-06-13","rating":"3","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/bt/n3/m1/uc/catch-me-if-you-can-120-1200-1200-675-675-crop-000000.jpg?v=47ffd2b3f9"},{"title":"Ocean's Eleven","year":"2001","watch_date":"2024-06-14","rating":"3.5","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/5/1/8/9/0/tmdb/boI3myFhWBvQcru4zZ15aJ0u3CX-1200-1200-675-675-crop-000000.jpg?v=6b45a727a6"},{"title":"The Pop Out: Ken & Friends","year":"2024","watch_date":"2024-06-20","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/0b/hy/0h/gx/kendrick-1200-1200-675-675-crop-000000.jpg?v=e1f54e253e"},{"title":"Bad Boys: Ride or Die","year":"2024","watch_date":"2024-06-24","rating":"4","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/af/eg/3z/xp/gRApXuxWmO2forYTuTmcz5RaNUV-1200-1200-675-675-crop-000000.jpg?v=011558dd9d"},{"title":"A.I. Artificial Intelligence","year":"2001","watch_date":"2024-06-25","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/5/1/4/8/0/tmdb/n7p6UTAZtkeoHkwCO42BEQaMFJY-1200-1200-675-675-crop-000000.jpg?v=acbddf482f"},{"title":"The Sixth Sense","year":"1999","watch_date":"2024-07-01","rating":"4.5","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/bn/hc/0u/en/sixthsense-1200-1200-675-675-crop-000000.jpg?v=96b2ba2a1e"},{"title":"Exhuma","year":"2024","watch_date":"2024-07-05","rating":"3.5","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/yq/a4/v6/so/4XT9MUJyiovwXefl7vVI2gIbgxB-1200-1200-675-675-crop-000000.jpg?v=cdd7afedbe"},{"title":"Inside Out","year":"2015","watch_date":"2024-07-06","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/b5/4z/eo/e7/inside-out-2015-1200-1200-675-675-crop-000000.jpg?v=a6967f7121"},{"title":"X","year":"2022","watch_date":"2024-07-06","rating":"3.5","rewatch":true,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/lj/kq/2g/p5/x-1200-1200-675-675-crop-000000.jpg?v=5282aa611d"},{"title":"Pearl","year":"2022","watch_date":"2024-07-07","rating":"4","rewatch":true,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/8/5/3/8/2/2/tmdb/2vMjjObPTPSkgUROECrtK571seg-1200-1200-675-675-crop-000000.jpg?v=721efbfc5e"},{"title":"MaXXXine","year":"2024","watch_date":"2024-07-11","rating":"4","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/9/2/2/8/5/8/tmdb/w0d0bEf9LllRW1pxb2FP4Mvowgo-1200-1200-675-675-crop-000000.jpg?v=a52bfebe79"},{"title":"Longlegs","year":"2024","watch_date":"2024-07-15","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/1/1/1/0/0/5/9/tmdb/Avtx5jsdPuDa091jvx2Lye3ygke-1200-1200-675-675-crop-000000.jpg?v=3b1b1ed415"},{"title":"Abigail","year":"2024","watch_date":"2024-07-17","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/1/0/0/1/2/8/5/tmdb/hz4xSr6pnFkRJvieVgokxCjdCVi-1200-1200-675-675-crop-000000.jpg?v=fc7224494d"},{"title":"Twisters","year":"2024","watch_date":"2024-07-18","rating":"5","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/6/4/1/6/0/8/tmdb/18MUq7quXDTTe9oVYzqb9CbcT5K-1200-1200-675-675-crop-000000.jpg?v=a13c22714d"},{"title":"Aliens","year":"1986","watch_date":"2024-07-23","rating":"3","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/7e/bn/an/g1/aliens-1200-1200-675-675-crop-000000.jpg?v=95d4d011df"},{"title":"Videodrome","year":"1983","watch_date":"2024-07-24","rating":"4","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/5/1/3/1/5/tmdb/e6YUAsoUKoNdSG6zRVPgN6JcrcQ-1200-1200-675-675-crop-000000.jpg?v=614b18d67a"},{"title":"Logan","year":"2017","watch_date":"2024-07-28","rating":"3.5","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/1/8/6/5/4/9/tmdb/3aHxweFyFBrEyEQ9OuhqFDxPz0m-1200-1200-675-675-crop-000000.jpg?v=98c52c91a2"},{"title":"Deadpool & Wolverine","year":"2024","watch_date":"2024-07-29","rating":"2.5","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/4/6/2/8/7/0/tmdb/53yyhK8gQbALqXFJP5pQQ3JNz1r-1200-1200-675-675-crop-000000.jpg?v=daa2ffc1e6"},{"title":"Talk to Me","year":"2022","watch_date":"2024-07-30","rating":"4","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/5v/2e/34/pd/IMG_2531-1200-1200-675-675-crop-000000.jpg?v=5aea55ce5a"},{"title":"Rather","year":"2023","watch_date":"2024-08-03","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/j2/2f/mh/js/w74S1zre7PEbdCXIYDvjGHk9qhx-1200-1200-675-675-crop-000000.jpg?v=ff1a21b807"},{"title":"Speak No Evil","year":"2022","watch_date":"2024-08-04","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/7/4/8/9/4/3/tmdb/6wUZx8vrVYboqqqhm4sWvTFONHS-1200-1200-675-675-crop-000000.jpg?v=79f7d6ed2f"},{"title":"Trap","year":"2024","watch_date":"2024-08-04","rating":"3.5","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/bd/4t/jj/zo/trap-1200-1200-675-675-crop-000000.jpg?v=a6363887cb"},{"title":"The Third Man","year":"1949","watch_date":"2024-08-07","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/5/1/1/5/4/tmdb/l2iY1AgqQ8dEa3FtWkN5TQ5aVbU-1200-1200-675-675-crop-000000.jpg?v=392a310dc9"},{"title":"Monster","year":"2023","watch_date":"2024-08-09","rating":"5","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/9/4/7/0/3/0/tmdb/hwqWW99qTsuVBqoEiNups75Wua2-1200-1200-675-675-crop-000000.jpg?v=0c385ae5a1"},{"title":"Cuckoo","year":"2024","watch_date":"2024-08-12","rating":"4","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/7/8/1/2/2/3/tmdb/AjmpXbpMDegWqjK8rW5LQ1V4DR-1200-1200-675-675-crop-000000.jpg?v=3add0c5a07"},{"title":"Sing Sing","year":"2023","watch_date":"2024-08-14","rating":"4.5","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/1/0/4/1/9/5/7/tmdb/p7n5jLHyhDU3lS3Kv79WFbf26TP-1200-1200-675-675-crop-000000.jpg?v=1cc4933124"},{"title":"Hundreds of Beavers","year":"2022","watch_date":"2024-08-18","rating":"4","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/9/1/9/0/6/8/tmdb/nhHWrkaYvJhCawMAdF2RlVOzYKp-1200-1200-675-675-crop-000000.jpg?v=7a5372b419"},{"title":"Alien: Romulus","year":"2024","watch_date":"2024-08-19","rating":"4","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/9k/b6/vt/j7/6kGlcZ1T7V2MxVlQbiynxJdrHrl-1200-1200-675-675-crop-000000.jpg?v=a61d6bcc85"},{"title":"Possessor","year":"2020","watch_date":"2024-08-24","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/0d/ka/6z/mw/possessor-1200-1200-675-675-crop-000000.jpg?v=4307bf1b9a"},{"title":"No Dogs or Italians Allowed","year":"2022","watch_date":"2024-08-26","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/jz/dc/vd/my/no%20dogs-1200-1200-675-675-crop-000000.jpg?v=6d2b703a56"},{"title":"History of the Occult","year":"2020","watch_date":"2024-08-30","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/mb/kk/3j/92/history-1200-1200-675-675-crop-000000.jpg?v=c18806447c"},{"title":"Beetlejuice","year":"1988","watch_date":"2024-09-06","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/4/9/5/3/0/tmdb/6gXqbfkHiqPHm3LVurjWOBZly5X-1200-1200-675-675-crop-000000.jpg?v=e791d7ef4a"},{"title":"Little Women","year":"2019","watch_date":"2024-09-09","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/2/5/9/4/4/1/tmdb/A0e4ACMpCSdAHlViCqd009hf7PH-1200-1200-675-675-crop-000000.jpg?v=588491c911"},{"title":"Diabolique","year":"1955","watch_date":"2024-09-10","rating":"4","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/3v/rw/tr/qt/diabolique-1200-1200-675-675-crop-000000.jpg?v=e8f288e8c3"},{"title":"Beetlejuice Beetlejuice","year":"2024","watch_date":"2024-09-11","rating":"3","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/8/2/3/6/4/8/tmdb/6yqhxQzLlb3ajJ50AoRyUKhng1i-1200-1200-675-675-crop-000000.jpg?v=20fe9b4c5c"},{"title":"Le Samouraï","year":"1967","watch_date":"2024-09-13","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/23/j9/4i/nv/le%20samourai-1200-1200-675-675-crop-000000.jpg?v=4baccd7830"},{"title":"Longlegs","year":"2024","watch_date":"2024-09-15","rating":"0","rewatch":true,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/1/1/1/0/0/5/9/tmdb/Avtx5jsdPuDa091jvx2Lye3ygke-1200-1200-675-675-crop-000000.jpg?v=3b1b1ed415"},{"title":"Megalopolis","year":"2024","watch_date":"2024-09-25","rating":"1.5","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/5/2/0/3/2/8/tmdb/ijikYgRODrPB8Yd4C119qGI8TyX-1200-1200-675-675-crop-000000.jpg?v=8170bb03e4"},{"title":"The Prestige","year":"2006","watch_date":"2024-09-25","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/5/1/1/4/7/tmdb/wvoNDWDJfCY2XtrJBLGSAIT1MX9-1200-1200-675-675-crop-000000.jpg?v=b26d9a816c"},{"title":"La Haine","year":"1995","watch_date":"2024-09-27","rating":"3.5","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/h5/en/ik/n2/la-haine-1200-1200-675-675-crop-000000.jpg?v=b0b3aed69a"},{"title":"The Terminator","year":"1984","watch_date":"2024-10-05","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/5/1/8/3/8/tmdb/9rSNvlJN8TiCHcN6n68GhxWsExu-1200-1200-675-675-crop-000000.jpg?v=f8be3bc492"},{"title":"Terminator 2: Judgment Day","year":"1991","watch_date":"2024-10-07","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/5/1/7/7/6/tmdb/bWpwUuSNAh3ZIDbud58tN1L0fTX-1200-1200-675-675-crop-000000.jpg?v=a469934b7e"},{"title":"Interstellar","year":"2014","watch_date":"2024-10-08","rating":"5","rewatch":true,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/1/1/7/6/2/1/tmdb/dhnlmqSCXcbdD3hABJa2Ccyc7qa-1200-1200-675-675-crop-000000.jpg?v=9f6079898f"},{"title":"It's What's Inside","year":"2024","watch_date":"2024-10-09","rating":"2.5","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/9/4/9/0/5/3/tmdb/jaWXglPzIyBE4nosEfT7WE4OpnS-1200-1200-675-675-crop-000000.jpg?v=7dcbad5f55"},{"title":"Top Gun: Maverick","year":"2022","watch_date":"2024-10-12","rating":"5","rewatch":true,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/2/9/3/4/6/5/tmdb/mP1ORf8BGcG0bdtHYhqUt9yUhUT-1200-1200-675-675-crop-000000.jpg?v=b3d16f2989"},{"title":"The Substance","year":"2024","watch_date":"2024-10-16","rating":"4","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/8/3/8/1/4/0/tmdb/b0itXhS69X33BvLi7uWjUZQs9MB-1200-1200-675-675-crop-000000.jpg?v=46cd0509f4"},{"title":"Ponyo","year":"2008","watch_date":"2024-10-21","rating":"0","rewatch":true,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/4/4/5/9/4/tmdb/ns0kqArrSgKhksZ2bQ76qBrSJaF-1200-1200-675-675-crop-000000.jpg?v=e09a7b2d48"},{"title":"Anora","year":"2024","watch_date":"2024-11-04","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/9/5/9/5/4/0/tmdb/ajgUexgMLh7hLM6Lkl5sXFvLbQC-1200-1200-675-675-crop-000000.jpg?v=a990ae9f9a"},{"title":"Smile 2","year":"2024","watch_date":"2024-11-08","rating":"4","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/9/9/2/3/6/0/tmdb/lDPrE6ASD4x8feRQukYtUY0KI4D-1200-1200-675-675-crop-000000.jpg?v=9e87da79c0"},{"title":"Coraline","year":"2009","watch_date":"2024-11-09","rating":"0","rewatch":true,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/4/2/7/7/9/tmdb/hofnlIyF6bePkgQOpcuRWLvzf15-1200-1200-675-675-crop-000000.jpg?v=5ad6dfb45a"},{"title":"Shin Godzilla","year":"2016","watch_date":"2024-11-09","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/sm/cu/z2/1z/shin-godzilla-1200-1200-675-675-crop-000000.jpg?v=6d76af80c8"},{"title":"First Reformed","year":"2017","watch_date":"2024-11-19","rating":"5","rewatch":true,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/7z/nb/kw/h1/first-reformed-1200-1200-675-675-crop-000000.jpg?v=7839d88e99"},{"title":"Gladiator II","year":"2024","watch_date":"2024-11-20","rating":"3.5","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/85/h2/uy/p3/gladiator%202-1200-1200-675-675-crop-000000.jpg?v=35462ea2c8"},{"title":"Aftersun","year":"2022","watch_date":"2024-11-26","rating":"4.5","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/8/6/8/5/5/8/tmdb/oe34IBpi5zlbKzyBe6RaoMwBugo-1200-1200-675-675-crop-000000.jpg?v=86ca5c4806"},{"title":"Heretic","year":"2024","watch_date":"2024-11-29","rating":"3","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/1/0/2/5/3/3/1/tmdb/xRyNUmykcRlC1yctv5UPsiSZzTb-1200-1200-675-675-crop-000000.jpg?v=9bca790229"},{"title":"Fantastic Mr. Fox","year":"2009","watch_date":"2024-12-02","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/4/6/3/4/4/tmdb/3DiMsjOhdybyStKcCyEnfeGTCwQ-1200-1200-675-675-crop-000000.jpg?v=6a40203cf2"},{"title":"Juror #2","year":"2024","watch_date":"2024-12-03","rating":"4","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/9/9/7/7/2/2/tmdb/wHXyGLjYPm4bHNKFQPCfYWiTeSH-1200-1200-675-675-crop-000000.jpg?v=0333e9e58c"},{"title":"Bad Boys","year":"1995","watch_date":"2024-12-07","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/4/6/8/7/0/tmdb/x5ALlgbSQoK5NMiHWxgy3sOKrGU-1200-1200-675-675-crop-000000.jpg?v=6f47682c54"},{"title":"The Lord of the Rings: The War of the Rohirrim","year":"2024","watch_date":"2024-12-16","rating":"3.5","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/7/5/4/1/1/5/tmdb/p04MAoWKYZSv5puMtrl4LmT4pD5-1200-1200-675-675-crop-000000.jpg?v=584330d000"},{"title":"Super/Man: The Christopher Reeve Story","year":"2024","watch_date":"2024-12-18","rating":"0","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/hv/tb/9e/z9/Christopher-Reeve-1-1200-1200-675-675-crop-000000.jpg?v=33fb4ec36a"},{"title":"Carry-On","year":"2024","watch_date":"2024-12-26","rating":"3.5","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/9/0/5/8/7/6/tmdb/xh3ypL7dq71A9JJ03vWdTDI18HU-1200-1200-675-675-crop-000000.jpg?v=335f0c5025"},{"title":"Wonka","year":"2023","watch_date":"2024-12-27","rating":"5","rewatch":true,"backdrop":"https://a.ltrbxd.com/resized/alternative-backdrop/7/0/6/0/8/3/tmdb/xwzJiqdDIlXYeUkPjbOvXZicig2-1200-1200-675-675-crop-000000.jpg?v=dac88cdd7f"},{"title":"Red One","year":"2024","watch_date":"2024-12-31","rating":"3","rewatch":false,"backdrop":"https://a.ltrbxd.com/resized/sm/upload/gv/yw/4v/u3/g7H5Ldd5knnFORJ7y7MPDKOHGy0-1200-1200-675-675-crop-000000.jpg?v=d3211404c7"}];
+
+// ── Build the full-year day model ───────────────────────────
+const byDate = {};
+FILMS.forEach(f => { (byDate[f.watch_date] ||= []).push(f); });
+const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const DOW_MON = ["M","T","W","T","F","S","S"]; // Monday-first
+
+const days = [];
+let cur = new Date(Date.UTC(2024,0,1));
+const end = new Date(Date.UTC(2024,11,31));
+while (cur <= end){
+  const iso = cur.toISOString().slice(0,10);
+  days.push({
+    date: iso,
+    dom: cur.getUTCDate(),
+    month: cur.getUTCMonth(),
+    dowMon: (cur.getUTCDay()+6)%7,   // 0=Mon … 6=Sun
+    films: byDate[iso] || []
+  });
+  cur.setUTCDate(cur.getUTCDate()+1);
+}
+
+// ── Options state ───────────────────────────────────────────
+const opts = { layout:"week", view:"desktop", title:"below", date:"show", empty:"number", multi:"stack", size:"m" };
+
+const NOTES = {
+  week:   "Weekday rows, weeks as columns — scroll right through the year. Jan 1 2024 was a Monday, so weeks align cleanly.",
+  months: "Twelve mini-calendars side by side. Strongest sense of date. 'Widen' falls back to stack inside fixed day cells.",
+  strip:  "One slot per day. Watched days are full 16:9; empty days are thin numbered ticks. 'Widen' fans a day's films side by side.",
+  packed: "Current 4-per-column packing, chronological, with proportional gap markers for skipped stretches."
+};
+
+// ── Cell builders ───────────────────────────────────────────
+function fmtDate(iso){ const [y,m,d]=iso.split("-"); return MON[+m-1]+" "+(+d); }
+
+function imgEl(film){
+  if (film.backdrop){
+    const i = document.createElement("img");
+    i.src = film.backdrop; i.alt=""; i.loading="lazy"; i.decoding="async";
+    return i;
+  }
+  const n = document.createElement("span");
+  n.className="fc__noimg"; n.textContent="no reproduction";
+  return n;
+}
+
+function caption(title, iso){
+  const cap = document.createElement("div"); cap.className="fc__cap";
+  const t = document.createElement("div"); t.className="fc__title"; t.textContent=title; cap.appendChild(t);
+  const d = document.createElement("div"); d.className="fc__date"; d.textContent=fmtDate(iso); cap.appendChild(d);
+  return cap;
+}
+
+// single film cell
+function singleCell(film, iso){
+  const fc = document.createElement("div"); fc.className="fc cell"; fc.tabIndex=0;
+  fc.title = film.title + " ("+film.year+")";
+  const img = document.createElement("div"); img.className="fc__img";
+  img.appendChild(imgEl(film));
+  if (film.rewatch){ const r=document.createElement("span"); r.className="fc__re"; r.textContent="re"; img.appendChild(r); }
+  // overlay reveal
+  const ov = document.createElement("div"); ov.className="fc__ov";
+  ov.appendChild(caption(film.title, iso));
+  img.appendChild(ov);
+  fc.appendChild(img);
+  fc.appendChild(caption(film.title, iso));
+  return fc;
+}
+
+// stacked multi-film cell (one slot, tiled)
+function stackCell(films, iso){
+  const fc = document.createElement("div"); fc.className="fc cell"; fc.tabIndex=0;
+  fc.title = films.length+" films on "+fmtDate(iso);
+  const img = document.createElement("div"); img.className="fc__img";
+  const stack = document.createElement("div");
+  const n = films.length;
+  stack.className = "fc__stack "+(n===2?"fc__stack--2":n===3?"fc__stack--3":n===4?"fc__stack--4":"fc__stack--many");
+  const show = films.slice(0, n>6?5:Math.min(n,6));
+  show.forEach(f=> stack.appendChild(imgEl(f)));
+  if (n>6){ const more=document.createElement("div"); more.className="fc__stackmore"; more.textContent="+"+(n-5); stack.appendChild(more); }
+  img.appendChild(stack);
+  const ov = document.createElement("div"); ov.className="fc__ov";
+  ov.appendChild(caption(n+" films", iso));
+  img.appendChild(ov);
+  fc.appendChild(img);
+  fc.appendChild(caption(films.map(f=>f.title).join(" · "), iso));
+  return fc;
+}
+
+// +N badge cell
+function badgeCell(films, iso){
+  const fc = singleCell(films[0], iso);
+  if (films.length>1){ const b=document.createElement("span"); b.className="fc__badge"; b.textContent="+"+(films.length-1); fc.querySelector(".fc__img").appendChild(b); }
+  const t = fc.querySelector(".fc__cap .fc__title"); if(t) t.textContent = films[0].title + (films.length>1?"  +"+(films.length-1):"");
+  return fc;
+}
+
+// widen cell: multiple backdrops side by side in one slot
+function wideCell(films, iso){
+  const fc = document.createElement("div"); fc.className="fc cell fc--wide"; fc.tabIndex=0;
+  fc.style.width = "calc(var(--u)*1.7*16/9 * "+films.length+")";
+  fc.title = films.length+" films on "+fmtDate(iso);
+  const img = document.createElement("div"); img.className="fc__img";
+  films.forEach(f=> img.appendChild(imgEl(f)));
+  fc.appendChild(img);
+  fc.appendChild(caption(films.map(f=>f.title).join(" · "), iso));
+  return fc;
+}
+
+// Build the cell(s) for a day according to multi mode + layout.
+// Returns array of elements (length 1 except packed+widen).
+function dayCells(day, layout){
+  const f = day.films;
+  if (f.length===1) return [singleCell(f[0], day.date)];
+  // multi-film
+  if (opts.multi==="badge") return [badgeCell(f, day.date)];
+  if (opts.multi==="widen"){
+    if (layout==="strip") return [wideCell(f, day.date)];
+    if (layout==="packed") return f.map(x=> singleCell(x, day.date)); // adjacent
+    return [stackCell(f, day.date)]; // week/month fixed grid → fall back to stack
+  }
+  return [stackCell(f, day.date)]; // stack (default)
+}
+
+function emptyCell(day){
+  const e = document.createElement("div"); e.className="empty";
+  e.textContent = opts.empty==="blank" ? "" : day.dom;
+  return e;
+}
+
+// ── Layout renderers ────────────────────────────────────────
+function renderWeek(stage){
+  const shell = document.createElement("div"); shell.className="week-shell";
+  // weekday rail
+  const rail = document.createElement("div"); rail.className="weekrow week__dows";
+  const spacer=document.createElement("span"); rail.appendChild(spacer); // align with month row
+  DOW_MON.forEach(d=>{ const s=document.createElement("span"); s.textContent=d; rail.appendChild(s); });
+  shell.appendChild(rail);
+
+  const grid = document.createElement("div"); grid.className="week";
+  // leading blanks so day 1 sits on its weekday row
+  const lead = days[0].dowMon;
+  for (let i=0;i<lead;i++){ const ph=document.createElement("div"); ph.style.gridRow=(i+2); ph.style.gridColumn=1; grid.appendChild(ph); }
+  let lastMonth=-1;
+  days.forEach((day,idx)=>{
+    const pos = lead + idx;
+    const col = Math.floor(pos/7)+1;
+    const row = (pos%7)+2; // +2: row1 is month labels
+    // month label at the top of the column where a new month starts
+    if (day.month!==lastMonth){
+      const ml=document.createElement("div"); ml.className="wk-month"; ml.textContent=MON[day.month];
+      ml.style.gridColumn=col; ml.style.gridRow=1; grid.appendChild(ml); lastMonth=day.month;
+    }
+    let nodes;
+    if (day.films.length===0){ nodes=[emptyCell(day)]; }
+    else { nodes = dayCells(day,"week"); }
+    nodes.forEach(n=>{ n.style.gridColumn=col; n.style.gridRow=row; grid.appendChild(n); });
+  });
+  shell.appendChild(grid);
+  stage.appendChild(shell);
+}
+
+function renderMonths(stage){
+  const wrap=document.createElement("div"); wrap.className="months";
+  for (let m=0;m<12;m++){
+    const md = days.filter(d=>d.month===m);
+    const count = md.reduce((s,d)=>s+d.films.length,0);
+    const block=document.createElement("div"); block.className="month";
+    const hd=document.createElement("div"); hd.className="month__hd";
+    const nm=document.createElement("div"); nm.className="month__name"; nm.textContent=MON[m];
+    const ct=document.createElement("div"); ct.className="month__count"; ct.textContent=count+" films";
+    hd.appendChild(nm); hd.appendChild(ct); block.appendChild(hd);
+    const dows=document.createElement("div"); dows.className="month__dows";
+    DOW_MON.forEach(d=>{ const s=document.createElement("span"); s.textContent=d; dows.appendChild(s); });
+    block.appendChild(dows);
+    const grid=document.createElement("div"); grid.className="month__grid";
+    const lead=md[0].dowMon;
+    for(let i=0;i<lead;i++){ const ph=document.createElement("div"); grid.appendChild(ph); }
+    md.forEach(day=>{
+      if (day.films.length===0) grid.appendChild(emptyCell(day));
+      else dayCells(day,"months").forEach(n=>grid.appendChild(n));
+    });
+    block.appendChild(grid);
+    wrap.appendChild(block);
+  }
+  stage.appendChild(wrap);
+}
+
+function renderStrip(stage){
+  const row=document.createElement("div"); row.className="strip";
+  let lastMonth=-1;
+  days.forEach(day=>{
+    if (day.month!==lastMonth){
+      const mm=document.createElement("div"); mm.className="strip-month";
+      const s=document.createElement("span"); s.textContent=MON[day.month]; mm.appendChild(s);
+      row.appendChild(mm); lastMonth=day.month;
+    }
+    if (day.films.length===0) row.appendChild(emptyCell(day));
+    else dayCells(day,"strip").forEach(n=>row.appendChild(n));
+  });
+  stage.appendChild(row);
+}
+
+function renderPacked(stage){
+  const grid=document.createElement("div"); grid.className="packed";
+  let col=1, rowi=1, lastDate=null;
+  const place=(node)=>{ node.style.gridColumn=col; node.style.gridRow=rowi; grid.appendChild(node);
+    rowi++; if(rowi>4){rowi=1;col++;} };
+  const watched = days.filter(d=>d.films.length>0);
+  watched.forEach(day=>{
+    if (lastDate){
+      const gapDays = Math.round((Date.parse(day.date)-Date.parse(lastDate))/86400000) - 1;
+      if (gapDays>0){
+        if (rowi>1){ rowi=1; col++; }          // finish current column
+        const g=document.createElement("div"); g.className="gap";
+        g.innerHTML="<b>"+gapDays+"</b>"+(gapDays===1?"day":"days");
+        g.style.gridColumn=col; g.style.gridRow="1 / 5";
+        // width proportional to gap (clamped)
+        g.style.minWidth=Math.min(10+gapDays*3,80)+"px";
+        grid.appendChild(g); col++; rowi=1;
+      }
+    }
+    dayCells(day,"packed").forEach(n=>place(n));
+    lastDate=day.date;
+  });
+  stage.appendChild(grid);
+}
+
+// ── Render dispatch ─────────────────────────────────────────
+const wrapEl = document.getElementById("stagewrap");
+function render(){
+  document.getElementById("note").textContent = NOTES[opts.layout];
+  const watched = days.filter(d=>d.films.length>0).length;
+  document.getElementById("legend").textContent =
+    "201 films · "+watched+" days watched · "+(366-watched)+" empty days · 2024";
+
+  wrapEl.innerHTML="";
+  const stage=document.createElement("div"); stage.className="stage";
+  stage.dataset.size=opts.size; stage.dataset.title=opts.title; stage.dataset.date=opts.date;
+  stage.dataset.empty=opts.empty; stage.dataset.multi=opts.multi;
+
+  if (opts.layout==="week") renderWeek(stage);
+  else if (opts.layout==="months") renderMonths(stage);
+  else if (opts.layout==="strip") renderStrip(stage);
+  else renderPacked(stage);
+
+  if (opts.view==="mobile"){
+    const phone=document.createElement("div"); phone.className="phone";
+    const notch=document.createElement("div"); notch.className="phone__notch"; phone.appendChild(notch);
+    phone.appendChild(stage);
+    wrapEl.appendChild(phone);
+  } else {
+    wrapEl.appendChild(stage);
+  }
+}
+
+// ── Controls wiring ─────────────────────────────────────────
+document.getElementById("controls").addEventListener("click", e=>{
+  const btn=e.target.closest("button[data-val]"); if(!btn) return;
+  const group=btn.closest(".seg"); const opt=group.dataset.opt;
+  group.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed", b===btn?"true":"false"));
+  opts[opt]=btn.dataset.val;
+  render();
+});
+
+render();
+</script>
+</body>
+</html>

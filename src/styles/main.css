@@ -671,6 +671,78 @@ body {
   }
 }
 
+/* ── Film calendar ribbon — continuous day grid (watched + empty days) ───────────
+   A single grid: row 1 (auto) holds month labels; rows 2–5 are the four body rows
+   of day cells, packed column-major oldest→newest. Watched days carry a backdrop,
+   a hover/focus title, and a light day number top-right; empty days show just the
+   number; runs of film-less calendar years collapse to one marker. Scoped via
+   --film-cal so other grids are untouched. */
+.item-grid__cells--film-cal {
+  border-bottom: 1px solid var(--grid-line);
+  border-right: 1px solid var(--grid-line);
+}
+.item-grid__month {
+  grid-row: 1;
+  align-self: end;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--overlay-muted);
+  white-space: nowrap;
+  padding: 0 0.4rem 0.35rem;
+  pointer-events: none;
+}
+.item-grid__cell--day { position: relative; }
+.item-grid__cell--empty {
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+/* Day number — top-right; bright over backdrops, faint on empty days */
+.item-grid__daynum {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: rgba(232, 224, 208, 0.32);
+  padding: 0.32rem 0.36rem;
+  user-select: none;
+}
+.item-grid__daynum--over {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 2;
+  color: rgba(255, 255, 255, 0.92);
+  pointer-events: none;
+}
+/* Collapsed empty-year marker */
+.item-grid__gap {
+  grid-row: 2 / 6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  text-align: center;
+  padding: 0 0.6rem;
+  border-top: 1px solid var(--grid-line);
+  border-left: 1px dashed var(--grid-line);
+  border-right: 1px dashed var(--grid-line);
+}
+.item-grid__gap-label {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--overlay-muted);
+}
+.item-grid__gap-years {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--overlay-text);
+}
+
 /* ── Item image — centered, zoomable ─────────────────────────────────────────── */
 .item-image {
   display: block;

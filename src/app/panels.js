@@ -859,6 +859,141 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
       }
     }
 
+    // Films render as a single continuous calendar ribbon: every day from the
+    // last watched date back to the first, packed 4 per column newest→oldest, so
+    // the most recent watch sits at the top-left and time flows rightward into the
+    // past. Watched days show a 16:9 backdrop with a hover/focus title; multiple
+    // films on one day each get their own cell, and only the day's first cell
+    // carries the white day number. Empty days show just a faint number. Calendar
+    // years with no films collapse to a single marker.
+    function buildFilmRibbon(gridEl, items) {
+      const MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+      const withDate = items.filter(i => i.watch_date);
+      if (!withDate.length) return;
+      withDate.sort((a, b) =>
+        a.watch_date.localeCompare(b.watch_date) || (a.title || "").localeCompare(b.title || ""));
+
+      const byDate = new Map();
+      for (const it of withDate) {
+        if (!byDate.has(it.watch_date)) byDate.set(it.watch_date, []);
+        byDate.get(it.watch_date).push(it);
+      }
+      const yearsWithFilms = new Set(withDate.map(i => i.watch_date.slice(0, 4)));
+      const firstDate = withDate[0].watch_date;
+      const lastDate = withDate[withDate.length - 1].watch_date;
+      const firstYear = +firstDate.slice(0, 4);
+
+      const group = el("div", "item-grid__group");
+      const cells = el("div", "item-grid__cells item-grid__cells--film-cal");
+      cells.style.gridTemplateRows = "auto repeat(4, var(--film-cell-height))";
+
+      let col = 1, row = 1, lastMonthKey = null;
+      const advance = () => { row++; if (row > 4) { row = 1; col++; } };
+      const finishColumn = () => { if (row > 1) { row = 1; col++; } };
+      const fromISO = (iso) => { const [y,m,d] = iso.split("-").map(Number); return new Date(Date.UTC(y, m - 1, d)); };
+      const toISO = (dt) => dt.toISOString().slice(0, 10);
+
+      let cur = fromISO(lastDate);
+      const stop = fromISO(firstDate);
+
+      while (cur >= stop) {
+        const iso = toISO(cur);
+        const y = iso.slice(0, 4);
+
+        // Collapse a run of entirely-empty calendar years into one marker.
+        if (!yearsWithFilms.has(y)) {
+          finishColumn();
+          const endY = +y;
+          let sy = endY;
+          while (sy >= firstYear && !yearsWithFilms.has(String(sy))) sy--;
+          const gap = el("div", "item-grid__gap");
+          gap.style.gridColumn = col;
+          gap.style.gridRow = "2 / 6";
+          const gl = el("span", "item-grid__gap-label");
+          gl.textContent = "no films logged";
+          const gy = el("span", "item-grid__gap-years");
+          gy.textContent = (sy + 1 === endY) ? `${endY}` : `${sy + 1}–${endY}`;
+          gap.appendChild(gl);
+          gap.appendChild(gy);
+          cells.appendChild(gap);
+          col++;
+          cur = new Date(Date.UTC(sy, 11, 31));
+          lastMonthKey = null;
+          continue;
+        }
+
+        // Month label at the top of the column where each month first appears.
+        const mk = iso.slice(0, 7);
+        if (mk !== lastMonthKey) {
+          const ml = el("div", "item-grid__month");
+          ml.textContent = `${MON[cur.getUTCMonth()]} ${y}`;
+          ml.style.gridColumn = col;
+          ml.style.gridRow = 1;
+          cells.appendChild(ml);
+          lastMonthKey = mk;
+        }
+
+        const dom = cur.getUTCDate();
+        const dayFilms = byDate.get(iso);
+        const place = (cell) => {
+          if (col === 1) cell.classList.add("item-grid__cell--first-col");
+          cell.style.gridColumn = col;
+          cell.style.gridRow = row + 1;
+          cells.appendChild(cell);
+        };
+        if (dayFilms && dayFilms.length) {
+          dayFilms.forEach((f, i) => { place(buildFilmCell(f, dom, i === 0)); advance(); });
+        } else {
+          const cell = el("div", "item-grid__cell item-grid__cell--day item-grid__cell--empty");
+          const num = el("span", "item-grid__daynum");
+          num.textContent = dom;
+          cell.appendChild(num);
+          place(cell);
+          advance();
+        }
+        cur.setUTCDate(cur.getUTCDate() - 1);
+      }
+
+      group.appendChild(cells);
+      gridEl.appendChild(group);
+    }
+
+    // One cell per film. Days with several films get one cell each; only the day's
+    // first cell carries the white day number.
+    function buildFilmCell(f, dom, showNum) {
+      const cell = el("div", "item-grid__cell item-grid__cell--day item-grid__cell--watched");
+      const btn = el("button", "item-grid__btn");
+      btn.type = "button";
+      btn.dataset.itemId = f.id;
+      btn.setAttribute("aria-label", f.title);
+      const bd = imageUrl(f.assets?.backdrop, "original");
+      if (bd) {
+        const img = el("img", "item-grid__thumb item-grid__thumb--backdrop");
+        img.src = bd; img.alt = ""; img.loading = "lazy";
+        btn.appendChild(img);
+      } else {
+        const ph = el("span", "item-grid__noimg");
+        ph.textContent = "no reproduction";
+        btn.appendChild(ph);
+      }
+      const title = el("span", "item-grid__title");
+      title.textContent = f.title;
+      btn.appendChild(title);
+      if (showNum) {
+        const num = el("span", "item-grid__daynum item-grid__daynum--over");
+        num.textContent = dom;
+        btn.appendChild(num);
+      }
+      btn.addEventListener("click", () => {
+        navigate({ layer: "item", series: seriesKey, subcollection: activeSubKey, view: activeView, item: f.id });
+      });
+      cell.appendChild(btn);
+      return cell;
+    }
+
+    if (isFilms) {
+      buildFilmRibbon(grid, activeSub.items || []);
+    } else {
     years.forEach(({ year, items: yearItems }) => {
       const group = el("div", "item-grid__group");
 
@@ -957,6 +1092,7 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
       group.appendChild(cells);
       grid.appendChild(group);
     });
+    }
 
     gridWrap.appendChild(grid);
     content.appendChild(gridWrap);
@@ -965,6 +1101,8 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
       grid.classList.toggle("item-grid--centered", grid.scrollWidth <= gridWrap.clientWidth);
     };
     updateGridAlignment();
+    // Films open at the left edge — the most recent watches sit there.
+    if (isFilms) requestAnimationFrame(() => { gridWrap.scrollLeft = 0; });
     const gridRO = new ResizeObserver(updateGridAlignment);
     gridRO.observe(gridWrap);
     new MutationObserver((_, mo) => {

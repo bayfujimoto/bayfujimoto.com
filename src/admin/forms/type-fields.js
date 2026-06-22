@@ -10,18 +10,27 @@ import { adminFields, physicalFields } from "../../shared/field-schema.js";
 
 const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
 
-// Used by consumption types only — these don't use inspection modes
+// Used by consumption types only — these don't use inspection modes.
+// Each role may be a plain string ("poster") or a descriptor object
+// ({ role, label, skipThumbnail }). skipThumbnail marks an asset that should
+// never become the record thumbnail (e.g. a wide backdrop) — see
+// makeAssetUploadField in form-renderer.js.
 function assetGroup(roles) {
   return {
     id: "assets",
     label: "Assets",
     depth: "full",
-    fields: roles.map(role => ({
-      id:        `assets.${role}`,
-      label:     role,
-      type:      "asset-upload",
-      assetRole: role,
-    })),
+    fields: roles.map(entry => {
+      const role = typeof entry === "string" ? entry : entry.role;
+      const cfg  = typeof entry === "string" ? {} : entry;
+      return {
+        id:            `assets.${role}`,
+        label:         cfg.label ?? role,
+        type:          "asset-upload",
+        assetRole:     role,
+        skipThumbnail: cfg.skipThumbnail ?? false,
+      };
+    }),
   };
 }
 
@@ -63,7 +72,13 @@ export function getTypeGroups(itemType) {
 
     // ── Consumption (schema-driven) ──────────────────────────
     case "film":
-      return [schemaMetaGroup("film", "film-meta", "Film"), assetGroupWithThumb(["poster"])];
+      return [
+        schemaMetaGroup("film", "film-meta", "Film"),
+        assetGroupWithThumb([
+          "poster",
+          { role: "backdrop", label: "backdrop (optional)", skipThumbnail: true },
+        ]),
+      ];
 
     case "book":
       return [schemaMetaGroup("book", "book-meta", "Book"), assetGroupWithThumb(["cover"])];

@@ -117,7 +117,9 @@ function makeAssetUploadField(field, value, handleChange, getItemId) {
       const result = await uploadImageAsset(file, itemId, field.assetRole);
 
       handleChange(field.id, result.original);
-      if (!handleChange._thumbSet) {
+      // Skip thumbnail assignment for assets flagged skipThumbnail (e.g. a wide
+      // backdrop) so the poster/cover stays the record thumbnail.
+      if (!field.skipThumbnail && !handleChange._thumbSet) {
         handleChange("assets.thumbnail", result.thumbnail);
         handleChange._thumbSet = true;
       }
