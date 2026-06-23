@@ -12,6 +12,7 @@
     "ingest:books:csv": "node scripts/ingest-goodreads-csv.js",
     "enrich:books:covers": "node scripts/enrich-book-covers.js",
     "enrich:books:dimensions": "node scripts/enrich-book-dimensions.js",
+    "enrich:music:covers": "node scripts/enrich-music-covers.js",
     "strip:models": "node scripts/strip-model-textures.js",
     "preview": "vite preview",
     "dev:netlify": "netlify dev"

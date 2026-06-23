@@ -11,7 +11,7 @@ import { applyFieldChrome } from "../forms/field-chrome.js";
 
 const SERIES_TYPES = {
   accumulation: ["ticket", "brochure", "receipt", "handout", "document"],
-  consumption:  ["film", "book", "album", "ep", "single", "mix", "bag", "game"],
+  consumption:  ["film", "book", "album", "ep", "single", "bag", "game"],
   creation:     ["sketch", "photo", "prototype", "video", "note"],
   labor:        ["project", "artifact", "commission", "contribution"],
   identity:     ["biography", "cv-entry", "contact"],

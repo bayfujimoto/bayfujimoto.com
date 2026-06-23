@@ -52,9 +52,33 @@ const COMMANDS = [
   { name: 'q',    fill: 'q',     hint: 'close record'           },
   { name: 'e',    fill: 'e ',    hint: 'open <id>',  needsArg: true },
   { name: 'new',  fill: 'new ',  hint: 'new <type>', needsArg: true },
+  { name: 'tags', fill: 'tags',  hint: 'import Letterboxd CSV tags' },
   { name: 'nohl', fill: 'nohl',  hint: 'clear filter match tint' },
   { name: 'help', fill: 'help',  hint: 'expand keymap legend'   },
 ];
+
+// Tag-merge modes offered when completing `:tags <mode>`. Optional — `:tags`
+// alone opens the import view with merge preselected.
+const TAGS_MODES = [
+  { name: 'merge',   display: 'merge',   hint: 'add new tags, keep existing', fill: 'tags merge'   },
+  { name: 'replace', display: 'replace', hint: 'mirror Letterboxd exactly',   fill: 'tags replace' },
+];
+
+// Record types offered when completing the `:new <type>` argument. Each maps a
+// type to its series, shown as the suggestion hint. Mirrors SERIES_TYPES in
+// new-item.js / main.js — keep in sync if the type taxonomy changes.
+const NEW_TYPES = [
+  ['accumulation', ['ticket', 'brochure', 'receipt', 'handout', 'document']],
+  ['consumption',  ['film', 'book', 'album', 'ep', 'single', 'bag', 'game']],
+  ['creation',     ['sketch', 'photo', 'prototype', 'video', 'note']],
+  ['labor',        ['project', 'artifact', 'commission', 'contribution']],
+  ['identity',     ['biography', 'cv-entry', 'contact']],
+].flatMap(([series, types]) => types.map(type => ({
+  name:    type,
+  display: type,          // shown without the `:` prefix — it's an argument value
+  hint:    series,
+  fill:    `new ${type}`, // accepting runs `:new <type>` immediately
+})));
 
 // ── Public API ───────────────────────────────────────────────────────────────
 
@@ -351,23 +375,34 @@ function handleCommandKey(e) {
 function updateSuggestions() {
   if (!cmdState) return;
   const { input, suggestions } = cmdState;
-  const val = input.value.toLowerCase();
+  const val   = input.value;
+  const space = val.indexOf(' ');
+  const base  = (space === -1 ? val : val.slice(0, space)).toLowerCase();
+  const arg   = space === -1 ? null : val.slice(space + 1).replace(/^\s+/, '').toLowerCase();
 
-  // Show matching commands as long as the user hasn't typed past the name.
-  const list = COMMANDS.filter(c => {
-    if (!val) return true;
-    const space = val.indexOf(' ');
-    const base  = space === -1 ? val : val.slice(0, space);
-    if (space === -1) return c.name.startsWith(base);
-    return c.name === base; // typing arg
-  });
+  let list;
+  if (base === 'new' && space !== -1) {
+    // Completing the `:new <type>` argument — autocomplete every record type,
+    // filtered by what's typed after the command, each tagged with its series.
+    list = NEW_TYPES.filter(t => !arg || t.name.startsWith(arg));
+  } else if (base === 'tags' && space !== -1) {
+    // Completing the `:tags <mode>` argument — merge or replace.
+    list = TAGS_MODES.filter(t => !arg || t.name.startsWith(arg));
+  } else if (space !== -1) {
+    // Typing an argument for another command — keep just that command in view
+    // as a reminder of its signature.
+    list = COMMANDS.filter(c => c.name === base);
+  } else {
+    // Completing a command name.
+    list = COMMANDS.filter(c => !base || c.name.startsWith(base));
+  }
 
   cmdState.suggList = list;
   cmdState.suggIdx  = -1;
 
   suggestions.innerHTML = list.map((c, i) => `
     <div class="admin-cmd-suggestion" data-i="${i}">
-      <span class="admin-cmd-suggestion-name">:${escapeHTML(c.name)}</span>
+      <span class="admin-cmd-suggestion-name">${escapeHTML(c.display || ':' + c.name)}</span>
       <span class="admin-cmd-suggestion-hint">${escapeHTML(c.hint)}</span>
     </div>
   `).join('');
@@ -383,7 +418,9 @@ function updateSuggestions() {
 function paintSuggestionFocus() {
   if (!cmdState) return;
   cmdState.suggestions.querySelectorAll('.admin-cmd-suggestion').forEach((el, i) => {
-    el.classList.toggle('focused', i === cmdState.suggIdx);
+    const on = i === cmdState.suggIdx;
+    el.classList.toggle('focused', on);
+    if (on) el.scrollIntoView({ block: 'nearest' });
   });
 }
 

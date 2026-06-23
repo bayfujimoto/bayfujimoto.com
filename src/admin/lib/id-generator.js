@@ -11,7 +11,6 @@ export const PREFIX_MAP = {
   album:        "MUSIC",
   ep:           "MUSIC",
   single:       "MUSIC",
-  mix:          "MUSIC",
   bag:          "COFFEE",
   game:         "GAME",
   sketch:       "SKETCH",

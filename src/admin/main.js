@@ -13,6 +13,7 @@ import {
 import { renderEmptyState } from "./views/dashboard.js";
 import { renderEditItem }   from "./views/edit-item.js";
 import { renderNewItem }    from "./views/new-item.js";
+import { renderImportLetterboxd } from "./views/import-letterboxd.js";
 import { initLog, setLogCallbacks, triggerCommit } from "./views/log.js";
 import { initStatusline, setBaseState, setHelpExpanded, getHelpExpanded, setFocusedPane } from "./statusline.js";
 import { initModes } from "./modes.js";
@@ -21,7 +22,7 @@ import { initModes } from "./modes.js";
 // new-item.js; kept here so :new can resolve the series before delegating.
 const SERIES_TYPES = {
   accumulation: ['ticket', 'brochure', 'receipt', 'handout', 'document'],
-  consumption:  ['film', 'book', 'album', 'ep', 'single', 'mix', 'bag', 'game'],
+  consumption:  ['film', 'book', 'album', 'ep', 'single', 'bag', 'game'],
   creation:     ['sketch', 'photo', 'prototype', 'video', 'note'],
   labor:        ['project', 'artifact', 'commission', 'contribution'],
   identity:     ['biography', 'cv-entry', 'contact'],
@@ -360,6 +361,17 @@ async function init() {
             onClose: () => openEmpty(archive, allItems),
           });
         });
+      },
+      on_tags: (arg) => {
+        const mode = arg === 'replace' ? 'replace' : (arg === 'merge' ? 'merge' : undefined);
+        openRecord((body) => {
+          renderImportLetterboxd(body, archive, allItems, {
+            mode,
+            onClose: () => openEmpty(archive, allItems),
+          });
+        });
+        setMobileActivePane('r');
+        setFocusedPane('r');
       },
       on_nohl: () => clearExplorerMatched(),
       on_help: () => setHelpExpanded(!getHelpExpanded()),

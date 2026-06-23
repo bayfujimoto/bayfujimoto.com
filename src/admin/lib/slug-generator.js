@@ -7,7 +7,6 @@ export const TYPE_SUBCOLLECTION = {
   album:        "music",
   ep:           "music",
   single:       "music",
-  mix:          "music",
   bag:          "coffee",
   game:         "games",
   sketch:       "sketches",
@@ -60,7 +59,6 @@ export function generateSlug(itemType, data) {
     case "album":
     case "ep":
     case "single":
-    case "mix":
       return [s(data.artist), s(data.title)].filter(Boolean).join("-");
     case "bag":
       return [s(data.roaster), s(data.origin)].filter(Boolean).join("-");

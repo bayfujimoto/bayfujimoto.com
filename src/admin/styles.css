@@ -2582,3 +2582,101 @@ body.admin-gutter-dragging.dragging-h {
   font-size: var(--text-sm);
   padding: 12px 0;
 }
+
+/* ── Letterboxd CSV import view (`:tags`) ──────────────────────────────────── */
+.admin-import { font-family: var(--font-mono); }
+
+.admin-import-intro {
+  font-size: var(--text-sm);
+  color: var(--fg-muted);
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+.admin-import-mono {
+  color: var(--fg);
+  background: var(--bg-elevated);
+  padding: 0 4px;
+  border-radius: 2px;
+}
+
+.admin-import-block { margin-bottom: 16px; }
+.admin-import-block-label {
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--fg-dim);
+  margin-bottom: 6px;
+}
+
+.admin-import-modes { display: flex; gap: 8px; flex-wrap: wrap; }
+.admin-import-mode {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 44px;
+  padding: 6px 12px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  font-family: var(--font-mono);
+  color: var(--fg-muted);
+  cursor: pointer;
+  text-align: left;
+}
+.admin-import-mode:hover { background: var(--bg-elevated); }
+.admin-import-mode.is-active {
+  border-color: var(--accent-cyan);
+  background: var(--bg-elevated);
+  color: var(--fg);
+}
+.admin-import-mode-name { font-size: var(--text-sm); }
+.admin-import-mode-hint { font-size: var(--text-xs); color: var(--fg-dim); }
+
+.admin-import-file-btn {
+  min-height: 44px;
+  padding: 6px 12px;
+  background: transparent;
+  border: 1px dashed var(--border-strong);
+  border-radius: 2px;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--fg);
+  cursor: pointer;
+}
+.admin-import-file-btn:hover { background: var(--bg-elevated); }
+.admin-import-file-name {
+  margin-left: 10px;
+  font-size: var(--text-sm);
+  color: var(--fg-muted);
+}
+
+.admin-import-preview:empty { display: none; }
+.admin-import-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  padding: 12px;
+  margin-bottom: 8px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-faint);
+  border-radius: 2px;
+}
+.admin-import-stat { display: flex; flex-direction: column; gap: 1px; }
+.admin-import-stat-n { font-size: var(--text-xl); color: var(--fg); line-height: 1; }
+.admin-import-stat-label { font-size: var(--text-xs); color: var(--fg-dim); }
+.admin-import-note {
+  font-size: var(--text-xs);
+  color: var(--fg-muted);
+  line-height: 1.5;
+  margin: 0 0 4px;
+}
+
+.admin-action[disabled] { opacity: 0.4; cursor: default; }
+
+.admin-import-message {
+  margin-top: 10px;
+  font-size: var(--text-sm);
+  min-height: 1.2em;
+}
+.admin-import-message--saved { color: var(--accent-green); }
+.admin-import-message--error { color: var(--error); }

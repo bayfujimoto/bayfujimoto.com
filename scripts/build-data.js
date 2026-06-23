@@ -121,6 +121,14 @@ function buildArchive() {
       data.assets = resolveAssetPaths(data.assets);
     }
 
+    // Music: derive the physical footprint from the release type so records stay
+    // minimal (see docs/music-display-plan.md). album/ep read as 12" sleeves;
+    // single as a 12" disc face. The browse grid and catalog-card plate size
+    // reproductions from `dimensions` (mm, "W x H"). An explicit value wins.
+    if (data.subcollection === "music" && !data.dimensions) {
+      data.dimensions = data.item_type === "single" ? "300 x 300" : "314 x 314";
+    }
+
     // Flat series (labor, accumulation with single ephemera) store items at series level
     if (SUBCOLLECTIONS[series].length === 0) {
       if (!archive.series[series].items) {

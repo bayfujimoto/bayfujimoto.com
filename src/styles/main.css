@@ -813,6 +813,36 @@ body {
 /* Title row: top-align the label with the top of the (large) title text */
 .item-card__row--title { align-items: start; }
 
+/* Film date row: date pair on the left, a read-only rewatch mark on the right */
+.item-card__row--date-film { grid-template-columns: 7.5rem 1fr auto; }
+.item-card__rewatch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  justify-self: end;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--overlay-muted);
+}
+.item-card__rewatch-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 0.95rem;
+  height: 0.95rem;
+  border: 1px solid var(--overlay-muted);
+  border-radius: 1px;
+  font-size: 0.7rem;
+  line-height: 1;
+}
+.item-card__rewatch-label {
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+}
+/* Logged as a rewatch — the mark reads at full strength */
+.item-card__rewatch.is-checked { color: var(--overlay-text); }
+.item-card__rewatch.is-checked .item-card__rewatch-box { border-color: currentColor; }
+
 .item-card__row .overlay-label { display: inline; margin: 0; }
 .item-card__row .overlay-value { display: inline; margin: 0; font-size: var(--text-base); }
 .item-card__row .overlay-value--mono { font-family: var(--font-mono); font-size: var(--text-sm); }
@@ -1063,6 +1093,8 @@ body {
   .item-card__row { grid-template-columns: 6rem 1fr; padding: 0.6rem 1rem; }
   /* Split rows stack their two pairs into two grid rows on narrow screens */
   .item-card__row--split { grid-template-columns: 6rem 1fr; }
+  /* Date row keeps the rewatch mark to the right, just narrower label column */
+  .item-card__row--date-film { grid-template-columns: 6rem 1fr auto; }
   .item-card__note, .item-card__riders { padding-left: 1rem; padding-right: 1rem; }
   .item-card__field { padding: 1rem; }
   .item-card__plain img { max-height: 50vh; }

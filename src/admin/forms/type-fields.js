@@ -86,7 +86,6 @@ export function getTypeGroups(itemType) {
     case "album":
     case "ep":
     case "single":
-    case "mix":
       return [schemaMetaGroup(itemType, "music-meta", "Music"), assetGroupWithThumb(["cover"])];
 
     case "bag":

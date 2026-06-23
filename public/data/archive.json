@@ -316,6 +316,88 @@
           "label": "films",
           "items": [
             {
+              "id": "FILM-2026-517",
+              "slug": "toy-story-5-2026-2026-06-21",
+              "title": "Toy Story 5",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2026",
+              "director": "",
+              "watch_date": "2026-06-21",
+              "display_date": "June 21, 2026",
+              "sort_date": "2026-06-21",
+              "rating": 3.5,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/toy-story-5/",
+              "assets": {
+                "backdrop": "https://a.ltrbxd.com/resized/alternative-backdrop/9/7/7/1/8/6/tmdb/yCXvf4C9cKnTSOJtuNRGqB0CUFV-1200-1200-675-675-crop-000000.jpg?v=bb08d3a9e5",
+                "poster": "https://a.ltrbxd.com/resized/film-poster/9/7/7/1/8/6/977186-toy-story-5-0-600-0-900-crop.jpg?v=d0ac6a7d01"
+              }
+            },
+            {
+              "id": "FILM-2026-516",
+              "slug": "the-emancipation-of-mimi-2025-2026-06-19",
+              "title": "The Emancipation of Mimi",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2025",
+              "director": "",
+              "watch_date": "2026-06-19",
+              "display_date": "June 19, 2026",
+              "sort_date": "2026-06-19",
+              "rating": 3.5,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/the-emancipation-of-mimi/",
+              "assets": {
+                "poster": "https://a.ltrbxd.com/resized/film-poster/1/3/8/7/8/1/8/1387818-the-emancipation-of-mimi-0-600-0-900-crop.jpg?v=556455832f"
+              }
+            },
+            {
+              "id": "FILM-2026-515",
+              "slug": "gugus-world-2026-2026-06-19",
+              "title": "Gugu's World",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2026",
+              "director": "",
+              "watch_date": "2026-06-19",
+              "display_date": "June 19, 2026",
+              "sort_date": "2026-06-19",
+              "rating": 4,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/gugus-world/",
+              "assets": {
+                "poster": "https://a.ltrbxd.com/resized/film-poster/1/2/7/7/9/9/1/1277991-gugus-world-0-600-0-900-crop.jpg?v=c2013aa9db"
+              }
+            },
+            {
+              "id": "FILM-2026-514",
+              "slug": "the-furious-2025-2026-06-18",
+              "title": "The Furious",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2025",
+              "watch_date": "2026-06-18",
+              "display_date": "June 18, 2026",
+              "sort_date": "2026-06-18",
+              "rating": 4.5,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/the-furious/",
+              "assets": {
+                "backdrop": "https://a.ltrbxd.com/resized/alternative-backdrop/1/1/6/4/1/5/4/tmdb/9XwQphZxNJgGASfjL58mhIkJJpf-1200-1200-675-675-crop-000000.jpg?v=20d0be396b",
+                "poster": "https://a.ltrbxd.com/resized/film-poster/1/1/6/4/1/5/4/1164154-the-furious-0-600-0-900-crop.jpg?v=f880a59523"
+              },
+              "seen_via": "theatrical"
+            },
+            {
               "id": "FILM-2026-513",
               "slug": "ready-player-one-2018-2026-06-17",
               "title": "Ready Player One",
@@ -14983,61 +15065,68 @@
           "label": "music",
           "items": [
             {
-              "id": "MUSIC-2026-002",
-              "slug": "arca-arca",
-              "title": "Arca",
+              "id": "MUSIC-2026-003",
+              "slug": "rels-b-el-cielo",
+              "title": "EL CIELO",
               "series": "consumption",
               "subcollection": "music",
-              "item_type": "album",
+              "item_type": "single",
               "status": "published",
-              "display_date": 2017,
-              "sort_date": "2017-04-07",
-              "artist": "Arca",
-              "year": "2017",
+              "display_date": "June 22, 2026",
+              "sort_date": "2026-06-22",
+              "artist": "RELS B & Kali Uchis",
+              "year": null,
+              "album": null,
+              "related_ids": [],
               "tags": [],
               "context_note": "",
               "assets": {
                 "cover": null,
                 "thumbnail": null
-              }
+              },
+              "dimensions": "300 x 300"
             },
             {
-              "id": "MUSIC-2026-003",
-              "slug": "four-tet-there-is-love-in-you",
-              "title": "There Is Love in You",
+              "id": "MUSIC-2026-002",
+              "slug": "audrey-nuna-trench",
+              "title": "Trench",
               "series": "consumption",
               "subcollection": "music",
               "item_type": "album",
               "status": "published",
-              "display_date": 2010,
-              "sort_date": "2010-01-25",
-              "artist": "Four Tet",
-              "year": "2010",
+              "display_date": "June 22, 2026",
+              "sort_date": "2026-06-22",
+              "artist": "Audrey Nuna",
+              "year": null,
+              "music_label": null,
               "tags": [],
               "context_note": "",
               "assets": {
-                "cover": null,
-                "thumbnail": null
-              }
+                "cover": "https://coverartarchive.org/release/2e03bf19-654c-4e6c-80ee-2754684b88f3/40426790417-1200.jpg",
+                "thumbnail": "https://coverartarchive.org/release/2e03bf19-654c-4e6c-80ee-2754684b88f3/40426790417-250.jpg"
+              },
+              "dimensions": "314 x 314"
             },
             {
               "id": "MUSIC-2026-001",
-              "slug": "burial-untrue",
-              "title": "Untrue",
+              "slug": "samara-cyn-detour",
+              "title": "Detour",
               "series": "consumption",
               "subcollection": "music",
               "item_type": "album",
               "status": "published",
-              "display_date": 2007,
-              "sort_date": "2007-11-05",
-              "artist": "Burial",
-              "year": "2007",
+              "display_date": "June 22, 2026",
+              "sort_date": "2026-06-22",
+              "artist": "Samara Cyn",
+              "year": null,
+              "music_label": null,
               "tags": [],
               "context_note": "",
               "assets": {
-                "cover": null,
-                "thumbnail": null
-              }
+                "cover": "https://coverartarchive.org/release/d748a91f-4cd7-45c8-ba39-d876413062f3/44647482490-1200.jpg",
+                "thumbnail": "https://coverartarchive.org/release/d748a91f-4cd7-45c8-ba39-d876413062f3/44647482490-250.jpg"
+              },
+              "dimensions": "314 x 314"
             }
           ]
         },
@@ -15092,6 +15181,37 @@
           "label": "games",
           "items": [
             {
+              "id": "GAME-2026-004",
+              "slug": "tomodachi-life-living-the-dream-2026-play",
+              "series": "consumption",
+              "subcollection": "games",
+              "item_type": "game",
+              "status": "published",
+              "display_date": "June 13, 2026",
+              "sort_date": "2026-06-13",
+              "title": "Tomodachi Life: Living the Dream",
+              "developer": "Nintendo",
+              "platform": "Switch 2",
+              "play_status": "demo"
+            },
+            {
+              "id": "GAME-2026-003",
+              "slug": "indiana-jones-and-the-great-circle-2026-play",
+              "series": "consumption",
+              "subcollection": "games",
+              "item_type": "game",
+              "status": "published",
+              "display_date": "May 25, 2026",
+              "sort_date": "2026-05-25",
+              "title": "Indiana Jones and the Great Circle",
+              "tags": [
+                "aaa"
+              ],
+              "developer": "Bethesda",
+              "platform": "Switch 2",
+              "play_status": "playing"
+            },
+            {
               "id": "GAME-2026-001",
               "slug": "disco-elysium-2021-play",
               "title": "Disco Elysium",
@@ -15102,14 +15222,9 @@
               "display_date": 2021,
               "sort_date": "2021-06-01",
               "developer": "ZA/UM",
-              "platform": "PC",
+              "platform": "mac",
               "year": "2019",
-              "tags": [],
-              "context_note": "",
-              "assets": {
-                "cover": null,
-                "thumbnail": null
-              }
+              "play_status": "completed"
             },
             {
               "id": "GAME-2026-002",
@@ -15449,11 +15564,11 @@
   },
   "_counters": {
     "EPH": 18,
-    "FILM": 513,
-    "BOOK": 264,
+    "FILM": 517,
+    "BOOK": 270,
     "MUSIC": 3,
     "COFFEE": 2,
-    "GAME": 2,
+    "GAME": 4,
     "SKETCH": 2,
     "PHOTO": 2,
     "PROTO": 2,

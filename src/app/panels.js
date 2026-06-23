@@ -1416,8 +1416,28 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
     const creator = resolveCreator(item);
     if (creator) singleRow(creator.label, creator.value, true);
 
-    // Date — its own spine row (a given fact → monospace).
-    singleRow("date", item.display_date, true);
+    // Date — its own spine row (a given fact → monospace). Films carry a
+    // rewatch checkbox to the right of the date: a read-only catalog mark,
+    // checked when this viewing was logged as a rewatch on Letterboxd.
+    if (item.item_type === "film" && item.display_date) {
+      const row = el("div", "item-card__row item-card__row--date-film");
+      row.appendChild(pair("date", item.display_date, true));
+      const checked = item.rewatch === true || item.rewatch === "true";
+      const rw = el("span", "item-card__rewatch" + (checked ? " is-checked" : ""));
+      rw.setAttribute("role", "img");
+      rw.setAttribute("aria-label", checked ? "rewatch: yes" : "rewatch: no");
+      const box = el("span", "item-card__rewatch-box");
+      box.setAttribute("aria-hidden", "true");
+      box.textContent = checked ? "✓" : "";
+      const rwLabel = el("span", "item-card__rewatch-label");
+      rwLabel.textContent = "rewatch";
+      rw.appendChild(box);
+      rw.appendChild(rwLabel);
+      row.appendChild(rw);
+      fields.appendChild(row);
+    } else {
+      singleRow("date", item.display_date, true);
+    }
 
     // Typed slots — up to three type-specific rows. resolveSlots handles
     // suppression and the place/event split row for ephemera; cells are mono

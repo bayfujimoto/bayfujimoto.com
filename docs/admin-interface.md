@@ -67,7 +67,7 @@ The keymap legend at the bottom of the window is contextual on `(mode, focused p
 - `:w` — bundle all pending changes into one GitHub commit
 - `:q` — close the current record (return to empty state)
 - `:e <id>` — open record by id (e.g. `:e FILM-0042`)
-- `:new <type>` — open the new-item wizard with the type preset (e.g. `:new ticket`)
+- `:new <type>` — open the new-item wizard with the type preset (e.g. `:new ticket`). Typing `:new ` (with a trailing space) lists every record type as a suggestion, each tagged with its series; keep typing to filter, then Tab/Enter/click to pick.
 - `:nohl` — clear the persistent filter-match tint
 - `:help` — toggle expanded keymap legend
 - Tab — complete the single highlighted suggestion

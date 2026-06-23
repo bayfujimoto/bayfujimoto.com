@@ -47,7 +47,8 @@ export const FIELDS = {
   year:         { label: "year",       mono: true, example: "e.g. 2024" },
   seen_via:     { label: "seen via",   example: "e.g. theatrical, streaming, Blu-ray" },
   edition:      { label: "edition",    example: "e.g. Penguin Classics, 1979" },
-  music_label:  { label: "label",      example: "e.g. 4AD" },        // OPEN cell #1 (docs/field-schema.md)
+  music_label:  { label: "label",      example: "e.g. 4AD" },        // album/ep slot 2 (record label)
+  album:        { label: "album",      example: "e.g. There Is Love in You" }, // single slot 2 (parent album title)
   rating:       { label: "rating",     example: "e.g. 4 / 5", adminSkip: true }, // OPEN cell #3: ingest-written, shown on card, not hand-edited
   origin:       { label: "origin",     example: "e.g. Huila, Colombia" },
   process:      { label: "process",    example: "e.g. washed, natural" },
@@ -80,9 +81,18 @@ export const FIELDS = {
 // slots: ordered list, ≤3 rows. A nested array renders as a split row
 //   (two label/value pairs on one line, like date / source).
 
-const MUSIC = {
+// Music splits by silhouette (see docs/music-display-plan.md): album/ep are
+// "releases" and read as record sleeves; single is a "track" and reads as a
+// picture disc. The split exists so slot 2 differs — a release shows its label,
+// a track shows its parent album.
+const MUSIC_RELEASE = {
   creator: { key: "artist", mode: "always" },
-  slots: ["year", "music_label", "rating"],   // OPEN cell #1: slot 2 is provisional
+  slots: ["year", "music_label", "rating"],
+  titleGiven: true,
+};
+const MUSIC_TRACK = {
+  creator: { key: "artist", mode: "always" },
+  slots: ["year", "album", "rating"],
   titleGiven: true,
 };
 const creation = (slots, creatorLabel, opts = {}) => ({
@@ -100,7 +110,7 @@ export const TYPES = {
   // ── Consumption ──
   film: { creator: { key: "director",  mode: "always" }, slots: ["year", "seen_via", "rating"], titleGiven: true },
   book: { creator: { key: "author",    mode: "always" }, slots: ["year", "edition", "rating"], titleGiven: true },
-  album: MUSIC, ep: MUSIC, single: MUSIC, mix: MUSIC,
+  album: MUSIC_RELEASE, ep: MUSIC_RELEASE, single: MUSIC_TRACK,
   bag:  { creator: { key: "roaster",   mode: "always" }, slots: ["origin", "process", "varietal"], titleGiven: true }, // coffee
   game: { creator: { key: "developer", mode: "always" }, slots: ["platform", "play_status", "rating"], titleGiven: true },
 
