@@ -848,6 +848,12 @@ body.admin-gutter-dragging.dragging-h {
   color: var(--fg);
 }
 
+/* Status color for non-published item leaves in the Explorer. Published leaves
+   keep the default text color; a selected row keeps the selection highlight. */
+.admin-tree-leaf--draft:not(.is-selected) .admin-tree-label    { color: var(--status-draft-color); }
+.admin-tree-leaf--partial:not(.is-selected) .admin-tree-label  { color: var(--status-partial-color); }
+.admin-tree-leaf--complete:not(.is-selected) .admin-tree-label { color: var(--status-complete-color); }
+
 .admin-tree-count {
   margin-left: 10px;
   font-size: var(--text-xs);
@@ -904,6 +910,52 @@ body.admin-gutter-dragging.dragging-h {
   color: var(--fg-dim);
   flex-shrink: 0;
 }
+
+/* Status autocomplete dropdown ("//"). Overlays just below the filter bar so it
+   doesn't shift the tree. Each status name reads in its own status color. */
+.admin-tree-filter { position: relative; }
+
+.admin-tree-filter-suggest {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-top: none;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+}
+
+.admin-tree-filter-suggest[hidden] { display: none; }
+
+.admin-tree-filter-suggest-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border-faint);
+}
+
+.admin-tree-filter-suggest-item:last-child { border-bottom: none; }
+
+.admin-tree-filter-suggest-item.is-active,
+.admin-tree-filter-suggest-item:hover {
+  background: var(--bg-selected);
+}
+
+.admin-tree-filter-suggest-count {
+  color: var(--fg-dim);
+  font-size: var(--text-xs);
+}
+
+.admin-tree-filter-suggest-item.admin-tree-leaf--draft    .admin-tree-filter-suggest-name { color: var(--status-draft-color); }
+.admin-tree-filter-suggest-item.admin-tree-leaf--partial  .admin-tree-filter-suggest-name { color: var(--status-partial-color); }
+.admin-tree-filter-suggest-item.admin-tree-leaf--complete .admin-tree-filter-suggest-name { color: var(--status-complete-color); }
 
 /* Character-level match highlight in tree rows (active filter) */
 .admin-tree-match {

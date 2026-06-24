@@ -35,6 +35,14 @@
   to   = "/.netlify/functions/commit-all"
   status = 200
 
+# Full archive (all statuses, incl. drafts) for the admin — re-checks the passkey
+# session in the function. The public site uses the static published-only
+# /data/archive.json instead.
+[[redirects]]
+  from = "/api/archive-admin"
+  to   = "/.netlify/functions/archive-admin"
+  status = 200
+
 # Passkey endpoints — challenge/verify, one-time registration, logout.
 [[redirects]]
   from = "/api/passkey/challenge"

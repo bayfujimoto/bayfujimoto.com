@@ -58,6 +58,33 @@ function resolveAssetPaths(assets) {
   return resolved;
 }
 
+const isPublished = (i) => i.status === "published";
+
+// Derive the public archive (published records only) from the full archive,
+// preserving structure and key order so public/data/archive.json stays stable.
+function publishedOnly(archive) {
+  const out = { series: {}, guide: archive.guide };
+  for (const [key, s] of Object.entries(archive.series)) {
+    const ns = { label: s.label, container: s.container, order: s.order, subcollections: {} };
+    for (const [subKey, sub] of Object.entries(s.subcollections || {})) {
+      ns.subcollections[subKey] = { label: sub.label, items: (sub.items || []).filter(isPublished) };
+    }
+    if (s.items) ns.items = s.items.filter(isPublished);
+    out.series[key] = ns;
+  }
+  out._counters = archive._counters;
+  return out;
+}
+
+function countItems(archive, predicate = () => true) {
+  let n = 0;
+  for (const s of Object.values(archive.series)) {
+    if (s.items) n += s.items.filter(predicate).length;
+    for (const sub of Object.values(s.subcollections || {})) n += (sub.items || []).filter(predicate).length;
+  }
+  return n;
+}
+
 function buildArchive() {
   const files = glob.sync("src/content/**/*.md", { ignore: "src/content/_templates/**" });
 
@@ -101,9 +128,11 @@ function buildArchive() {
       continue;
     }
 
-    if (data.status !== "published") continue;
-
-    if (data.item_type === "film") {
+    // Non-published records are kept here — the admin archive needs them (the
+    // Explorer colors drafts/partial/complete). The public archive is filtered to
+    // published below. Film-viewing dedup guards published films only: a draft
+    // isn't shipped, so it can't collide with a published viewing.
+    if (data.status === "published" && data.item_type === "film") {
       const key = filmKey(data);
       if (!viewingIndex.has(key)) viewingIndex.set(key, []);
       viewingIndex.get(key).push(file);
@@ -193,13 +222,25 @@ function buildArchive() {
     throw new Error(`build-data: ${dupIds.length} duplicate id(s), ${dupViewings.length} duplicate viewing(s) found —\n${detail}`);
   }
 
-  const outPath = "public/data/archive.json";
-  mkdirSync(dirname(outPath), { recursive: true });
-  writeFileSync(outPath, JSON.stringify(archive, null, 2));
+  mkdirSync(dirname("public/data/archive.json"), { recursive: true });
 
-  const totalItems = files.length;
+  // _admin-archive.json — every record, all statuses. Written OUTSIDE public/ so
+  // it is never served statically: it is bundled into the passkey-gated function
+  // netlify/functions/archive-admin.js (which imports it) and returned only to an
+  // authenticated admin session. The leading underscore keeps Netlify from
+  // treating it as a function endpoint. Generated each build; gitignored.
+  const adminPath = "netlify/functions/_admin-archive.json";
+  mkdirSync(dirname(adminPath), { recursive: true });
+  writeFileSync(adminPath, JSON.stringify(archive));
+
+  // archive.json — published records only, for the public site.
+  writeFileSync("public/data/archive.json", JSON.stringify(publishedOnly(archive), null, 2));
+
   const seriesCount = Object.keys(archive.series).length;
-  console.log(`archive.json written — ${totalItems} record(s) across ${seriesCount} series + Guide`);
+  console.log(
+    `archive.json — ${countItems(archive, isPublished)} published; ` +
+    `_admin-archive.json — ${countItems(archive)} record(s) (all statuses) across ${seriesCount} series + Guide`
+  );
 }
 
 buildArchive();

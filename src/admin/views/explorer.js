@@ -34,6 +34,12 @@ let navRegistered    = false;
 let filter          = null;
 let matchedPaths    = new Set();
 
+// Status-filter mode (typing "//" in the filter): the four record statuses, plus
+// the live autocomplete suggestion list and the highlighted index.
+const STATUSES      = ['draft', 'partial', 'complete', 'published'];
+let statusSuggList  = [];
+let statusSuggIdx   = 0;
+
 function loadExpanded() {
   try {
     const raw = localStorage.getItem(EXPANDED_KEY);
@@ -137,8 +143,9 @@ export function enterFilter() {
            id="explorer-filter-input"
            autocomplete="off"
            spellcheck="false"
-           aria-label="Filter items">
+           aria-label="Filter items (type // to filter by status)">
     <span class="admin-tree-filter-count" id="explorer-filter-count"></span>
+    <div class="admin-tree-filter-suggest" id="explorer-filter-suggest" role="listbox" hidden></div>
   `;
   body.insertBefore(bar, body.firstChild);
 
@@ -162,6 +169,8 @@ export function enterFilter() {
 export function exitFilter(clearMatches = false) {
   const bar = document.getElementById('explorer-filter');
   if (bar) bar.remove();
+  statusSuggList = [];
+  statusSuggIdx  = 0;
 
   if (filter && filter.matchSet && filter.query) {
     matchedPaths = new Set(filter.matchSet);
@@ -177,6 +186,13 @@ export function exitFilter(clearMatches = false) {
  * `input` event. Empty query → no shrink (full tree, no highlights).
  */
 export function setFilter(query) {
+  // Status mode: a leading "/" means the user typed "//" — the first slash opens
+  // the filter, the second switches to filtering by record status. The status
+  // name is autocompleted (draft / partial / complete / published).
+  if (query.startsWith('/')) return setStatusFilter(query.slice(1));
+
+  clearStatusSuggestions();
+
   const isFuzzy = query.startsWith('~');
   const q       = (isFuzzy ? query.slice(1) : query).trim();
 
@@ -210,6 +226,119 @@ export function setFilter(query) {
   filter = { query: q, mode: isFuzzy ? 'fuzzy' : 'substring', matchSet, ancestorSet, positionsMap };
   updateFilterCount(matchSet.size);
   renderCurrent();
+}
+
+// ── Status filter ("//") ──────────────────────────────────────────────────────
+
+/**
+ * Filter the tree by record status. `rawTerm` is what follows the second slash.
+ * An empty term shows the full tree with all four statuses offered as
+ * suggestions; a term shrinks the tree to items whose status starts with it
+ * (so "d" → drafts, "p" → partial + published).
+ */
+function setStatusFilter(rawTerm) {
+  const term     = rawTerm.trim().toLowerCase();
+  const matching = STATUSES.filter(s => !term || s.startsWith(term));
+
+  const matchSet    = new Set();
+  let   ancestorSet = null; // null = no shrink (empty term keeps the full tree)
+  if (term) {
+    ancestorSet = new Set();
+    for (const [path, item] of itemsByPath) {
+      const st = (item.status || '').toLowerCase();
+      if (!matching.includes(st)) continue;
+      matchSet.add(path);
+      const parts = path.split('/');
+      for (let i = 1; i < parts.length; i++) ancestorSet.add(parts.slice(0, i).join('/'));
+      ancestorSet.add(path);
+    }
+  }
+
+  filter = {
+    query: '/' + rawTerm, mode: 'status', statusTerm: term,
+    matchSet, ancestorSet, positionsMap: new Map(),
+  };
+
+  updateStatusSuggestions(matching);
+
+  const countEl = document.getElementById('explorer-filter-count');
+  if (countEl) countEl.textContent = term ? `${matchSet.size}/${itemsByPath.size}` : '';
+
+  renderCurrent();
+}
+
+/** Render the status autocomplete dropdown with per-status counts. */
+function updateStatusSuggestions(statuses) {
+  const box = document.getElementById('explorer-filter-suggest');
+  if (!box) return;
+
+  const counts = {};
+  for (const [, item] of itemsByPath) {
+    const s = (item.status || '').toLowerCase();
+    counts[s] = (counts[s] || 0) + 1;
+  }
+
+  statusSuggList = statuses;
+  statusSuggIdx  = 0;
+
+  if (!statuses.length) { box.hidden = true; box.innerHTML = ''; return; }
+
+  box.hidden = false;
+  box.innerHTML = statuses.map((s, i) => `
+    <div class="admin-tree-filter-suggest-item admin-tree-leaf--${s}${i === 0 ? ' is-active' : ''}"
+         data-status="${s}" role="option">
+      <span class="admin-tree-filter-suggest-name">${s}</span>
+      <span class="admin-tree-filter-suggest-count">${counts[s] || 0}</span>
+    </div>`).join('');
+
+  // mousedown (not click) so completion runs before the input loses focus.
+  box.querySelectorAll('.admin-tree-filter-suggest-item').forEach(el => {
+    el.addEventListener('mousedown', (e) => { e.preventDefault(); completeStatus(el.dataset.status); });
+  });
+}
+
+function paintStatusSuggFocus() {
+  const box = document.getElementById('explorer-filter-suggest');
+  if (!box) return;
+  box.querySelectorAll('.admin-tree-filter-suggest-item').forEach((el, i) => {
+    el.classList.toggle('is-active', i === statusSuggIdx);
+  });
+}
+
+function completeStatus(status) {
+  const input = document.getElementById('explorer-filter-input');
+  if (!input) return;
+  input.value = '/' + status;
+  setFilter(input.value);
+  input.focus();
+}
+
+function clearStatusSuggestions() {
+  statusSuggList = [];
+  statusSuggIdx  = 0;
+  const box = document.getElementById('explorer-filter-suggest');
+  if (box) { box.hidden = true; box.innerHTML = ''; }
+}
+
+/** Move the highlighted status suggestion (Arrow keys). Returns true if handled. */
+export function filterMoveSuggestion(dir) {
+  if (!filter || filter.mode !== 'status' || !statusSuggList.length) return false;
+  statusSuggIdx = (statusSuggIdx + dir + statusSuggList.length) % statusSuggList.length;
+  paintStatusSuggFocus();
+  return true;
+}
+
+/**
+ * Complete the filter to the highlighted status (Tab / Enter). With
+ * `onlyIfIncomplete`, does nothing when the term is already an exact status —
+ * so Enter on a complete term falls through to activating the first match.
+ * Returns true if it completed.
+ */
+export function filterComplete(onlyIfIncomplete = false) {
+  if (!filter || filter.mode !== 'status' || !statusSuggList.length) return false;
+  if (onlyIfIncomplete && STATUSES.includes(filter.statusTerm)) return false;
+  completeStatus(statusSuggList[statusSuggIdx] || statusSuggList[0]);
+  return true;
 }
 
 /**
@@ -506,6 +635,7 @@ function itemNode(item, parentPath) {
     label: item.title || item.id,
     path,
     item,
+    status: item.status,
   };
   itemsByPath.set(path, item);
   return node;
@@ -536,8 +666,10 @@ function renderNode(node, depth) {
 
   const isLeaf  = node.type === 'item';
   const hasKids = !isLeaf && node.children && node.children.length > 0;
-  // While filtering with a query, force-expand every visible group.
-  const isOpen  = (filter && filter.query) ? true : expanded.has(node.path);
+  // While an active filter is shrinking the tree, force-expand every visible
+  // group. An empty status term ("//" with nothing typed) has no ancestorSet, so
+  // it doesn't shrink or force-expand — the tree stays as the user left it.
+  const isOpen  = (filter && filter.query && filter.ancestorSet) ? true : expanded.has(node.path);
   const isEmpty = !isLeaf && !hasKids;
   const isRoot  = node.type === 'root';
 
@@ -550,6 +682,11 @@ function renderNode(node, depth) {
   if (isLeaf)      rowClass += ' admin-tree-leaf';
   else if (isRoot) rowClass += ' admin-tree-root';
   else             rowClass += ' admin-tree-group';
+  // Color non-published leaves by status (draft/partial/complete). Published
+  // leaves keep the default text color.
+  if (isLeaf && node.status && node.status !== 'published') {
+    rowClass += ` admin-tree-leaf--${node.status}`;
+  }
   if (isEmpty)     rowClass += ' is-empty';
   // Persistent match tint (after filter exit, before :nohl)
   if (!filter && matchedPaths.has(node.path)) rowClass += ' is-matched';

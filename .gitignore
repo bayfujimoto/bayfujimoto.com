@@ -25,3 +25,8 @@ public/assets/
 
 # Goodreads export — read by ingest/enrichment, never committed
 Goodreads Library Export.csv
+
+# Admin-only archive (all statuses, incl. drafts). Generated each build by
+# scripts/build-data.js, bundled into the passkey-gated archive-admin function;
+# never served statically, not versioned.
+netlify/functions/_admin-archive.json

@@ -31,6 +31,8 @@ import {
   enterFilter         as explorerEnterFilter,
   exitFilter          as explorerExitFilter,
   activateFirstMatch  as explorerActivateFirstMatch,
+  filterComplete      as explorerFilterComplete,
+  filterMoveSuggestion as explorerFilterMoveSuggestion,
 } from "./views/explorer.js";
 import { navigate, activate } from "./nav.js";
 import { undoLastEdit } from "./forms/edit-toggle.js";
@@ -272,8 +274,25 @@ function handleFilterKey(e) {
     exitFilter(false);
     return;
   }
+  // Status-filter autocomplete ("//"): Tab completes the highlighted status,
+  // Arrows move the highlight. These are no-ops outside status mode.
+  if (e.key === 'Tab') {
+    e.preventDefault();
+    explorerFilterComplete();
+    return;
+  }
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+    if (explorerFilterMoveSuggestion(e.key === 'ArrowDown' ? 1 : -1)) {
+      e.preventDefault();
+      return;
+    }
+    // No suggestions to move through — let the key fall through to the input.
+  }
   if (e.key === 'Enter') {
     e.preventDefault();
+    // In status mode with an incomplete term, Enter completes it; otherwise it
+    // activates the first match and exits (the normal-filter behaviour).
+    if (explorerFilterComplete(true)) return;
     exitFilter(true);
     return;
   }

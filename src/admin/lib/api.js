@@ -1,4 +1,13 @@
 export async function loadArchive() {
+  // The admin reads the full archive (all statuses) so the Explorer can show and
+  // color non-published records. It comes from a passkey-gated function so draft
+  // content is never served as a static file. If that's unavailable (e.g. an
+  // expired session, or local dev without the function), fall back to the
+  // published-only public archive so the admin still loads — just without drafts.
+  try {
+    const res = await fetch("/api/archive-admin");
+    if (res.ok) return res.json();
+  } catch { /* fall through to the public archive */ }
   return fetch("/data/archive.json").then(r => r.json());
 }
 
