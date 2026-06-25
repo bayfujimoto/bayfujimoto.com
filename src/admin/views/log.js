@@ -223,10 +223,11 @@ async function handleCommit() {
     // id rides along so the server can resolve the real path if a recomputed
     // slug drifted from the actual filename (common for ingested records).
     const deletions = [
-      // Explicit record deletions.
+      // Explicit record deletions. viaExclude tolerates a missing source file
+      // (e.g. a build-time-ingested book that was never committed).
       ...snapshot
         .filter(p => p.action === 'delete')
-        .map(p => ({ filePath: p.filePath, id: p.id, delete: true })),
+        .map(p => ({ filePath: p.filePath, id: p.id, viaExclude: p.viaExclude, delete: true })),
       // Renamed edits carry the old path — remove it in the same commit.
       ...snapshot
         .filter(p => p.oldFilePath && p.oldFilePath !== p.filePath)
@@ -286,9 +287,10 @@ async function handleCommit() {
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
 function actionPrefix(action) {
-  if (action === 'add')    return 'A';
-  if (action === 'edit')   return 'M';
-  if (action === 'delete') return 'D';
+  if (action === 'add')     return 'A';
+  if (action === 'edit')    return 'M';
+  if (action === 'delete')  return 'D';
+  if (action === 'exclude') return 'X';
   return '·';
 }
 

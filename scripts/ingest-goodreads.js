@@ -15,6 +15,7 @@ import RSSParser from "rss-parser";
 import { stripGoodreadsSize } from "./utils/book-covers.js";
 
 const CONTENT_DIR = "src/content/consumption/books";
+const EXCLUDE_DIR = "src/content/consumption/books/_excluded";
 const COUNTERS_PATH = "src/content/_id-counters.yaml";
 const USER_ID = process.env.GOODREADS_USER_ID;
 
@@ -212,6 +213,20 @@ async function main() {
     }
   }
 
+  // Exclusion list — books deleted in the admin (or by hand). Each *.txt marker
+  // holds a goodreads_link to keep OUT of the archive even though it's still on
+  // the "read" shelf. See src/content/consumption/books/_excluded/.gitkeep.
+  const excludedLinks = new Set();
+  for (const file of glob.sync(join(EXCLUDE_DIR, "*.txt"))) {
+    for (const line of readFileSync(file, "utf8").split("\n")) {
+      const link = line.trim();
+      if (link && !link.startsWith("#")) excludedLinks.add(link);
+    }
+  }
+  if (excludedLinks.size) {
+    console.log(`[ingest-goodreads] ${excludedLinks.size} excluded link(s) will be skipped`);
+  }
+
   const counters = readCounters();
   let newCount = 0;
   let skipCount = 0;
@@ -226,6 +241,12 @@ async function main() {
     }
 
     const goodreads_link = normalizeGoodreadsLink(item);
+
+    // Skip books explicitly excluded via the admin delete / _excluded markers.
+    if (goodreads_link && excludedLinks.has(goodreads_link)) {
+      skipCount++;
+      continue;
+    }
 
     // Check if this book already exists by its goodreads link
     if (goodreads_link && existingLinks.has(goodreads_link)) {

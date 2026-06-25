@@ -1,0 +1,14 @@
+# Ingest exclusion list (books)
+#
+# Each *.txt file here marks one Goodreads book to keep OUT of the archive,
+# even though it's still on the "read" shelf. The build-time ingest
+# (scripts/ingest-goodreads.js) reads every *.txt in this folder and skips any
+# feed entry whose goodreads_link matches a line in one of them.
+#
+# Filename convention: <goodreads-book-id>.txt  (e.g. 12345.txt)
+# File contents:       the full goodreads_link, e.g.
+#                      https://www.goodreads.com/book/show/12345
+#
+# These markers are written automatically when you delete a book in the admin,
+# but you can also add or remove them by hand. Removing a marker lets the book
+# be re-ingested on the next build.

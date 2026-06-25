@@ -68,13 +68,14 @@ async function githubCommitAll(files, token, owner, repo, branch, message) {
   // explicitly deleted record or the old path of a renamed one. Delete paths
   // are resolved against the live tree by id so a recomputed slug that drifts
   // from the ingested filename can't point at a missing path and 422 the tree.
-  const treeItems = await Promise.all(files.map(async ({ filePath, content, delete: del, id }) => {
+  const treeItems = (await Promise.all(files.map(async ({ filePath, content, delete: del, id, viaExclude }) => {
     if (del) {
       const realPath = await resolveDeletePath(base, headers, branch, filePath, id);
-      if (!realPath) {
-        throw new Error(`Cannot delete ${id || filePath}: no matching file found in the repo (looked for ${filePath}${id ? ` and ${id}-* in its folder` : ""})`);
-      }
-      return { path: realPath, mode: "100644", type: "blob", sha: null };
+      if (realPath) return { path: realPath, mode: "100644", type: "blob", sha: null };
+      // No committed file. If paired with an exclusion marker (build-time-
+      // ingested record), that's expected — skip it. Otherwise fail loudly.
+      if (viaExclude) return null;
+      throw new Error(`Cannot delete ${id || filePath}: no matching file found in the repo (looked for ${filePath}${id ? ` and ${id}-* in its folder` : ""})`);
     }
     const blobRes = await fetch(`${base}/git/blobs`, {
       method: "POST",
@@ -84,7 +85,7 @@ async function githubCommitAll(files, token, owner, repo, branch, message) {
     if (!blobRes.ok) throw new Error(`Failed to create blob for ${filePath}: ${blobRes.status}${await ghErr(blobRes)}`);
     const blob = await blobRes.json();
     return { path: filePath, mode: "100644", type: "blob", sha: blob.sha };
-  }));
+  }))).filter(Boolean);
 
   // Create tree
   const treeRes = await fetch(`${base}/git/trees`, {

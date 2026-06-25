@@ -142,7 +142,7 @@ export function renderEditItem(container, item, allItems, archive, callbacks = {
           id,
           slug: originalSlug,
           onConfirm: () =>
-            handleEditDelete(id, originalFilePath, series, subcollection, body, onDelete),
+            handleEditDelete(item, id, originalFilePath, series, subcollection, body, onDelete),
         }),
     }),
   ]);
@@ -210,23 +210,53 @@ function handleEditSave(formHandle, id, series, subcollection, itemType, archive
   showInlineMessage(body, `Saved ${id} — staged for commit. Run :w to commit.`, "saved");
 }
 
+// Build the exclusion marker for an ingested book so it stays out of the
+// archive on rebuild. Keyed by the stable goodreads_link (the BOOK-… id can
+// shift between builds). Returns null for records without a goodreads_link.
+function buildBookExclusion(item) {
+  const link = item?.goodreads_link;
+  if (!link) return null;
+  const m = String(link).match(/goodreads\.com\/book\/show\/(\d+)/);
+  const key = m
+    ? m[1]
+    : (String(link).replace(/[^a-z0-9]+/gi, "-").replace(/^-+|-+$/g, "").slice(0, 80) || "book");
+  return {
+    path: `src/content/consumption/books/_excluded/${key}.txt`,
+    content: `${link}\n`,
+  };
+}
+
 // Stage a record for deletion. Any change already staged for this id (a prior
 // edit/add this session) is dropped first so we don't both write and delete it
-// in the same commit. The actual file removal happens on commit (:w).
-function handleEditDelete(id, originalFilePath, series, subcollection, body, onDelete) {
-  if (!originalFilePath) {
+// in the same commit. The actual change happens on commit (:w).
+//
+// Books are ingested from Goodreads on every build, so deleting the source file
+// alone isn't enough — it would reappear. For books we also stage an exclusion
+// marker (_excluded/<id>.txt) that the ingest honors, and tolerate a missing
+// source file (uncommitted, build-time-only records) via viaExclude.
+function handleEditDelete(item, id, originalFilePath, series, subcollection, body, onDelete) {
+  const exclusion = subcollection === "books" ? buildBookExclusion(item) : null;
+
+  if (!originalFilePath && !exclusion) {
     showInlineMessage(body, `Cannot delete ${id}: its file path is unresolved.`, "error");
     return;
   }
 
   const { pendingChanges } = getState();
-  const withoutThis = pendingChanges.filter(c => c.id !== id);
-  setState({
-    pendingChanges: [...withoutThis, { id, filePath: originalFilePath, action: "delete" }],
-  });
+  let next = pendingChanges.filter(c => c.id !== id);
+
+  if (exclusion) {
+    next = next.filter(c => c.filePath !== exclusion.path);
+    next.push({ id: `exclude ${id}`, filePath: exclusion.path, content: exclusion.content, action: "exclude" });
+  }
+  if (originalFilePath) {
+    next.push({ id, filePath: originalFilePath, action: "delete", viaExclude: !!exclusion });
+  }
+
+  setState({ pendingChanges: next });
 
   // Hand off to the view layer to drop the item from the archive/Explorer and
-  // return to the empty state. The pending "D" row in the Log is the receipt.
+  // return to the empty state. The pending rows in the Log are the receipt.
   onDelete?.({ id, series, subcollection });
 }
 
