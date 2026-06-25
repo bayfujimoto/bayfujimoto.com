@@ -647,7 +647,8 @@ function makeField(field, value, onChange) {
     const handle = makeSelect(
       (field.options || []).map(o => ({ value: o, label: o })),
       value ?? field.options?.[0] ?? "",
-      (v) => onChange(field.id, v)
+      (v) => onChange(field.id, v),
+      { className: field.statusColors ? "admin-select--status" : undefined }
     );
     handle.el.setAttribute("aria-labelledby", labelId);
 

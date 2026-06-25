@@ -8,7 +8,7 @@ import { getState, setState } from "../state.js";
 import { registerPaneNav } from "../nav.js";
 import { applyEditToggle } from "../forms/edit-toggle.js";
 import { applyFieldChrome } from "../forms/field-chrome.js";
-import { setRecordActions, makePaneAction } from "../shell.js";
+import { setRecordActions, makePaneAction, setRecordStatus } from "../shell.js";
 
 const SERIES_TYPES = {
   accumulation: ["ticket", "brochure", "receipt", "handout", "document"],
@@ -42,8 +42,10 @@ export function renderNewItem(container, archive, preselect = null, callbacks = 
 
 function renderStep(container, archive) {
   container.innerHTML = "";
-  // Only the form step carries top-border actions; clear any from a prior step.
+  // Only the form step carries top-border actions + status border; clear any
+  // from a prior step.
   setRecordActions([]);
+  setRecordStatus(null);
 
   const breadcrumb = document.getElementById("admin-topbar-breadcrumb");
 
@@ -231,11 +233,15 @@ function renderFormStep(body, archive) {
       formHandle.setField("slug", newSlug);
       currentData.slug = newSlug;
     }
+    if (fieldId === "status") setRecordStatus(value);
     updatePreview(currentData);
   }, depth);
 
   applyFieldChrome(formContainer);
   applyEditToggle(formContainer);
+
+  // Tint the pane border to the new record's starting status.
+  setRecordStatus(initialData.status || "draft");
 
   // Top-border actions ([save] [cancel]) — right of the [r] Record label.
   setRecordActions([
@@ -298,8 +304,10 @@ function handleSave(saveBtn, formHandle, id, prefix, nextCounter, counters, seri
 }
 
 function renderSuccessState(body, id, itemType, series, subcollection, archive, newCounters) {
-  // The success state carries its own buttons; drop the form's top-border actions.
+  // The success state carries its own buttons; drop the form's top-border
+  // actions and status border.
   setRecordActions([]);
+  setRecordStatus(null);
   // Update in-memory counters so next entry generates the correct ID
   archive._counters = newCounters;
 

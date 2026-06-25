@@ -19,7 +19,7 @@ export function getBaseGroups() {
       fields: [
         { id: "id",     label: "id",     type: "text", readonly: true },
         { id: "slug",   label: "slug",   type: "text", readonly: true },
-        { id: "status", label: "status", type: "select",
+        { id: "status", label: "status", type: "select", statusColors: true,
           options: ["draft", "partial", "complete", "published"] },
       ],
     },

@@ -153,6 +153,18 @@ export function clearRecordActions() {
 }
 
 /**
+ * Tint the Record pane border to the open record's status. Pass a status
+ * string ('draft' | 'partial' | 'complete' | 'published') to set it, or a
+ * falsy value to clear it (restoring the neutral border).
+ */
+export function setRecordStatus(status) {
+  const pane = document.getElementById('pane-record');
+  if (!pane) return;
+  if (status) pane.dataset.status = status;
+  else delete pane.dataset.status;
+}
+
+/**
  * Replace the Record pane's top-border actions with a set of buttons.
  * Pass an array of button elements (e.g. from makePaneAction). Passing an
  * empty array (or omitting) clears the slot.
@@ -192,8 +204,10 @@ export function openRecord(content) {
   const body = getRecordBody();
   if (!body) return;
   body.innerHTML = '';
-  // Reset the top-border actions; the incoming view repopulates them if needed.
+  // Reset the top-border actions + status border; the incoming view repopulates
+  // them if needed.
   clearRecordActions();
+  setRecordStatus(null);
   if (typeof content === 'function')          content(body);
   else if (content instanceof Node)           body.appendChild(content);
   else if (content != null)                   body.innerHTML = String(content);
@@ -204,6 +218,7 @@ export function clearRecord() {
   const body = getRecordBody();
   if (body) body.innerHTML = '';
   clearRecordActions();
+  setRecordStatus(null);
   const breadcrumb = document.getElementById('admin-topbar-breadcrumb');
   if (breadcrumb) breadcrumb.innerHTML = '';
 }

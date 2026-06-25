@@ -4,9 +4,10 @@
  * @param {Array<{value: string, label: string} | string>} options
  * @param {string} initialValue
  * @param {(value: string) => void} onChange
+ * @param {{ className?: string }} [config]  extra class on the root (e.g. for value-based coloring)
  * @returns {{ el: HTMLElement, getValue: () => string, setValue: (v: string) => void }}
  */
-export function makeSelect(options, initialValue, onChange) {
+export function makeSelect(options, initialValue, onChange, config = {}) {
   const opts = options.map(o =>
     typeof o === "string" ? { value: o, label: o } : o
   );
@@ -17,7 +18,7 @@ export function makeSelect(options, initialValue, onChange) {
 
   // ── Root ─────────────────────────────────────────────────────
   const el = document.createElement("div");
-  el.className = "admin-select";
+  el.className = "admin-select" + (config.className ? ` ${config.className}` : "");
   el.setAttribute("tabindex", "0");
   el.setAttribute("role", "combobox");
   el.setAttribute("aria-haspopup", "listbox");
@@ -67,6 +68,8 @@ export function makeSelect(options, initialValue, onChange) {
 
   function updateDisplay() {
     valueEl.textContent = getLabel(currentValue);
+    // Reflect the chosen value on the root so CSS can color the trigger by value.
+    el.dataset.value = currentValue;
     optEls.forEach(o => {
       o.classList.toggle("selected", o.dataset.value === currentValue);
     });

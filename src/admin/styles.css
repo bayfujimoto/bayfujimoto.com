@@ -311,6 +311,14 @@ body {
   border-color: var(--border-strong);
 }
 
+/* Record pane border tints to the open record's status (set via data-status in
+   shell.js). ID specificity keeps this above the focus border so the status
+   color reads whether or not the pane is focused. */
+#pane-record[data-status="draft"]     { border-color: var(--status-draft-color); }
+#pane-record[data-status="partial"]   { border-color: var(--status-partial-color); }
+#pane-record[data-status="complete"]  { border-color: var(--status-complete-color); }
+#pane-record[data-status="published"] { border-color: var(--status-published-color); }
+
 /* Notched [letter] Name label — sits in the top border of each pane */
 .admin-pane-label {
   position: absolute;
@@ -1558,7 +1566,7 @@ body.admin-gutter-dragging.dragging-h {
   letter-spacing: 0.04em;
 }
 
-.badge-draft    { color: var(--muted); }
+.badge-draft    { color: var(--status-draft-color);    border-color: var(--status-draft-border);    }
 .badge-partial  { color: var(--status-partial-color);   border-color: var(--status-partial-border);  }
 .badge-complete { color: var(--status-complete-color);  border-color: var(--status-complete-border); }
 .badge-published{ color: var(--status-published-color); border-color: var(--status-published-border); }
@@ -2670,6 +2678,18 @@ body.admin-gutter-dragging.dragging-h {
 .admin-select-option.selected.focused {
   background: color-mix(in srgb, var(--accent-blue) 18%, transparent);
 }
+
+/* Status select (record status): color the chosen value and each option by
+   its status, mirroring the Explorer tree. The root carries data-value so the
+   trigger recolors as the selection changes. */
+.admin-select--status[data-value="draft"]     .admin-select-value,
+.admin-select--status .admin-select-option[data-value="draft"]     { color: var(--status-draft-color); }
+.admin-select--status[data-value="partial"]    .admin-select-value,
+.admin-select--status .admin-select-option[data-value="partial"]   { color: var(--status-partial-color); }
+.admin-select--status[data-value="complete"]   .admin-select-value,
+.admin-select--status .admin-select-option[data-value="complete"]  { color: var(--status-complete-color); }
+.admin-select--status[data-value="published"]  .admin-select-value,
+.admin-select--status .admin-select-option[data-value="published"] { color: var(--status-published-color); }
 
 /* ── Breadcrumb / wizard nav ── */
 .admin-breadcrumb {

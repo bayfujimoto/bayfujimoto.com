@@ -7,7 +7,7 @@ import { getState, setState } from "../state.js";
 import { registerPaneNav } from "../nav.js";
 import { applyEditToggle } from "../forms/edit-toggle.js";
 import { applyFieldChrome } from "../forms/field-chrome.js";
-import { setRecordActions, makePaneAction } from "../shell.js";
+import { setRecordActions, makePaneAction, setRecordStatus } from "../shell.js";
 
 /**
  * Render the edit form for an item into the Record pane body. Phase 10.5
@@ -108,7 +108,11 @@ export function renderEditItem(container, item, allItems, archive, callbacks = {
 
   const formHandle = renderForm(formContainer, groups, initialData, (fieldId, value, currentData) => {
     updatePathPreview(currentData);
+    if (fieldId === "status") setRecordStatus(value);
   }, "full");
+
+  // Tint the pane border to the record's current status from the outset.
+  setRecordStatus(initialData.status || "draft");
 
   // Layer the chrome: type column + state slot, then click-to-edit toggle.
   applyFieldChrome(formContainer);
