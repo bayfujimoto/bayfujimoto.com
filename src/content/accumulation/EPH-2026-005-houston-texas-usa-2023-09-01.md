@@ -3,7 +3,7 @@ id: EPH-2026-005
 slug: houston-texas-usa-2023-09-01
 series: accumulation
 item_type: ticket
-status: draft
+status: published
 display_date: September 01, 2023
 sort_date: "2023-09-01"
 title: MFAH Ticket
