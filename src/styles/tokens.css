@@ -78,7 +78,10 @@
   --color-success: var(--accent-green);
   --color-error:   var(--accent-red);
 
-  --status-draft-color:     var(--fg-muted);
+  /* Draft sits a step lighter than --fg-muted body text so drafts read as
+     clearly de-emphasized against near-black published items, while staying
+     above ~3.5:1 contrast on the --bg (#d5d8db) so it doesn't blend in. */
+  --status-draft-color:     #6a6f76;
   --status-draft-border:    var(--border);
   --status-partial-color:   var(--accent-yellow);
   --status-partial-border:  var(--accent-yellow);

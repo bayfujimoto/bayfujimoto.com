@@ -64,18 +64,24 @@ async function githubCommitAll(files, token, owner, repo, branch, message) {
   const baseCommit = await commitRes.json();
   const baseTreeSha = baseCommit.tree.sha;
 
-  // Build tree entries — each file as a blob, or a deletion (sha: null) for
-  // renamed records whose old path must be removed in the same commit.
-  const treeItems = await Promise.all(files.map(async ({ filePath, content, delete: del }) => {
+  // Build tree entries — each file as a blob, or a deletion (sha: null) for an
+  // explicitly deleted record or the old path of a renamed one. Delete paths
+  // are resolved against the live tree by id so a recomputed slug that drifts
+  // from the ingested filename can't point at a missing path and 422 the tree.
+  const treeItems = await Promise.all(files.map(async ({ filePath, content, delete: del, id }) => {
     if (del) {
-      return { path: filePath, mode: "100644", type: "blob", sha: null };
+      const realPath = await resolveDeletePath(base, headers, branch, filePath, id);
+      if (!realPath) {
+        throw new Error(`Cannot delete ${id || filePath}: no matching file found in the repo (looked for ${filePath}${id ? ` and ${id}-* in its folder` : ""})`);
+      }
+      return { path: realPath, mode: "100644", type: "blob", sha: null };
     }
     const blobRes = await fetch(`${base}/git/blobs`, {
       method: "POST",
       headers,
       body: JSON.stringify({ content, encoding: "utf-8" }),
     });
-    if (!blobRes.ok) throw new Error(`Failed to create blob for ${filePath}: ${blobRes.status}`);
+    if (!blobRes.ok) throw new Error(`Failed to create blob for ${filePath}: ${blobRes.status}${await ghErr(blobRes)}`);
     const blob = await blobRes.json();
     return { path: filePath, mode: "100644", type: "blob", sha: blob.sha };
   }));
@@ -86,7 +92,7 @@ async function githubCommitAll(files, token, owner, repo, branch, message) {
     headers,
     body: JSON.stringify({ base_tree: baseTreeSha, tree: treeItems }),
   });
-  if (!treeRes.ok) throw new Error(`Failed to create tree: ${treeRes.status}`);
+  if (!treeRes.ok) throw new Error(`Failed to create tree: ${treeRes.status}${await ghErr(treeRes)}`);
   const tree = await treeRes.json();
 
   // Create commit
@@ -95,7 +101,7 @@ async function githubCommitAll(files, token, owner, repo, branch, message) {
     headers,
     body: JSON.stringify({ message, tree: tree.sha, parents: [baseSha] }),
   });
-  if (!newCommitRes.ok) throw new Error(`Failed to create commit: ${newCommitRes.status}`);
+  if (!newCommitRes.ok) throw new Error(`Failed to create commit: ${newCommitRes.status}${await ghErr(newCommitRes)}`);
   const newCommit = await newCommitRes.json();
 
   // Advance branch ref
@@ -104,9 +110,42 @@ async function githubCommitAll(files, token, owner, repo, branch, message) {
     headers,
     body: JSON.stringify({ sha: newCommit.sha }),
   });
-  if (!updateRefRes.ok) throw new Error(`Failed to update ref: ${updateRefRes.status}`);
+  if (!updateRefRes.ok) throw new Error(`Failed to update ref: ${updateRefRes.status}${await ghErr(updateRefRes)}`);
 
   return newCommit.sha;
+}
+
+// Extract GitHub's error message body for clearer diagnostics.
+async function ghErr(res) {
+  try {
+    const j = await res.json();
+    return j?.message ? ` — ${j.message}` : "";
+  } catch {
+    return "";
+  }
+}
+
+// Find a deletion's real path. Prefer the exact computed path; if it isn't in
+// the repo (a recomputed slug can drift from the ingested filename), fall back
+// to the unique `${id}-*.md` file in the same directory. Returns null if none.
+async function resolveDeletePath(base, headers, branch, filePath, id) {
+  const exact = await fetch(`${base}/contents/${filePath}?ref=${branch}`, { headers });
+  if (exact.ok) return filePath;
+  if (!id) return null;
+  const dir = filePath.slice(0, filePath.lastIndexOf("/"));
+  const listRes = await fetch(`${base}/contents/${dir}?ref=${branch}`, { headers });
+  if (!listRes.ok) return null;
+  const list = await listRes.json();
+  return matchByIdPrefix(list, id);
+}
+
+// Pure: pick the path of the single `${id}-*.md` entry in a contents listing.
+function matchByIdPrefix(list, id) {
+  if (!Array.isArray(list)) return null;
+  const hit = list.find(
+    (e) => e && e.type === "file" && e.name.startsWith(`${id}-`) && e.name.endsWith(".md")
+  );
+  return hit ? hit.path : null;
 }
 
 export function githubWritePlugin() {

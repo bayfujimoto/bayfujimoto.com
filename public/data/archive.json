@@ -316,6 +316,27 @@
           "label": "films",
           "items": [
             {
+              "id": "FILM-2026-518",
+              "slug": "leviticus-2026-2026-06-24",
+              "title": "Leviticus",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2026",
+              "director": "",
+              "watch_date": "2026-06-24",
+              "display_date": "June 24, 2026",
+              "sort_date": "2026-06-24",
+              "rating": 3.5,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/leviticus-2026/",
+              "assets": {
+                "backdrop": "https://a.ltrbxd.com/resized/alternative-backdrop/1/4/3/7/6/2/2/tmdb/7y8zWGEjs7tresw4Hzkkf4TdkcL-1200-1200-675-675-crop-000000.jpg?v=7f18b58569",
+                "poster": "https://a.ltrbxd.com/resized/film-poster/1/4/3/7/6/2/2/1437622-leviticus-2026-0-600-0-900-crop.jpg?v=87cb79b6d2"
+              }
+            },
+            {
               "id": "FILM-2026-517",
               "slug": "toy-story-5-2026-2026-06-21",
               "title": "Toy Story 5",
@@ -15075,14 +15096,10 @@
               "display_date": "June 22, 2026",
               "sort_date": "2026-06-22",
               "artist": "RELS B & Kali Uchis",
-              "year": null,
-              "album": null,
-              "related_ids": [],
-              "tags": [],
-              "context_note": "",
+              "year": "2026",
               "assets": {
-                "cover": null,
-                "thumbnail": null
+                "cover": "MUSIC-2026-003-cover.jpg",
+                "thumbnail": "MUSIC-2026-003-cover-thumb.jpg"
               },
               "dimensions": "300 x 300"
             },
@@ -15479,6 +15496,26 @@
       "subcollections": {},
       "items": [
         {
+          "id": "EPH-2026-018",
+          "slug": "austin-tx-usa-2025-06-01",
+          "series": "accumulation",
+          "item_type": "ticket",
+          "status": "published",
+          "display_date": "June 1, 2025",
+          "sort_date": "2025-06-01",
+          "title": "The Life of Chuck",
+          "place": "Austin, TX, USA",
+          "event": "Film screening",
+          "source": "Commemorative ticket",
+          "inspection": "card",
+          "context_note": "Commemorative ticket",
+          "dimensions": "180 x 60",
+          "assets": {
+            "front": "EPH-2026-018-front.jpg",
+            "thumbnail": "EPH-2026-018-front-thumb.jpg"
+          }
+        },
+        {
           "id": "EPH-2026-017",
           "slug": "houston-texas-usa-2025-04-27",
           "series": "accumulation",
@@ -15564,9 +15601,9 @@
   },
   "_counters": {
     "EPH": 18,
-    "FILM": 517,
-    "BOOK": 270,
-    "MUSIC": 3,
+    "FILM": 518,
+    "BOOK": 277,
+    "MUSIC": 4,
     "COFFEE": 2,
     "GAME": 4,
     "SKETCH": 2,

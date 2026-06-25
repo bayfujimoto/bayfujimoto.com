@@ -220,15 +220,17 @@ async function handleCommit() {
     const writes    = snapshot
       .filter(p => p.action !== 'delete')
       .map(p => ({ filePath: p.filePath, content: p.content }));
+    // id rides along so the server can resolve the real path if a recomputed
+    // slug drifted from the actual filename (common for ingested records).
     const deletions = [
       // Explicit record deletions.
       ...snapshot
         .filter(p => p.action === 'delete')
-        .map(p => ({ filePath: p.filePath, delete: true })),
+        .map(p => ({ filePath: p.filePath, id: p.id, delete: true })),
       // Renamed edits carry the old path — remove it in the same commit.
       ...snapshot
         .filter(p => p.oldFilePath && p.oldFilePath !== p.filePath)
-        .map(p => ({ filePath: p.oldFilePath, delete: true })),
+        .map(p => ({ filePath: p.oldFilePath, id: p.id, delete: true })),
     ];
 
     const result = await commitAll({
