@@ -1,7 +1,7 @@
 import "./styles.css";
 import { initShellResize, openRecord, getRecordBody, clearRecord } from "./shell.js";
 import { loadArchive } from "./lib/api.js";
-import { setState } from "./state.js";
+import { getState, setState } from "./state.js";
 import {
   initExplorer,
   renderExplorer,
@@ -183,6 +183,7 @@ function renderShell() {
       <div class="admin-shell-right">
         <section class="admin-pane" data-pane="r" id="pane-record">
           <span class="admin-pane-label"><span class="admin-pane-letter">r</span> Record</span>
+          <div class="admin-pane-actions" id="record-pane-actions"></div>
           <div class="admin-pane-body">
             <div class="admin-placeholder">
               active item / form / dashboard
@@ -279,7 +280,9 @@ function flattenArchive(archive) {
 function openItem(item, allItems, archive) {
   openRecord((body) => {
     renderEditItem(body, item, allItems, archive, {
-      onClose: () => openEmpty(archive, allItems),
+      onClose:  () => openEmpty(archive, allItems),
+      onDelete: ({ id, series, subcollection }) =>
+        deleteItemFromViews(id, series, subcollection, archive),
     });
   });
   // Keep the Explorer's selection synced with what the Record pane is showing
@@ -288,6 +291,34 @@ function openItem(item, allItems, archive) {
   setMobileActivePane('r');
   // Move keyboard focus to the Record pane so arrow keys navigate the form
   setFocusedPane('r');
+}
+
+// A record was staged for deletion in the editor. Drop it from the in-memory
+// archive + allItems, re-render the Explorer without it, and return to the
+// empty state. The staged "D" change in the Log pane is committed via :w.
+function deleteItemFromViews(id, series, subcollection, archive) {
+  removeItemFromArchive(archive, id, series, subcollection);
+  const allItems = getState().allItems.filter(i => i.id !== id);
+  setState({ archive, allItems });
+
+  renderExplorer(archive, {
+    onItemSelect: (it) => openItem(it, allItems, archive),
+  });
+  setLogCallbacks({
+    onItemSelect: (it) => openItem(it, allItems, archive),
+  });
+  openEmpty(archive, allItems);
+}
+
+function removeItemFromArchive(archive, id, series, subcollection) {
+  const ser = archive?.series?.[series];
+  if (!ser) return;
+  if (subcollection && ser.subcollections?.[subcollection]) {
+    const sub = ser.subcollections[subcollection];
+    sub.items = (sub.items || []).filter(i => i.id !== id);
+  } else {
+    ser.items = (ser.items || []).filter(i => i.id !== id);
+  }
 }
 
 function openEmpty(archive, allItems) {

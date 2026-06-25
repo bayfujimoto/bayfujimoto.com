@@ -335,6 +335,54 @@ body {
 .admin-pane-letter::before { content: '['; color: var(--muted); margin-right: 1px; }
 .admin-pane-letter::after  { content: ']'; color: var(--muted); margin-left:  1px; }
 
+/* Top-border action buttons — sit on the right of the pane's top border,
+   mirroring the [letter] Name label on the left. Populated for the Record
+   pane (save / cancel / del) and hidden when empty. */
+.admin-pane-actions {
+  position: absolute;
+  top: -0.55em;
+  right: 14px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: var(--bg);
+  padding: 0 6px;
+  line-height: 1;
+  z-index: 2;
+}
+.admin-pane-actions:empty { display: none; }
+
+.admin-pane-action {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  padding: 3px 4px;
+  line-height: 1;
+  cursor: pointer;
+  user-select: none;
+}
+.admin-pane-action::before { content: '['; color: var(--fg-dim); margin-right: 1px; }
+.admin-pane-action::after  { content: ']'; color: var(--fg-dim); margin-left:  1px; }
+.admin-pane-action:hover { color: var(--fg); }
+.admin-pane-action:focus-visible {
+  outline: 1px solid var(--fg);
+  outline-offset: 1px;
+}
+.admin-pane-action--danger { color: var(--accent-red); }
+.admin-pane-action--danger:hover { color: var(--accent-red); text-decoration: underline; }
+
+/* On touch viewports grow the tap target without distorting the border chrome. */
+@media (max-width: 700px) {
+  .admin-pane-action {
+    padding: 8px 6px;
+    min-width: 32px;
+    text-align: center;
+  }
+}
+
 .admin-pane-body {
   flex: 1;
   padding: 20px 16px 14px;
@@ -1765,10 +1813,11 @@ body.admin-gutter-dragging.dragging-h {
    ─────────────────────────────────────────────────────────────────────────── */
 
 .admin-field-value {
-  display: inline-flex;
+  display: flex;
   align-items: baseline;
   flex: 1;
   min-width: 0;
+  width: 100%;
   position: relative;
 }
 
@@ -2136,6 +2185,72 @@ body.admin-gutter-dragging.dragging-h {
 
 .admin-action--secondary .admin-action-label {
   color: var(--fg-muted);
+}
+
+.admin-action--danger .admin-action-label {
+  color: var(--accent-red);
+}
+
+/* ── Delete confirmation gate ───────────────────────────────────────────────
+   Inline panel inserted at the top of the Record body when [del] is pressed.
+   The destructive button stays disabled until the typed slug matches.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.admin-delete-confirm {
+  border: 1px solid var(--accent-red);
+  background: var(--bg-elevated);
+  padding: 10px 12px;
+  margin-bottom: 14px;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+}
+
+.admin-delete-confirm-head {
+  color: var(--accent-red);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.admin-delete-confirm-text {
+  color: var(--fg-muted);
+  line-height: 1.5;
+  margin: 0 0 10px;
+}
+
+.admin-delete-confirm-text code {
+  font-family: var(--font-mono);
+  color: var(--fg);
+}
+
+.admin-delete-confirm-slug {
+  color: var(--accent-red);
+  background: var(--bg);
+  padding: 0 4px;
+}
+
+.admin-delete-confirm-input {
+  width: 100%;
+  font-family: var(--font-mono);
+  font-size: 16px;          /* ≥16px: suppress iOS zoom-on-focus */
+  color: var(--fg);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border-faint);
+  border-radius: 0;
+  padding: 4px 4px;
+  margin-bottom: 10px;
+  appearance: none;
+}
+
+.admin-delete-confirm-input:focus {
+  outline: none;
+  border-bottom-color: var(--accent-red);
+}
+
+.admin-delete-confirm-actions {
+  display: flex;
+  flex-direction: column;
 }
 
 .admin-action-hint {

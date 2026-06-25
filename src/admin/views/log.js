@@ -205,20 +205,31 @@ async function handleCommit() {
   const counters = archive?._counters || {};
   const newIds   = pendingChanges.filter(p => p.action === 'add').map(p => p.id);
   const editIds  = pendingChanges.filter(p => p.action === 'edit').map(p => p.id);
+  const delIds   = pendingChanges.filter(p => p.action === 'delete').map(p => p.id);
   const parts    = [];
   if (newIds.length)  parts.push(`add ${newIds.length}: ${newIds.join(', ')}`);
   if (editIds.length) parts.push(`edit ${editIds.length}: ${editIds.join(', ')}`);
+  if (delIds.length)  parts.push(`delete ${delIds.length}: ${delIds.join(', ')}`);
   const message = parts.join('; ') || `commit ${pendingChanges.length} change${pendingChanges.length > 1 ? 's' : ''}`;
 
   const snapshot = pendingChanges.slice();   // capture for history entry
   setState({ status: 'saving', statusMessage: 'Committing to GitHub…' });
 
   try {
-    const writes    = snapshot.map(p => ({ filePath: p.filePath, content: p.content }));
-    // Renamed edits carry the old path — stage it for deletion in the same commit.
-    const deletions = snapshot
-      .filter(p => p.oldFilePath && p.oldFilePath !== p.filePath)
-      .map(p => ({ filePath: p.oldFilePath, delete: true }));
+    // Deletes carry no content — they remove a file. Everything else is a write.
+    const writes    = snapshot
+      .filter(p => p.action !== 'delete')
+      .map(p => ({ filePath: p.filePath, content: p.content }));
+    const deletions = [
+      // Explicit record deletions.
+      ...snapshot
+        .filter(p => p.action === 'delete')
+        .map(p => ({ filePath: p.filePath, delete: true })),
+      // Renamed edits carry the old path — remove it in the same commit.
+      ...snapshot
+        .filter(p => p.oldFilePath && p.oldFilePath !== p.filePath)
+        .map(p => ({ filePath: p.oldFilePath, delete: true })),
+    ];
 
     const result = await commitAll({
       files:           [...writes, ...deletions],
@@ -233,6 +244,7 @@ async function handleCommit() {
         count:     snapshot.length,
         adds:      newIds.length,
         edits:     editIds.length,
+        dels:      delIds.length,
         message,
         ok:        true,
       });
@@ -248,6 +260,7 @@ async function handleCommit() {
         count:     snapshot.length,
         adds:      newIds.length,
         edits:     editIds.length,
+        dels:      delIds.length,
         message,
         ok:        false,
         error:     result.error,
@@ -281,6 +294,7 @@ function summarize(c) {
   const parts = [];
   if (c.adds)  parts.push(`${c.adds} added`);
   if (c.edits) parts.push(`${c.edits} edited`);
+  if (c.dels)  parts.push(`${c.dels} deleted`);
   if (parts.length === 0) parts.push(`${c.count} change${c.count > 1 ? 's' : ''}`);
   return parts.join(', ');
 }

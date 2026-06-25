@@ -141,6 +141,44 @@ export function getRecordBody() {
   return document.querySelector('#pane-record .admin-pane-body');
 }
 
+/** Returns the Record pane's top-border action slot (right of the [r] Record label). */
+export function getRecordActions() {
+  return document.getElementById('record-pane-actions');
+}
+
+/** Empty the Record pane's top-border action slot. */
+export function clearRecordActions() {
+  const slot = getRecordActions();
+  if (slot) slot.innerHTML = '';
+}
+
+/**
+ * Replace the Record pane's top-border actions with a set of buttons.
+ * Pass an array of button elements (e.g. from makePaneAction). Passing an
+ * empty array (or omitting) clears the slot.
+ */
+export function setRecordActions(buttons = []) {
+  const slot = getRecordActions();
+  if (!slot) return;
+  slot.innerHTML = '';
+  for (const btn of buttons) if (btn) slot.appendChild(btn);
+}
+
+/**
+ * Build one top-border action button.
+ *   makePaneAction({ label: 'save', onClick, title, variant: 'danger' })
+ * The bracket chrome ([save]) is drawn in CSS so labels stay plain text.
+ */
+export function makePaneAction({ label, onClick, title, variant } = {}) {
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'admin-pane-action' + (variant ? ` admin-pane-action--${variant}` : '');
+  btn.textContent = label || '';
+  if (title) btn.title = title;
+  if (onClick) btn.addEventListener('click', onClick);
+  return btn;
+}
+
 /**
  * Replace the Record pane body's contents.
  *
@@ -154,6 +192,8 @@ export function openRecord(content) {
   const body = getRecordBody();
   if (!body) return;
   body.innerHTML = '';
+  // Reset the top-border actions; the incoming view repopulates them if needed.
+  clearRecordActions();
   if (typeof content === 'function')          content(body);
   else if (content instanceof Node)           body.appendChild(content);
   else if (content != null)                   body.innerHTML = String(content);
@@ -163,6 +203,7 @@ export function openRecord(content) {
 export function clearRecord() {
   const body = getRecordBody();
   if (body) body.innerHTML = '';
+  clearRecordActions();
   const breadcrumb = document.getElementById('admin-topbar-breadcrumb');
   if (breadcrumb) breadcrumb.innerHTML = '';
 }

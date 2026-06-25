@@ -66,7 +66,12 @@ async function githubCommitAll(files, token, owner, repo, branch, message) {
   if (!commitRes.ok) throw new Error(`Failed to get base commit: ${commitRes.status}`);
   const baseTreeSha = (await commitRes.json()).tree.sha;
 
-  const treeItems = await Promise.all(files.map(async ({ filePath, content }) => {
+  // Each file is either a blob write or a deletion (sha: null). Deletions cover
+  // both explicit record removals and the old path of a renamed record.
+  const treeItems = await Promise.all(files.map(async ({ filePath, content, delete: del }) => {
+    if (del) {
+      return { path: filePath, mode: "100644", type: "blob", sha: null };
+    }
     const blobRes = await fetch(`${base}/git/blobs`, {
       method: "POST", headers,
       body: JSON.stringify({ content, encoding: "utf-8" }),

@@ -7,6 +7,7 @@ import { getState, setState } from "../state.js";
 import { registerPaneNav } from "../nav.js";
 import { applyEditToggle } from "../forms/edit-toggle.js";
 import { applyFieldChrome } from "../forms/field-chrome.js";
+import { setRecordActions, makePaneAction } from "../shell.js";
 
 /**
  * Render the edit form for an item into the Record pane body. Phase 10.5
@@ -18,7 +19,7 @@ import { applyFieldChrome } from "../forms/field-chrome.js";
 export function renderEditItem(container, item, allItems, archive, callbacks = {}) {
   container.innerHTML = "";
 
-  const { onClose } = callbacks;
+  const { onClose, onDelete } = callbacks;
 
   if (!item) {
     container.innerHTML = `<div class="admin-empty">No item provided.</div>`;
@@ -34,8 +35,10 @@ export function renderEditItem(container, item, allItems, archive, callbacks = {
   // (e.g. the slug changed), the old file must be deleted so it can't linger as
   // a same-id orphan — the source of duplicate cards in the archive.
   let originalFilePath = null;
+  let originalSlug = "";
   try {
-    originalFilePath = generateFilePath(series, subcollection, id, item.slug || generateSlug(itemType, item));
+    originalSlug = item.slug || generateSlug(itemType, item);
+    originalFilePath = generateFilePath(series, subcollection, id, originalSlug);
   } catch { /* unresolved path — treat as no original to delete */ }
 
   // Topbar breadcrumb
@@ -111,47 +114,42 @@ export function renderEditItem(container, item, allItems, archive, callbacks = {
   applyFieldChrome(formContainer);
   applyEditToggle(formContainer);
 
-  // ── Action lines (replaces bordered Save/Cancel) ────────────────────────
-  const actions = document.createElement("div");
-  actions.className = "admin-actions";
-
-  const saveAction = document.createElement("button");
-  saveAction.type = "button";
-  saveAction.className = "admin-action";
-  saveAction.innerHTML = `
-    <span class="admin-action-marker">&gt;</span>
-    <span class="admin-action-label">save</span>
-    <span class="admin-action-hint">:w</span>
-  `;
-  saveAction.addEventListener("click", () =>
-    handleEditSave(formHandle, id, series, subcollection, itemType, archive, body, originalFilePath)
-  );
-  actions.appendChild(saveAction);
-
-  const cancelAction = document.createElement("button");
-  cancelAction.type = "button";
-  cancelAction.className = "admin-action admin-action--secondary";
-  cancelAction.innerHTML = `
-    <span class="admin-action-marker">&gt;</span>
-    <span class="admin-action-label">cancel</span>
-    <span class="admin-action-hint">:q</span>
-  `;
-  cancelAction.addEventListener("click", () => { if (onClose) onClose(); });
-  actions.appendChild(cancelAction);
-
-  body.appendChild(actions);
+  // ── Top-border actions ([save] [cancel] [del]) ──────────────────────────
+  // These live in the Record pane's top border, right of the [r] Record label,
+  // rather than as rows at the bottom of the form.
+  setRecordActions([
+    makePaneAction({
+      label: "save",
+      title: "Stage changes for commit (then :w to commit)",
+      onClick: () =>
+        handleEditSave(formHandle, id, series, subcollection, itemType, archive, body, originalFilePath),
+    }),
+    makePaneAction({
+      label: "cancel",
+      title: "Close without staging (:q)",
+      onClick: () => { if (onClose) onClose(); },
+    }),
+    makePaneAction({
+      label: "del",
+      variant: "danger",
+      title: "Delete this record (requires typing the slug)",
+      onClick: () =>
+        showDeleteConfirm(body, {
+          id,
+          slug: originalSlug,
+          onConfirm: () =>
+            handleEditDelete(id, originalFilePath, series, subcollection, body, onDelete),
+        }),
+    }),
+  ]);
 
   // ── Arrow-key nav ───────────────────────────────────────────────────────
-  // Field rows + action rows are navable; meta rows are skipped (they're
-  // informational and the lock button is mouse-clickable).
+  // Field rows are navable; meta rows are skipped (informational). The action
+  // buttons now live in the pane's top border and are reached via Tab / click.
   registerPaneNav('r', {
     container:   body,
-    rowSelector: '.admin-field:not(.admin-field--meta), .admin-action',
+    rowSelector: '.admin-field:not(.admin-field--meta)',
     onActivate:  (row) => {
-      if (row.classList.contains('admin-action')) {
-        row.click();
-        return;
-      }
       const display = row.querySelector('.admin-field-value:not(.is-editing) .admin-field-display');
       if (display) { display.click(); return; }
       const input = row.querySelector(
@@ -206,6 +204,79 @@ function handleEditSave(formHandle, id, series, subcollection, itemType, archive
   updateArchiveInState(archive, data, series, subcollection);
 
   showInlineMessage(body, `Saved ${id} — staged for commit. Run :w to commit.`, "saved");
+}
+
+// Stage a record for deletion. Any change already staged for this id (a prior
+// edit/add this session) is dropped first so we don't both write and delete it
+// in the same commit. The actual file removal happens on commit (:w).
+function handleEditDelete(id, originalFilePath, series, subcollection, body, onDelete) {
+  if (!originalFilePath) {
+    showInlineMessage(body, `Cannot delete ${id}: its file path is unresolved.`, "error");
+    return;
+  }
+
+  const { pendingChanges } = getState();
+  const withoutThis = pendingChanges.filter(c => c.id !== id);
+  setState({
+    pendingChanges: [...withoutThis, { id, filePath: originalFilePath, action: "delete" }],
+  });
+
+  // Hand off to the view layer to drop the item from the archive/Explorer and
+  // return to the empty state. The pending "D" row in the Log is the receipt.
+  onDelete?.({ id, series, subcollection });
+}
+
+// Inline confirmation gate: the user must type the record's slug exactly before
+// the destructive action unlocks. Esc or cancel backs out.
+function showDeleteConfirm(body, { id, slug, onConfirm }) {
+  body.querySelector(".admin-delete-confirm")?.remove();
+
+  const panel = document.createElement("div");
+  panel.className = "admin-delete-confirm";
+  panel.innerHTML = `
+    <div class="admin-delete-confirm-head">⚠ delete ${escapeHTML(id)}</div>
+    <p class="admin-delete-confirm-text">
+      This stages the record for deletion. The file is removed from the archive
+      on your next commit (<code>:w</code>) and cannot be recovered afterward.
+      Type the slug <code class="admin-delete-confirm-slug">${escapeHTML(slug)}</code> to confirm.
+    </p>
+    <input type="text" class="admin-delete-confirm-input" autocomplete="off"
+           autocapitalize="off" spellcheck="false"
+           placeholder="${escapeHTML(slug)}"
+           aria-label="Type the slug to confirm deletion">
+    <div class="admin-delete-confirm-actions">
+      <button type="button" class="admin-action admin-action--danger" data-act="confirm" disabled>
+        <span class="admin-action-marker">&gt;</span>
+        <span class="admin-action-label">delete permanently</span>
+      </button>
+      <button type="button" class="admin-action admin-action--secondary" data-act="cancel">
+        <span class="admin-action-marker">&gt;</span>
+        <span class="admin-action-label">cancel</span>
+      </button>
+    </div>
+  `;
+  body.insertAdjacentElement("afterbegin", panel);
+
+  const input      = panel.querySelector(".admin-delete-confirm-input");
+  const confirmBtn = panel.querySelector('[data-act="confirm"]');
+  const cancelBtn  = panel.querySelector('[data-act="cancel"]');
+
+  const matches = () => input.value.trim() === slug;
+  const sync    = () => { confirmBtn.disabled = !matches(); };
+
+  input.addEventListener("input", sync);
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && matches()) { e.preventDefault(); confirmBtn.click(); }
+    else if (e.key === "Escape")        { e.preventDefault(); panel.remove(); }
+  });
+  confirmBtn.addEventListener("click", () => {
+    if (!matches()) return;
+    panel.remove();
+    onConfirm();
+  });
+  cancelBtn.addEventListener("click", () => panel.remove());
+
+  input.focus();
 }
 
 function showInlineMessage(body, text, kind) {

@@ -8,6 +8,7 @@ import { getState, setState } from "../state.js";
 import { registerPaneNav } from "../nav.js";
 import { applyEditToggle } from "../forms/edit-toggle.js";
 import { applyFieldChrome } from "../forms/field-chrome.js";
+import { setRecordActions, makePaneAction } from "../shell.js";
 
 const SERIES_TYPES = {
   accumulation: ["ticket", "brochure", "receipt", "handout", "document"],
@@ -41,6 +42,8 @@ export function renderNewItem(container, archive, preselect = null, callbacks = 
 
 function renderStep(container, archive) {
   container.innerHTML = "";
+  // Only the form step carries top-border actions; clear any from a prior step.
+  setRecordActions([]);
 
   const breadcrumb = document.getElementById("admin-topbar-breadcrumb");
 
@@ -234,40 +237,26 @@ function renderFormStep(body, archive) {
   applyFieldChrome(formContainer);
   applyEditToggle(formContainer);
 
-  // Action lines
-  const actions = document.createElement("div");
-  actions.className = "admin-actions";
+  // Top-border actions ([save] [cancel]) — right of the [r] Record label.
+  setRecordActions([
+    makePaneAction({
+      label: "save",
+      title: "Stage new record for commit (then :w to commit)",
+      onClick: () => handleSave(null, formHandle, id, prefix, nextCounter, counters, series, subcollection, itemType, archive, body),
+    }),
+    makePaneAction({
+      label: "cancel",
+      title: "Discard and close (:q)",
+      onClick: () => { if (wizardOnClose) wizardOnClose(); },
+    }),
+  ]);
 
-  const saveAction = document.createElement("button");
-  saveAction.type = "button";
-  saveAction.className = "admin-action";
-  saveAction.innerHTML = `
-    <span class="admin-action-marker">&gt;</span>
-    <span class="admin-action-label">save</span>
-    <span class="admin-action-hint">:w</span>
-  `;
-  saveAction.addEventListener("click", () => handleSave(saveAction, formHandle, id, prefix, nextCounter, counters, series, subcollection, itemType, archive, body));
-  actions.appendChild(saveAction);
-
-  const cancelAction = document.createElement("button");
-  cancelAction.type = "button";
-  cancelAction.className = "admin-action admin-action--secondary";
-  cancelAction.innerHTML = `
-    <span class="admin-action-marker">&gt;</span>
-    <span class="admin-action-label">cancel</span>
-    <span class="admin-action-hint">:q</span>
-  `;
-  cancelAction.addEventListener("click", () => { if (wizardOnClose) wizardOnClose(); });
-  actions.appendChild(cancelAction);
-
-  body.appendChild(actions);
-
-  // Arrow-key nav over the form's fields + action rows
+  // Arrow-key nav over the form's fields. Action buttons live in the top border
+  // and are reached via Tab / click.
   registerPaneNav('r', {
     container:   body,
-    rowSelector: '.admin-field:not(.admin-field--meta), .admin-action',
+    rowSelector: '.admin-field:not(.admin-field--meta)',
     onActivate:  (row) => {
-      if (row.classList.contains('admin-action')) { row.click(); return; }
       const display = row.querySelector('.admin-field-value:not(.is-editing) .admin-field-display');
       if (display) { display.click(); return; }
       const input = row.querySelector(
@@ -309,6 +298,8 @@ function handleSave(saveBtn, formHandle, id, prefix, nextCounter, counters, seri
 }
 
 function renderSuccessState(body, id, itemType, series, subcollection, archive, newCounters) {
+  // The success state carries its own buttons; drop the form's top-border actions.
+  setRecordActions([]);
   // Update in-memory counters so next entry generates the correct ID
   archive._counters = newCounters;
 
