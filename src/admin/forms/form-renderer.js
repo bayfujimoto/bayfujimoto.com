@@ -723,9 +723,7 @@ function makeField(field, value, onChange) {
 }
 
 // Builds and returns the inspection fieldset (mode select + dynamic asset section)
-function makeInspectionFieldset(group, currentData, handleChange, getItemId, depth) {
-  if (depth === "quick") return null;
-
+function makeInspectionFieldset(group, currentData, handleChange, getItemId) {
   const fieldset = makePanel(group.label);
   fieldset.dataset.group = group.id;
 
@@ -767,7 +765,7 @@ function makeInspectionFieldset(group, currentData, handleChange, getItemId, dep
   return fieldset;
 }
 
-export function renderForm(container, groups, initialData, onChange, depth = "full") {
+export function renderForm(container, groups, initialData, onChange) {
   const form = document.createElement("div");
   form.className = "admin-form";
 
@@ -783,11 +781,9 @@ export function renderForm(container, groups, initialData, onChange, depth = "fu
   }
 
   for (const group of groups) {
-    if (group.depth === "full" && depth === "quick") continue;
-
     // Inspection-assets sentinel: render the mode select + dynamic asset section
     if (group.id === INSPECTION_ASSETS_SENTINEL.id) {
-      const fieldset = makeInspectionFieldset(group, currentData, handleChange, getItemId, depth);
+      const fieldset = makeInspectionFieldset(group, currentData, handleChange, getItemId);
       if (fieldset) form.appendChild(fieldset);
       continue;
     }
@@ -799,10 +795,6 @@ export function renderForm(container, groups, initialData, onChange, depth = "fu
     handleChange._thumbSet = !!currentData.assets?.thumbnail;
 
     for (const field of group.fields) {
-      if (field.depth === "full" && depth === "quick") continue;
-      // In quick mode, hide all asset upload fields
-      if (depth === "quick" && field.id.startsWith("assets.")) continue;
-
       const value = getNestedValue(currentData, field.id);
       let el;
       if (field.type === "asset-upload") {

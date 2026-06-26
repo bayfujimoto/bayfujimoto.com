@@ -322,11 +322,14 @@ function makeGuideSheet() {
   const veil = makeVeil(() => navigate({ layer: "desk" }));
   const content = makeContent();
 
+  // Same document container as biography / CV: bordered box, scroll, caret.
   const center = el("div", "layer-center");
-  center.setAttribute("role", "dialog");
-  center.setAttribute("aria-modal", "true");
-  center.setAttribute("aria-label", "Archive guide");
 
+  const doc = el("div", "bio-document");
+  doc.setAttribute("role", "document");
+  doc.setAttribute("aria-label", "Archive guide");
+
+  const scroll = el("div", "bio-document__scroll");
   const inner = el("div", "guide-content");
   inner.innerHTML = `
     <p>This is a personal archive — a collection of records, artifacts, documents, and traces that describe a life through material evidence rather than through a simplified personal brand narrative.</p>
@@ -339,8 +342,29 @@ function makeGuideSheet() {
       <li><strong>Accumulation:</strong> Collected ephemera and physical artifacts</li>
     </ul>
   `;
+  scroll.appendChild(inner);
+  doc.appendChild(scroll);
 
-  center.appendChild(inner);
+  const box = el("div", "bio-document__box");
+  box.appendChild(doc);
+
+  const scrollCaret = el("button", "bio-document__scroll-caret");
+  scrollCaret.type = "button";
+  scrollCaret.setAttribute("aria-label", "Scroll down");
+  box.appendChild(scrollCaret);
+
+  const updateCaret = () => {
+    const atBottom = scroll.scrollHeight - scroll.scrollTop <= scroll.clientHeight + 2;
+    scrollCaret.classList.toggle("is-hidden", atBottom);
+    box.classList.toggle("at-bottom", atBottom);
+  };
+  scroll.addEventListener("scroll", updateCaret, { passive: true });
+  requestAnimationFrame(updateCaret);
+  scrollCaret.addEventListener("click", () => {
+    scroll.scrollTo({ top: scroll.scrollTop + scroll.clientHeight * 0.6, behavior: "smooth" });
+  });
+
+  center.appendChild(box);
   content.appendChild(center);
 
   // Guide title + subtitle in bottom-right metadata overlay
@@ -846,6 +870,9 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
     // modifier so other grids keep their square cells.
     const isFilms = activeSubKey === "films";
     if (isFilms) grid.classList.add("item-grid--films");
+    // Accumulation (ephemera) scopes the undimensioned-thumbnail padding below, so
+    // items without recorded dimensions don't butt edge-to-edge against the cell.
+    if (seriesKey === "accumulation") grid.classList.add("item-grid--accumulation");
     grid.setAttribute("role", "list");
     grid.setAttribute("aria-label", `${activeSub.label} items`);
 
@@ -1051,6 +1078,7 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
             img.alt = "";
             img.loading = "lazy";
 
+            let scaled = false;
             if (item.dimensions && maxDim > 0) {
               const [wMm, hMm] = item.dimensions.split("x").map(s => parseFloat(s.trim()));
               if (wMm && hMm) {
@@ -1058,8 +1086,12 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
                 const scale = Math.max(wMm, hMm) / maxDim * 0.9;
                 img.style.width = `${Math.round(scale * 100)}%`;
                 img.style.height = `${Math.round(scale * 100)}%`;
+                scaled = true;
               }
             }
+            // Items with no usable dimensions aren't scaled, so their thumbnail fills
+            // the cell edge-to-edge. Inset them with padding (see CSS) for a calmer grid.
+            if (!scaled) cell.classList.add("item-grid__cell--undimensioned");
 
             btn.appendChild(img);
           } else {
@@ -1223,14 +1255,20 @@ function buildPlate(item, dims, sidePx, img, zoom = 1) {
   const NS = "http://www.w3.org/2000/svg";
   const INSET = 32; // gutter inside the box for inward ticks + their numbers
 
+  // Undimensioned items still get a scale grid — drawn but unlabelled: the ruler
+  // without a measurement claim. They use the standard 325 field, no ratio/zoom.
+  const hasDims = !!(dims && dims.w > 0 && dims.h > 0);
+
   // Base field span: standard 325; integer reduction for oversize; 5:1 field
   // for very small items so a stamp does not become a speck.
-  const maxDim = Math.max(dims.w, dims.h);
   let ratio = 1;
-  if (maxDim > PLATE_MM) ratio = Math.ceil(maxDim / PLATE_MM);
-  else if (maxDim < PLATE_SMALL_MM) ratio = 1 / 5;
+  if (hasDims) {
+    const maxDim = Math.max(dims.w, dims.h);
+    if (maxDim > PLATE_MM) ratio = Math.ceil(maxDim / PLATE_MM);
+    else if (maxDim < PLATE_SMALL_MM) ratio = 1 / 5;
+  }
   const baseSpan = PLATE_MM * ratio;
-  const spanMM = baseSpan / zoom;       // effective visible field
+  const spanMM = baseSpan / (hasDims ? zoom : 1);  // effective visible field
 
   const origin = INSET;                 // scale 0 + reproduction corner
   const extent = sidePx - INSET;        // run from origin to the far border
@@ -1249,16 +1287,20 @@ function buildPlate(item, dims, sidePx, img, zoom = 1) {
   edge.setAttribute("class", "plate-edge");
   svg.appendChild(edge);
 
-  // Reproduction at the origin, true proportion of the field, clipped to box.
-  const fo = document.createElementNS(NS, "foreignObject");
-  fo.setAttribute("x", origin); fo.setAttribute("y", origin);
-  fo.setAttribute("width", Math.max(1, px(dims.w)));
-  fo.setAttribute("height", Math.max(1, px(dims.h)));
-  const repro = el("div", "item-card__repro");
-  if (img.parentElement) img.parentElement.removeChild(img);
-  repro.appendChild(img);
-  fo.appendChild(repro);
-  svg.appendChild(fo);
+  // Reproduction at the origin (true proportion when dimensioned, otherwise
+  // filling the field), clipped to box. Omitted when there is no image — the
+  // plate then shows the bare scale grid, so every card still carries a plate.
+  if (img) {
+    const fo = document.createElementNS(NS, "foreignObject");
+    fo.setAttribute("x", origin); fo.setAttribute("y", origin);
+    fo.setAttribute("width", hasDims ? Math.max(1, px(dims.w)) : extent);
+    fo.setAttribute("height", hasDims ? Math.max(1, px(dims.h)) : extent);
+    const repro = el("div", "item-card__repro");
+    if (img.parentElement) img.parentElement.removeChild(img);
+    repro.appendChild(img);
+    fo.appendChild(repro);
+    svg.appendChild(fo);
+  }
 
   const tick = (x1, y1, x2, y2, major) => {
     const l = document.createElementNS(NS, "line");
@@ -1288,7 +1330,7 @@ function buildPlate(item, dims, sidePx, img, zoom = 1) {
     const t = isMajor ? 11 : 6;
     tick(p, 0, p, t, isMajor);   // top edge → down
     tick(0, p, t, p, isMajor);   // left edge → right
-    if (isMajor) {
+    if (isMajor && hasDims) { // labels only when calibrated; bare ticks otherwise
       const val = Math.round(mm);
       label(p, t + 11, val, "middle"); // top scale: number below the tick
       if (k > 0) label(t + 3, p + 3, val, "start"); // left scale: right of tick
@@ -1296,12 +1338,18 @@ function buildPlate(item, dims, sidePx, img, zoom = 1) {
   }
 
   // Scale note: relational, never a false "1:1" — a screen mm is not a mm.
-  let scaleNote = `field ${Math.round(spanMM)} mm`;
-  if (ratio > 1) scaleNote += ` · reduced 1:${ratio}`;
-  else if (ratio < 1) scaleNote += ` · enlarged 5:1`;
-  if (zoom > 1.01) scaleNote += ` · ${zoom.toFixed(1)}×`;
-  // Books are sized by format, not measured — mark the field as an estimate.
-  if (item.dimensions_estimated) scaleNote += " · est.";
+  // Undimensioned plates carry no measurement, only the note.
+  let scaleNote;
+  if (!hasDims) {
+    scaleNote = "dimensions not recorded";
+  } else {
+    scaleNote = `field ${Math.round(spanMM)} mm`;
+    if (ratio > 1) scaleNote += ` · reduced 1:${ratio}`;
+    else if (ratio < 1) scaleNote += ` · enlarged 5:1`;
+    if (zoom > 1.01) scaleNote += ` · ${zoom.toFixed(1)}×`;
+    // Books are sized by format, not measured — mark the field as an estimate.
+    if (item.dimensions_estimated) scaleNote += " · est.";
+  }
 
   return { svg, scaleNote, spanMM, pxPerMM: extent / spanMM, origin };
 }
@@ -1350,7 +1398,11 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
 
     // ── Fields column — catalog card: ruled label/value fields, paired
     //    two-up into split rows where the data is compact (see mockup 01).
-    const fields = el("div", "item-card__fields");
+    //    The column is a fixed-height cell whose content scrolls (reusing the
+    //    bio/CV scroll machinery) so the card keeps the plate's square footprint.
+    const fieldsCol = el("div", "item-card__fields");
+    const fields = el("div", "bio-document__scroll item-card__fields-scroll");
+    fieldsCol.appendChild(fields);
 
     const dims = parseDimensions(item);
 
@@ -1500,7 +1552,23 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
       fields.appendChild(riders);
     }
 
-    card.appendChild(fields);
+    // Scroll affordance for the left column — caret hides when scrolled to bottom.
+    const fieldsCaret = el("button", "bio-document__scroll-caret item-card__fields-caret");
+    fieldsCaret.type = "button";
+    fieldsCaret.setAttribute("aria-label", "Scroll fields");
+    fieldsCol.appendChild(fieldsCaret);
+    const updateFieldsCaret = () => {
+      const atBottom = fields.scrollHeight - fields.scrollTop <= fields.clientHeight + 2;
+      fieldsCaret.classList.toggle("is-hidden", atBottom);
+      fieldsCol.classList.toggle("at-bottom", atBottom);
+    };
+    fields.addEventListener("scroll", updateFieldsCaret, { passive: true });
+    requestAnimationFrame(updateFieldsCaret);
+    fieldsCaret.addEventListener("click", () => {
+      fields.scrollTo({ top: fields.scrollTop + fields.clientHeight * 0.6, behavior: "smooth" });
+    });
+
+    card.appendChild(fieldsCol);
 
     // ── Plate column
     const plateCol = el("div", "item-card__plate");
@@ -1519,11 +1587,12 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
     const back = item.assets?.back || null;
 
     const showNone = () => {
+      // No reproduction: still draw the plate's scale grid (image-less) so every
+      // card carries the same plate. Labelled only when dimensions are recorded.
       field.innerHTML = "";
-      const none = el("div", "item-card__none");
-      none.textContent = "no reproduction";
-      field.appendChild(none);
-      scaleNote.textContent = "";
+      const plate = buildPlate(item, dims, PLATE_PX, null);
+      field.appendChild(plate.svg);
+      scaleNote.textContent = "no reproduction";
     };
 
     const PLATE_PX = 416; // internal viewBox size; scales responsively
@@ -1572,11 +1641,12 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
         if (plateState) scaleNote.textContent = plateState.scaleNote;
       });
     } else if (primary) {
-      // Dimensions not recorded: a plain reproduction cell, no fake scales.
-      const plain = el("div", "item-card__repro item-card__plain");
-      plain.appendChild(reproImg);
-      field.appendChild(plain);
-      scaleNote.textContent = "dimensions not recorded";
+      // Dimensions not recorded: draw the same scale grid, unlabelled, and let
+      // the reproduction fill the field — the ruler without a measurement claim.
+      field.innerHTML = "";
+      const plate = buildPlate(item, null, PLATE_PX, reproImg);
+      scaleNote.textContent = plate.scaleNote;
+      field.appendChild(plate.svg);
     } else {
       showNone();
     }
@@ -1641,6 +1711,10 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
       }
 
       plateCol.appendChild(foot);
+    } else {
+      // Reserve the foot's height so a card with no reproduction keeps the
+      // same size as a reproduced one.
+      plateCol.appendChild(el("div", "item-card__plate-foot"));
     }
 
     card.appendChild(plateCol);

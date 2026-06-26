@@ -565,20 +565,22 @@ body {
 }
 
 /* Books grid: covers sized to (estimated) true physical scale, inset with a little
-   padding and anchored to the top-left of each cell — reads like objects on a shelf.
-   Scoped to books so the film/music/ephemera grids are untouched. The per-item size
-   comes from the shared dimension scaling in panels.js (renderContent). */
+   padding and centered within each cell. Scoped to books so the film/music/ephemera
+   grids are untouched. The per-item size comes from the shared dimension scaling in
+   panels.js (renderContent). */
 .item-grid--books .item-grid__cell {
-  align-items: flex-start;
-  justify-content: flex-start;
   padding: 0.6rem;
 }
-.item-grid--books .item-grid__btn {
-  align-items: flex-start;
-  justify-content: flex-start;
-}
 .item-grid--books .item-grid__thumb {
-  object-position: left top;
+  object-position: center;
+}
+
+/* Accumulation grid: thumbnails for items with no recorded dimensions can't be
+   scaled to true physical size, so they otherwise fill the cell edge-to-edge.
+   Inset them with padding so undimensioned items don't dominate the grid. Scoped
+   to accumulation; box-sizing: border-box keeps the cell's outer size unchanged. */
+.item-grid--accumulation .item-grid__cell--undimensioned {
+  padding: 0.9rem;
 }
 
 .item-grid__text {
@@ -789,9 +791,20 @@ body {
 }
 
 .item-card__fields {
+  position: relative;
+  overflow: hidden;
   border-right: 1px solid var(--border-dim);
-  display: flex;
-  flex-direction: column;
+}
+/* Left column scrolls within the card's fixed (plate-square) height, reusing the
+   bio/CV scroll machinery: .bio-document__scroll (bottom fade + hidden scrollbar)
+   on the inner element, .bio-document__scroll-caret for the down affordance. */
+.item-card__fields-scroll {
+  position: absolute;
+  inset: 0;
+}
+.item-card__fields.at-bottom .bio-document__scroll {
+  mask-image: none;
+  -webkit-mask-image: none;
 }
 
 /* Field labels read as catalog stamps — monospace throughout the column */
@@ -924,9 +937,11 @@ body {
 }
 
 .item-card__field {
-  flex: 1;
-  /* No padding: the plate box edges (and their ticks) sit on the container
-     borders. The "no reproduction" / plain-image states center within. */
+  /* Always a square (the 325 mm field) so the card keeps one size across items;
+     the reproduction, plain image, or "no reproduction" state centers within.
+     No padding: the plate box edges (and their ticks) sit on the container borders. */
+  aspect-ratio: 1 / 1;
+  width: 100%;
   padding: 0;
   display: flex;
   align-items: center;
@@ -964,12 +979,13 @@ body {
 }
 
 /* Plain image cell (no dimensions recorded) */
-.item-card__plain { width: auto; height: auto; max-width: 100%; }
+.item-card__plain { max-width: 100%; max-height: 100%; }
 .item-card__plain img {
   max-width: 100%;
-  max-height: 48vh;
+  max-height: 100%;
   width: auto;
   height: auto;
+  object-fit: contain;
 }
 
 .item-card__none {
@@ -1089,14 +1105,17 @@ body {
   /* viewBox scales down ~0.75 on small screens; keep tick labels legible */
   .item-card__plate-svg text { font-size: 12px; }
   .item-card { grid-template-columns: 1fr; }
-  .item-card__fields { border-right: none; border-bottom: 1px solid var(--border-dim); }
+  /* Mobile: single column flows naturally; the desktop fixed-height scroll is off. */
+  .item-card__fields { position: static; overflow: visible; border-right: none; border-bottom: 1px solid var(--border-dim); }
+  .item-card__fields-scroll { position: static; }
+  .item-card__fields-caret { display: none; }
   .item-card__row { grid-template-columns: 6rem 1fr; padding: 0.6rem 1rem; }
   /* Split rows stack their two pairs into two grid rows on narrow screens */
   .item-card__row--split { grid-template-columns: 6rem 1fr; }
   /* Date row keeps the rewatch mark to the right, just narrower label column */
   .item-card__row--date-film { grid-template-columns: 6rem 1fr auto; }
   .item-card__note, .item-card__riders { padding-left: 1rem; padding-right: 1rem; }
-  .item-card__field { padding: 1rem; }
+  .item-card__field { padding: 1rem; aspect-ratio: auto; }
   .item-card__plain img { max-height: 50vh; }
 }
 
@@ -1130,13 +1149,17 @@ body {
 .layer-nav--next { right: 0.5rem; }
 
 /* ── Guide content ───────────────────────────────────────────────────────────── */
+/* Guide prose matches the biography/CV document body (size, colour, rhythm);
+   the bordered box, scroll, and caret come from the .bio-document* classes. */
 .guide-content {
-  font-size: var(--text-xs);
+  font-size: var(--text-base);
   line-height: var(--leading-loose);
   color: var(--overlay-text);
   text-align: left;
-  max-width: 40ch;
 }
+/* First paragraph stays at the primary colour (a lead, like the bio short);
+   the rest drops to the body/secondary colour, like the bio long. */
+.guide-content > :not(:first-child) { color: var(--overlay-muted); }
 .guide-content p { margin: 0 0 1rem; }
 .guide-content ul { margin: 0 0 1rem; padding-left: 1.25rem; }
 .guide-content li { margin-bottom: 0.4rem; }

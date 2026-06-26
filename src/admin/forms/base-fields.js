@@ -29,7 +29,8 @@ export function getBaseGroups() {
       fields: [
         { id: "title",        label: "title",        type: "text", required: true },
         { id: "display_date", label: "display date", type: "text",
-          placeholder: "e.g. March 12, 2025" },
+          placeholder: "auto from sort date — or override (e.g. Spring 2024)",
+          hint: "Left blank, derived from sort date on save." },
         { id: "sort_date",    label: "sort date",    type: "date",
           hint: "YYYY-MM-DD, used for sorting" },
       ],

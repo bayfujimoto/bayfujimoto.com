@@ -23,7 +23,7 @@ const SERIES_ORDER = ["accumulation", "consumption", "creation", "labor", "ident
 // Wizard state — kept module-scoped so step transitions and the success
 // state's "Add another" button can re-render in the same container without
 // rebuilding the scaffold.
-let wizardState     = { step: 0, series: null, itemType: null, depth: null };
+let wizardState     = { step: 0, series: null, itemType: null };
 let wizardContainer = null;
 let wizardOnClose   = null;
 
@@ -32,10 +32,10 @@ export function renderNewItem(container, archive, preselect = null, callbacks = 
   wizardOnClose   = callbacks.onClose || null;
 
   if (preselect) {
-    // Preselect jumps to depth selection (step 1), not straight to form
-    wizardState = { step: 1, series: preselect.series, itemType: preselect.itemType, depth: null };
+    // Preselect jumps straight to the form (step 1)
+    wizardState = { step: 1, series: preselect.series, itemType: preselect.itemType };
   } else {
-    wizardState = { step: 0, series: null, itemType: null, depth: null };
+    wizardState = { step: 0, series: null, itemType: null };
   }
   renderStep(container, archive);
 }
@@ -56,17 +56,10 @@ function renderStep(container, archive) {
   if (wizardState.step === 0) {
     breadcrumb.innerHTML = `<span>new item</span>`;
     renderTypeSelection(body, archive);
-  } else if (wizardState.step === 1) {
-    breadcrumb.innerHTML = `
-      <a onclick="goStep(0)">new item</a><span>›</span>
-      <span>${wizardState.series} / ${wizardState.itemType}</span>
-    `;
-    renderDepthSelection(body, archive);
   } else {
     breadcrumb.innerHTML = `
       <a onclick="goStep(0)">new item</a><span>›</span>
-      <a onclick="goStep(1)">${wizardState.series} / ${wizardState.itemType}</a><span>›</span>
-      <span>${wizardState.depth}</span>
+      <span>${wizardState.series} / ${wizardState.itemType}</span>
     `;
     renderFormStep(body, archive);
   }
@@ -125,49 +118,16 @@ function renderTypeSelection(body, archive) {
   }
 }
 
-function renderDepthSelection(body, archive) {
-  const heading = document.createElement("div");
-  heading.className = "admin-wizard-section";
-  heading.textContent = "entry depth";
-  body.appendChild(heading);
-
-  const list = document.createElement("ul");
-  list.className = "admin-wizard-list admin-wizard-list--depth";
-
-  const depths = [
-    { key: 'quick', name: 'Quick log',  desc: 'Title, date, optional thumbnail. Fast entry for films, coffee, books, ephemera.' },
-    { key: 'full',  name: 'Full entry', desc: 'All metadata, assets, relationships, inspection settings. For richly annotated records.' },
-  ];
-
-  depths.forEach((d, i) => {
-    const li = document.createElement("li");
-    li.className = "admin-wizard-row admin-wizard-row--depth";
-    li.innerHTML = `
-      <span class="admin-wizard-row-num">${i + 1}.</span>
-      <span class="admin-wizard-row-body">
-        <span class="admin-wizard-row-name">${d.name}</span>
-        <span class="admin-wizard-row-desc">${escapeHTML(d.desc)}</span>
-      </span>
-    `;
-    li.addEventListener("click", () => {
-      wizardState.depth = d.key;
-      wizardState.step  = 2;
-      renderStep(wizardContainer, archive);
-    });
-    list.appendChild(li);
-  });
-
-  body.appendChild(list);
-}
-
-function escapeHTML(s) {
-  return String(s).replace(/[&<>"']/g, c => (
-    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
-  ));
+// Format an ISO date (YYYY-MM-DD) as a human display date ("February 28, 2025").
+// Used to derive display_date from sort_date at save when the field is left blank.
+function formatDisplayDate(iso) {
+  if (!iso) return "";
+  const d = new Date(iso + "T00:00:00");
+  return isNaN(d) ? "" : d.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
 }
 
 function renderFormStep(body, archive) {
-  const { series, itemType, depth } = wizardState;
+  const { series, itemType } = wizardState;
   const subcollection = TYPE_SUBCOLLECTION[itemType];
   const counters = archive._counters || {};
 
@@ -235,7 +195,7 @@ function renderFormStep(body, archive) {
     }
     if (fieldId === "status") setRecordStatus(value);
     updatePreview(currentData);
-  }, depth);
+  });
 
   applyFieldChrome(formContainer);
   applyEditToggle(formContainer);
@@ -275,6 +235,9 @@ function renderFormStep(body, archive) {
 
 function handleSave(saveBtn, formHandle, id, prefix, nextCounter, counters, series, subcollection, itemType, archive, body) {
   const data = formHandle.getData();
+
+  // Derive the human display date from sort_date when left blank.
+  if (!data.display_date && data.sort_date) data.display_date = formatDisplayDate(data.sort_date);
 
   // Resolve final slug + file path
   const slug = generateSlug(itemType, data);
@@ -322,7 +285,7 @@ function renderSuccessState(body, id, itemType, series, subcollection, archive, 
   `;
 
   document.getElementById("add-another")?.addEventListener("click", () => {
-    wizardState = { step: 1, series, itemType, depth: null };
+    wizardState = { step: 1, series, itemType };
     if (wizardContainer) renderStep(wizardContainer, archive);
   });
 
