@@ -69,6 +69,7 @@ const KEYMAP = {
       [':e <id>',  'open record'],
       [':new <t>', 'new item'],
       [':help',    'help'],
+      [':logout',  'sign out'],
       ['Esc',      'cancel'],
     ],
   },

@@ -70,6 +70,7 @@ The keymap legend at the bottom of the window is contextual on `(mode, focused p
 - `:new <type>` — open the new-item wizard with the type preset (e.g. `:new ticket`). Typing `:new ` (with a trailing space) lists every record type as a suggestion, each tagged with its series; keep typing to filter, then Tab/Enter/click to pick.
 - `:nohl` — clear the persistent filter-match tint
 - `:help` — toggle expanded keymap legend
+- `:logout` — clear the passkey session (`POST /api/logout`) and return to `/gate`
 - Tab — complete the single highlighted suggestion
 - ArrowDown / ArrowUp — navigate suggestions
 - Esc — cancel

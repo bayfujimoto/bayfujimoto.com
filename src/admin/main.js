@@ -1,6 +1,6 @@
 import "./styles.css";
 import { initShellResize, openRecord, getRecordBody, clearRecord } from "./shell.js";
-import { loadArchive } from "./lib/api.js";
+import { loadArchive, logout } from "./lib/api.js";
 import { getState, setState } from "./state.js";
 import {
   initExplorer,
@@ -406,6 +406,13 @@ async function init() {
       },
       on_nohl: () => clearExplorerMatched(),
       on_help: () => setHelpExpanded(!getHelpExpanded()),
+      on_logout: async () => {
+        setBaseState('signing out…', 'loading');
+        try { await logout(); }
+        catch (e) { console.error('[admin] logout failed:', e); }
+        // Drop the session and return to the gate; the Edge gate now blocks /admin.
+        window.location.href = '/gate';
+      },
     });
   } catch (e) {
     showExplorerError();

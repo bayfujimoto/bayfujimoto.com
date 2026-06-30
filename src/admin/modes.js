@@ -57,6 +57,7 @@ const COMMANDS = [
   { name: 'tags', fill: 'tags',  hint: 'import Letterboxd CSV tags' },
   { name: 'nohl', fill: 'nohl',  hint: 'clear filter match tint' },
   { name: 'help', fill: 'help',  hint: 'expand keymap legend'   },
+  { name: 'logout', fill: 'logout', hint: 'end session, return to gate' },
 ];
 
 // Tag-merge modes offered when completing `:tags <mode>`. Optional — `:tags`

@@ -28,3 +28,10 @@ export async function commitAll(payload) {
   });
   return res.json();
 }
+
+// Clears the passkey session cookie. After this resolves the next /admin
+// request fails the Edge gate and is redirected to /gate.
+export async function logout() {
+  const res = await fetch("/api/logout", { method: "POST" });
+  return res.json();
+}
