@@ -583,6 +583,29 @@ body {
   padding: 0.9rem;
 }
 
+/* Music grid: singles read as a vinyl picture disc — the square cover art is
+   cropped to a circle with a spindle hole, so a song is distinguishable at a
+   glance from an album/EP (which keep their square sleeve). Scoped to single
+   cells; albums/EPs are untouched. */
+.item-grid__cell--disc .item-grid__btn { position: relative; }
+.item-grid__cell--disc .item-grid__thumb {
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4), 0 1px 6px rgba(0, 0, 0, 0.45);
+}
+.item-grid__cell--disc .item-grid__btn::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 9%;
+  height: 9%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: var(--color-shadow, #0a0805);
+  box-shadow: 0 0 0 1.5px rgba(232, 224, 208, 0.35);
+  pointer-events: none;
+}
+
 .item-grid__text {
   font-size: var(--text-xs);
   max-width: 80px;
@@ -948,6 +971,11 @@ body {
   justify-content: center;
   overflow: hidden;
 }
+/* Calibrated, zoomable plates are draggable: grab to pan, pinch to scale.
+   touch-action:none lets the Pointer Events drive pan/pinch instead of the
+   browser scrolling or zooming the page over the plate. */
+.item-card__field--interactive { cursor: grab; touch-action: none; }
+.item-card__field--interactive.is-grabbing { cursor: grabbing; }
 
 .item-card__plate-svg { display: block; width: 100%; height: auto; }
 .item-card__plate-svg .plate-edge  { stroke: var(--border-dim); fill: none; }
@@ -965,6 +993,25 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden;
+}
+/* Singles: round the reproduction on the card to read as a record, with a
+   spindle hole at center. The plate's square 300×300 field makes a clean disc. */
+.item-card__repro--disc {
+  border-radius: 50%;
+  position: relative;
+}
+.item-card__repro--disc::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8%;
+  height: 8%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: var(--color-shadow, #0a0805);
+  box-shadow: 0 0 0 1.5px rgba(232, 224, 208, 0.35);
+  pointer-events: none;
 }
 .item-card__repro img {
   display: block;
@@ -1229,12 +1276,9 @@ body {
 
   .desk-object__label { font-size: var(--text-base); }
 
-  /* On small screens, meta goes above breadcrumb to avoid overlap */
-  .layer-meta {
-    bottom: calc(var(--overlay-padding) * 2 + 3rem);
-    max-width: calc(100vw - 2 * var(--overlay-padding));
-    right: var(--overlay-padding);
-  }
+  /* On small screens, the breadcrumb carries location context; hide the meta
+     layer rather than stacking two overlays in the same corner. */
+  .layer-meta { display: none; }
 
   .browse-strip__thumb { height: var(--browse-strip-height, 100px); }
 

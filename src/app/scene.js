@@ -89,12 +89,16 @@ export function initScene() {
     const box = new THREE.Box3().setFromObject(desk);
     const size = new THREE.Vector3();
     box.getSize(size);
-    // Scale so desk width matches the scene's 9-unit table width
-    const scale = 13 / size.x;
+    // Scale the desk up so its surface runs past every screen edge. The
+    // camera's vertical field of view is fixed, so on tall screens the desk's
+    // front edge was sitting inside the frame; the extra width also deepens the
+    // surface enough to cover top and bottom.
+    const scale = 20 / size.x;
     desk.scale.setScalar(scale);
-    // After scaling, re-measure and position so top surface sits at y=0
+    // Keep the top surface at y=0, and shift the desk toward the camera (+z)
+    // so its front edge falls below the bottom of the screen.
     box.setFromObject(desk);
-    desk.position.set(0, -box.max.y, -1);
+    desk.position.set(0, -box.max.y, 1);
     desk.traverse((child) => {
       if (child.isMesh) {
         child.receiveShadow = true;
@@ -105,41 +109,100 @@ export function initScene() {
   });
 
   const clickables = [];
-  const OBJECTS = [
-    { seriesId: "identity",     x: -3.3, z: -1.2, w: 15, h: 15, d: 3.5, rx:  0, ry:  0, rz:  0, offsetY: -2.1 },
-    { seriesId: "labor",        x:  3, z: -2, w: 2.4, h: 2, d: 2, rx:  0, ry:  -20, rz:  0, offsetY: 0 },
-    { seriesId: "consumption",  x:  2, z: 0, w: 1.0, h: 1, d: 1, rx:  0, ry:  0, rz:  0, offsetY: 0 },
-    { seriesId: "creation",     x: -0.5, z:  0, w: 4, h: 4, d: 3, rx:  0, ry:  -15, rz:  0, offsetY: 0 },
-    { seriesId: "accumulation", x:  2.8, z:  1.8, w: 3.5, h: 2, d: 4, rx:  0, ry:  30, rz:  0, offsetY: 0 },
-    { seriesId: "guide",        x:  -3, z:  1.5, w: 1, h: 1, d: 1, rx:  0, ry:  210, rz:  0, offsetY: 0 },
-  ];
+  const placed = [];  // { seriesId, model, cx, cz, posY } — for re-placing on regime change
+  const deg = Math.PI / 180;
+
+  // ── Desk objects ────────────────────────────────────────────────────────────
+  // Intrinsic per-object config: fit box (w,h,d), Y-rotation, vertical offset,
+  // and source model file. Placement per viewport regime comes from LAYOUTS below.
+  const OBJECT_CFG = {
+    identity:     { w: 15,  h: 15, d: 3.5, ry: 0,   offsetY: -2.1, file: "desk-identity-dossier.glb" },
+    labor:        { w: 2.4, h: 2,  d: 2,   ry: -20, offsetY: 0,    file: "desk-labor-box.glb" },
+    consumption:  { w: 1.0, h: 1,  d: 1,   ry: 0,   offsetY: 0,    file: "desk-consumption-sphere.glb" },
+    creation:     { w: 4,   h: 4,  d: 3,   ry: -15, offsetY: 0,    file: "desk-creation-stamp.glb" },
+    accumulation: { w: 3.5, h: 2,  d: 4,   ry: 30,  offsetY: 0,    file: "desk-accumulation-bundle.glb" },
+    guide:        { w: 1,   h: 1,  d: 1,   ry: 210, offsetY: 0,    file: "desk-guide-key.glb" },
+  };
+
+  // Placement on the desk surface per viewport regime. Only x and z change
+  // between regimes — these are the two desk-surface axes (left/right and the
+  // near/far depth that reads as up/down on screen). Object size and resting
+  // height on the desk are identical in every regime, so the objects keep
+  // laying on the desk exactly as they do on desktop; they are only shuffled to
+  // different spots on the surface. The camera is near top-down, so moving an
+  // object across the surface changes neither its apparent size nor its
+  // distance from the desk.
+  //
+  //   wide      (>1024px) — the original landscape desk composition.
+  //   square    (600–1024px) — clustered inward for near-square tablets.
+  //   vertical  (<600px) — a single column down the desk for portrait phones.
+  const LAYOUTS = {
+    wide: {
+      identity:     { x: -3.3, z: -1.2 },
+      labor:        { x:  3.0, z: -2.0 },
+      consumption:  { x:  2.0, z:  0.0 },
+      creation:     { x: -0.5, z:  0.0 },
+      accumulation: { x:  2.8, z:  1.8 },
+      guide:        { x: -3.0, z:  1.5 },
+    },
+    square: {
+      identity:     { x: -2.4, z: -1.3 },
+      labor:        { x:  2.3, z: -1.6 },
+      consumption:  { x:  1.8, z:  0.1 },
+      creation:     { x: -0.5, z:  0.2 },
+      accumulation: { x:  2.2, z:  1.6 },
+      guide:        { x: -2.3, z:  1.6 },
+    },
+    // Objects spread wide across the surface (−z is toward the top of the
+    // screen, +z toward the bottom). identity (top-left) and labor (top-right)
+    // run past the screen edges and show only partially, by intent; creation
+    // sits near the center.
+    vertical: {
+      identity:     { x: -2.0, z: -2.6 },
+      creation:     { x:  0.0, z:  0.0 },
+      consumption:  { x:  1.8, z:  0.2 },
+      labor:        { x:  2.4, z: -2.3 },
+      accumulation: { x:  1.3, z:  2.7 },
+      guide:        { x: -1.5, z:  1.6 },
+    },
+  };
+
+  function regimeForWidth(w) {
+    if (w < 600) return "vertical";
+    if (w <= 1024) return "square";
+    return "wide";
+  }
+  let currentRegime = regimeForWidth(window.innerWidth);
+
+  // Re-place one object on the desk surface for the active regime. Only its
+  // (x, z) on the surface changes; size and resting height stay put.
+  function positionObject(entry, regime) {
+    const place = (LAYOUTS[regime] || LAYOUTS.wide)[entry.seriesId];
+    if (!place) return;
+    entry.model.position.set(place.x - entry.cx, entry.posY, place.z - entry.cz);
+  }
+
+  function applyLayout(regime) {
+    placed.forEach((entry) => positionObject(entry, regime));
+  }
 
   const loader = new GLTFLoader();
-  OBJECTS.forEach(({ seriesId, x, z, w, h, d, rx, ry, rz, offsetY = 0 }) => {
-    let modelFile = `${seriesId}.glb`;
-    if (seriesId === "guide") modelFile = "desk-guide-key.glb";
-    else if (seriesId === "identity") modelFile = "desk-identity-dossier.glb";
-    else if (seriesId === "creation") modelFile = "desk-creation-stamp.glb";
-    else if (seriesId === "consumption") modelFile = "desk-consumption-sphere.glb";
-    else if (seriesId === "accumulation") modelFile = "desk-accumulation-bundle.glb";
-    else if (seriesId === "labor") modelFile = "desk-labor-box.glb";
-    loader.load(`${OBJECT_BASE}${modelFile}`, (gltf) => {
+  Object.entries(OBJECT_CFG).forEach(([seriesId, cfg]) => {
+    loader.load(`${OBJECT_BASE}${cfg.file}`, (gltf) => {
       const model = gltf.scene;
       stripTextures(model);
 
       const box = new THREE.Box3().setFromObject(model);
       const size = new THREE.Vector3();
       box.getSize(size);
-      const scale = Math.min(w / size.x, h / size.y, d / size.z);
+      const scale = Math.min(cfg.w / size.x, cfg.h / size.y, cfg.d / size.z);
       model.scale.setScalar(scale);
 
-      const deg = Math.PI / 180;
-      model.rotation.set(rx * deg, ry * deg, rz * deg);
+      model.rotation.set(0, cfg.ry * deg, 0);
 
       box.setFromObject(model);
       const center = new THREE.Vector3();
       box.getCenter(center);
-      model.position.set(x - center.x, box.min.y * -1 + offsetY, z - center.z);
 
       model.traverse((child) => {
         if (child.isMesh) {
@@ -152,6 +215,19 @@ export function initScene() {
 
       scene.add(model);
       clickables.push(model);
+
+      // Keep what's needed to re-place this object when the regime changes.
+      // Size and resting height (posY) are fixed; only its desk-surface spot
+      // (x, z) differs between layouts.
+      const entry = {
+        seriesId,
+        model,
+        cx: center.x,
+        cz: center.z,
+        posY: -box.min.y + cfg.offsetY,
+      };
+      placed.push(entry);
+      positionObject(entry, currentRegime);
     });
   });
 
@@ -247,6 +323,13 @@ export function initScene() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
+    // Re-arrange the objects on the desk if the viewport crossed a breakpoint
+    // (e.g. a phone rotated between portrait and landscape).
+    const nextRegime = regimeForWidth(window.innerWidth);
+    if (nextRegime !== currentRegime) {
+      currentRegime = nextRegime;
+      applyLayout(currentRegime);
+    }
     if (reduceMotion) render();
   });
 }

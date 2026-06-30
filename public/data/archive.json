@@ -15144,6 +15144,35 @@
                 "thumbnail": "https://coverartarchive.org/release/d748a91f-4cd7-45c8-ba39-d876413062f3/44647482490-250.jpg"
               },
               "dimensions": "314 x 314"
+            },
+            {
+              "id": "MUSIC-2026-004",
+              "slug": "mutemath-vitals",
+              "series": "consumption",
+              "subcollection": "music",
+              "item_type": "album",
+              "status": "published",
+              "display_date": "2016",
+              "sort_date": "2016-01-01",
+              "title": "Vitals",
+              "artist": "MUTEMATH",
+              "year": "2015",
+              "music_label": "Wojtek Records",
+              "dimensions": "314 x 314"
+            },
+            {
+              "id": "MUSIC-2026-005",
+              "slug": "alpine-yuck",
+              "series": "consumption",
+              "subcollection": "music",
+              "item_type": "album",
+              "status": "published",
+              "display_date": "2015",
+              "sort_date": "2015-06-01",
+              "title": "Yuck",
+              "artist": "Alpine",
+              "year": "2025",
+              "dimensions": "314 x 314"
             }
           ]
         },
@@ -15535,6 +15564,59 @@
           "dimensions": "62 x 88"
         },
         {
+          "id": "EPH-2026-015",
+          "slug": "shanghai-china-2025-03-19",
+          "series": "accumulation",
+          "item_type": "document",
+          "status": "published",
+          "display_date": "March 19, 2025",
+          "sort_date": "2025-03-19",
+          "title": "Sukothai Hotel",
+          "place": "Shanghai, China",
+          "inspection": "card",
+          "assets": {
+            "front": "EPH-2026-015-front.jpg",
+            "thumbnail": "EPH-2026-015-front-thumb.jpg",
+            "back": "EPH-2026-015-back.jpg"
+          }
+        },
+        {
+          "id": "EPH-2026-014",
+          "slug": "france-2024-11-16",
+          "series": "accumulation",
+          "item_type": "document",
+          "status": "published",
+          "display_date": "November 16, 2024",
+          "sort_date": "2024-11-16",
+          "title": "Commemorative Bill",
+          "place": "France",
+          "source": "Villa Savoye",
+          "inspection": "card",
+          "assets": {
+            "front": "EPH-2026-014-front.jpg",
+            "thumbnail": "EPH-2026-014-front-thumb.jpg",
+            "back": "EPH-2026-014-back.jpg"
+          },
+          "dimensions": "120 x 62"
+        },
+        {
+          "id": "EPH-2026-013",
+          "slug": "paris-france-2024-11-08",
+          "series": "accumulation",
+          "item_type": "ticket",
+          "status": "published",
+          "display_date": "November 8, 2024",
+          "sort_date": "2024-11-08",
+          "title": "Smile 2",
+          "place": "Paris, France",
+          "source": "mk2",
+          "inspection": "card",
+          "assets": {
+            "front": "EPH-2026-013-front.jpg",
+            "thumbnail": "EPH-2026-013-front-thumb.jpg"
+          }
+        },
+        {
           "id": "EPH-2026-012",
           "slug": "lyon-france-2024-11-01",
           "series": "accumulation",
@@ -15550,6 +15632,79 @@
             "thumbnail": "EPH-2026-012-front-thumb.jpg"
           },
           "dimensions": "76 x 76"
+        },
+        {
+          "id": "EPH-2026-011",
+          "slug": "copenhagen-denmark-2024-11-01",
+          "series": "accumulation",
+          "item_type": "document",
+          "status": "published",
+          "display_date": "November 2024",
+          "sort_date": "2024-11-01",
+          "title": "Cat Patches",
+          "place": "Copenhagen, Denmark",
+          "inspection": "card",
+          "assets": {
+            "front": "EPH-2026-011-front.jpg",
+            "thumbnail": "EPH-2026-011-front-thumb.jpg",
+            "back": "EPH-2026-011-back.jpg"
+          }
+        },
+        {
+          "id": "EPH-2026-010",
+          "slug": "paris-france-2024-10-12",
+          "series": "accumulation",
+          "item_type": "brochure",
+          "status": "published",
+          "display_date": "October 12, 2024",
+          "sort_date": "2024-10-12",
+          "title": "Olga de Amaral",
+          "place": "Paris, France",
+          "source": "Fondation Cartier",
+          "inspection": "card",
+          "assets": {
+            "front": "EPH-2026-010-front.jpg",
+            "thumbnail": "EPH-2026-010-front-thumb.jpg",
+            "back": "EPH-2026-010-back.jpg"
+          }
+        },
+        {
+          "id": "EPH-2026-004",
+          "slug": "paris-france-2024-08-25",
+          "series": "accumulation",
+          "item_type": "ticket",
+          "status": "published",
+          "display_date": "August 25, 2024",
+          "sort_date": "2024-08-25",
+          "title": "Eiffel Tower Ticket",
+          "context_note": "Carried in my wallet for a year.",
+          "place": "Paris, France",
+          "source": "Eiffel Tower",
+          "inspection": "card",
+          "assets": {
+            "front": "EPH-2026-004-front.jpg",
+            "thumbnail": "EPH-2026-004-front-thumb.jpg",
+            "back": "EPH-2026-004-back.jpg"
+          }
+        },
+        {
+          "id": "EPH-2026-007",
+          "slug": "boston-massachusetts-2024-05-06",
+          "series": "accumulation",
+          "item_type": "ticket",
+          "status": "published",
+          "display_date": "May 6, 2024",
+          "sort_date": "2024-05-06",
+          "title": "New England Aquarium",
+          "context_note": "From a weekend trip to Boston after a big deadline at work.",
+          "place": "Boston, Massachusetts",
+          "source": "New England Aquarium",
+          "inspection": "card",
+          "assets": {
+            "front": "EPH-2026-007-front.jpg",
+            "thumbnail": "EPH-2026-007-front-thumb.jpg",
+            "back": "EPH-2026-007-back.jpg"
+          }
         },
         {
           "id": "EPH-2026-016",
@@ -15589,6 +15744,23 @@
             "thumbnail": "EPH-2026-006-front-thumb.jpg"
           },
           "dimensions": "54 x 85"
+        },
+        {
+          "id": "EPH-2026-005",
+          "slug": "houston-texas-usa-2023-09-01",
+          "series": "accumulation",
+          "item_type": "ticket",
+          "status": "published",
+          "display_date": "September 01, 2023",
+          "sort_date": "2023-09-01",
+          "title": "MFAH Ticket",
+          "place": "Houston, Texas, USA",
+          "source": "Museum of Fine Arts, Houston",
+          "inspection": "card",
+          "assets": {
+            "front": "EPH-2026-005-front.jpg",
+            "thumbnail": "EPH-2026-005-front-thumb.jpg"
+          }
         }
       ]
     }
@@ -15602,8 +15774,8 @@
   "_counters": {
     "EPH": 18,
     "FILM": 518,
-    "BOOK": 277,
-    "MUSIC": 4,
+    "BOOK": 287,
+    "MUSIC": 5,
     "COFFEE": 2,
     "GAME": 4,
     "SKETCH": 2,

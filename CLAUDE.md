@@ -28,7 +28,7 @@ Prefer:
 ## Mobile design requirements
 These requirements apply to every phase going forward. The mobile site must keep pace with the desktop version — mobile is not a deferred concern.
 
-- **Overlay non-overlap:** On screens narrower than 600px, the `.layer-meta` (bottom-right) and `.layer-breadcrumb` (bottom-left) must not overlap. `.layer-meta` shifts upward when breadcrumb is present.
+- **Meta hidden on mobile:** On screens narrower than 600px, the `.layer-meta` (bottom-right) is hidden (`display: none`); the `.layer-breadcrumb` (bottom-left) carries location context alone. This avoids stacking two overlays in the same region rather than repositioning the meta layer.
 - **Touch scrolling:** The horizontal browse strip (`.browse-strip`) must be touch-scrollable with `-webkit-overflow-scrolling: touch` and `scroll-snap-type: x proximity`.
 - **No hover dependencies:** All interactions must be reachable by tap. Never rely on hover-only affordances to reveal navigation or content.
 - **Pinch-to-zoom:** Item images must support pinch-to-zoom via Pointer Events API (implemented in `panels.js` `makeItemSheet`).

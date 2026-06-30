@@ -1,7 +1,7 @@
 import { getBaseGroups, orderGroups } from "../forms/base-fields.js";
 import { getTypeGroups } from "../forms/type-fields.js";
 import { renderForm }    from "../forms/form-renderer.js";
-import { generateSlug, generateFilePath } from "../lib/slug-generator.js";
+import { generateSlug, generateFilePath, TYPE_FAMILIES } from "../lib/slug-generator.js";
 import { toMarkdown } from "../lib/serializer.js";
 import { getState, setState } from "../state.js";
 import { registerPaneNav } from "../nav.js";
@@ -87,13 +87,18 @@ export function renderEditItem(container, item, allItems, archive, callbacks = {
   body.appendChild(sep);
 
   // ── Form ─────────────────────────────────────────────────────────────────
-  const groups = orderGroups([...getBaseGroups(), ...getTypeGroups(itemType)]);
   const initialData = { ...item, series, subcollection, item_type: itemType };
+
+  // The live item type. Editable for interchangeable types (music album/ep/single)
+  // via a select injected into the Record group. `formHandle` is reassigned when
+  // the form rebuilds on a type change, so closures read it through `let`.
+  let currentType = itemType;
+  let formHandle  = null;
 
   function updatePathPreview(data) {
     const pathEl = document.getElementById("meta-path");
     if (!pathEl) return;
-    const slug = data.slug || generateSlug(itemType, data);
+    const slug = data.slug || generateSlug(currentType, data);
     try {
       const fp = generateFilePath(series, subcollection, data.id || id, slug);
       pathEl.textContent = fp;
@@ -106,10 +111,48 @@ export function renderEditItem(container, item, allItems, archive, callbacks = {
   const formContainer = document.createElement("div");
   body.appendChild(formContainer);
 
-  const formHandle = renderForm(formContainer, groups, initialData, (fieldId, value, currentData) => {
-    updatePathPreview(currentData);
-    if (fieldId === "status") setRecordStatus(value);
-  }, "full");
+  // Groups for a given type. For a type in a family of interchangeable types,
+  // `item_type` becomes an editable select (same subcollection / prefix / slug,
+  // so switching never moves the file).
+  function buildGroups(type) {
+    const groups = orderGroups([...getBaseGroups(), ...getTypeGroups(type)]);
+    const family = TYPE_FAMILIES[type];
+    if (family && family.length > 1) {
+      const rec = groups.find(g => g.id === "record");
+      if (rec && !rec.fields.some(f => f.id === "item_type")) {
+        const at = rec.fields.findIndex(f => f.id === "status");
+        rec.fields.splice(at >= 0 ? at : rec.fields.length, 0,
+          { id: "item_type", label: "type", type: "select", options: family });
+      }
+    }
+    return groups;
+  }
+
+  function renderFormInto(type, data) {
+    formContainer.innerHTML = "";
+    formHandle = renderForm(formContainer, buildGroups(type), data, (fieldId, value, currentData) => {
+      updatePathPreview(currentData);
+      if (fieldId === "status") setRecordStatus(value);
+      if (fieldId === "item_type"
+          && value !== currentType
+          && (TYPE_FAMILIES[currentType] || []).includes(value)) {
+        // Type switched within its family — rebuild so the type-specific fields
+        // match (a single's "album" vs an album's "label"), preserving values
+        // entered so far. Deferred so the select finishes its own change handler
+        // before its DOM is replaced.
+        currentType = value;
+        const snapshot = { ...formHandle.getData(), item_type: value };
+        setTimeout(() => {
+          renderFormInto(value, snapshot);
+          applyFieldChrome(formContainer);
+          applyEditToggle(formContainer);
+          registerFormNav();
+        }, 0);
+      }
+    }, "full");
+  }
+
+  renderFormInto(currentType, initialData);
 
   // Tint the pane border to the record's current status from the outset.
   setRecordStatus(initialData.status || "draft");
@@ -117,6 +160,7 @@ export function renderEditItem(container, item, allItems, archive, callbacks = {
   // Layer the chrome: type column + state slot, then click-to-edit toggle.
   applyFieldChrome(formContainer);
   applyEditToggle(formContainer);
+  registerFormNav();
 
   // ── Top-border actions ([save] [cancel] [del]) ──────────────────────────
   // These live in the Record pane's top border, right of the [r] Record label,
@@ -126,7 +170,7 @@ export function renderEditItem(container, item, allItems, archive, callbacks = {
       label: "save",
       title: "Stage changes for commit (then :w to commit)",
       onClick: () =>
-        handleEditSave(formHandle, id, series, subcollection, itemType, archive, body, originalFilePath),
+        handleEditSave(formHandle, id, series, subcollection, currentType, archive, body, originalFilePath),
     }),
     makePaneAction({
       label: "cancel",
@@ -150,18 +194,22 @@ export function renderEditItem(container, item, allItems, archive, callbacks = {
   // ── Arrow-key nav ───────────────────────────────────────────────────────
   // Field rows are navable; meta rows are skipped (informational). The action
   // buttons now live in the pane's top border and are reached via Tab / click.
-  registerPaneNav('r', {
-    container:   body,
-    rowSelector: '.admin-field:not(.admin-field--meta)',
-    onActivate:  (row) => {
-      const display = row.querySelector('.admin-field-value:not(.is-editing) .admin-field-display');
-      if (display) { display.click(); return; }
-      const input = row.querySelector(
-        'input:not([readonly]):not([disabled]), textarea:not([readonly]):not([disabled]), select:not([disabled])'
-      );
-      if (input) input.focus();
-    },
-  });
+  // Defined as a function so it can be re-registered after the form rebuilds on
+  // a type change (hoisted, so the rebuild closure above can call it).
+  function registerFormNav() {
+    registerPaneNav('r', {
+      container:   body,
+      rowSelector: '.admin-field:not(.admin-field--meta)',
+      onActivate:  (row) => {
+        const display = row.querySelector('.admin-field-value:not(.is-editing) .admin-field-display');
+        if (display) { display.click(); return; }
+        const input = row.querySelector(
+          'input:not([readonly]):not([disabled]), textarea:not([readonly]):not([disabled]), select:not([disabled])'
+        );
+        if (input) input.focus();
+      },
+    });
+  }
 
   // Lock toggle wiring
   const lockToggle   = document.getElementById("lock-toggle");
@@ -182,9 +230,13 @@ function handleEditSave(formHandle, id, series, subcollection, itemType, archive
   const data = formHandle.getData();
   data.series        = series;
   data.subcollection = subcollection;
-  data.item_type     = itemType;
+  // item_type may have been changed via the editable select (interchangeable
+  // types only). Guard to the family so a stray value can't repoint the record.
+  const family = TYPE_FAMILIES[itemType] || [itemType];
+  const effectiveType = family.includes(data.item_type) ? data.item_type : itemType;
+  data.item_type = effectiveType;
 
-  const slug = data.slug || generateSlug(itemType, data);
+  const slug = data.slug || generateSlug(effectiveType, data);
   data.slug  = slug;
 
   let filePath;

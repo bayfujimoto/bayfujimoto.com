@@ -18,5 +18,6 @@ export default defineConfig({
   },
   server: {
     port: 8080,
+    host: true,   // bind to 0.0.0.0 so phones/other devices on the LAN can connect
   },
 });

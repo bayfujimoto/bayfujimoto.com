@@ -186,6 +186,13 @@ Its purpose is to prevent drift, repetition, and silent contradictions over time
 - decision: The homepage desk is a literal scene with wood texture and desk lighting. It should feel like a real physical surface.
 - reason: The desk is the primary framing device and should carry genuine material weight, not be an abstracted background treatment.
 
+### Responsive desk layouts (rearrange on the surface)
+- status: confirmed
+- decision: The homepage desk objects are rearranged on the desk surface per viewport regime, defined as placement maps in `scene.js` (`LAYOUTS`). Only each object's position on the surface (x = left/right, z = near/far depth) changes between regimes; its size and resting height on the desk are identical everywhere, and the camera is left untouched. Three regimes by viewport width: `wide` (>1024px) is the original landscape composition; `square` (600–1024px) clusters the objects inward for near-square tablets; `vertical` (<600px) arranges them into a single column down the desk for portrait phones. Objects re-arrange on resize when a breakpoint is crossed (e.g. phone rotation) without reloading models.
+- reason: The original positions were tuned for a landscape laptop, so the left/right-spread objects fell off the sides of a portrait phone. The camera sits nearly top-down, so shuffling an object to a different spot on the surface changes neither its apparent size nor its distance from the desk — the objects keep laying on the desk exactly as composed, just relocated. (Two earlier attempts were wrong: one shrank the objects via per-object scale multipliers, the other zoomed the camera out instead of moving anything; both changed how the objects read. The kept approach moves position only, no scaling, no camera change.)
+- note: The DOM `.desk-objects` grid remains the accessible navigation source of truth (hidden, feeds the skip menu); the 3D layer is visual. The square and vertical coordinates are tuned by eye and need an on-device pass — large objects (especially the identity dossier) may need their column spacing nudged to avoid overlap.
+- date: 2026-06-29
+
 ### Category interior container metaphors
 - status: confirmed
 - decision: Each series interior uses its object metaphor as a physical container. Subcollections appear as pages, tabs, or sections within that container rather than as tile grids. Series without subcollections use flat browse with view-based filtering.

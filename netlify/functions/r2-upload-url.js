@@ -39,8 +39,8 @@ export async function handler(event) {
     return { statusCode: 400, body: JSON.stringify({ ok: false, error: "Missing filename, contentType, or prefix" }) };
   }
 
-  if (!["originals", "thumbnails"].includes(prefix)) {
-    return { statusCode: 400, body: JSON.stringify({ ok: false, error: "prefix must be originals or thumbnails" }) };
+  if (!["originals", "thumbnails", "display"].includes(prefix)) {
+    return { statusCode: 400, body: JSON.stringify({ ok: false, error: "prefix must be originals, thumbnails, or display" }) };
   }
 
   const key = `${prefix}/${filename}`;

@@ -1,3 +1,14 @@
+// Interchangeable record types — the editable options for the admin edit form's
+// `item_type` field. Switching within a family keeps the same subcollection, id
+// prefix, and slug formula, so the file path never changes. Only music is
+// interchangeable today (album / ep / single render as sleeves vs a picture disc
+// but share everything structural). Types absent here keep a fixed item_type.
+export const TYPE_FAMILIES = {
+  album:  ["album", "ep", "single"],
+  ep:     ["album", "ep", "single"],
+  single: ["album", "ep", "single"],
+};
+
 export const TYPE_SUBCOLLECTION = {
   biography:    "biography",
   "cv-entry":   "cv",

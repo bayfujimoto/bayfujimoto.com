@@ -7,6 +7,23 @@ import { resolveCreator, resolveSlots, titleIsGiven } from "../shared/field-sche
 let archive = null;
 const app = document.getElementById("app");
 
+// Load the display (web-size) derivative into an <img>, falling back to the full
+// original for items ingested before the display pipeline existed, then to onFail.
+// Keeps full originals out of the browser for everything that has a web size.
+function loadDisplayWithFallback(img, filename, onFail) {
+  let stage = "display";
+  img.onerror = () => {
+    if (stage === "display") {
+      stage = "original";
+      img.src = imageUrl(filename, "original");
+    } else {
+      img.onerror = null;
+      if (onFail) onFail();
+    }
+  };
+  img.src = imageUrl(filename, "display");
+}
+
 // Labor and Accumulation use view-based URLs regardless of subcollection data structure
 const FLAT_URL_SERIES = new Set(["labor", "accumulation"]);
 
@@ -873,6 +890,9 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
     // Accumulation (ephemera) scopes the undimensioned-thumbnail padding below, so
     // items without recorded dimensions don't butt edge-to-edge against the cell.
     if (seriesKey === "accumulation") grid.classList.add("item-grid--accumulation");
+    // Music: albums/EPs are square sleeves; singles render as a vinyl picture
+    // disc (round crop). The per-item disc class is applied to single cells below.
+    if (activeSubKey === "music") grid.classList.add("item-grid--music");
     grid.setAttribute("role", "list");
     grid.setAttribute("aria-label", `${activeSub.label} items`);
 
@@ -1071,12 +1091,15 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
           title.textContent = item.title;
           btn.appendChild(title);
         } else {
-          const thumbSrc = imageUrl(item.assets?.thumbnail, "thumbnail") || imageUrl(primaryAsset(item), "original");
+          const thumbSrc = imageUrl(item.assets?.thumbnail, "thumbnail") || imageUrl(primaryAsset(item), "display");
           if (thumbSrc) {
             const img = el("img", "item-grid__thumb");
             img.src = thumbSrc;
             img.alt = "";
             img.loading = "lazy";
+
+            // Singles read as a record: crop the square cover to a disc.
+            if (item.item_type === "single") cell.classList.add("item-grid__cell--disc");
 
             let scaled = false;
             if (item.dimensions && maxDim > 0) {
@@ -1227,6 +1250,10 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
 const PLATE_MM = 325;
 const PLATE_SMALL_MM = 50;
 
+// Unique-id sequence for per-render clip paths (the panned reproduction is
+// clipped to the field region so it never spills over the scale gutters).
+let plateClipSeq = 0;
+
 function parseDimensions(item) {
   if (!item.dimensions) return null;
   const [w, h] = item.dimensions.split("x").map(s => parseFloat(s.trim()));
@@ -1249,9 +1276,11 @@ function niceStep(span) {
 // box edges with ticks pointing inward and numbers on the inner side of the
 // ticks. The box edges are the container borders. `zoom` shrinks the visible
 // field span (the reproduction enlarges from the origin and the scales adjust);
-// the reproduction is clipped to the box. `img` is reused across redraws so the
-// scan is not re-fetched while dragging the zoom slider.
-function buildPlate(item, dims, sidePx, img, zoom = 1) {
+// the reproduction is clipped to the box. `panX`/`panY` are the field-mm
+// coordinates shown at the visible origin, so the window is [pan, pan+span] on
+// each axis and the scales renumber to match. `img` is reused across redraws so
+// the scan is not re-fetched while dragging the zoom slider or panning.
+function buildPlate(item, dims, sidePx, img, zoom = 1, panX = 0, panY = 0) {
   const NS = "http://www.w3.org/2000/svg";
   const INSET = 32; // gutter inside the box for inward ticks + their numbers
 
@@ -1270,9 +1299,20 @@ function buildPlate(item, dims, sidePx, img, zoom = 1) {
   const baseSpan = PLATE_MM * ratio;
   const spanMM = baseSpan / (hasDims ? zoom : 1);  // effective visible field
 
-  const origin = INSET;                 // scale 0 + reproduction corner
+  const origin = INSET;                 // visible-origin pixel (field-mm = pan)
   const extent = sidePx - INSET;        // run from origin to the far border
   const px = mm => (mm / spanMM) * extent;
+
+  // Pan offset, in field mm, clamped so you can travel the reproduction's own
+  // extent but never scroll off into empty field. Only dimensioned plates pan;
+  // when the field is wider than the item (e.g. at zoom 1) the range collapses
+  // to zero and dragging has no effect.
+  if (hasDims) {
+    panX = Math.min(Math.max(panX, 0), Math.max(0, dims.w - spanMM));
+    panY = Math.min(Math.max(panY, 0), Math.max(0, dims.h - spanMM));
+  } else {
+    panX = panY = 0;
+  }
 
   const svg = document.createElementNS(NS, "svg");
   svg.setAttribute("class", "item-card__plate-svg");
@@ -1287,15 +1327,31 @@ function buildPlate(item, dims, sidePx, img, zoom = 1) {
   edge.setAttribute("class", "plate-edge");
   svg.appendChild(edge);
 
-  // Reproduction at the origin (true proportion when dimensioned, otherwise
-  // filling the field), clipped to box. Omitted when there is no image — the
+  // Reproduction anchored to its field-mm (0,0), shifted by the pan offset
+  // (true proportion when dimensioned, otherwise filling the field). It is
+  // clipped to the field region so a panned reproduction slides under the
+  // scale gutters rather than over them. Omitted when there is no image — the
   // plate then shows the bare scale grid, so every card still carries a plate.
   if (img) {
+    const clipId = `plate-clip-${++plateClipSeq}`;
+    const defs = document.createElementNS(NS, "defs");
+    const clip = document.createElementNS(NS, "clipPath");
+    clip.setAttribute("id", clipId);
+    const clipRect = document.createElementNS(NS, "rect");
+    clipRect.setAttribute("x", origin); clipRect.setAttribute("y", origin);
+    clipRect.setAttribute("width", extent); clipRect.setAttribute("height", extent);
+    clip.appendChild(clipRect);
+    defs.appendChild(clip);
+    svg.appendChild(defs);
+
     const fo = document.createElementNS(NS, "foreignObject");
-    fo.setAttribute("x", origin); fo.setAttribute("y", origin);
+    fo.setAttribute("x", origin - px(panX)); fo.setAttribute("y", origin - px(panY));
     fo.setAttribute("width", hasDims ? Math.max(1, px(dims.w)) : extent);
     fo.setAttribute("height", hasDims ? Math.max(1, px(dims.h)) : extent);
+    fo.setAttribute("clip-path", `url(#${clipId})`);
     const repro = el("div", "item-card__repro");
+    // Singles read as a record on the card too: crop the reproduction to a disc.
+    if (item.item_type === "single") repro.classList.add("item-card__repro--disc");
     if (img.parentElement) img.parentElement.removeChild(img);
     repro.appendChild(img);
     fo.appendChild(repro);
@@ -1318,24 +1374,31 @@ function buildPlate(item, dims, sidePx, img, zoom = 1) {
   };
 
   // Ticks hang inward from the top and left borders; numbers on the inner
-  // (field) side of the ticks.
+  // (field) side of the ticks. Each axis is drawn over its own visible window
+  // [pan, pan + span]: ticks land on multiples of `minor` within that window
+  // and carry their true mm value, so the scale renumbers as the field pans.
   const major = niceStep(spanMM);
   const minor = major / 5;
-  const nMinor = Math.floor(spanMM / minor + 1e-6);
-  for (let k = 0; k <= nMinor; k++) {
-    const mm = k * minor;
-    const p = origin + px(mm);
-    if (p > sidePx + 0.5) break;
-    const isMajor = k % 5 === 0;
-    const t = isMajor ? 11 : 6;
-    tick(p, 0, p, t, isMajor);   // top edge → down
-    tick(0, p, t, p, isMajor);   // left edge → right
-    if (isMajor && hasDims) { // labels only when calibrated; bare ticks otherwise
-      const val = Math.round(mm);
-      label(p, t + 11, val, "middle"); // top scale: number below the tick
-      if (k > 0) label(t + 3, p + 3, val, "start"); // left scale: right of tick
+  const axis = (pan, horizontal) => {
+    const kStart = Math.ceil((pan - 1e-6) / minor);
+    const kEnd = Math.floor((pan + spanMM + 1e-6) / minor);
+    for (let k = kStart; k <= kEnd; k++) {
+      const mm = k * minor;
+      const p = origin + px(mm - pan);
+      if (p < origin - 0.5 || p > sidePx + 0.5) continue;
+      const isMajor = ((k % 5) + 5) % 5 === 0;
+      const t = isMajor ? 11 : 6;
+      if (horizontal) tick(p, 0, p, t, isMajor);   // top edge → down
+      else            tick(0, p, t, p, isMajor);   // left edge → right
+      if (isMajor && hasDims && mm >= 0) { // labels only when calibrated
+        const val = Math.round(mm);
+        if (horizontal) label(p, t + 11, val, "middle"); // top: number below tick
+        else if (mm > 0) label(t + 3, p + 3, val, "start"); // left: right of tick
+      }
     }
-  }
+  };
+  axis(panX, true);  // top scale
+  axis(panY, false); // left scale
 
   // Scale note: relational, never a false "1:1" — a screen mm is not a mm.
   // Undimensioned plates carry no measurement, only the note.
@@ -1351,7 +1414,7 @@ function buildPlate(item, dims, sidePx, img, zoom = 1) {
     if (item.dimensions_estimated) scaleNote += " · est.";
   }
 
-  return { svg, scaleNote, spanMM, pxPerMM: extent / spanMM, origin };
+  return { svg, scaleNote, spanMM, pxPerMM: extent / spanMM, origin, panX, panY };
 }
 
 function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
@@ -1602,19 +1665,23 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
     let showingBack = false;
     if (primary) {
       reproImg = el("img");
-      reproImg.src = imageUrl(primary, "original");
       reproImg.alt = item.title;
       reproImg.draggable = false;
-      reproImg.addEventListener("error", showNone, { once: true });
+      loadDisplayWithFallback(reproImg, primary, showNone);
     }
 
-    let plateState = null; // { origin, pxPerMM, spanMM, scaleNote } for crosshair
+    let plateState = null; // { origin, pxPerMM, spanMM, scaleNote, panX, panY }
+    let panX = 0, panY = 0; // current pan offset in field mm
+    let dragging = false;   // a single-pointer pan is in progress
 
-    // Redraw the calibrated plate at a given zoom (field span shrinks as zoom
-    // grows; the reproduction enlarges from the origin and the scales adjust).
-    const renderPlate = (zoom) => {
+    // Redraw the calibrated plate at a given zoom and pan (field span shrinks as
+    // zoom grows; pan slides the window across the reproduction). buildPlate
+    // re-clamps the pan to the item's extent and returns the applied values, so
+    // panX/panY stay honest after a zoom-out collapses the pannable range.
+    const renderPlate = (zoom, nextPanX = panX, nextPanY = panY) => {
       field.innerHTML = "";
-      const plate = buildPlate(item, dims, PLATE_PX, reproImg, zoom);
+      const plate = buildPlate(item, dims, PLATE_PX, reproImg, zoom, nextPanX, nextPanY);
+      panX = plate.panX; panY = plate.panY;
       plateState = plate;
       scaleNote.textContent = plate.scaleNote;
       field.appendChild(plate.svg);
@@ -1623,19 +1690,21 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
     if (primary && dims) {
       renderPlate(1);
 
-      // Crosshair readout — pointer position in field mm. Enhancement only;
-      // the typed dimensions row remains the canonical record of size.
+      // Crosshair readout — pointer position in field mm, offset by the pan so
+      // the number reflects the panned window. Enhancement only; the typed
+      // dimensions row remains the canonical record of size. Suppressed while a
+      // drag-pan is underway (the scale note then shows the field span instead).
       field.addEventListener("pointermove", (e) => {
-        if (!plateState) return;
+        if (!plateState || dragging) return;
         const r = field.getBoundingClientRect();
         const svgSize = Math.min(r.width, r.height);
         const unit = svgSize / PLATE_PX; // px per viewBox unit
-        const x = ((e.clientX - r.left) / unit - plateState.origin) / plateState.pxPerMM;
-        const y = ((e.clientY - r.top) / unit - plateState.origin) / plateState.pxPerMM;
+        const x = plateState.panX + ((e.clientX - r.left) / unit - plateState.origin) / plateState.pxPerMM;
+        const y = plateState.panY + ((e.clientY - r.top) / unit - plateState.origin) / plateState.pxPerMM;
+        const inX = x >= plateState.panX && x <= plateState.panX + plateState.spanMM;
+        const inY = y >= plateState.panY && y <= plateState.panY + plateState.spanMM;
         scaleNote.textContent =
-          (x >= 0 && y >= 0 && x <= plateState.spanMM && y <= plateState.spanMM)
-            ? `${Math.round(x)} × ${Math.round(y)} mm`
-            : plateState.scaleNote;
+          (inX && inY) ? `${Math.round(x)} × ${Math.round(y)} mm` : plateState.scaleNote;
       });
       field.addEventListener("pointerleave", () => {
         if (plateState) scaleNote.textContent = plateState.scaleNote;
@@ -1663,7 +1732,7 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
         flip.setAttribute("aria-label", "Overturn: show the other side");
         flip.addEventListener("click", () => {
           showingBack = !showingBack;
-          if (reproImg) reproImg.src = imageUrl(showingBack ? back : primary, "original");
+          if (reproImg) loadDisplayWithFallback(reproImg, showingBack ? back : primary, showNone);
           assetLabel.textContent = showingBack ? "verso" : "recto";
         });
         controls.appendChild(flip);
@@ -1687,14 +1756,36 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
         zoomWrap.appendChild(zoom);
         foot.appendChild(zoomWrap);
 
-        // Pinch on the plate drives the same value.
+        // The plate is directly manipulable: a single-pointer drag pans the
+        // field, two pointers pinch-zoom. Marking the field interactive gives
+        // it the grab cursor and disables native touch scrolling/zoom over it.
+        field.classList.add("item-card__field--interactive");
+
         const ptrs = new Map();
         let lastDist = null;
-        field.addEventListener("pointerdown", (e) => { ptrs.set(e.pointerId, e); });
+        let panStart = null; // { x, y, panX, panY } captured at drag start
+
+        field.addEventListener("pointerdown", (e) => {
+          field.setPointerCapture?.(e.pointerId);
+          ptrs.set(e.pointerId, e);
+          if (ptrs.size === 1) {
+            // Begin a pan: remember where the drag and the field started.
+            panStart = { x: e.clientX, y: e.clientY, panX, panY };
+            dragging = true;
+            field.classList.add("is-grabbing");
+          } else {
+            // A second pointer means pinch, not pan.
+            panStart = null;
+            dragging = false;
+            field.classList.remove("is-grabbing");
+          }
+        });
+
         field.addEventListener("pointermove", (e) => {
           if (!ptrs.has(e.pointerId)) return;
           ptrs.set(e.pointerId, e);
           if (ptrs.size === 2) {
+            // Pinch → zoom, driving the same slider value.
             const [a, b] = [...ptrs.values()];
             const dist = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
             if (lastDist !== null) {
@@ -1703,11 +1794,30 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
               renderPlate(v);
             }
             lastDist = dist;
+          } else if (panStart && plateState) {
+            // Drag → pan. Convert the client-pixel delta to field mm and move
+            // the window opposite the drag (dragging right reveals content to
+            // the left). Computing from the drag origin keeps clamping stable.
+            const r = field.getBoundingClientRect();
+            const unit = Math.min(r.width, r.height) / PLATE_PX;
+            const mmPerClientPx = 1 / (plateState.pxPerMM * unit);
+            const nx = panStart.panX - (e.clientX - panStart.x) * mmPerClientPx;
+            const ny = panStart.panY - (e.clientY - panStart.y) * mmPerClientPx;
+            renderPlate(parseFloat(zoom.value), nx, ny);
           }
         });
-        const endPinch = (e) => { ptrs.delete(e.pointerId); if (ptrs.size < 2) lastDist = null; };
-        field.addEventListener("pointerup", endPinch);
-        field.addEventListener("pointercancel", endPinch);
+
+        const endPtr = (e) => {
+          ptrs.delete(e.pointerId);
+          if (ptrs.size < 2) lastDist = null;
+          if (ptrs.size === 0) {
+            panStart = null;
+            dragging = false;
+            field.classList.remove("is-grabbing");
+          }
+        };
+        field.addEventListener("pointerup", endPtr);
+        field.addEventListener("pointercancel", endPtr);
       }
 
       plateCol.appendChild(foot);
@@ -2037,7 +2147,7 @@ function makeLaborItemSheet(seriesKey, itemId, viewSlug) {
 
       const imgWrap = el("div", "labor-item__image-wrap");
       const img = el("img", "labor-item__image");
-      img.src = imageUrl(sub.file, "original");
+      loadDisplayWithFallback(img, sub.file);
       img.alt = sub.caption || `${item.title} — image ${i + 1}`;
       img.draggable = false;
       imgWrap.appendChild(img);

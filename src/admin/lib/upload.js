@@ -35,7 +35,7 @@ function loadImage(file) {
 }
 
 function makeThumbnail(img, maxSize = 200) {
-  const scale = Math.min(maxSize / img.naturalWidth, maxSize / img.naturalHeight);
+  const scale = Math.min(maxSize / img.naturalWidth, maxSize / img.naturalHeight, 1);
   const w = Math.round(img.naturalWidth * scale);
   const h = Math.round(img.naturalHeight * scale);
   const canvas = document.createElement("canvas");
@@ -45,80 +45,76 @@ function makeThumbnail(img, maxSize = 200) {
   return new Promise(resolve => canvas.toBlob(resolve, "image/jpeg", 0.8));
 }
 
+// Web-size display derivative: the asset the site actually serves for inspection.
+// WebP (preserves transparency for future cut-outs), capped at 2048px on the long
+// edge, never upscaled. Keeps the full original out of the browser.
+function makeWebSize(img, maxSize = 2048) {
+  const scale = Math.min(maxSize / img.naturalWidth, maxSize / img.naturalHeight, 1);
+  const w = Math.round(img.naturalWidth * scale);
+  const h = Math.round(img.naturalHeight * scale);
+  const canvas = document.createElement("canvas");
+  canvas.width = w;
+  canvas.height = h;
+  canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+  return new Promise(resolve => canvas.toBlob(resolve, "image/webp", 0.82));
+}
+
 function fileExtension(file) {
   return file.name.split(".").pop().toLowerCase() || "jpg";
 }
 
-export async function uploadGalleryAsset(file, itemId, index) {
+// Uploads the full original plus a thumbnail and a web-size (display) derivative
+// from a single decode. `base` is the filename stem (no extension); the three
+// objects are named by convention so image-url.js can address them on read:
+//   originals/<base>.<ext>   thumbnails/<base>-thumb.jpg   display/<base>-web.webp
+// Returns the original and thumbnail filenames (the display name is derived on read).
+async function uploadImageTriple(file, base) {
   const ext = fileExtension(file);
-  const n = String(index + 1).padStart(2, "0");
-  const originalName = `${itemId}-gallery-${n}.${ext}`;
-  const thumbName = `${itemId}-gallery-${n}-thumb.jpg`;
+  const originalName = `${base}.${ext}`;
+  const thumbName    = `${base}-thumb.jpg`;
+  const webName      = `${base}-web.webp`;
 
-  const [originalUrl, thumbUrl] = await Promise.all([
+  const [originalUrl, thumbUrl, webUrl] = await Promise.all([
     getPresignedUrl(originalName, file.type, "originals"),
     getPresignedUrl(thumbName, "image/jpeg", "thumbnails"),
+    getPresignedUrl(webName, "image/webp", "display"),
   ]);
 
   const img = await loadImage(file);
-  const thumbBlob = await makeThumbnail(img);
+  const [thumbBlob, webBlob] = await Promise.all([makeThumbnail(img), makeWebSize(img)]);
   URL.revokeObjectURL(img.src);
 
-  await Promise.all([
+  const puts = [
     putToR2(originalUrl, file, file.type),
     putToR2(thumbUrl, thumbBlob, "image/jpeg"),
-  ]);
+  ];
+  // webBlob can be null if the browser lacks canvas WebP encoding; the site then
+  // falls back to the original on read, so a missing display size is non-fatal.
+  if (webBlob) puts.push(putToR2(webUrl, webBlob, "image/webp"));
+  await Promise.all(puts);
 
+  return { originalName, thumbName };
+}
+
+export async function uploadGalleryAsset(file, itemId, index) {
+  const n = String(index + 1).padStart(2, "0");
+  const { originalName, thumbName } = await uploadImageTriple(file, `${itemId}-gallery-${n}`);
   return { file: originalName, thumbnail: thumbName, caption: "", alt: "" };
 }
 
 export async function uploadDocumentPage(file, itemId, index) {
-  const ext = fileExtension(file);
   const n = String(index + 1).padStart(2, "0");
-  const originalName = `${itemId}-page-${n}.${ext}`;
-  const thumbName = `${itemId}-page-${n}-thumb.jpg`;
-
-  const [originalUrl, thumbUrl] = await Promise.all([
-    getPresignedUrl(originalName, file.type, "originals"),
-    getPresignedUrl(thumbName, "image/jpeg", "thumbnails"),
-  ]);
-
-  const img = await loadImage(file);
-  const thumbBlob = await makeThumbnail(img);
-  URL.revokeObjectURL(img.src);
-
-  await Promise.all([
-    putToR2(originalUrl, file, file.type),
-    putToR2(thumbUrl, thumbBlob, "image/jpeg"),
-  ]);
-
+  const { originalName, thumbName } = await uploadImageTriple(file, `${itemId}-page-${n}`);
   return { file: originalName, thumbnail: thumbName, caption: "", alt: "" };
 }
 
 export async function uploadLaborImage(file, itemId, index) {
-  const ext = fileExtension(file);
   const n = String(index + 1).padStart(2, "0");
-  const originalName = `${itemId}-img-${n}.${ext}`;
-  const thumbName    = `${itemId}-img-${n}-thumb.jpg`;
-
-  const [originalUrl, thumbUrl] = await Promise.all([
-    getPresignedUrl(originalName, file.type, "originals"),
-    getPresignedUrl(thumbName, "image/jpeg", "thumbnails"),
-  ]);
-
-  const img = await loadImage(file);
-  const thumbBlob = await makeThumbnail(img);
-  URL.revokeObjectURL(img.src);
-
-  await Promise.all([
-    putToR2(originalUrl, file, file.type),
-    putToR2(thumbUrl, thumbBlob, "image/jpeg"),
-  ]);
-
+  const { originalName, thumbName } = await uploadImageTriple(file, `${itemId}-img-${n}`);
   return { file: originalName, thumbnail: thumbName, caption: "" };
 }
 
-// Model assets are not images — no thumbnail generation, uploads to originals/ only
+// Model assets are not images — no thumbnail/web derivative, uploads to originals/ only
 export async function uploadModelAsset(file, itemId) {
   const ext = fileExtension(file);
   const originalName = `${itemId}-model.${ext}`;
@@ -128,23 +124,6 @@ export async function uploadModelAsset(file, itemId) {
 }
 
 export async function uploadImageAsset(file, itemId, role) {
-  const ext = fileExtension(file);
-  const originalName = `${itemId}-${role}.${ext}`;
-  const thumbName = `${itemId}-${role}-thumb.jpg`;
-
-  const [originalUrl, thumbUrl] = await Promise.all([
-    getPresignedUrl(originalName, file.type, "originals"),
-    getPresignedUrl(thumbName, "image/jpeg", "thumbnails"),
-  ]);
-
-  const img = await loadImage(file);
-  const thumbBlob = await makeThumbnail(img);
-  URL.revokeObjectURL(img.src);
-
-  await Promise.all([
-    putToR2(originalUrl, file, file.type),
-    putToR2(thumbUrl, thumbBlob, "image/jpeg"),
-  ]);
-
+  const { originalName, thumbName } = await uploadImageTriple(file, `${itemId}-${role}`);
   return { original: originalName, thumbnail: thumbName };
 }
