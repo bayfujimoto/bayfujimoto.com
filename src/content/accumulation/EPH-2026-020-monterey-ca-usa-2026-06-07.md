@@ -3,7 +3,7 @@ id: EPH-2026-020
 slug: monterey-ca-usa-2026-06-07
 series: accumulation
 item_type: brochure
-status: draft
+status: published
 display_date: June 7, 2026
 sort_date: "2026-06-07"
 title: Popular Seafood Guide
