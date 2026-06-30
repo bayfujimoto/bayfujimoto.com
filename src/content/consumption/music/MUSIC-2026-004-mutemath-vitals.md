@@ -12,4 +12,7 @@ artist: MUTEMATH
 year: "2015"
 music_label: Wojtek Records
 dimensions: 314 x 314
+assets:
+  cover: MUSIC-2026-004-cover.jpeg
+  thumbnail: MUSIC-2026-004-cover-thumb.jpg
 ---
