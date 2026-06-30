@@ -1818,6 +1818,48 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
         };
         field.addEventListener("pointerup", endPtr);
         field.addEventListener("pointercancel", endPtr);
+
+        // Wheel / trackpad scroll zooms the plate exactly like the slider —
+        // a smooth rescale — but centered on the pointer so the field-mm under
+        // the cursor stays pinned. Wheel events fire in bursts (especially on
+        // trackpads), so deltas are capped and accumulated, then applied once
+        // per animation frame: one clean render per frame instead of a jittery
+        // render per event. preventDefault keeps the page from scrolling.
+        let wheelAccum = 0, wheelX = 0, wheelY = 0, wheelRAF = 0;
+        const applyWheel = () => {
+          wheelRAF = 0;
+          if (!plateState || !wheelAccum) { wheelAccum = 0; return; }
+          const oldZoom = parseFloat(zoom.value);
+          // Multiplicative step → even-feeling zoom at any scale. Scrolling down
+          // (positive delta) zooms in; up zooms out.
+          const v = Math.min(6, Math.max(1, oldZoom * Math.exp(wheelAccum * 0.0022)));
+          wheelAccum = 0;
+          if (v === oldZoom) return;
+
+          // Pin the point under the cursor: read its field-mm at the old scale,
+          // then choose the pan that re-pins it at the new scale.
+          const r = field.getBoundingClientRect();
+          const unit = Math.min(r.width, r.height) / PLATE_PX;
+          const offX = (wheelX - r.left) / unit - plateState.origin;
+          const offY = (wheelY - r.top) / unit - plateState.origin;
+          const cx = plateState.panX + offX / plateState.pxPerMM;
+          const cy = plateState.panY + offY / plateState.pxPerMM;
+          const extent = plateState.pxPerMM * plateState.spanMM; // px run of field
+          const newPxPerMM = extent / ((plateState.spanMM * oldZoom) / v);
+
+          zoom.value = String(v);
+          renderPlate(v, cx - offX / newPxPerMM, cy - offY / newPxPerMM);
+        };
+        field.addEventListener("wheel", (e) => {
+          if (!plateState) return;
+          e.preventDefault();
+          let dy = e.deltaY;
+          if (e.deltaMode === 1) dy *= 16;        // lines → ~px
+          else if (e.deltaMode === 2) dy *= PLATE_PX; // pages → ~px
+          wheelAccum += Math.max(-50, Math.min(50, dy)); // cap momentum bursts
+          wheelX = e.clientX; wheelY = e.clientY;
+          if (!wheelRAF) wheelRAF = requestAnimationFrame(applyWheel);
+        }, { passive: false });
       }
 
       plateCol.appendChild(foot);

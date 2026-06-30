@@ -15114,12 +15114,10 @@
               "display_date": "June 22, 2026",
               "sort_date": "2026-06-22",
               "artist": "Audrey Nuna",
-              "year": null,
-              "music_label": null,
-              "tags": [],
-              "context_note": "",
+              "year": "2024",
+              "music_label": "Arista Records",
               "assets": {
-                "cover": "https://coverartarchive.org/release/2e03bf19-654c-4e6c-80ee-2754684b88f3/40426790417-1200.jpg",
+                "cover": "MUSIC-2026-002-cover.jpeg",
                 "thumbnail": "https://coverartarchive.org/release/2e03bf19-654c-4e6c-80ee-2754684b88f3/40426790417-250.jpg"
               },
               "dimensions": "314 x 314"
@@ -15135,13 +15133,49 @@
               "display_date": "June 22, 2026",
               "sort_date": "2026-06-22",
               "artist": "Samara Cyn",
-              "year": null,
-              "music_label": null,
-              "tags": [],
-              "context_note": "",
+              "year": "2026",
+              "music_label": "VANTA Records",
               "assets": {
-                "cover": "https://coverartarchive.org/release/d748a91f-4cd7-45c8-ba39-d876413062f3/44647482490-1200.jpg",
+                "cover": "MUSIC-2026-001-cover.jpeg",
                 "thumbnail": "https://coverartarchive.org/release/d748a91f-4cd7-45c8-ba39-d876413062f3/44647482490-250.jpg"
+              },
+              "dimensions": "314 x 314"
+            },
+            {
+              "id": "MUSIC-2026-006",
+              "slug": "benee-lychee",
+              "series": "consumption",
+              "subcollection": "music",
+              "item_type": "album",
+              "status": "published",
+              "display_date": "June 2022",
+              "sort_date": "2022-03-04",
+              "title": "Lychee",
+              "year": "2022",
+              "artist": "BENEE",
+              "music_label": "Republic Records",
+              "assets": {
+                "cover": "MUSIC-2026-006-cover.jpeg",
+                "thumbnail": "MUSIC-2026-006-cover-thumb.jpg"
+              },
+              "dimensions": "314 x 314"
+            },
+            {
+              "id": "MUSIC-2026-007",
+              "slug": "benee-fire-on-marzz",
+              "series": "consumption",
+              "subcollection": "music",
+              "item_type": "ep",
+              "status": "published",
+              "display_date": "June 2021",
+              "sort_date": "2021-06-01",
+              "title": "FIRE ON MARZZ",
+              "artist": "BENEE",
+              "year": "2019",
+              "music_label": "Republic Records",
+              "assets": {
+                "cover": "MUSIC-2026-007-cover.jpeg",
+                "thumbnail": "MUSIC-2026-007-cover-thumb.jpg"
               },
               "dimensions": "314 x 314"
             },
@@ -15158,7 +15192,11 @@
               "artist": "MUTEMATH",
               "year": "2015",
               "music_label": "Wojtek Records",
-              "dimensions": "314 x 314"
+              "dimensions": "314 x 314",
+              "assets": {
+                "cover": "MUSIC-2026-004-cover.jpeg",
+                "thumbnail": "MUSIC-2026-004-cover-thumb.jpg"
+              }
             },
             {
               "id": "MUSIC-2026-005",
@@ -15172,7 +15210,12 @@
               "title": "Yuck",
               "artist": "Alpine",
               "year": "2025",
-              "dimensions": "314 x 314"
+              "dimensions": "314 x 314",
+              "music_label": "Ivy League Records",
+              "assets": {
+                "cover": "MUSIC-2026-005-cover.jpg",
+                "thumbnail": "MUSIC-2026-005-cover-thumb.jpg"
+              }
             }
           ]
         },
@@ -15525,6 +15568,46 @@
       "subcollections": {},
       "items": [
         {
+          "id": "EPH-2026-020",
+          "slug": "monterey-ca-usa-2026-06-07",
+          "series": "accumulation",
+          "item_type": "brochure",
+          "status": "published",
+          "display_date": "June 7, 2026",
+          "sort_date": "2026-06-07",
+          "title": "Popular Seafood Guide",
+          "issuer": "Monterey Bay Aquarium",
+          "place": "Monterey, CA, USA",
+          "event": "atxsf road trip",
+          "dimensions": "200 x 89",
+          "inspection": "card",
+          "assets": {
+            "front": "EPH-2026-020-front.jpg",
+            "thumbnail": "EPH-2026-020-front-thumb.jpg",
+            "back": "EPH-2026-020-back.jpg"
+          }
+        },
+        {
+          "id": "EPH-2026-019",
+          "slug": "monterey-ca-usa-2026-06-07",
+          "series": "accumulation",
+          "item_type": "brochure",
+          "status": "published",
+          "display_date": "June 7, 2026",
+          "sort_date": "2026-06-07",
+          "inspection": "card",
+          "title": "Seafood Watch Guide",
+          "issuer": "Monterey Bay Aquarium",
+          "place": "Monterey, CA, USA",
+          "event": "atxsf road trip",
+          "assets": {
+            "front": "EPH-2026-019-front.jpg",
+            "thumbnail": "EPH-2026-019-front-thumb.jpg",
+            "back": "EPH-2026-019-back.jpg"
+          },
+          "dimensions": "200 x 89"
+        },
+        {
           "id": "EPH-2026-018",
           "slug": "austin-tx-usa-2025-06-01",
           "series": "accumulation",
@@ -15564,23 +15647,6 @@
           "dimensions": "62 x 88"
         },
         {
-          "id": "EPH-2026-015",
-          "slug": "shanghai-china-2025-03-19",
-          "series": "accumulation",
-          "item_type": "document",
-          "status": "published",
-          "display_date": "March 19, 2025",
-          "sort_date": "2025-03-19",
-          "title": "Sukothai Hotel",
-          "place": "Shanghai, China",
-          "inspection": "card",
-          "assets": {
-            "front": "EPH-2026-015-front.jpg",
-            "thumbnail": "EPH-2026-015-front-thumb.jpg",
-            "back": "EPH-2026-015-back.jpg"
-          }
-        },
-        {
           "id": "EPH-2026-014",
           "slug": "france-2024-11-16",
           "series": "accumulation",
@@ -15600,23 +15666,6 @@
           "dimensions": "120 x 62"
         },
         {
-          "id": "EPH-2026-013",
-          "slug": "paris-france-2024-11-08",
-          "series": "accumulation",
-          "item_type": "ticket",
-          "status": "published",
-          "display_date": "November 8, 2024",
-          "sort_date": "2024-11-08",
-          "title": "Smile 2",
-          "place": "Paris, France",
-          "source": "mk2",
-          "inspection": "card",
-          "assets": {
-            "front": "EPH-2026-013-front.jpg",
-            "thumbnail": "EPH-2026-013-front-thumb.jpg"
-          }
-        },
-        {
           "id": "EPH-2026-012",
           "slug": "lyon-france-2024-11-01",
           "series": "accumulation",
@@ -15632,79 +15681,6 @@
             "thumbnail": "EPH-2026-012-front-thumb.jpg"
           },
           "dimensions": "76 x 76"
-        },
-        {
-          "id": "EPH-2026-011",
-          "slug": "copenhagen-denmark-2024-11-01",
-          "series": "accumulation",
-          "item_type": "document",
-          "status": "published",
-          "display_date": "November 2024",
-          "sort_date": "2024-11-01",
-          "title": "Cat Patches",
-          "place": "Copenhagen, Denmark",
-          "inspection": "card",
-          "assets": {
-            "front": "EPH-2026-011-front.jpg",
-            "thumbnail": "EPH-2026-011-front-thumb.jpg",
-            "back": "EPH-2026-011-back.jpg"
-          }
-        },
-        {
-          "id": "EPH-2026-010",
-          "slug": "paris-france-2024-10-12",
-          "series": "accumulation",
-          "item_type": "brochure",
-          "status": "published",
-          "display_date": "October 12, 2024",
-          "sort_date": "2024-10-12",
-          "title": "Olga de Amaral",
-          "place": "Paris, France",
-          "source": "Fondation Cartier",
-          "inspection": "card",
-          "assets": {
-            "front": "EPH-2026-010-front.jpg",
-            "thumbnail": "EPH-2026-010-front-thumb.jpg",
-            "back": "EPH-2026-010-back.jpg"
-          }
-        },
-        {
-          "id": "EPH-2026-004",
-          "slug": "paris-france-2024-08-25",
-          "series": "accumulation",
-          "item_type": "ticket",
-          "status": "published",
-          "display_date": "August 25, 2024",
-          "sort_date": "2024-08-25",
-          "title": "Eiffel Tower Ticket",
-          "context_note": "Carried in my wallet for a year.",
-          "place": "Paris, France",
-          "source": "Eiffel Tower",
-          "inspection": "card",
-          "assets": {
-            "front": "EPH-2026-004-front.jpg",
-            "thumbnail": "EPH-2026-004-front-thumb.jpg",
-            "back": "EPH-2026-004-back.jpg"
-          }
-        },
-        {
-          "id": "EPH-2026-007",
-          "slug": "boston-massachusetts-2024-05-06",
-          "series": "accumulation",
-          "item_type": "ticket",
-          "status": "published",
-          "display_date": "May 6, 2024",
-          "sort_date": "2024-05-06",
-          "title": "New England Aquarium",
-          "context_note": "From a weekend trip to Boston after a big deadline at work.",
-          "place": "Boston, Massachusetts",
-          "source": "New England Aquarium",
-          "inspection": "card",
-          "assets": {
-            "front": "EPH-2026-007-front.jpg",
-            "thumbnail": "EPH-2026-007-front-thumb.jpg",
-            "back": "EPH-2026-007-back.jpg"
-          }
         },
         {
           "id": "EPH-2026-016",
@@ -15744,23 +15720,6 @@
             "thumbnail": "EPH-2026-006-front-thumb.jpg"
           },
           "dimensions": "54 x 85"
-        },
-        {
-          "id": "EPH-2026-005",
-          "slug": "houston-texas-usa-2023-09-01",
-          "series": "accumulation",
-          "item_type": "ticket",
-          "status": "published",
-          "display_date": "September 01, 2023",
-          "sort_date": "2023-09-01",
-          "title": "MFAH Ticket",
-          "place": "Houston, Texas, USA",
-          "source": "Museum of Fine Arts, Houston",
-          "inspection": "card",
-          "assets": {
-            "front": "EPH-2026-005-front.jpg",
-            "thumbnail": "EPH-2026-005-front-thumb.jpg"
-          }
         }
       ]
     }
@@ -15772,10 +15731,10 @@
     "order": 5
   },
   "_counters": {
-    "EPH": 18,
+    "EPH": 20,
     "FILM": 518,
-    "BOOK": 287,
-    "MUSIC": 5,
+    "BOOK": 302,
+    "MUSIC": 7,
     "COFFEE": 2,
     "GAME": 4,
     "SKETCH": 2,

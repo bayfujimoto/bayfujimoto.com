@@ -29,8 +29,8 @@ The grid groups by the year an item was *logged* (`sort_date`), newest at the
 top-left, consistent with the rest of the archive's browse model. The catalog card
 reuses the existing calibrated plate for sleeves and gains a circular "detailed
 record" variant (art, label ring, spindle hole, groove sheen) for discs. Cover art
-is fetched automatically from open music databases, with manual override retained
-through the admin upload field.
+is uploaded by hand through the admin form (stored in R2 like the rest of the
+archive's own images).
 
 The `mix` type is dropped — only `album`, `ep`, and `single` are supported.
 
@@ -38,9 +38,10 @@ The `mix` type is dropped — only `album`, `ep`, and `single` are supported.
 
 These were settled before drafting (see "Open cells" for what remains):
 
-- **Cover art — auto-fetch + manual override.** A new enrichment script fetches
-  covers by artist + title (mirroring `scripts/enrich-book-covers.js`); the admin
-  cover-upload field remains the override.
+- **Cover art — manual upload.** Covers are uploaded through the admin music form
+  (`assetGroupWithThumb(["cover"])`), stored in R2 with a generated thumbnail like
+  the archive's other self-hosted images. (An auto-fetch script — MusicBrainz/Cover
+  Art Archive + iTunes — was built and then removed; covers are hand-curated.)
 - **Songs — parent album art + link.** A song shows its album's cover (cropped to
   a disc) and links to the album's record via a new `album` field plus a
   `related_ids` reference.
@@ -133,13 +134,11 @@ parallel to the existing `item-grid--books` and `item-grid--films` branches:
 
 ## Ingest
 
-- **`scripts/enrich-music-covers.js`** (new, modeled on `enrich-book-covers.js`):
-  resolve a release by artist + title, fetch cover art (Cover Art Archive via
-  MusicBrainz as primary source, iTunes Search API as fallback), cache under
-  `.cache/music-covers/`, and write `assets.cover` + `assets.thumbnail`.
-- **Manual override**: the admin music form already exposes a cover upload
-  (`assetGroupWithThumb(["cover"])` in `src/admin/forms/type-fields.js`); it stays
-  as the override path.
+- **Cover art — manual upload.** The admin music form exposes a cover upload
+  (`assetGroupWithThumb(["cover"])` in `src/admin/forms/type-fields.js`); the file
+  goes to R2 with a generated thumbnail, and the record stores the filenames.
+  (An auto-fetch script was built and removed — see the note in "Decisions
+  locked".)
 - **Auto dimensions**: set the sleeve/disc `dimensions` default from `item_type`
   during build so entry stays minimal.
 - **Admin**: add the `album` field for singles; otherwise the existing music form
@@ -163,13 +162,13 @@ Goals:
 
 Output: schema + template + three migrated records that group by log year.
 
-### Phase 2 — Cover ingest · not started
-Goals:
-- Write `scripts/enrich-music-covers.js` (Cover Art Archive + iTunes fallback,
-  cached).
-- Backfill covers for the three existing records.
+### Phase 2 — Cover art · superseded (manual upload)
+An auto-fetch script (`scripts/enrich-music-covers.js` + `scripts/utils/music-covers.js`,
+MusicBrainz/Cover Art Archive + iTunes) was built and backfilled the first records,
+then removed by decision. Covers are now uploaded by hand through the admin form
+and stored in R2 (with a generated thumbnail) like the archive's other images.
 
-Output: music records carry `cover` + `thumbnail`; manual override verified.
+Output: music records carry `cover` + `thumbnail` via admin upload.
 
 ### Phase 3 — Browse grid · not started
 Goals:
@@ -213,7 +212,7 @@ Worth a decision before the relevant phase, but non-blocking:
 - `src/content/_templates/consumption-music.md` — drop `mix`, add `album`.
 - `src/content/consumption/music/*.md` — re-date, backfill.
 - `src/content/_id-counters.yaml` — `MUSIC` counter (currently 3).
-- `scripts/enrich-music-covers.js` — new.
+- ~~`scripts/enrich-music-covers.js`~~ — built then removed; covers are manual upload.
 - `scripts/build-data.js` — auto dimensions by type (if done at build time).
 - `src/app/panels.js` — `item-grid--music`; circular plate variant.
 - `src/admin/forms/type-fields.js` — `album` field for singles.
