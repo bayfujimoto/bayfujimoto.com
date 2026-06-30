@@ -24,6 +24,10 @@ export function imageUrl(filename, variant = "original") {
   if (variant === "display") {
     return `${BASE}/display/${stripExt(filename)}-web.webp?v=${DISPLAY_VERSION}`;
   }
+  if (variant === "cutout") {
+    // Full-resolution transparent cut-out (derived from the raw master).
+    return `${BASE}/cutouts/${stripExt(filename)}-cut.png?v=${DISPLAY_VERSION}`;
+  }
   return `${BASE}/originals/${filename}`;
 }
 

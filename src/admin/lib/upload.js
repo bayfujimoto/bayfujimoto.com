@@ -1,3 +1,5 @@
+import { cutout, detectBacking } from "../../shared/cutout.js";
+
 async function getPresignedUrl(filename, contentType, prefix) {
   const res = await fetch("/api/r2-upload-url", {
     method: "POST",
@@ -34,84 +36,155 @@ function loadImage(file) {
   });
 }
 
-function makeThumbnail(img, maxSize = 200) {
-  const scale = Math.min(maxSize / img.naturalWidth, maxSize / img.naturalHeight, 1);
-  const w = Math.round(img.naturalWidth * scale);
-  const h = Math.round(img.naturalHeight * scale);
-  const canvas = document.createElement("canvas");
-  canvas.width = w;
-  canvas.height = h;
-  canvas.getContext("2d").drawImage(img, 0, 0, w, h);
-  return new Promise(resolve => canvas.toBlob(resolve, "image/jpeg", 0.8));
+function canvasToBlob(canvas, mime, quality) {
+  return new Promise(resolve => canvas.toBlob(resolve, mime, quality));
 }
 
-// Web-size display derivative: the asset the site actually serves for inspection.
-// WebP (preserves transparency for future cut-outs), capped at 2048px on the long
-// edge, never upscaled. Keeps the full original out of the browser.
-function makeWebSize(img, maxSize = 2048) {
-  const scale = Math.min(maxSize / img.naturalWidth, maxSize / img.naturalHeight, 1);
-  const w = Math.round(img.naturalWidth * scale);
-  const h = Math.round(img.naturalHeight * scale);
+// Resize any drawable source (HTMLImageElement or HTMLCanvasElement) onto a
+// canvas capped at maxSize on the long edge (never enlarged) and encode it.
+function encodeResized(source, maxSize, mime, quality) {
+  const sw = source.naturalWidth ?? source.width;
+  const sh = source.naturalHeight ?? source.height;
+  const scale = Math.min(maxSize / sw, maxSize / sh, 1);
+  const w = Math.round(sw * scale);
+  const h = Math.round(sh * scale);
   const canvas = document.createElement("canvas");
   canvas.width = w;
   canvas.height = h;
-  canvas.getContext("2d").drawImage(img, 0, 0, w, h);
-  return new Promise(resolve => canvas.toBlob(resolve, "image/webp", 0.82));
+  canvas.getContext("2d").drawImage(source, 0, 0, w, h);
+  return new Promise(resolve => canvas.toBlob(resolve, mime, quality));
+}
+
+function makeThumbnail(source, maxSize = 200, mime = "image/jpeg", quality = 0.8) {
+  return encodeResized(source, maxSize, mime, quality);
+}
+
+// Web-size display derivative the site serves for inspection. WebP (preserves
+// transparency for cut-outs), capped at 2048px, never upscaled.
+function makeWebSize(source, maxSize = 2048, mime = "image/webp", quality = 0.82) {
+  return encodeResized(source, maxSize, mime, quality);
+}
+
+// Run the shared cut-out on a loaded image and return a transparent canvas.
+function makeCutoutCanvas(img, opts) {
+  const w = img.naturalWidth, h = img.naturalHeight;
+  const src = document.createElement("canvas");
+  src.width = w; src.height = h;
+  const ctx = src.getContext("2d", { willReadFrequently: true });
+  ctx.drawImage(img, 0, 0);
+  const id = ctx.getImageData(0, 0, w, h);
+  const res = cutout(id.data, w, h, opts);
+  if (!res) throw new Error("cut-out found no object — leave a backing margin on all four sides");
+  const out = document.createElement("canvas");
+  out.width = res.width; out.height = res.height;
+  out.getContext("2d").putImageData(new ImageData(res.rgba, res.width, res.height), 0, 0);
+  return out;
 }
 
 function fileExtension(file) {
   return file.name.split(".").pop().toLowerCase() || "jpg";
 }
 
-// Uploads the full original plus a thumbnail and a web-size (display) derivative
-// from a single decode. `base` is the filename stem (no extension); the three
-// objects are named by convention so image-url.js can address them on read:
-//   originals/<base>.<ext>   thumbnails/<base>-thumb.jpg   display/<base>-web.webp
-// Returns the original and thumbnail filenames (the display name is derived on read).
-async function uploadImageTriple(file, base) {
+// Decide whether a file looks like a backing scan, so the admin can pre-tick the
+// "remove backing" toggle. Best-effort; failures are caught by the caller.
+export async function detectBackingFromFile(file) {
+  const img = await loadImage(file);
+  try {
+    const w = img.naturalWidth, h = img.naturalHeight;
+    const c = document.createElement("canvas");
+    c.width = w; c.height = h;
+    const ctx = c.getContext("2d", { willReadFrequently: true });
+    ctx.drawImage(img, 0, 0);
+    const id = ctx.getImageData(0, 0, w, h);
+    return detectBacking(id.data, w, h).detected;
+  } finally {
+    URL.revokeObjectURL(img.src);
+  }
+}
+
+// Uploads the master plus derivatives from a single decode. `base` is the
+// filename stem (no extension). Naming convention (read by image-url.js):
+//   originals/<base>.<ext>   thumbnails/<base>-thumb.{jpg|webp}
+//   display/<base>-web.webp  cutouts/<base>-cut.png
+//
+// options.cutout === true  → master = raw scan; full-res cut-out PNG + display +
+//   thumbnail (all WebP/PNG with alpha) are derived from the cut-out.
+// otherwise → original behavior (opaque thumbnail JPEG + display WebP).
+async function uploadImageWithDerivatives(file, base, options = {}) {
   const ext = fileExtension(file);
   const originalName = `${base}.${ext}`;
-  const thumbName    = `${base}-thumb.jpg`;
-  const webName      = `${base}-web.webp`;
-
-  const [originalUrl, thumbUrl, webUrl] = await Promise.all([
-    getPresignedUrl(originalName, file.type, "originals"),
-    getPresignedUrl(thumbName, "image/jpeg", "thumbnails"),
-    getPresignedUrl(webName, "image/webp", "display"),
-  ]);
-
   const img = await loadImage(file);
-  const [thumbBlob, webBlob] = await Promise.all([makeThumbnail(img), makeWebSize(img)]);
-  URL.revokeObjectURL(img.src);
 
-  const puts = [
-    putToR2(originalUrl, file, file.type),
-    putToR2(thumbUrl, thumbBlob, "image/jpeg"),
-  ];
-  // webBlob can be null if the browser lacks canvas WebP encoding; the site then
-  // falls back to the original on read, so a missing display size is non-fatal.
-  if (webBlob) puts.push(putToR2(webUrl, webBlob, "image/webp"));
-  await Promise.all(puts);
+  try {
+    if (options.cutout) {
+      const params = { tolerance: options.tolerance ?? 20, defringe: options.defringe ?? 2 };
+      const cutCanvas = makeCutoutCanvas(img, params);
+      const cutName = `${base}-cut.png`;
+      const thumbName = `${base}-thumb.webp`;
+      const webName = `${base}-web.webp`;
 
-  return { originalName, thumbName };
+      const [origUrl, cutUrl, thumbUrl, webUrl] = await Promise.all([
+        getPresignedUrl(originalName, file.type, "originals"),
+        getPresignedUrl(cutName, "image/png", "cutouts"),
+        getPresignedUrl(thumbName, "image/webp", "thumbnails"),
+        getPresignedUrl(webName, "image/webp", "display"),
+      ]);
+
+      const [cutBlob, thumbBlob, webBlob] = await Promise.all([
+        canvasToBlob(cutCanvas, "image/png"),
+        makeThumbnail(cutCanvas, 200, "image/webp", 0.85),
+        makeWebSize(cutCanvas, 2048, "image/webp", 0.82),
+      ]);
+
+      await Promise.all([
+        putToR2(origUrl, file, file.type),
+        putToR2(cutUrl, cutBlob, "image/png"),
+        putToR2(thumbUrl, thumbBlob, "image/webp"),
+        putToR2(webUrl, webBlob, "image/webp"),
+      ]);
+
+      return { originalName, thumbName, cutout: true, params };
+    }
+
+    // Non-cut-out: full original + JPEG thumbnail + WebP display.
+    const thumbName = `${base}-thumb.jpg`;
+    const webName = `${base}-web.webp`;
+    const [originalUrl, thumbUrl, webUrl] = await Promise.all([
+      getPresignedUrl(originalName, file.type, "originals"),
+      getPresignedUrl(thumbName, "image/jpeg", "thumbnails"),
+      getPresignedUrl(webName, "image/webp", "display"),
+    ]);
+    const [thumbBlob, webBlob] = await Promise.all([makeThumbnail(img), makeWebSize(img)]);
+    const puts = [
+      putToR2(originalUrl, file, file.type),
+      putToR2(thumbUrl, thumbBlob, "image/jpeg"),
+    ];
+    if (webBlob) puts.push(putToR2(webUrl, webBlob, "image/webp"));
+    await Promise.all(puts);
+    return { originalName, thumbName };
+  } finally {
+    URL.revokeObjectURL(img.src);
+  }
 }
 
-export async function uploadGalleryAsset(file, itemId, index) {
+const cutFields = (r) => (r.cutout ? { cutout: true, cutout_params: r.params } : {});
+
+export async function uploadGalleryAsset(file, itemId, index, options) {
   const n = String(index + 1).padStart(2, "0");
-  const { originalName, thumbName } = await uploadImageTriple(file, `${itemId}-gallery-${n}`);
-  return { file: originalName, thumbnail: thumbName, caption: "", alt: "" };
+  const r = await uploadImageWithDerivatives(file, `${itemId}-gallery-${n}`, options);
+  return { file: r.originalName, thumbnail: r.thumbName, caption: "", alt: "", ...cutFields(r) };
 }
 
-export async function uploadDocumentPage(file, itemId, index) {
+export async function uploadDocumentPage(file, itemId, index, options) {
   const n = String(index + 1).padStart(2, "0");
-  const { originalName, thumbName } = await uploadImageTriple(file, `${itemId}-page-${n}`);
-  return { file: originalName, thumbnail: thumbName, caption: "", alt: "" };
+  const r = await uploadImageWithDerivatives(file, `${itemId}-page-${n}`, options);
+  return { file: r.originalName, thumbnail: r.thumbName, caption: "", alt: "", ...cutFields(r) };
 }
 
-export async function uploadLaborImage(file, itemId, index) {
+export async function uploadLaborImage(file, itemId, index, options) {
   const n = String(index + 1).padStart(2, "0");
-  const { originalName, thumbName } = await uploadImageTriple(file, `${itemId}-img-${n}`);
-  return { file: originalName, thumbnail: thumbName, caption: "" };
+  const r = await uploadImageWithDerivatives(file, `${itemId}-img-${n}`, options);
+  return { file: r.originalName, thumbnail: r.thumbName, caption: "", ...cutFields(r) };
 }
 
 // Model assets are not images — no thumbnail/web derivative, uploads to originals/ only
@@ -123,7 +196,7 @@ export async function uploadModelAsset(file, itemId) {
   return { model: originalName };
 }
 
-export async function uploadImageAsset(file, itemId, role) {
-  const { originalName, thumbName } = await uploadImageTriple(file, `${itemId}-${role}`);
-  return { original: originalName, thumbnail: thumbName };
+export async function uploadImageAsset(file, itemId, role, options) {
+  const r = await uploadImageWithDerivatives(file, `${itemId}-${role}`, options);
+  return { original: r.originalName, thumbnail: r.thumbName, ...cutFields(r) };
 }

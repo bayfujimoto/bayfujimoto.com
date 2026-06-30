@@ -296,6 +296,27 @@ Must support:
 - thumbnail selection
 - ordering for galleries or sequences
 
+### Background cut-out (red-backing scans)
+
+Items scanned on a colored backing (see `docs/carrier-sheet-cutout-plan.md`) can be cut
+out to a transparent silhouette at upload time, in the browser. The ordered-image uploader
+(documents, galleries, labor images) shows a **"remove backing (cut out)"** checkbox:
+
+- It **auto-detects** a uniform colored border from the first selected file and pre-ticks
+  itself; it is always overridable. Border sampling keys whatever color is there — red,
+  blue, or black — so there is no color picker.
+- An **advanced** panel exposes `tolerance` (LAB distance, default 20) and `defringe`
+  (edge erosion in px, default 2) for tricky scans, e.g. thin paper on red.
+- When on, the **raw scan is kept as the master** and the cut-out drives the website. Per
+  cut-out item, R2 holds: `originals/<base>.<ext>` (raw master), `cutouts/<base>-cut.png`
+  (full-res transparent), `display/<base>-web.webp` and `thumbnails/<base>-thumb.webp`
+  (web-size + thumbnail, both WebP with alpha). When off, behavior is unchanged (opaque
+  JPEG thumbnail + WebP display).
+
+The algorithm is shared with the `scripts/cutout-red-background.js` batch CLI via
+`src/shared/cutout.js`, so client-side and CLI results are identical. Cut-out provenance
+(tolerance, defringe) is recorded on the asset.
+
 ### Relationship editor
 
 Must support:
@@ -429,6 +450,7 @@ The admin interface should distinguish between:
 - original source asset
 - web asset
 - thumbnail
+- cut-out asset (transparent PNG silhouette derived from a backing scan)
 - detail asset
 - front/back asset
 - gallery asset

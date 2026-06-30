@@ -174,6 +174,45 @@ function makeOrderedImageField(opts) {
   pickerLabel.appendChild(fileInput);
   wrapper.appendChild(pickerLabel);
 
+  // ── Cut-out (remove backing) control ──────────────────────────
+  // Items scanned on a colored backing are cut out client-side: the raw scan is
+  // kept as the master, and the transparent cut-out drives display + thumbnail.
+  // The checkbox auto-detects a uniform colored border from the first file but is
+  // always overridable; "advanced" exposes tolerance/defringe for tricky scans.
+  const cutWrap = document.createElement("div");
+  cutWrap.className = "gallery-upload__cutout";
+
+  const cutToggle = document.createElement("label");
+  cutToggle.className = "gallery-upload__cutout-toggle";
+  const cutCheck = document.createElement("input");
+  cutCheck.type = "checkbox";
+  cutCheck.checked = true;
+  let cutTouched = false;
+  cutCheck.addEventListener("change", () => { cutTouched = true; });
+  cutToggle.appendChild(cutCheck);
+  cutToggle.appendChild(document.createTextNode(" remove backing (cut out)"));
+  cutWrap.appendChild(cutToggle);
+
+  const adv = document.createElement("details");
+  adv.className = "gallery-upload__cutout-adv";
+  const sum = document.createElement("summary");
+  sum.textContent = "advanced";
+  adv.appendChild(sum);
+  const mkNum = (labelText, val, min, max) => {
+    const w = document.createElement("label");
+    w.className = "gallery-upload__cutout-num";
+    w.appendChild(document.createTextNode(labelText + " "));
+    const inp = document.createElement("input");
+    inp.type = "number"; inp.value = String(val); inp.min = String(min); inp.max = String(max);
+    w.appendChild(inp);
+    adv.appendChild(w);
+    return inp;
+  };
+  const tolInput = mkNum("tolerance", 20, 1, 100);
+  const defInput = mkNum("defringe", 2, 0, 10);
+  cutWrap.appendChild(adv);
+  wrapper.appendChild(cutWrap);
+
   const status = document.createElement("div");
   status.className = "gallery-upload__status";
   wrapper.appendChild(status);
@@ -315,11 +354,24 @@ function makeOrderedImageField(opts) {
     fileInput.disabled = true;
     status.textContent = `Uploading 0 / ${files.length}…`;
 
+    // Auto pre-tick the backing toggle from the first file, unless the user set it.
+    if (!cutTouched) {
+      try {
+        const { detectBackingFromFile } = await import("../lib/upload.js");
+        cutCheck.checked = await detectBackingFromFile(files[0]);
+      } catch { /* leave the checkbox as-is */ }
+    }
+    const cutoutOpts = {
+      cutout: cutCheck.checked,
+      tolerance: parseInt(tolInput.value, 10) || 20,
+      defringe: parseInt(defInput.value, 10) || 2,
+    };
+
     try {
       const startIndex = items.length;
       for (let i = 0; i < files.length; i++) {
-        status.textContent = `Uploading ${i + 1} / ${files.length}…`;
-        const result = await uploadFn(files[i], itemId, startIndex + i);
+        status.textContent = `${cutoutOpts.cutout ? "Cutting out & uploading" : "Uploading"} ${i + 1} / ${files.length}…`;
+        const result = await uploadFn(files[i], itemId, startIndex + i, cutoutOpts);
         items.push({ ...itemDefaults, ...result });
 
         if (!handleChange._thumbSet) {
