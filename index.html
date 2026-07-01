@@ -12,6 +12,15 @@
 <body>
   <canvas id="scene" aria-hidden="true"></canvas>
   <div id="app" role="main"></div>
+
+  <div id="loading-screen" class="loading-screen" style="position:fixed;inset:0;z-index:9999;background:#0a0805">
+    <div class="loading-screen__bloom" aria-hidden="true"></div>
+    <div class="loading-screen__text">
+      <span class="loading-screen__name">bayfujimoto.</span>
+      <span class="loading-screen__tag">my selective memory archive.</span>
+    </div>
+  </div>
+
   <script type="module" src="/src/main.js"></script>
 </body>
 </html>

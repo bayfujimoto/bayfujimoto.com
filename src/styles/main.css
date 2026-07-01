@@ -34,6 +34,64 @@ body {
   pointer-events: none;
 }
 
+/* ── Loading screen ──────────────────────────────────────────────────────────
+   The dark threshold shown while the desk and its objects load. Dismissed by
+   scene.js once THREE.LoadingManager reports every model decoded, then fades
+   out to reveal the scene. See src/app/loading.js. The inline background on the
+   element itself paints instantly, before this stylesheet resolves. */
+.loading-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--color-shadow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  transition: opacity 0.8s var(--ease-out);
+}
+.loading-screen--out {
+  opacity: 0;
+  pointer-events: none;
+}
+.loading-screen__bloom {
+  position: absolute;
+  inset: 0;
+  /* A faint warm wash echoing the desk spotlight (0xffb347 in scene.js), so the
+     threshold and the scene it reveals share one light source. */
+  background: radial-gradient(ellipse 70% 55% at 50% 50%,
+              rgba(255, 179, 71, 0.07), rgba(255, 179, 71, 0) 62%);
+}
+.loading-screen__text {
+  position: relative;
+  text-align: center;
+  font-family: var(--font-serif);
+  animation: loading-rise 1.6s var(--ease-out) both;
+}
+.loading-screen__name {
+  display: block;
+  font-size: 2rem;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  color: rgba(232, 224, 208, 0.8);
+}
+.loading-screen__tag {
+  display: block;
+  margin-top: 0.6rem;
+  font-size: var(--text-md);
+  letter-spacing: var(--tracking-base);
+  color: rgba(232, 224, 208, 0.46);
+}
+@keyframes loading-rise {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .loading-screen { transition: opacity 0.2s linear; }
+  .loading-screen__text { animation: none; }
+  .loading-screen__bloom { display: none; }
+}
+
 /* ── Desk ────────────────────────────────────────────────────────────────────── */
 .desk {
   width: 100%;

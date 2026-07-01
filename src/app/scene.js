@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { navigate } from "./router.js";
+import { dismissLoadingScreen } from "./loading.js";
 
 const seriesInfo = {};
 
@@ -46,12 +47,12 @@ export function setSeriesInfo(data) {
 
 export function initScene() {
   const canvas = document.getElementById("scene");
-  if (!canvas) return;
+  if (!canvas) { dismissLoadingScreen(); return; }
 
   let renderer;
   try {
     renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-  } catch (e) { return; }
+  } catch (e) { dismissLoadingScreen(); return; }
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setClearColor(0x000000, 0);
@@ -83,7 +84,17 @@ export function initScene() {
   // The full-texture originals remain at BASE but are no longer loaded.
   const OBJECT_BASE = `${BASE}untextured/`;
 
-  const deskLoader = new GLTFLoader();
+  // Route every model load through one manager so we know when the desk and all
+  // objects have finished loading, then dismiss the loading screen. render() is
+  // called first to guarantee a painted frame beneath the fade — this matters on
+  // the reduced-motion path, which otherwise renders only once, before models arrive.
+  const manager = new THREE.LoadingManager();
+  manager.onLoad = () => {
+    render();
+    dismissLoadingScreen();
+  };
+
+  const deskLoader = new GLTFLoader(manager);
   deskLoader.load(`${BASE}desk.glb`, (gltf) => {
     const desk = gltf.scene;
     const box = new THREE.Box3().setFromObject(desk);
@@ -186,7 +197,7 @@ export function initScene() {
     placed.forEach((entry) => positionObject(entry, regime));
   }
 
-  const loader = new GLTFLoader();
+  const loader = new GLTFLoader(manager);
   Object.entries(OBJECT_CFG).forEach(([seriesId, cfg]) => {
     loader.load(`${OBJECT_BASE}${cfg.file}`, (gltf) => {
       const model = gltf.scene;
