@@ -1004,8 +1004,9 @@ body {
   height: 100%;
   object-fit: contain;
   object-position: top left;
-  /* photographic assets need a barely-lighter ground to read on black */
-  background: var(--hover-bg);
+  /* No ground: reproductions sit clear on the plate so a cut-out shows only the
+     document itself (and dimensioned items never show a filled field behind them). */
+  background: transparent;
   user-select: none;
   -webkit-user-drag: none;
 }

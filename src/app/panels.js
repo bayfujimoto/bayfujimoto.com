@@ -1257,9 +1257,23 @@ const PLATE_SMALL_MM = 50;
 let plateClipSeq = 0;
 
 function parseDimensions(item) {
-  if (!item.dimensions) return null;
+  if (!item?.dimensions) return null;
   const [w, h] = item.dimensions.split("x").map(s => parseFloat(s.trim()));
   return (w > 0 && h > 0) ? { w, h } : null;
+}
+
+// Opening zoom that makes the item's larger dimension fill ~3/4 of the plate
+// field, so a small object isn't a speck on the 325 mm field. Mirrors
+// buildPlate's field-span (ratio) logic and clamps to the slider's 1–6 range;
+// returns 1 when there are no dimensions to fit.
+function fitZoom(dims) {
+  if (!dims) return 1;
+  const maxDim = Math.max(dims.w, dims.h);
+  let ratio = 1;
+  if (maxDim > PLATE_MM) ratio = Math.ceil(maxDim / PLATE_MM);
+  else if (maxDim < PLATE_SMALL_MM) ratio = 1 / 5;
+  const baseSpan = PLATE_MM * ratio;
+  return Math.min(6, Math.max(1, (0.75 * baseSpan) / maxDim));
 }
 
 // Build the calibrated plate: an SVG field with mm scales attached to the
@@ -1432,6 +1446,11 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
   }
   let currentIdx = allItems.findIndex(i => i.id === itemId);
   if (currentIdx === -1) currentIdx = 0;
+
+  // Grid click opens at a fit zoom so a small item isn't a speck on the field.
+  // Computed once, for the opened item only: flipping through prev/next keeps
+  // whatever zoom is current rather than re-fitting each item. Pan resets per item.
+  let sheetZoom = fitZoom(parseDimensions(allItems[currentIdx]));
 
   const veil = makeVeil(() => {
     navigate({ layer: "browse", series: seriesKey, subcollection: subKey, view: viewSlug || null, item: null });
@@ -1681,6 +1700,7 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
     // re-clamps the pan to the item's extent and returns the applied values, so
     // panX/panY stay honest after a zoom-out collapses the pannable range.
     const renderPlate = (zoom, nextPanX = panX, nextPanY = panY) => {
+      sheetZoom = zoom; // remember the level so it carries to the next item
       field.innerHTML = "";
       const plate = buildPlate(item, dims, PLATE_PX, reproImg, zoom, nextPanX, nextPanY);
       panX = plate.panX; panY = plate.panY;
@@ -1690,7 +1710,7 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
     };
 
     if (primary && dims) {
-      renderPlate(1);
+      renderPlate(sheetZoom);
 
       // Crosshair readout — pointer position in field mm, offset by the pan so
       // the number reflects the panned window. Enhancement only; the typed
@@ -1751,7 +1771,7 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
         zoomLabel.textContent = "zoom";
         const zoom = el("input", "item-card__zoom-slider");
         zoom.type = "range";
-        zoom.min = "1"; zoom.max = "6"; zoom.step = "0.05"; zoom.value = "1";
+        zoom.min = "1"; zoom.max = "6"; zoom.step = "0.05"; zoom.value = String(sheetZoom);
         zoom.setAttribute("aria-label", "Zoom plate");
         zoom.addEventListener("input", () => renderPlate(parseFloat(zoom.value)));
         zoomWrap.appendChild(zoomLabel);
@@ -2069,7 +2089,10 @@ function el(tag, className = "") {
 
 function primaryAsset(item) {
   return item.assets?.front || item.assets?.poster || item.assets?.cover || item.assets?.primary
-    || item.assets?.gallery?.[0]?.file || null;
+    || item.assets?.gallery?.[0]?.file
+    || item.assets?.pages?.[0]?.file            // document inspection
+    || item.assets?.states?.[0]?.images?.[0]?.file  // contraption inspection
+    || null;
 }
 
 export function galleryAssets(item) {
