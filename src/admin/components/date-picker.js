@@ -62,6 +62,11 @@ export function makeDatePicker(initialValue, onChange, config = {}) {
   dropdown.setAttribute("role", "dialog");
   el.appendChild(dropdown);
 
+  // Keep clicks inside the calendar from shifting focus off the root. Month nav
+  // rebuilds the grid (innerHTML = ""), which would blur a just-focused nav
+  // button and fire focusout → close; keeping focus on the root avoids that.
+  dropdown.addEventListener("mousedown", (e) => e.preventDefault());
+
   function updateTrigger() {
     valueEl.textContent = value || (config.placeholder || "YYYY-MM-DD");
     valueEl.classList.toggle("is-empty", !value);
