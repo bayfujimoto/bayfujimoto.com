@@ -15603,13 +15603,18 @@
           "dimensions": "101 x 38",
           "inspection": "document",
           "assets": {
-            "thumbnail": "EPH-2026-021-page-01-thumb.jpg",
+            "thumbnail": "EPH-2026-021-page-01-thumb.webp?v=19e33f2cc20x2",
             "pages": [
               {
-                "file": "EPH-2026-021-page-01.jpg",
-                "thumbnail": "EPH-2026-021-page-01-thumb.jpg",
+                "file": "EPH-2026-021-page-01.jpg?v=19e33f2cc20x2",
+                "thumbnail": "EPH-2026-021-page-01-thumb.webp?v=19e33f2cc20x2",
                 "caption": "",
-                "alt": ""
+                "alt": "",
+                "cutout": true,
+                "cutout_params": {
+                  "tolerance": 20,
+                  "defringe": 2
+                }
               }
             ]
           }
@@ -15780,7 +15785,7 @@
   "_counters": {
     "EPH": 21,
     "FILM": 519,
-    "BOOK": 305,
+    "BOOK": 308,
     "MUSIC": 7,
     "COFFEE": 2,
     "GAME": 4,

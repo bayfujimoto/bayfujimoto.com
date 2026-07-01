@@ -144,11 +144,14 @@ function makeAssetUploadField(field, value, handleChange, getItemId) {
 
       current = result.original;
       handleChange(field.id, result.original);
-      // Skip thumbnail assignment for assets flagged skipThumbnail (e.g. a wide
-      // backdrop) so the poster/cover stays the record thumbnail.
-      if (!field.skipThumbnail && !handleChange._thumbSet) {
+      // Keep the record thumbnail in sync. The first eligible field claims it and
+      // then refreshes it on every re-upload, so a replacement never leaves the
+      // thumbnail pointing at a stale (cached) or cleaned-up derivative. Other
+      // fields don't steal an already-claimed thumbnail, and skipThumbnail assets
+      // (e.g. a wide backdrop) never claim it.
+      if (!field.skipThumbnail && (handleChange._thumbField == null || handleChange._thumbField === field.id)) {
         handleChange("assets.thumbnail", result.thumbnail);
-        handleChange._thumbSet = true;
+        handleChange._thumbField = field.id;
       }
 
       filename.textContent = displayFilename(result.original);
@@ -166,7 +169,7 @@ function makeAssetUploadField(field, value, handleChange, getItemId) {
 // Shared ordered-image-list uploader used by gallery and document modes
 function makeOrderedImageField(opts) {
   // opts: { fieldId, fieldLabel, uploadFn, handleChange, getItemId, initialValue, showAlt, itemDefaults }
-  const { fieldId, fieldLabel, uploadFn, handleChange, getItemId, initialValue, showAlt = true, itemDefaults = {} } = opts;
+  const { fieldId, fieldLabel, uploadFn, handleChange, getItemId, initialValue, showAlt = true, itemDefaults = {}, ownsThumbnail = false } = opts;
 
   const items = Array.isArray(initialValue) ? initialValue.map(item =>
     typeof item === "string"
@@ -218,6 +221,10 @@ function makeOrderedImageField(opts) {
 
   function commit() {
     handleChange(fieldId, items.length > 0 ? items.map(item => ({ ...item })) : []);
+    // Keep the record thumbnail pointed at the current first image, so it stays a
+    // valid, cache-busted reference through upload / re-upload / remove / reorder
+    // (previously it was set once and left stale — or dangling after cleanup).
+    if (ownsThumbnail) handleChange("assets.thumbnail", items[0]?.thumbnail || "");
   }
 
   function renderList() {
@@ -365,11 +372,6 @@ function makeOrderedImageField(opts) {
         status.textContent = `${cutoutOpts.cutout ? "Cutting out & uploading" : "Uploading"} ${i + 1} / ${files.length}…`;
         const result = await uploadFn(files[i], itemId, startIndex + i, cutoutOpts);
         items.push({ ...itemDefaults, ...result });
-
-        if (!handleChange._thumbSet) {
-          handleChange("assets.thumbnail", result.thumbnail);
-          handleChange._thumbSet = true;
-        }
       }
       renderList();
       commit();
@@ -466,6 +468,7 @@ function makeSubitemListField(field, initialValue, handleChange, getItemId) {
     handleChange,
     getItemId,
     initialValue,
+    ownsThumbnail: true,
   });
 }
 
@@ -480,6 +483,7 @@ function makeGalleryUploadField(field, initialValue, handleChange, getItemId) {
     handleChange,
     getItemId,
     initialValue,
+    ownsThumbnail: true,
   });
 }
 
@@ -521,6 +525,7 @@ function makeInspectionAwareAssets(mode, currentData, handleChange, getItemId) {
       handleChange,
       getItemId,
       initialValue: currentData.assets?.pages,
+      ownsThumbnail: true,
     }));
     return container;
   }
@@ -794,6 +799,7 @@ function makeInspectionFieldset(group, currentData, handleChange, getItemId) {
     (newMode) => {
       handleChange("inspection", newMode);
       handleChange._thumbSet = !!currentData.assets?.thumbnail;
+      handleChange._thumbField = null;  // re-establish thumbnail ownership in the new mode
       assetSection.innerHTML = "";
       assetSection.appendChild(makeInspectionAwareAssets(newMode, currentData, handleChange, getItemId));
     }
