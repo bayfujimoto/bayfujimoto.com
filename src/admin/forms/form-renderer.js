@@ -155,9 +155,16 @@ function makeOrderedImageField(opts) {
   label.textContent = fieldLabel;
   wrapper.appendChild(label);
 
+  // Single value container (column 3), mirroring .asset-upload__body. Without it,
+  // field-chrome's 4-column grid ([state][label][value][type]) scatters the list,
+  // picker, cut-out control, and status across separate columns and rows.
+  const body = document.createElement("div");
+  body.className = "gallery-upload__value";
+  wrapper.appendChild(body);
+
   const list = document.createElement("div");
   list.className = "gallery-upload__list";
-  wrapper.appendChild(list);
+  body.appendChild(list);
 
   const pickerLabel = document.createElement("label");
   pickerLabel.className = "gallery-upload__add-btn";
@@ -172,7 +179,7 @@ function makeOrderedImageField(opts) {
   fileInput.multiple = true;
   fileInput.style.display = "none";
   pickerLabel.appendChild(fileInput);
-  wrapper.appendChild(pickerLabel);
+  body.appendChild(pickerLabel);
 
   // ── Cut-out (remove backing) control ──────────────────────────
   // Items scanned on a colored backing are cut out client-side: the raw scan is
@@ -211,11 +218,11 @@ function makeOrderedImageField(opts) {
   const tolInput = mkNum("tolerance", 20, 1, 100);
   const defInput = mkNum("defringe", 2, 0, 10);
   cutWrap.appendChild(adv);
-  wrapper.appendChild(cutWrap);
+  body.appendChild(cutWrap);
 
   const status = document.createElement("div");
   status.className = "gallery-upload__status";
-  wrapper.appendChild(status);
+  body.appendChild(status);
 
   function commit() {
     handleChange(fieldId, items.length > 0 ? items.map(item => ({ ...item })) : []);

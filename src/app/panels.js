@@ -381,6 +381,8 @@ function makeGuideSheet() {
     scroll.scrollTo({ top: scroll.scrollTop + scroll.clientHeight * 0.6, behavior: "smooth" });
   });
 
+  box.classList.add("bio-document__box--fit");
+
   center.appendChild(box);
   content.appendChild(center);
 

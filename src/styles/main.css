@@ -1289,6 +1289,13 @@ body {
   box-sizing: border-box;
 }
 
+/* Guide: box shrinks to fit its text, capped at 80vh; scrolls only when taller.
+   The .layer-center parent keeps it vertically centered as it grows. */
+.bio-document__box--fit {
+  height: auto;
+  max-height: 80vh;
+}
+
 .bio-document__scroll {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
