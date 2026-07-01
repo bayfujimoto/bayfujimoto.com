@@ -28,11 +28,12 @@ export function getBaseGroups() {
       label: "Core",
       fields: [
         { id: "title",        label: "title",        type: "text", required: true },
-        { id: "display_date", label: "display date", type: "text",
-          placeholder: "auto from sort date — or override (e.g. Spring 2024)",
-          hint: "Left blank, derived from sort date on save." },
         { id: "sort_date",    label: "sort date",    type: "date",
-          hint: "YYYY-MM-DD, used for sorting" },
+          hint: "Pick a date — click to open the calendar" },
+        { id: "display_date", label: "display date", type: "text",
+          autofillFrom: "sort_date",
+          placeholder: "auto from sort date — or override (e.g. Spring 2024)",
+          hint: "Use “auto” to derive from sort date, or type an override." },
       ],
     },
     {

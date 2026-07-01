@@ -1,6 +1,7 @@
 import { getBaseGroups, orderGroups } from "../forms/base-fields.js";
 import { getTypeGroups } from "../forms/type-fields.js";
 import { renderForm }    from "../forms/form-renderer.js";
+import { formatDisplayDate } from "../components/date-picker.js";
 import { generateId }    from "../lib/id-generator.js";
 import { generateSlug, generateFilePath, TYPE_SUBCOLLECTION } from "../lib/slug-generator.js";
 import { toMarkdown } from "../lib/serializer.js";
@@ -116,14 +117,6 @@ function renderTypeSelection(body, archive) {
 
     body.appendChild(list);
   }
-}
-
-// Format an ISO date (YYYY-MM-DD) as a human display date ("February 28, 2025").
-// Used to derive display_date from sort_date at save when the field is left blank.
-function formatDisplayDate(iso) {
-  if (!iso) return "";
-  const d = new Date(iso + "T00:00:00");
-  return isNaN(d) ? "" : d.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
 }
 
 function renderFormStep(body, archive) {

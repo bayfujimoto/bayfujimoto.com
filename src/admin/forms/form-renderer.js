@@ -1,5 +1,6 @@
 import { INSPECTION_ASSETS_SENTINEL } from "./type-fields.js";
 import { makeSelect } from "../components/select.js";
+import { makeDatePicker, formatDisplayDate } from "../components/date-picker.js";
 import { makeCutoutControl } from "./cutout-control.js";
 import { imageUrl } from "../../app/image-url.js";
 
@@ -676,7 +677,7 @@ function makeInspectionAwareAssets(mode, currentData, handleChange, getItemId) {
   return container;
 }
 
-function makeField(field, value, onChange) {
+function makeField(field, value, onChange, getValue) {
   const wrapper = document.createElement("div");
   wrapper.className = "admin-field";
   if (field.depth === "full") wrapper.dataset.depth = "full";
@@ -701,6 +702,26 @@ function makeField(field, value, onChange) {
     );
     handle.el.setAttribute("aria-labelledby", labelId);
 
+    wrapper.appendChild(handle.el);
+
+    if (field.hint) {
+      const hint = document.createElement("div");
+      hint.className = "field-hint";
+      hint.textContent = field.hint;
+      wrapper.appendChild(hint);
+    }
+
+    return wrapper;
+  }
+
+  // Custom date picker — an admin-styled calendar instead of the native
+  // <input type=date>; clicking the field opens the calendar.
+  if (field.type === "date") {
+    const labelId = `label-${field.id.replace(/\./g, "-")}`;
+    label.id = labelId;
+
+    const handle = makeDatePicker(value ?? "", (v) => onChange(field.id, v));
+    handle.el.setAttribute("aria-labelledby", labelId);
     wrapper.appendChild(handle.el);
 
     if (field.hint) {
@@ -759,6 +780,24 @@ function makeField(field, value, onChange) {
   const inputWrap = document.createElement('div');
   inputWrap.className = 'admin-input-wrap' + (isArea ? ' is-area' : '');
   inputWrap.appendChild(input);
+
+  // Autofill button — derives this field's value from another field (e.g.
+  // display date from sort date). Sits beside the value and stays clickable in
+  // both display and edit modes.
+  if (field.autofillFrom) {
+    inputWrap.classList.add('has-autofill');
+    const autoBtn = document.createElement('button');
+    autoBtn.type = 'button';
+    autoBtn.className = 'admin-field-autofill';
+    autoBtn.textContent = 'auto';
+    autoBtn.title = `Fill from ${field.autofillFrom.replace(/_/g, ' ')}`;
+    autoBtn.addEventListener('click', () => {
+      input.value = formatDisplayDate(getValue?.(field.autofillFrom) || "");
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+    inputWrap.appendChild(autoBtn);
+  }
+
   wrapper.appendChild(inputWrap);
 
   if (field.hint) {
@@ -830,6 +869,12 @@ export function renderForm(container, groups, initialData, onChange) {
     return currentData.id || "";
   }
 
+  // Read the current value of another field (used by autofill buttons that
+  // derive one field from another, e.g. display date from sort date).
+  function getValue(fieldId) {
+    return getNestedValue(currentData, fieldId);
+  }
+
   for (const group of groups) {
     // Inspection-assets sentinel: render the mode select + dynamic asset section
     if (group.id === INSPECTION_ASSETS_SENTINEL.id) {
@@ -856,13 +901,13 @@ export function renderForm(container, groups, initialData, onChange) {
       } else if (field.type === "subitem-list") {
         el = makeSubitemListField(field, value, handleChange, getItemId);
       } else {
-        el = makeField(field, value, handleChange);
+        el = makeField(field, value, handleChange, getValue);
       }
       fieldset.appendChild(el);
     }
 
     // Only append fieldset if it has visible inputs or gallery fields
-    if (fieldset.querySelector("input, select, .admin-select, textarea, .admin-field--gallery-upload")) {
+    if (fieldset.querySelector("input, select, .admin-select, .admin-datepicker, textarea, .admin-field--gallery-upload")) {
       form.appendChild(fieldset);
     }
   }

@@ -2120,6 +2120,11 @@ body.admin-gutter-dragging.dragging-h {
 }
 
 .cutout-control__toggle input[type="checkbox"] {
+  /* Restore the native checkbox: the global `.admin-field input` reset strips
+     appearance and leaves a border-bottom, which renders as a bare line here. */
+  appearance: auto;
+  -webkit-appearance: auto;
+  border: none;
   width: 16px;
   height: 16px;
   accent-color: var(--term-amber);
@@ -2806,6 +2811,162 @@ body.admin-gutter-dragging.dragging-h {
 .admin-select--status .admin-select-option[data-value="complete"]  { color: var(--status-complete-color); }
 .admin-select--status[data-value="published"]  .admin-select-value,
 .admin-select--status .admin-select-option[data-value="published"] { color: var(--status-published-color); }
+
+/* ── Custom date picker (calendar) ── */
+.admin-datepicker {
+  position: static;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  cursor: pointer;
+  outline: none;
+}
+
+.admin-datepicker-trigger {
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 2px 4px;
+  border-bottom: 1px solid var(--border-faint);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--fg);
+  user-select: none;
+}
+@media (max-width: 700px) { .admin-datepicker-trigger { font-size: 16px; } }
+.admin-datepicker-trigger:hover { background: var(--bg-elevated); }
+.admin-datepicker.open .admin-datepicker-trigger {
+  background: color-mix(in srgb, var(--accent-blue) 10%, transparent);
+}
+.admin-datepicker:focus-visible .admin-datepicker-trigger {
+  outline: 1px solid var(--fg);
+  outline-offset: -1px;
+}
+.admin-datepicker-value { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.admin-datepicker-value.is-empty { color: var(--fg-dim); }
+.admin-datepicker-icon { flex-shrink: 0; margin-left: 6px; color: var(--fg-dim); font-size: 0.85em; }
+
+.admin-datepicker-dropdown {
+  display: none;
+  margin-top: 4px;
+  padding: 8px;
+  max-width: 280px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-inner);
+}
+.admin-datepicker.open .admin-datepicker-dropdown { display: block; }
+
+.admin-datepicker-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.admin-datepicker-title {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--fg);
+}
+.admin-datepicker-nav {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 24px;
+  height: 24px;
+  line-height: 1;
+  border: 1px solid var(--border-inner);
+  background: transparent;
+  color: var(--term-amber);
+  font-family: var(--font-mono);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.admin-datepicker-nav:hover { background: var(--hover-bg); border-color: var(--border); }
+
+.admin-datepicker-weekdays,
+.admin-datepicker-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+.admin-datepicker-weekdays { margin-bottom: 2px; }
+.admin-datepicker-weekdays span {
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--muted);
+}
+.admin-datepicker-day {
+  appearance: none;
+  -webkit-appearance: none;
+  border: none;
+  background: transparent;
+  aspect-ratio: 1 / 1;
+  min-height: 26px;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--fg);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.admin-datepicker-day.is-blank { visibility: hidden; cursor: default; }
+.admin-datepicker-day:hover { background: var(--hover-bg); }
+.admin-datepicker-day.today { outline: 1px solid var(--border); outline-offset: -1px; }
+.admin-datepicker-day.selected { background: var(--term-amber); color: var(--bg); }
+
+.admin-datepicker-foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid var(--border-inner);
+}
+.admin-datepicker-action {
+  appearance: none;
+  -webkit-appearance: none;
+  border: none;
+  background: transparent;
+  color: var(--term-amber);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  cursor: pointer;
+  padding: 2px 4px;
+}
+.admin-datepicker-action:hover { text-decoration: underline; }
+
+/* ── Autofill button (e.g. display date ← sort date) ── */
+.admin-input-wrap.has-autofill {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.admin-input-wrap.has-autofill > .admin-field-value,
+.admin-input-wrap.has-autofill > input {
+  flex: 1;
+  min-width: 0;
+}
+.admin-field-autofill {
+  flex: none;
+  appearance: none;
+  -webkit-appearance: none;
+  min-height: 24px;
+  padding: 2px 8px;
+  border: 1px solid var(--border-inner);
+  background: transparent;
+  color: var(--term-amber);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.admin-field-autofill:hover { background: var(--hover-bg); border-color: var(--border); }
 
 /* ── Breadcrumb / wizard nav ── */
 .admin-breadcrumb {

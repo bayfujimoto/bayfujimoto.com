@@ -66,6 +66,9 @@ function inferType(field) {
     return 'enum';
   }
 
+  // Custom date-picker widget.
+  if (field.querySelector(':scope > .admin-datepicker')) return 'date';
+
   const input = field.querySelector('input, textarea, select');
   if (!input) return '';
 
