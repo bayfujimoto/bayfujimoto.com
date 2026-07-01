@@ -100,6 +100,10 @@ function wrapInput(input) {
 
   const display = document.createElement('span');
   display.className = 'admin-field-display';
+  // Empty fields show the input's placeholder (the schema example) instead of a
+  // generic "(empty)" — rendered dimly via the .is-empty::before rule, which
+  // reads this attribute. Falls back to "(empty)" for fields without an example.
+  display.dataset.emptyText = input.placeholder || '(empty)';
   updateDisplayText(display, input.value);
 
   input.parentNode.insertBefore(wrapper, input);

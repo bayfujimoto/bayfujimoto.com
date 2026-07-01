@@ -1847,7 +1847,7 @@ body.admin-gutter-dragging.dragging-h {
 }
 
 .admin-field-display.is-empty::before {
-  content: '(empty)';
+  content: attr(data-empty-text);
   color: var(--fg-dim);
 }
 
@@ -2094,6 +2094,20 @@ body.admin-gutter-dragging.dragging-h {
   border-top: 1px solid var(--border-inner);
 }
 
+.gallery-upload__cutout-heading {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.gallery-upload__cutout-hint {
+  margin-top: 0;
+  max-width: 46ch;
+  line-height: 1.4;
+}
+
 .gallery-upload__cutout-toggle {
   display: inline-flex;
   align-items: center;
@@ -2133,11 +2147,27 @@ body.admin-gutter-dragging.dragging-h {
 }
 
 .gallery-upload__cutout-num {
-  display: inline-flex;
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 6px;
-  margin-right: 14px;
+  gap: 4px 8px;
+  margin: 0 0 10px;
   color: var(--muted);
+}
+
+.gallery-upload__cutout-num:last-child {
+  margin-bottom: 0;
+}
+
+.gallery-upload__cutout-num-label {
+  min-width: 68px;
+  color: var(--fg);
+}
+
+.gallery-upload__cutout-num-hint {
+  flex-basis: 100%;
+  color: var(--fg-dim);
+  line-height: 1.4;
 }
 
 .gallery-upload__cutout-num input {

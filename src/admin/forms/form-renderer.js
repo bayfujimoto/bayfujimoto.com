@@ -189,36 +189,67 @@ function makeOrderedImageField(opts) {
   const cutWrap = document.createElement("div");
   cutWrap.className = "gallery-upload__cutout";
 
+  const cutHeading = document.createElement("div");
+  cutHeading.className = "gallery-upload__cutout-heading";
+  cutHeading.textContent = "Backing removal";
+  cutWrap.appendChild(cutHeading);
+
   const cutToggle = document.createElement("label");
   cutToggle.className = "gallery-upload__cutout-toggle";
   const cutCheck = document.createElement("input");
   cutCheck.type = "checkbox";
   cutCheck.checked = true;
   let cutTouched = false;
-  cutCheck.addEventListener("change", () => { cutTouched = true; });
   cutToggle.appendChild(cutCheck);
-  cutToggle.appendChild(document.createTextNode(" remove backing (cut out)"));
+  cutToggle.appendChild(document.createTextNode(" Cut out the colored backing"));
   cutWrap.appendChild(cutToggle);
+
+  const cutHint = document.createElement("div");
+  cutHint.className = "field-hint gallery-upload__cutout-hint";
+  cutHint.textContent =
+    "For items scanned on a colored card: erases the background to transparent and " +
+    "keeps the original scan as the master. Auto-detected from the first image on " +
+    "upload — override here if the guess is wrong.";
+  cutWrap.appendChild(cutHint);
 
   const adv = document.createElement("details");
   adv.className = "gallery-upload__cutout-adv";
   const sum = document.createElement("summary");
-  sum.textContent = "advanced";
+  sum.textContent = "advanced — fine-tune the cut-out";
   adv.appendChild(sum);
-  const mkNum = (labelText, val, min, max) => {
+  const mkNum = (labelText, hintText, val, min, max) => {
     const w = document.createElement("label");
     w.className = "gallery-upload__cutout-num";
-    w.appendChild(document.createTextNode(labelText + " "));
+    const name = document.createElement("span");
+    name.className = "gallery-upload__cutout-num-label";
+    name.textContent = labelText;
+    w.appendChild(name);
     const inp = document.createElement("input");
     inp.type = "number"; inp.value = String(val); inp.min = String(min); inp.max = String(max);
     w.appendChild(inp);
+    const hint = document.createElement("span");
+    hint.className = "gallery-upload__cutout-num-hint";
+    hint.textContent = hintText;
+    w.appendChild(hint);
     adv.appendChild(w);
     return inp;
   };
-  const tolInput = mkNum("tolerance", 20, 1, 100);
-  const defInput = mkNum("defringe", 2, 0, 10);
+  const tolInput = mkNum(
+    "tolerance",
+    "how close a color must be to the backing to be erased — higher removes more (1–100)",
+    20, 1, 100);
+  const defInput = mkNum(
+    "defringe",
+    "pixels of leftover colored edge to clean up after the cut (0–10)",
+    2, 0, 10);
   cutWrap.appendChild(adv);
   body.appendChild(cutWrap);
+
+  // The tolerance/defringe controls only apply when cut-out is on — hide them
+  // otherwise so it's clear they belong to this operation.
+  const syncCutoutState = () => { adv.hidden = !cutCheck.checked; };
+  syncCutoutState();
+  cutCheck.addEventListener("change", () => { cutTouched = true; syncCutoutState(); });
 
   const status = document.createElement("div");
   status.className = "gallery-upload__status";
