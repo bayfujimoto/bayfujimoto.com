@@ -7,6 +7,14 @@
 // getImageData) and in Node (sharp raw buffer). Distances are CIELAB so an
 // orange document stays separable from a red background.
 //
+// The fill is chroma-aware: a neutral (grey) region is only removed when it is
+// reachable grey-through-grey from the border. It will not cross *out of* the
+// chromatic backing *into* a neutral region, so a document that has its own grey
+// border keeps it, while the outer grey scanner edge is still removed. This
+// relies on the "leave a full backing margin on all four sides" contract — a
+// grey border touching the image edge directly is seeded as background and
+// removed like any other border pixel.
+//
 // No DOM, no Node APIs — keep it portable.
 
 const _lin = c => { c /= 255; return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
@@ -50,7 +58,9 @@ function toLabArrays(rgba, N) {
  * Cut out the document from a backing scan.
  * @param {Uint8ClampedArray|Uint8Array} rgba  RGBA pixels, length W*H*4
  * @param {number} W  @param {number} H
- * @param {object} [opts] { tolerance=20 (LAB), defringe=0 (px), margin=8 (px) }
+ * @param {object} [opts] { tolerance=20 (LAB), defringe=0 (px), margin=8 (px),
+ *   neutralChroma=12 (LAB chroma below which a palette colour is treated as
+ *   neutral/grey, guarding a document's own grey border) }
  * @returns {{rgba:Uint8ClampedArray,width:number,height:number,bbox:object,frac:number,paletteSize:number,keep:Uint8Array}|null}
  *          Cropped transparent RGBA + metadata, or null if no foreground found.
  */
@@ -58,31 +68,56 @@ export function cutout(rgba, W, H, opts = {}) {
   const TOL = opts.tolerance != null ? +opts.tolerance : 20;
   const DEFRINGE = opts.defringe != null ? +opts.defringe : 0;
   const MARGIN = opts.margin != null ? +opts.margin : 8;
+  const NC = opts.neutralChroma != null ? +opts.neutralChroma : 12;
   const TOL2 = TOL * TOL;
   const N = W * H;
 
   const { L, A, B } = toLabArrays(rgba, N);
   const palette = borderPalette(L, A, B, W, H);
+  const palNeutral = palette.map(c => Math.hypot(c[1], c[2]) < NC);
 
-  const isBg = (p) => {
+  // Classify a pixel against the background palette:
+  //   0 = not background, 1 = neutral (grey) background, 2 = chromatic background.
+  // Chromatic precedence: a pixel near both a neutral and a chromatic colour is
+  // treated as chromatic (freely removable backing), not neutral.
+  const bgClass = (p) => {
     const l = L[p], a = A[p], b = B[p];
-    for (const c of palette) { const dl = l - c[0], da = a - c[1], db = b - c[2]; if (dl*dl + da*da + db*db <= TOL2) return true; }
-    return false;
+    let neutralHit = false;
+    for (let i = 0; i < palette.length; i++) {
+      const c = palette[i], dl = l - c[0], da = a - c[1], db = b - c[2];
+      if (dl*dl + da*da + db*db <= TOL2) {
+        if (!palNeutral[i]) return 2;
+        neutralHit = true;
+      }
+    }
+    return neutralHit ? 1 : 0;
   };
 
   // Flood-fill background inward from every border pixel that reads as background.
+  // visited[p]: 0 unvisited, 1 neutral-bg, 2 chromatic-bg. A neutral neighbour is
+  // only entered from another neutral pixel, so the fill cannot cross out of the
+  // chromatic backing into a document's own grey border.
   const visited = new Uint8Array(N);
   const stack = [];
-  const seed = (p) => { if (!visited[p] && isBg(p)) { visited[p] = 1; stack.push(p); } };
+  const seed = (p) => { if (!visited[p]) { const c = bgClass(p); if (c) { visited[p] = c; stack.push(p); } } };
   for (let x = 0; x < W; x++) { seed(x); seed((H - 1) * W + x); }
   for (let y = 0; y < H; y++) { seed(y * W); seed(y * W + (W - 1)); }
   while (stack.length) {
     const p = stack.pop();
+    const pNeutral = visited[p] === 1;
     const x = p % W, y = (p - x) / W;
-    if (x > 0)     { const n = p - 1; if (!visited[n] && isBg(n)) { visited[n] = 1; stack.push(n); } }
-    if (x < W - 1) { const n = p + 1; if (!visited[n] && isBg(n)) { visited[n] = 1; stack.push(n); } }
-    if (y > 0)     { const n = p - W; if (!visited[n] && isBg(n)) { visited[n] = 1; stack.push(n); } }
-    if (y < H - 1) { const n = p + W; if (!visited[n] && isBg(n)) { visited[n] = 1; stack.push(n); } }
+    const step = (n) => {
+      if (visited[n]) return;
+      const c = bgClass(n);
+      if (!c) return;
+      if (c === 1 && !pNeutral) return;
+      visited[n] = c;
+      stack.push(n);
+    };
+    if (x > 0)     step(p - 1);
+    if (x < W - 1) step(p + 1);
+    if (y > 0)     step(p - W);
+    if (y < H - 1) step(p + W);
   }
 
   // Foreground = not connected background. Keep the largest component; interior
