@@ -1,6 +1,7 @@
 import { INSPECTION_ASSETS_SENTINEL } from "./type-fields.js";
 import { makeSelect } from "../components/select.js";
 import { makeCutoutControl } from "./cutout-control.js";
+import { imageUrl } from "../../app/image-url.js";
 
 function makePanel(label) {
   const panel = document.createElement("div");
@@ -230,11 +231,13 @@ function makeOrderedImageField(opts) {
       left.className = "gallery-upload__row-left";
 
       if (item.thumbnail) {
-        const base = document.querySelector("meta[name=r2-base]")?.content || "";
         const thumb = document.createElement("img");
         thumb.className = "gallery-upload__thumb";
-        thumb.alt = item.alt || item.file;
-        thumb.src = base ? `${base}/thumbnails/${item.thumbnail}` : item.thumbnail;
+        thumb.alt = item.alt || displayFilename(item.file);
+        // Resolve against VITE_R2_BASE_URL (and honor any ?v= cache-bust token)
+        // via the shared helper — the old meta[name=r2-base] lookup was never set,
+        // so previews always fell back to an unresolvable bare filename.
+        thumb.src = imageUrl(item.thumbnail, "thumbnail");
         left.appendChild(thumb);
       }
 
