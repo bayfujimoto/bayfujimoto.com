@@ -1,5 +1,6 @@
 import { INSPECTION_ASSETS_SENTINEL } from "./type-fields.js";
 import { makeSelect } from "../components/select.js";
+import { makeCutoutControl } from "./cutout-control.js";
 
 function makePanel(label) {
   const panel = document.createElement("div");
@@ -62,10 +63,20 @@ function serializePairList(arr) {
   }).join("\n");
 }
 
+// Stored asset filenames may carry a "?v=<token>" cache-bust suffix (added on
+// upload); strip it for human-facing display so the label shows a clean name.
+function displayFilename(v) {
+  return typeof v === "string" ? v.split("?")[0] : v;
+}
+
 function makeAssetUploadField(field, value, handleChange, getItemId) {
   const wrapper = document.createElement("div");
   wrapper.className = "admin-field";
   if (field.depth === "full") wrapper.dataset.depth = "full";
+
+  // Tracks the current stored filename so a re-upload can tell the server which
+  // old original to remove when the file type changes. Updated after each upload.
+  let current = value;
 
   const label = document.createElement("label");
   label.textContent = field.label;
@@ -77,7 +88,7 @@ function makeAssetUploadField(field, value, handleChange, getItemId) {
 
   const filename = document.createElement("div");
   filename.className = "asset-upload__filename";
-  filename.textContent = value || "—";
+  filename.textContent = displayFilename(value) || "—";
   body.appendChild(filename);
 
   const fileInput = document.createElement("input");
@@ -92,6 +103,11 @@ function makeAssetUploadField(field, value, handleChange, getItemId) {
   trigger.setAttribute("for", fileInput.id);
   trigger.textContent = "choose file";
   body.appendChild(trigger);
+
+  // Cut-out ("remove backing") control — only on scan-oriented fields (coffee
+  // front/back, inspection=card front/back, inspection=object thumbnail).
+  const cut = field.allowCutout ? makeCutoutControl() : null;
+  if (cut) body.appendChild(cut.el);
 
   const status = document.createElement("div");
   status.className = "asset-upload__status";
@@ -114,8 +130,18 @@ function makeAssetUploadField(field, value, handleChange, getItemId) {
 
     try {
       const { uploadImageAsset } = await import("../lib/upload.js");
-      const result = await uploadImageAsset(file, itemId, field.assetRole);
+      // `replaces` lets the upload clean up the old original if the file type
+      // changes. Scan-oriented fields also expose the cut-out control; auto-detect
+      // from the chosen file (unless overridden) and pass the options through.
+      const opts = { replaces: current };
+      if (cut) {
+        await cut.primeFromFile(file);
+        Object.assign(opts, cut.getOptions());
+        status.textContent = opts.cutout ? "Cutting out & uploading…" : "Uploading…";
+      }
+      const result = await uploadImageAsset(file, itemId, field.assetRole, opts);
 
+      current = result.original;
       handleChange(field.id, result.original);
       // Skip thumbnail assignment for assets flagged skipThumbnail (e.g. a wide
       // backdrop) so the poster/cover stays the record thumbnail.
@@ -124,7 +150,7 @@ function makeAssetUploadField(field, value, handleChange, getItemId) {
         handleChange._thumbSet = true;
       }
 
-      filename.textContent = result.original;
+      filename.textContent = displayFilename(result.original);
       status.textContent = "Uploaded";
     } catch (err) {
       status.textContent = `Error: ${err.message}`;
@@ -181,75 +207,9 @@ function makeOrderedImageField(opts) {
   pickerLabel.appendChild(fileInput);
   body.appendChild(pickerLabel);
 
-  // ── Cut-out (remove backing) control ──────────────────────────
-  // Items scanned on a colored backing are cut out client-side: the raw scan is
-  // kept as the master, and the transparent cut-out drives display + thumbnail.
-  // The checkbox auto-detects a uniform colored border from the first file but is
-  // always overridable; "advanced" exposes tolerance/defringe for tricky scans.
-  const cutWrap = document.createElement("div");
-  cutWrap.className = "gallery-upload__cutout";
-
-  const cutHeading = document.createElement("div");
-  cutHeading.className = "gallery-upload__cutout-heading";
-  cutHeading.textContent = "Backing removal";
-  cutWrap.appendChild(cutHeading);
-
-  const cutToggle = document.createElement("label");
-  cutToggle.className = "gallery-upload__cutout-toggle";
-  const cutCheck = document.createElement("input");
-  cutCheck.type = "checkbox";
-  cutCheck.checked = true;
-  let cutTouched = false;
-  cutToggle.appendChild(cutCheck);
-  cutToggle.appendChild(document.createTextNode(" Cut out the colored backing"));
-  cutWrap.appendChild(cutToggle);
-
-  const cutHint = document.createElement("div");
-  cutHint.className = "field-hint gallery-upload__cutout-hint";
-  cutHint.textContent =
-    "For items scanned on a colored card: erases the background to transparent and " +
-    "keeps the original scan as the master. Auto-detected from the first image on " +
-    "upload — override here if the guess is wrong.";
-  cutWrap.appendChild(cutHint);
-
-  const adv = document.createElement("details");
-  adv.className = "gallery-upload__cutout-adv";
-  const sum = document.createElement("summary");
-  sum.textContent = "advanced — fine-tune the cut-out";
-  adv.appendChild(sum);
-  const mkNum = (labelText, hintText, val, min, max) => {
-    const w = document.createElement("label");
-    w.className = "gallery-upload__cutout-num";
-    const name = document.createElement("span");
-    name.className = "gallery-upload__cutout-num-label";
-    name.textContent = labelText;
-    w.appendChild(name);
-    const inp = document.createElement("input");
-    inp.type = "number"; inp.value = String(val); inp.min = String(min); inp.max = String(max);
-    w.appendChild(inp);
-    const hint = document.createElement("span");
-    hint.className = "gallery-upload__cutout-num-hint";
-    hint.textContent = hintText;
-    w.appendChild(hint);
-    adv.appendChild(w);
-    return inp;
-  };
-  const tolInput = mkNum(
-    "tolerance",
-    "how close a color must be to the backing to be erased — higher removes more (1–100)",
-    20, 1, 100);
-  const defInput = mkNum(
-    "defringe",
-    "pixels of leftover colored edge to clean up after the cut (0–10)",
-    2, 0, 10);
-  cutWrap.appendChild(adv);
-  body.appendChild(cutWrap);
-
-  // The tolerance/defringe controls only apply when cut-out is on — hide them
-  // otherwise so it's clear they belong to this operation.
-  const syncCutoutState = () => { adv.hidden = !cutCheck.checked; };
-  syncCutoutState();
-  cutCheck.addEventListener("change", () => { cutTouched = true; syncCutoutState(); });
+  // Cut-out ("remove backing") control — shared reusable widget.
+  const cut = makeCutoutControl();
+  body.appendChild(cut.el);
 
   const status = document.createElement("div");
   status.className = "gallery-upload__status";
@@ -280,7 +240,7 @@ function makeOrderedImageField(opts) {
 
       const fileLabel = document.createElement("div");
       fileLabel.className = "gallery-upload__filename";
-      fileLabel.textContent = item.file;
+      fileLabel.textContent = displayFilename(item.file);
       left.appendChild(fileLabel);
 
       row.appendChild(left);
@@ -393,17 +353,8 @@ function makeOrderedImageField(opts) {
     status.textContent = `Uploading 0 / ${files.length}…`;
 
     // Auto pre-tick the backing toggle from the first file, unless the user set it.
-    if (!cutTouched) {
-      try {
-        const { detectBackingFromFile } = await import("../lib/upload.js");
-        cutCheck.checked = await detectBackingFromFile(files[0]);
-      } catch { /* leave the checkbox as-is */ }
-    }
-    const cutoutOpts = {
-      cutout: cutCheck.checked,
-      tolerance: parseInt(tolInput.value, 10) || 20,
-      defringe: parseInt(defInput.value, 10) || 2,
-    };
+    await cut.primeFromFile(files[0]);
+    const cutoutOpts = cut.getOptions();
 
     try {
       const startIndex = items.length;
@@ -505,9 +456,9 @@ function makeSubitemListField(field, initialValue, handleChange, getItemId) {
     fieldLabel:   field.label,
     showAlt:      false,
     itemDefaults: { type: "image" },
-    uploadFn: async (file, itemId, index) => {
+    uploadFn: async (file, itemId, index, opts) => {
       const { uploadLaborImage } = await import("../lib/upload.js");
-      return uploadLaborImage(file, itemId, index);
+      return uploadLaborImage(file, itemId, index, opts);
     },
     handleChange,
     getItemId,
@@ -519,9 +470,9 @@ function makeGalleryUploadField(field, initialValue, handleChange, getItemId) {
   return makeOrderedImageField({
     fieldId: field.id,
     fieldLabel: field.label,
-    uploadFn: async (file, itemId, index) => {
+    uploadFn: async (file, itemId, index, opts) => {
       const { uploadGalleryAsset } = await import("../lib/upload.js");
-      return uploadGalleryAsset(file, itemId, index);
+      return uploadGalleryAsset(file, itemId, index, opts);
     },
     handleChange,
     getItemId,
@@ -540,8 +491,8 @@ function makeInspectionAwareAssets(mode, currentData, handleChange, getItemId) {
 
   if (mode === "card") {
     // front (required) + back (optional)
-    const frontField = { id: "assets.front", label: "front", type: "asset-upload", assetRole: "front" };
-    const backField  = { id: "assets.back",  label: "back (optional)", type: "asset-upload", assetRole: "back" };
+    const frontField = { id: "assets.front", label: "front", type: "asset-upload", assetRole: "front", allowCutout: true };
+    const backField  = { id: "assets.back",  label: "back (optional)", type: "asset-upload", assetRole: "back", allowCutout: true };
     handleChange._thumbSet = !!currentData.assets?.thumbnail;
     container.appendChild(makeAssetUploadField(frontField, currentData.assets?.front, handleChange, getItemId));
     container.appendChild(makeAssetUploadField(backField,  currentData.assets?.back,  handleChange, getItemId));
@@ -560,9 +511,9 @@ function makeInspectionAwareAssets(mode, currentData, handleChange, getItemId) {
     container.appendChild(makeOrderedImageField({
       fieldId: "assets.pages",
       fieldLabel: "pages",
-      uploadFn: async (file, itemId, index) => {
+      uploadFn: async (file, itemId, index, opts) => {
         const { uploadDocumentPage } = await import("../lib/upload.js");
-        return uploadDocumentPage(file, itemId, index);
+        return uploadDocumentPage(file, itemId, index, opts);
       },
       handleChange,
       getItemId,
@@ -619,7 +570,7 @@ function makeInspectionAwareAssets(mode, currentData, handleChange, getItemId) {
     container.appendChild(modelWrapper);
 
     // Separate thumbnail (still image) for the object
-    const thumbField = { id: "assets.thumbnail", label: "thumbnail image", type: "asset-upload", assetRole: "thumbnail" };
+    const thumbField = { id: "assets.thumbnail", label: "thumbnail image", type: "asset-upload", assetRole: "thumbnail", allowCutout: true };
     handleChange._thumbSet = !!currentData.assets?.thumbnail;
     container.appendChild(makeAssetUploadField(thumbField, currentData.assets?.thumbnail, handleChange, getItemId));
 
@@ -679,9 +630,9 @@ function makeInspectionAwareAssets(mode, currentData, handleChange, getItemId) {
         const imagesField = makeOrderedImageField({
           fieldId: `assets.states[${si}].images`,
           fieldLabel: "images for this state",
-          uploadFn: async (file, itemId, index) => {
+          uploadFn: async (file, itemId, index, opts) => {
             const { uploadGalleryAsset } = await import("../lib/upload.js");
-            return uploadGalleryAsset(file, itemId, index);
+            return uploadGalleryAsset(file, itemId, index, opts);
           },
           handleChange: (_, value) => {
             // Override: write directly into state images and re-commit

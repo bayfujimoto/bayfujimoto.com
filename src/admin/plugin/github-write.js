@@ -1,6 +1,6 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync, unlinkSync } from "fs";
 import { resolve, dirname } from "path";
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, DeleteObjectsCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 function loadEnvLocal() {
@@ -193,9 +193,9 @@ export function githubWritePlugin() {
           return;
         }
 
-        if (!["originals", "thumbnails"].includes(prefix)) {
+        if (!["originals", "thumbnails", "display", "cutouts"].includes(prefix)) {
           res.writeHead(400);
-          res.end(JSON.stringify({ ok: false, error: "prefix must be originals or thumbnails" }));
+          res.end(JSON.stringify({ ok: false, error: "prefix must be originals, thumbnails, display, or cutouts" }));
           return;
         }
 
@@ -213,6 +213,68 @@ export function githubWritePlugin() {
         } catch (e) {
           res.writeHead(500);
           res.end(JSON.stringify({ ok: false, error: `R2 presign failed: ${e.message}` }));
+        }
+      });
+
+      // R2 delete — removes stale derivative objects when an asset is replaced.
+      // Mirrors the Netlify r2-delete function; each key is prefix-validated.
+      server.middlewares.use("/api/r2-delete", async (req, res) => {
+        res.setHeader("Content-Type", "application/json");
+
+        if (req.method !== "POST") {
+          res.writeHead(405);
+          res.end(JSON.stringify({ ok: false, error: "Method not allowed" }));
+          return;
+        }
+
+        const ACCOUNT_ID    = process.env.CLOUDFLARE_ACCOUNT_ID;
+        const BUCKET        = process.env.R2_BUCKET_NAME;
+        const ACCESS_KEY_ID = process.env.R2_ACCESS_KEY_ID;
+        const SECRET_KEY    = process.env.R2_SECRET_ACCESS_KEY;
+
+        if (!ACCOUNT_ID || !BUCKET || !ACCESS_KEY_ID || !SECRET_KEY) {
+          res.writeHead(500);
+          res.end(JSON.stringify({ ok: false, error: "R2 env vars not configured" }));
+          return;
+        }
+
+        let payload;
+        try {
+          payload = await readBody(req);
+        } catch (e) {
+          res.writeHead(400);
+          res.end(JSON.stringify({ ok: false, error: "Invalid JSON body" }));
+          return;
+        }
+
+        const allowed = ["originals", "thumbnails", "display", "cutouts"];
+        const keys = (Array.isArray(payload.keys) ? payload.keys : []).filter(k => {
+          if (typeof k !== "string" || k.includes("..")) return false;
+          const slash = k.indexOf("/");
+          return slash > 0 && allowed.includes(k.slice(0, slash));
+        });
+
+        if (!keys.length) {
+          res.writeHead(200);
+          res.end(JSON.stringify({ ok: true, deleted: [] }));
+          return;
+        }
+
+        try {
+          const client = new S3Client({
+            region: "auto",
+            endpoint: `https://${ACCOUNT_ID}.r2.cloudflarestorage.com`,
+            credentials: { accessKeyId: ACCESS_KEY_ID, secretAccessKey: SECRET_KEY },
+          });
+          const out = await client.send(new DeleteObjectsCommand({
+            Bucket: BUCKET,
+            Delete: { Objects: keys.map(Key => ({ Key })), Quiet: true },
+          }));
+          res.writeHead(200);
+          res.end(JSON.stringify({ ok: true, deleted: keys, errors: out.Errors || [] }));
+        } catch (e) {
+          res.writeHead(500);
+          res.end(JSON.stringify({ ok: false, error: `R2 delete failed: ${e.message}` }));
         }
       });
 

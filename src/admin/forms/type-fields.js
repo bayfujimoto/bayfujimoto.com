@@ -12,9 +12,10 @@ const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
 
 // Used by consumption types only — these don't use inspection modes.
 // Each role may be a plain string ("poster") or a descriptor object
-// ({ role, label, skipThumbnail }). skipThumbnail marks an asset that should
-// never become the record thumbnail (e.g. a wide backdrop) — see
-// makeAssetUploadField in form-renderer.js.
+// ({ role, label, skipThumbnail, allowCutout }). skipThumbnail marks an asset
+// that should never become the record thumbnail (e.g. a wide backdrop);
+// allowCutout exposes the "remove backing" control for scan-oriented assets —
+// both are read by makeAssetUploadField in form-renderer.js.
 function assetGroup(roles) {
   return {
     id: "assets",
@@ -29,6 +30,7 @@ function assetGroup(roles) {
         type:          "asset-upload",
         assetRole:     role,
         skipThumbnail: cfg.skipThumbnail ?? false,
+        allowCutout:   cfg.allowCutout ?? false,
       };
     }),
   };
@@ -89,7 +91,10 @@ export function getTypeGroups(itemType) {
       return [schemaMetaGroup(itemType, "music-meta", "Music"), assetGroupWithThumb(["cover"])];
 
     case "bag":
-      return [schemaMetaGroup("bag", "coffee-meta", "Coffee"), assetGroupWithThumb(["front", "back"])];
+      return [schemaMetaGroup("bag", "coffee-meta", "Coffee"), assetGroupWithThumb([
+        { role: "front", allowCutout: true },
+        { role: "back", allowCutout: true },
+      ])];
 
     case "game":
       return [schemaMetaGroup("game", "game-meta", "Game"), assetGroupWithThumb(["cover"])];

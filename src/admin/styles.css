@@ -2085,7 +2085,7 @@ body.admin-gutter-dragging.dragging-h {
 }
 
 /* ── Cut-out (remove backing) control ── */
-.gallery-upload__cutout {
+.cutout-control {
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -2094,7 +2094,7 @@ body.admin-gutter-dragging.dragging-h {
   border-top: 1px solid var(--border-inner);
 }
 
-.gallery-upload__cutout-heading {
+.cutout-control__heading {
   font-family: var(--font-mono);
   font-size: var(--text-xs);
   text-transform: uppercase;
@@ -2102,13 +2102,13 @@ body.admin-gutter-dragging.dragging-h {
   color: var(--muted);
 }
 
-.gallery-upload__cutout-hint {
+.cutout-control__hint {
   margin-top: 0;
   max-width: 46ch;
   line-height: 1.4;
 }
 
-.gallery-upload__cutout-toggle {
+.cutout-control__toggle {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -2119,7 +2119,7 @@ body.admin-gutter-dragging.dragging-h {
   cursor: pointer;
 }
 
-.gallery-upload__cutout-toggle input[type="checkbox"] {
+.cutout-control__toggle input[type="checkbox"] {
   width: 16px;
   height: 16px;
   accent-color: var(--term-amber);
@@ -2127,13 +2127,13 @@ body.admin-gutter-dragging.dragging-h {
   flex: none;
 }
 
-.gallery-upload__cutout-adv {
+.cutout-control__adv {
   font-family: var(--font-mono);
   font-size: var(--text-xs);
   color: var(--muted);
 }
 
-.gallery-upload__cutout-adv summary {
+.cutout-control__adv summary {
   display: inline-flex;
   align-items: center;
   min-height: 44px;            /* touch target */
@@ -2142,11 +2142,11 @@ body.admin-gutter-dragging.dragging-h {
   user-select: none;
 }
 
-.gallery-upload__cutout-adv[open] summary {
+.cutout-control__adv[open] summary {
   margin-bottom: 6px;
 }
 
-.gallery-upload__cutout-num {
+.cutout-control__num {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -2155,22 +2155,22 @@ body.admin-gutter-dragging.dragging-h {
   color: var(--muted);
 }
 
-.gallery-upload__cutout-num:last-child {
+.cutout-control__num:last-child {
   margin-bottom: 0;
 }
 
-.gallery-upload__cutout-num-label {
+.cutout-control__num-label {
   min-width: 68px;
   color: var(--fg);
 }
 
-.gallery-upload__cutout-num-hint {
+.cutout-control__num-hint {
   flex-basis: 100%;
   color: var(--fg-dim);
   line-height: 1.4;
 }
 
-.gallery-upload__cutout-num input {
+.cutout-control__num input {
   font-family: var(--font-mono);
   font-size: var(--text-xs);
   color: var(--fg);
@@ -2180,13 +2180,13 @@ body.admin-gutter-dragging.dragging-h {
   width: 64px;
 }
 
-.gallery-upload__cutout-num input:focus {
+.cutout-control__num input:focus {
   outline: 1px solid var(--term-amber);
   outline-offset: -1px;
 }
 
 @media (max-width: 700px) {
-  .gallery-upload__cutout-num input {
+  .cutout-control__num input {
     font-size: 16px;          /* ≥16px: suppress iOS zoom-on-focus */
   }
 }

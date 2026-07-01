@@ -18,21 +18,31 @@ function stripExt(name) {
 export function imageUrl(filename, variant = "original") {
   if (!filename) return null;
   if (filename.startsWith("http")) return filename;
+  // A per-asset cache-bust token may be embedded as "…?v=<token>" (added on
+  // upload). Split it off before deriving the R2 key, then apply it as the URL's
+  // version — overriding the global default so a same-key replacement renders
+  // fresh instead of serving the stale cached image.
+  let ver = null;
+  const qi = filename.indexOf("?v=");
+  if (qi !== -1) { ver = filename.slice(qi + 3); filename = filename.slice(0, qi); }
   if (variant === "thumbnail") {
-    return `${BASE}/thumbnails/${filename}?v=${THUMB_VERSION}`;
+    return `${BASE}/thumbnails/${filename}?v=${ver || THUMB_VERSION}`;
   }
   if (variant === "display") {
-    return `${BASE}/display/${stripExt(filename)}-web.webp?v=${DISPLAY_VERSION}`;
+    return `${BASE}/display/${stripExt(filename)}-web.webp?v=${ver || DISPLAY_VERSION}`;
   }
   if (variant === "cutout") {
     // Full-resolution transparent cut-out (derived from the raw master).
-    return `${BASE}/cutouts/${stripExt(filename)}-cut.png?v=${DISPLAY_VERSION}`;
+    return `${BASE}/cutouts/${stripExt(filename)}-cut.png?v=${ver || DISPLAY_VERSION}`;
   }
-  return `${BASE}/originals/${filename}`;
+  return `${BASE}/originals/${filename}${ver ? `?v=${ver}` : ""}`;
 }
 
 export function modelUrl(filename) {
   if (!filename) return null;
   if (filename.startsWith("http")) return filename;
-  return `${BASE}/originals/${filename}`;
+  const qi = filename.indexOf("?v=");
+  const ver  = qi !== -1 ? filename.slice(qi + 3) : null;
+  const name = qi !== -1 ? filename.slice(0, qi) : filename;
+  return `${BASE}/originals/${name}${ver ? `?v=${ver}` : ""}`;
 }

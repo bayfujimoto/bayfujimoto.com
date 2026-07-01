@@ -85,6 +85,52 @@ function fileExtension(file) {
   return file.name.split(".").pop().toLowerCase() || "jpg";
 }
 
+// Best-effort removal of stale R2 objects — used when an asset is replaced and
+// the new upload writes different keys (a different file type leaves the old
+// original; a changed cut-out mode leaves the old thumbnail / cut-out). Never
+// throws: a failed cleanup must not fail the upload, and leftover objects are
+// harmless (nothing references them).
+async function deleteR2Keys(keys) {
+  const clean = (keys || []).filter(Boolean);
+  if (!clean.length) return;
+  try {
+    await fetch("/api/r2-delete", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ keys: clean }),
+    });
+  } catch { /* ignore — orphaned objects are harmless */ }
+}
+
+// A short per-asset cache-bust token: the content hash of the source file mixed
+// with the cut-out mode/params. The token — and thus the image URL — changes
+// whenever the rendered result changes (even for a same-key replacement) but
+// stays stable when the identical file is re-uploaded with the same settings.
+async function contentVersion(file, options = {}) {
+  let hex;
+  try {
+    const digest = await crypto.subtle.digest("SHA-256", await file.arrayBuffer());
+    hex = [...new Uint8Array(digest)].slice(0, 4).map(b => b.toString(16).padStart(2, "0")).join("");
+  } catch {
+    hex = Date.now().toString(36); // hashing unavailable — fall back to a unique stamp
+  }
+  const mode = options.cutout ? `c${options.tolerance ?? 20}x${options.defringe ?? 2}` : "o";
+  return `${hex}${mode}`;
+}
+
+// Append the cache-bust token to a stored filename (image-url.js splits it back
+// out before deriving R2 keys, and applies it as the URL's ?v= param).
+const withV = (name, v) => (v ? `${name}?v=${v}` : name);
+
+// When replacing an original whose extension differs from the new one, the old
+// original sits under a key the new upload won't overwrite — return it for
+// deletion. `replaces` is the previously stored value (may carry a ?v= token).
+function replacedOriginalKey(replaces, originalName) {
+  if (!replaces) return null;
+  const prev = String(replaces).split("?")[0];
+  return prev && prev !== originalName ? `originals/${prev}` : null;
+}
+
 // Decide whether a file looks like a backing scan, so the admin can pre-tick the
 // "remove backing" toggle. Best-effort; failures are caught by the caller.
 export async function detectBackingFromFile(file) {
@@ -113,6 +159,7 @@ export async function detectBackingFromFile(file) {
 async function uploadImageWithDerivatives(file, base, options = {}) {
   const ext = fileExtension(file);
   const originalName = `${base}.${ext}`;
+  const version = await contentVersion(file, options);
   const img = await loadImage(file);
 
   try {
@@ -143,7 +190,14 @@ async function uploadImageWithDerivatives(file, base, options = {}) {
         putToR2(webUrl, webBlob, "image/webp"),
       ]);
 
-      return { originalName, thumbName, cutout: true, params };
+      // Clean up a prior non-cut-out thumbnail (opaque JPEG) and a differently
+      // typed old original left behind by this replacement.
+      await deleteR2Keys([
+        `thumbnails/${base}-thumb.jpg`,
+        replacedOriginalKey(options.replaces, originalName),
+      ]);
+
+      return { originalName, thumbName, version, cutout: true, params };
     }
 
     // Non-cut-out: full original + JPEG thumbnail + WebP display.
@@ -161,7 +215,16 @@ async function uploadImageWithDerivatives(file, base, options = {}) {
     ];
     if (webBlob) puts.push(putToR2(webUrl, webBlob, "image/webp"));
     await Promise.all(puts);
-    return { originalName, thumbName };
+
+    // Clean up prior cut-out artifacts (WebP thumbnail + full-res cut-out) and a
+    // differently typed old original left behind by this replacement.
+    await deleteR2Keys([
+      `thumbnails/${base}-thumb.webp`,
+      `cutouts/${base}-cut.png`,
+      replacedOriginalKey(options.replaces, originalName),
+    ]);
+
+    return { originalName, thumbName, version };
   } finally {
     URL.revokeObjectURL(img.src);
   }
@@ -172,19 +235,19 @@ const cutFields = (r) => (r.cutout ? { cutout: true, cutout_params: r.params } :
 export async function uploadGalleryAsset(file, itemId, index, options) {
   const n = String(index + 1).padStart(2, "0");
   const r = await uploadImageWithDerivatives(file, `${itemId}-gallery-${n}`, options);
-  return { file: r.originalName, thumbnail: r.thumbName, caption: "", alt: "", ...cutFields(r) };
+  return { file: withV(r.originalName, r.version), thumbnail: withV(r.thumbName, r.version), caption: "", alt: "", ...cutFields(r) };
 }
 
 export async function uploadDocumentPage(file, itemId, index, options) {
   const n = String(index + 1).padStart(2, "0");
   const r = await uploadImageWithDerivatives(file, `${itemId}-page-${n}`, options);
-  return { file: r.originalName, thumbnail: r.thumbName, caption: "", alt: "", ...cutFields(r) };
+  return { file: withV(r.originalName, r.version), thumbnail: withV(r.thumbName, r.version), caption: "", alt: "", ...cutFields(r) };
 }
 
 export async function uploadLaborImage(file, itemId, index, options) {
   const n = String(index + 1).padStart(2, "0");
   const r = await uploadImageWithDerivatives(file, `${itemId}-img-${n}`, options);
-  return { file: r.originalName, thumbnail: r.thumbName, caption: "", ...cutFields(r) };
+  return { file: withV(r.originalName, r.version), thumbnail: withV(r.thumbName, r.version), caption: "", ...cutFields(r) };
 }
 
 // Model assets are not images — no thumbnail/web derivative, uploads to originals/ only
@@ -198,5 +261,5 @@ export async function uploadModelAsset(file, itemId) {
 
 export async function uploadImageAsset(file, itemId, role, options) {
   const r = await uploadImageWithDerivatives(file, `${itemId}-${role}`, options);
-  return { original: r.originalName, thumbnail: r.thumbName, ...cutFields(r) };
+  return { original: withV(r.originalName, r.version), thumbnail: withV(r.thumbName, r.version), ...cutFields(r) };
 }

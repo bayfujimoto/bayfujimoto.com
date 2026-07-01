@@ -31,6 +31,11 @@
   status = 200
 
 [[redirects]]
+  from = "/api/r2-delete"
+  to   = "/.netlify/functions/r2-delete"
+  status = 200
+
+[[redirects]]
   from = "/api/commit-all"
   to   = "/.netlify/functions/commit-all"
   status = 200
