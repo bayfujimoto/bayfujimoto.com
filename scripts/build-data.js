@@ -5,11 +5,11 @@ import { dirname } from "path";
 
 // Series definitions: order, labels, and container metaphors
 const SERIES = {
-  identity:    { label: "Identity",    container: "dossier",   order: 0 },
-  labor:       { label: "Labor",       container: "binder",    order: 1 },
-  consumption: { label: "Consumption", container: "ledger",    order: 2 },
-  creation:    { label: "Creation",    container: "sketchbook", order: 3 },
-  accumulation:{ label: "Accumulation",container: "flat-file", order: 4 },
+  identity:    { label: "Identity",    container: "dossier",    subtitle: "biography, CV, contact",                      order: 0 },
+  labor:       { label: "Labor",       container: "binder",     subtitle: "projects, drawings, specifications, reports",  order: 1 },
+  consumption: { label: "Consumption", container: "ledger",     subtitle: "films, books, music, coffee, games",          order: 2 },
+  creation:    { label: "Creation",    container: "sketchbook", subtitle: "sketches, photos, prototypes, videos, notes", order: 3 },
+  accumulation:{ label: "Accumulation",container: "flat-file",  subtitle: "tickets, receipts, brochures, printed matter", order: 4 },
 };
 
 // Subcollection definitions per series
@@ -26,6 +26,7 @@ const GUIDE = {
   type: "guide",
   label: "Guide",
   container: "metadata",
+  subtitle: "finding aid, sitemap, site notes",
   order: 5,
 };
 
@@ -65,7 +66,7 @@ const isPublished = (i) => i.status === "published";
 function publishedOnly(archive) {
   const out = { series: {}, guide: archive.guide };
   for (const [key, s] of Object.entries(archive.series)) {
-    const ns = { label: s.label, container: s.container, order: s.order, subcollections: {} };
+    const ns = { label: s.label, container: s.container, subtitle: s.subtitle, order: s.order, subcollections: {} };
     for (const [subKey, sub] of Object.entries(s.subcollections || {})) {
       ns.subcollections[subKey] = { label: sub.label, items: (sub.items || []).filter(isPublished) };
     }
@@ -106,6 +107,7 @@ function buildArchive() {
     archive.series[seriesKey] = {
       label: seriesDef.label,
       container: seriesDef.container,
+      subtitle: seriesDef.subtitle,
       order: seriesDef.order,
       subcollections: {},
     };

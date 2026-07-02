@@ -289,8 +289,8 @@ export function initScene() {
     if (hits.length) {
       const { seriesId } = hits[0].object.userData;
       const info = seriesInfo[seriesId];
-      // Title names where the object leads (swapped for labor/accumulation);
-      // the subtitle keeps describing the object you're actually looking at.
+      // Both the title and the contents line follow where the object leads
+      // (swapped for labor/accumulation), so the hover previews what opens.
       const targetInfo = seriesInfo[deskTarget(seriesId)] || info;
       if (info) {
         if (seriesId !== currentHoverId) {
@@ -298,7 +298,7 @@ export function initScene() {
           hoverMeta.style.opacity = "0";
           setTimeout(() => {
             hoverTitle.textContent = targetInfo.label;
-            hoverSubtitle.textContent = info.container;
+            hoverSubtitle.textContent = targetInfo.subtitle || targetInfo.container || "";
             hoverMeta.style.opacity = "1";
           }, 150);
         }

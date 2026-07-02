@@ -36,9 +36,9 @@ export async function initPanels() {
 
   const info = {};
   Object.entries(archive.series).forEach(([key, s]) => {
-    info[key] = { label: s.label, container: s.container };
+    info[key] = { label: s.label, container: s.container, subtitle: s.subtitle };
   });
-  if (archive.guide) info.guide = { label: archive.guide.label, container: archive.guide.container };
+  if (archive.guide) info.guide = { label: archive.guide.label, container: archive.guide.container, subtitle: archive.guide.subtitle };
   setSeriesInfo(info);
 
   renderDesk();
@@ -316,7 +316,7 @@ function makeSeriesSheet(seriesKey) {
   const h1 = el("h1", "overlay-title");
   h1.textContent = s.label;
   const subtitle = el("p", "overlay-subtitle");
-  subtitle.textContent = s.container;
+  subtitle.textContent = s.subtitle || s.container;
   meta.appendChild(h1);
   meta.appendChild(subtitle);
   content.appendChild(meta);
@@ -392,7 +392,7 @@ function makeGuideSheet() {
   const h1 = el("h1", "overlay-title");
   h1.textContent = "Guide";
   const subtitle = el("p", "overlay-subtitle");
-  subtitle.textContent = "How to navigate this archive";
+  subtitle.textContent = archive.guide?.subtitle || "How to navigate this archive";
   meta.appendChild(h1);
   meta.appendChild(subtitle);
   content.appendChild(meta);
@@ -1201,7 +1201,7 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
     // rather than appending a new one inside content — otherwise the stale hoisted element
     // persists and overlaps the new title when switching subcollections via the dropdown.
     const titleText = isFlatSeries ? s.label : (activeSub?.label || activeSubKey);
-    const subtitleText = isFlatSeries ? s.container || "" : activeSub?.container || "";
+    const subtitleText = isFlatSeries ? (s.subtitle || s.container || "") : activeSub?.container || "";
     if (hoistedMeta) {
       hoistedMeta.querySelector(".overlay-title").textContent = titleText;
       hoistedMeta.querySelector(".overlay-subtitle").textContent = subtitleText;
