@@ -6,7 +6,7 @@ item_type: ticket
 status: published
 display_date: June 7, 2026
 sort_date: "2026-06-07"
-title: Monterey Bay Aquarium Ticket
+title: Admission Ticket
 issuer: Monterey Bay Aquarium
 place: Monterey, CA, USA
 event: atxsf road trip
