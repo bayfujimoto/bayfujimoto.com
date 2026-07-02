@@ -1525,6 +1525,56 @@ body.admin-gutter-dragging.dragging-h {
   color: var(--border);
 }
 
+/* ── Collapsible section heading ─────────────────────────────────────────────
+   The record form groups its fields into labelled categories. Each category's
+   heading is a clickable button that toggles `.is-collapsed` on its panel; the
+   fields below fold away while the heading stays put. Styled to read as a
+   terminal section divider (mono, uppercase, dashed underline).
+   ─────────────────────────────────────────────────────────────────────────── */
+.admin-panel-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 8px;
+  margin: 0 0 6px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px dashed var(--border);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--fg-muted);
+  cursor: pointer;
+  text-align: left;
+}
+
+.admin-panel-heading:hover { color: var(--fg); }
+
+.admin-panel-heading:focus-visible {
+  outline: none;
+  color: var(--fg);
+  border-bottom-color: var(--fg);
+}
+
+.admin-panel-heading-marker {
+  width: 1ch;
+  color: var(--border);
+}
+.admin-panel-heading-marker::before { content: '▾'; }
+.admin-panel-heading:hover .admin-panel-heading-marker { color: var(--fg-muted); }
+.admin-panel.is-collapsed .admin-panel-heading-marker::before { content: '▸'; }
+
+/* Collapsed: fold away every child under the heading. */
+.admin-panel.is-collapsed > *:not(.admin-panel-heading) { display: none; }
+.admin-panel.is-collapsed .admin-panel-heading { margin-bottom: 0; }
+
+/* Mobile: the heading is an interactive toggle — meet the 44px touch target. */
+@media (max-width: 700px) {
+  .admin-panel-heading { min-height: 44px; }
+}
+
 /* ── Tables ── */
 .admin-table {
   width: 100%;
@@ -1679,10 +1729,15 @@ body.admin-gutter-dragging.dragging-h {
   border-radius: 0;
 }
 
-/* Rows whose value is a textarea are tall — top-align the label to meet the
-   first line rather than centering it against the whole block. The data-depth
-   variant is listed too so it wins over the full-depth center rule below. */
+/* Rows whose value is tall — a textarea, or an image uploader (asset / gallery /
+   document / object) — top-align the label to meet the first line rather than
+   centering it against the whole block. Matching the uploader body containers
+   with :has covers every inspection mode regardless of the row's class, so a
+   mode switch renders the same as a freshly loaded item. The data-depth variant
+   is listed too so it wins over the full-depth center rule below. */
 .admin-field:has(textarea),
+.admin-field:has(.asset-upload__body),
+.admin-field:has(.gallery-upload__value),
 .admin-field[data-depth="full"]:has(textarea) {
   align-items: start;
 }

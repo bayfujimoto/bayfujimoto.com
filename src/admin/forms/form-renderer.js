@@ -3,14 +3,38 @@ import { makeSelect } from "../components/select.js";
 import { makeDatePicker, formatDisplayDate } from "../components/date-picker.js";
 import { makeCutoutControl } from "./cutout-control.js";
 import { imageUrl } from "../../app/image-url.js";
+import { applyFieldChrome } from "./field-chrome.js";
 
+// A form section: a labelled panel whose heading collapses/expands the fields
+// below it. The heading is a real <button> so it's keyboard-reachable; clicking
+// it toggles `.is-collapsed` on the panel and the CSS hides the non-heading
+// children. Chrome / edit-toggle / nav all query `.admin-field` recursively and
+// skip display:none rows, so collapsing a section leaves them intact.
 function makePanel(label) {
   const panel = document.createElement("div");
   panel.className = "admin-panel";
+
+  const heading = document.createElement("button");
+  heading.type = "button";
+  heading.className = "admin-panel-heading";
+  heading.setAttribute("aria-expanded", "true");
+
+  const marker = document.createElement("span");
+  marker.className = "admin-panel-heading-marker";
+  marker.setAttribute("aria-hidden", "true");
+  heading.appendChild(marker);
+
   const lbl = document.createElement("span");
-  lbl.className = "admin-panel-label";
+  lbl.className = "admin-panel-heading-label";
   lbl.textContent = label;
-  panel.appendChild(lbl);
+  heading.appendChild(lbl);
+
+  heading.addEventListener("click", () => {
+    const collapsed = panel.classList.toggle("is-collapsed");
+    heading.setAttribute("aria-expanded", String(!collapsed));
+  });
+
+  panel.appendChild(heading);
   return panel;
 }
 
@@ -841,6 +865,12 @@ function makeInspectionFieldset(group, currentData, handleChange, getItemId) {
       handleChange._thumbField = null;  // re-establish thumbnail ownership in the new mode
       assetSection.innerHTML = "";
       assetSection.appendChild(makeInspectionAwareAssets(newMode, currentData, handleChange, getItemId));
+      // Re-apply the 4-column field chrome ([state][label][value][type]) to the
+      // freshly rendered upload widgets. Initial render is decorated by
+      // edit-item.js / new-item.js after mount; a mode switch re-renders only
+      // this section, so without re-decorating here the new rows miss the state
+      // and type slots and their grid columns (1.5ch 14ch 1fr 8ch) collapse.
+      applyFieldChrome(assetSection);
     }
   );
   modeHandle.el.setAttribute("aria-labelledby", modeLabelId);

@@ -1,7 +1,9 @@
-// Priority order: record=0, core=1, dates=2, context=3, everything else=4
+// Priority order: record=0, core=1, dates=2, everything else=4, context=5 (last).
 // Any group whose id is "dates" or ends with "-dates" is treated as priority 2.
+// Context (context note / tags / related ids) sorts to the very bottom, after
+// the type-specific groups.
 export function orderGroups(groups) {
-  const PRIORITY = { record: 0, core: 1, context: 3 };
+  const PRIORITY = { record: 0, core: 1, context: 5 };
   const isDates = g => g.id === "dates" || g.id.endsWith("-dates");
   return [...groups].sort((a, b) => {
     const pa = PRIORITY[a.id] ?? (isDates(a) ? 2 : 4);
