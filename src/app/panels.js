@@ -1,7 +1,7 @@
 import { navigate, replace } from "./router.js";
 import { subscribe, getState, deskTarget } from "./state.js";
 import { imageUrl, modelUrl } from "./image-url.js";
-import { setSeriesInfo } from "./scene.js";
+import { setSeriesInfo, pauseSceneRender, resumeSceneRender } from "./scene.js";
 import { resolveCreator, resolveSlots, titleIsGiven } from "../shared/field-schema.js";
 
 let archive = null;
@@ -149,6 +149,10 @@ function pushSheet({ veil, content, cleanup, update, onHoist }) {
   const depth = layerStack.length + 1;
   const returnFocus = document.activeElement;
 
+  // First veil going up: freeze the desk render loop so its live WebGL canvas
+  // stops churning behind the backdrop-filter and the veil can't flicker out.
+  if (layerStack.length === 0) pauseSceneRender();
+
   veil.style.setProperty("--depth", depth);
   content.style.setProperty("--depth", depth);
 
@@ -190,6 +194,8 @@ function popSheet() {
     if (top.returnFocus && typeof top.returnFocus.focus === "function") {
       top.returnFocus.focus({ preventScroll: true });
     }
+    // Last veil gone (after its fade-out): resume the desk render loop.
+    if (layerStack.length === 0) resumeSceneRender();
   };
   top.content.addEventListener("transitionend", remove, { once: true });
   setTimeout(remove, 400);

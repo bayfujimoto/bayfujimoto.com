@@ -6,6 +6,15 @@ import { deskTarget } from "./state.js";
 
 const seriesInfo = {};
 
+// While an overlay veil is open the desk sits behind a darkened, blurred
+// backdrop-filter. Repainting the canvas every frame under that filter makes the
+// browser intermittently drop the veil's composited layer, flashing the raw desk
+// through. Pausing the render loop while any veil is up removes that churn (the
+// blurred desk is static anyway) and eliminates the flicker. Driven by panels.js.
+let renderPaused = false;
+export function pauseSceneRender() { renderPaused = true; }
+export function resumeSceneRender() { renderPaused = false; }
+
 // The series objects sitting on the desk are rendered with flat, untextured
 // materials. Their image textures are also stripped from the GLB binaries
 // themselves (see scripts/strip-model-textures.js), which publishes
@@ -331,7 +340,7 @@ export function initScene() {
   if (reduceMotion) {
     render();
   } else {
-    (function animate() { requestAnimationFrame(animate); render(); })();
+    (function animate() { requestAnimationFrame(animate); if (renderPaused) return; render(); })();
   }
 
   window.addEventListener("resize", () => {
