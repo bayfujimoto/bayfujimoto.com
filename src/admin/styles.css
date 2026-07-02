@@ -660,7 +660,9 @@ body.admin-gutter-dragging.dragging-h {
 
 .admin-status-state--saving::before,
 .admin-status-state--loading::before,
-.admin-log-status--saving::before {
+.admin-log-status--saving::before,
+.asset-upload__status.is-busy::before,
+.gallery-upload__status.is-busy::before {
   content: '⠋';
   animation: braille-spin 0.8s steps(1, end) infinite;
   display: inline-block;
@@ -672,10 +674,20 @@ body.admin-gutter-dragging.dragging-h {
 @media (prefers-reduced-motion: reduce) {
   .admin-status-state--saving::before,
   .admin-status-state--loading::before,
-  .admin-log-status--saving::before {
+  .admin-log-status--saving::before,
+  .asset-upload__status.is-busy::before,
+  .gallery-upload__status.is-busy::before {
     animation: none;
     content: '⏵';
   }
+}
+
+/* Image upload / background-removal in flight — same braille spinner and the
+   same in-flight violet as the commit indicator. Toggled via .is-busy in
+   form-renderer.js while an upload or cut-out is running. */
+.asset-upload__status.is-busy,
+.gallery-upload__status.is-busy {
+  color: var(--accent-violet);
 }
 
 .admin-status-time {
@@ -1736,6 +1748,7 @@ body.admin-gutter-dragging.dragging-h {
    mode switch renders the same as a freshly loaded item. The data-depth variant
    is listed too so it wins over the full-depth center rule below. */
 .admin-field:has(textarea),
+.admin-field:has(.asset-media),
 .admin-field:has(.asset-upload__body),
 .admin-field:has(.gallery-upload__value),
 .admin-field[data-depth="full"]:has(textarea) {
@@ -1767,9 +1780,9 @@ body.admin-gutter-dragging.dragging-h {
   padding-top: 0;
   min-width: 0;
   line-height: 1.4;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  /* Let long field names wrap within the 14ch column instead of truncating. */
+  white-space: normal;
+  overflow-wrap: break-word;
   margin-bottom: 0;
 }
 
@@ -1782,7 +1795,8 @@ body.admin-gutter-dragging.dragging-h {
 .admin-field-type {
   color: var(--fg-muted);
   font-size: var(--text-xs);
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: break-word;
   text-align: left;
 }
 
@@ -2030,6 +2044,19 @@ body.admin-gutter-dragging.dragging-h {
   gap: 6px;
 }
 
+/* Preview of the current asset. object-fit: contain fits the whole image inside
+   the frame (letterboxed on the elevated backing) so nothing is cropped; the
+   backing also lets transparent cut-outs read against a surface. */
+.asset-upload__preview {
+  display: block;
+  width: 140px;
+  height: 140px;
+  object-fit: contain;
+  border: 1px solid var(--border-inner);
+  background: var(--bg-elevated);
+  align-self: flex-start;
+}
+
 .asset-upload__filename {
   font-size: var(--text-xs);
   color: var(--muted);
@@ -2140,7 +2167,8 @@ body.admin-gutter-dragging.dragging-h {
 .gallery-upload__thumb {
   width: 100%;
   aspect-ratio: 1;
-  object-fit: cover;
+  object-fit: contain;
+  background: var(--bg-elevated);
   border: 1px solid var(--border-inner);
 }
 
@@ -2230,117 +2258,103 @@ body.admin-gutter-dragging.dragging-h {
   min-height: 1em;
 }
 
-/* ── Cut-out (remove backing) control ── */
-.cutout-control {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin-top: 0;
-  padding-top: 8px;
-  border-top: 1px solid var(--border-inner);
+/* ── Reorganized Assets group ─────────────────────────────────────────────────
+   Each asset control is its own state·FIELD·VALUE·TYPE row like every other
+   group. The maker functions wrap their rows in a display:contents element so
+   those rows lay out as direct grid rows of the form. The cut-out is per asset:
+   a `remove backing` toggle row plus tolerance/defringe sub-rows, indented
+   beneath the image they apply to.
+   ─────────────────────────────────────────────────────────────────────────── */
+.asset-upload-group,
+.gallery-upload-group { display: contents; }
+
+/* A hidden row must actually collapse. `.admin-field { display: grid }` outranks
+   the UA `[hidden] { display: none }`, so restate it here — this is what hides
+   the tolerance / defringe rows when "remove backing" is unchecked. */
+.admin-field[hidden] { display: none; }
+
+/* Sub-rows sit indented beneath their asset, with a tree marker. */
+.admin-field--sub > label {
+  padding-left: 12px;
+  color: var(--fg-muted);
+}
+.admin-field--sub > label::before {
+  content: '└ ';
+  color: var(--border);
 }
 
-.cutout-control__heading {
-  font-family: var(--font-mono);
+/* Image value cell: preview + filename + choose/replace, stacked. */
+.asset-media {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: flex-start;
+  min-width: 0;
+}
+.asset-media__file {
+  font-size: var(--text-xs);
+  color: var(--fg-muted);
+  word-break: break-all;
+}
+.asset-media__file.is-empty { color: var(--fg-dim); font-style: italic; }
+.asset-choose {
   font-size: var(--text-xs);
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: var(--muted);
+  color: var(--fg-muted);
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
+.asset-choose:hover { color: var(--fg); }
 
-.cutout-control__hint {
-  margin-top: 0;
-  max-width: 46ch;
-  line-height: 1.4;
-}
-
-.cutout-control__toggle {
+/* Toggle value cell (remove backing). */
+.asset-toggle {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-height: 44px;            /* touch target */
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  color: var(--fg);
   cursor: pointer;
-}
-
-.cutout-control__toggle input[type="checkbox"] {
-  /* Restore the native checkbox: the global `.admin-field input` reset strips
-     appearance and leaves a border-bottom, which renders as a bare line here. */
-  appearance: auto;
-  -webkit-appearance: auto;
-  border: none;
-  width: 16px;
-  height: 16px;
-  accent-color: var(--term-amber);
-  cursor: pointer;
-  flex: none;
-}
-
-.cutout-control__adv {
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  color: var(--muted);
-}
-
-.cutout-control__adv summary {
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;            /* touch target */
-  color: var(--term-amber);
-  cursor: pointer;
-  user-select: none;
-}
-
-.cutout-control__adv[open] summary {
-  margin-bottom: 6px;
-}
-
-.cutout-control__num {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 4px 8px;
-  margin: 0 0 10px;
-  color: var(--muted);
-}
-
-.cutout-control__num:last-child {
-  margin-bottom: 0;
-}
-
-.cutout-control__num-label {
-  min-width: 68px;
+  font-size: var(--text-sm);
   color: var(--fg);
 }
-
-.cutout-control__num-hint {
-  flex-basis: 100%;
-  color: var(--fg-dim);
-  line-height: 1.4;
-}
-
-.cutout-control__num input {
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  color: var(--fg);
+.asset-toggle input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--border);
   background: transparent;
-  border: 1px solid var(--border-inner);
-  padding: 4px 7px;
-  width: 64px;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin: 0;
+  border-radius: 2px;
+  position: relative;
+}
+.asset-toggle input[type="checkbox"]:checked {
+  background: var(--fg);
+  border-color: var(--fg);
+}
+.asset-toggle input[type="checkbox"]:checked::after {
+  content: '✓';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--bg);
+  font-size: 10px;
+}
+.asset-toggle input[type="checkbox"]:focus-visible {
+  outline: 1px solid var(--fg);
+  outline-offset: 2px;
 }
 
-.cutout-control__num input:focus {
-  outline: 1px solid var(--term-amber);
-  outline-offset: -1px;
-}
-
-@media (max-width: 700px) {
-  .cutout-control__num input {
-    font-size: 16px;          /* ≥16px: suppress iOS zoom-on-focus */
-  }
-}
+/* Number sub-rows (tolerance / defringe) — a narrow boxed value, not full-width. */
+.admin-field--sub > .admin-input-wrap { justify-self: start; width: max-content; }
+.admin-field .asset-num { width: 8ch; }
 
 /* ── Contraption state builder ── */
 .contraption-states {

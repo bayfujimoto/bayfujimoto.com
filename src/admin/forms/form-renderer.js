@@ -2,6 +2,7 @@ import { INSPECTION_ASSETS_SENTINEL } from "./type-fields.js";
 import { makeSelect } from "../components/select.js";
 import { makeDatePicker, formatDisplayDate } from "../components/date-picker.js";
 import { makeCutoutControl } from "./cutout-control.js";
+import { assetFieldRow } from "./field-row.js";
 import { imageUrl } from "../../app/image-url.js";
 import { applyFieldChrome } from "./field-chrome.js";
 
@@ -96,50 +97,64 @@ function displayFilename(v) {
 }
 
 function makeAssetUploadField(field, value, handleChange, getItemId) {
-  const wrapper = document.createElement("div");
-  wrapper.className = "admin-field";
-  if (field.depth === "full") wrapper.dataset.depth = "full";
-
   // Tracks the current stored filename so a re-upload can tell the server which
   // old original to remove when the file type changes. Updated after each upload.
   let current = value;
 
-  const label = document.createElement("label");
-  label.textContent = field.label;
-  wrapper.appendChild(label);
+  // display:contents group so the image row and the per-asset cut-out rows lay
+  // out as siblings in the form grid, each as its own state·FIELD·VALUE·TYPE row.
+  const group = document.createElement("div");
+  group.className = "asset-upload-group";
 
-  // Right-column container
-  const body = document.createElement("div");
-  body.className = "asset-upload__body";
+  // ── Value cell for the image row: preview + filename + choose/replace ──
+  const media = document.createElement("div");
+  media.className = "asset-media";
+
+  // Image preview (display-size derivative), so the asset can be reviewed before
+  // saving/committing. Shown on load if there's already a value and refreshed
+  // after each upload; a load error (e.g. a missing derivative) hides it rather
+  // than leaving a broken-image icon. For cut-out uploads the display derivative
+  // is the cut-out itself, so the preview reflects the removed backing.
+  const preview = document.createElement("img");
+  preview.className = "asset-upload__preview";
+  preview.alt = "";
+  preview.addEventListener("error", () => { preview.style.display = "none"; });
+  const setPreview = (name) => {
+    const url = name ? imageUrl(name, "display") : null;
+    if (url) { preview.src = url; preview.style.display = ""; }
+    else { preview.removeAttribute("src"); preview.style.display = "none"; }
+  };
+  setPreview(value);
+  media.appendChild(preview);
 
   const filename = document.createElement("div");
-  filename.className = "asset-upload__filename";
-  filename.textContent = displayFilename(value) || "—";
-  body.appendChild(filename);
+  filename.className = "asset-media__file" + (value ? "" : " is-empty");
+  filename.textContent = displayFilename(value) || "no image";
+  media.appendChild(filename);
 
   const fileInput = document.createElement("input");
   fileInput.type = "file";
   fileInput.accept = "image/*";
   fileInput.id = `field-${field.id.replace(/\./g, "-")}`;
   fileInput.style.display = "none";
-  body.appendChild(fileInput);
+  media.appendChild(fileInput);
 
   const trigger = document.createElement("label");
-  trigger.className = "asset-upload__trigger";
+  trigger.className = "asset-choose";
   trigger.setAttribute("for", fileInput.id);
-  trigger.textContent = "choose file";
-  body.appendChild(trigger);
-
-  // Cut-out ("remove backing") control — only on scan-oriented fields (coffee
-  // front/back, inspection=card front/back, inspection=object thumbnail).
-  const cut = field.allowCutout ? makeCutoutControl() : null;
-  if (cut) body.appendChild(cut.el);
+  trigger.textContent = value ? "replace" : "choose file";
+  media.appendChild(trigger);
 
   const status = document.createElement("div");
   status.className = "asset-upload__status";
-  body.appendChild(status);
+  media.appendChild(status);
 
-  wrapper.appendChild(body);
+  group.appendChild(assetFieldRow(field.label, "image", media));
+
+  // Cut-out ("remove backing") rows — per asset; only on scan-oriented fields
+  // (coffee front/back, inspection=card front/back, inspection=object thumbnail).
+  const cut = field.allowCutout ? makeCutoutControl() : null;
+  if (cut) cut.rows.forEach((r) => group.appendChild(r));
 
   fileInput.addEventListener("change", async () => {
     const file = fileInput.files?.[0];
@@ -152,6 +167,7 @@ function makeAssetUploadField(field, value, handleChange, getItemId) {
     }
 
     status.textContent = "Uploading…";
+    status.classList.add("is-busy");
     fileInput.disabled = true;
 
     try {
@@ -180,15 +196,19 @@ function makeAssetUploadField(field, value, handleChange, getItemId) {
       }
 
       filename.textContent = displayFilename(result.original);
+      filename.classList.remove("is-empty");
+      trigger.textContent = "replace";
+      setPreview(result.original);
       status.textContent = "Uploaded";
     } catch (err) {
       status.textContent = `Error: ${err.message}`;
     } finally {
       fileInput.disabled = false;
+      status.classList.remove("is-busy");
     }
   });
 
-  return wrapper;
+  return group;
 }
 
 // Shared ordered-image-list uploader used by gallery and document modes
@@ -202,20 +222,15 @@ function makeOrderedImageField(opts) {
       : { ...itemDefaults, ...item }
   ) : [];
 
-  const wrapper = document.createElement("div");
-  wrapper.className = "admin-field admin-field--gallery-upload";
-  wrapper.dataset.depth = "full";
+  // display:contents group so the gallery row and the per-set cut-out rows lay
+  // out as siblings in the form grid, each as its own state·FIELD·VALUE·TYPE row.
+  const group = document.createElement("div");
+  group.className = "gallery-upload-group";
 
-  const label = document.createElement("label");
-  label.textContent = fieldLabel;
-  wrapper.appendChild(label);
-
-  // Single value container (column 3), mirroring .asset-upload__body. Without it,
-  // field-chrome's 4-column grid ([state][label][value][type]) scatters the list,
-  // picker, cut-out control, and status across separate columns and rows.
+  // Single value container (column 3) holding the image list, the picker, and the
+  // status line — keeps them in one grid cell instead of scattering.
   const body = document.createElement("div");
   body.className = "gallery-upload__value";
-  wrapper.appendChild(body);
 
   const list = document.createElement("div");
   list.className = "gallery-upload__list";
@@ -236,13 +251,20 @@ function makeOrderedImageField(opts) {
   pickerLabel.appendChild(fileInput);
   body.appendChild(pickerLabel);
 
-  // Cut-out ("remove backing") control — shared reusable widget.
-  const cut = makeCutoutControl();
-  body.appendChild(cut.el);
-
   const status = document.createElement("div");
   status.className = "gallery-upload__status";
   body.appendChild(status);
+
+  // The gallery images row. Keep the --gallery-upload class + data-depth so the
+  // existing CSS and the "fieldset has a gallery" visibility check still match.
+  const galleryRow = assetFieldRow(fieldLabel, "gallery", body);
+  galleryRow.classList.add("admin-field--gallery-upload");
+  galleryRow.dataset.depth = "full";
+  group.appendChild(galleryRow);
+
+  // Cut-out ("remove backing") rows — shared reusable widget, one set for the list.
+  const cut = makeCutoutControl();
+  cut.rows.forEach((r) => group.appendChild(r));
 
   function commit() {
     handleChange(fieldId, items.length > 0 ? items.map(item => ({ ...item })) : []);
@@ -386,6 +408,7 @@ function makeOrderedImageField(opts) {
 
     fileInput.disabled = true;
     status.textContent = `Uploading 0 / ${files.length}…`;
+    status.classList.add("is-busy");
 
     // Auto pre-tick the backing toggle from the first file, unless the user set it.
     await cut.primeFromFile(files[0]);
@@ -407,10 +430,11 @@ function makeOrderedImageField(opts) {
     } finally {
       fileInput.disabled = false;
       fileInput.value = "";
+      status.classList.remove("is-busy");
     }
   });
 
-  return wrapper;
+  return group;
 }
 
 function makeModelUploadField(field, value, handleChange, getItemId) {

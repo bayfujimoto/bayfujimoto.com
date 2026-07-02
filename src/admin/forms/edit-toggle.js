@@ -41,6 +41,9 @@ export function applyEditToggle(formContainer) {
     // Asset upload + gallery fields keep their custom widget chrome.
     if (field.classList.contains('admin-field--asset-upload')) continue;
     if (field.classList.contains('admin-field--gallery-upload')) continue;
+    // Reorganized Assets group rows manage their own widgets (image/toggle/
+    // number) — don't wrap their inputs in the click-to-edit buffer toggle.
+    if (field.classList.contains('admin-field--asset-row')) continue;
 
     // Find the primary input inside this field row.
     const input = field.querySelector('input, textarea, select');
