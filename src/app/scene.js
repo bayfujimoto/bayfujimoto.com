@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { navigate } from "./router.js";
 import { dismissLoadingScreen } from "./loading.js";
+import { deskTarget } from "./state.js";
 
 const seriesInfo = {};
 
@@ -279,7 +280,7 @@ export function initScene() {
     requestAnimationFrame(() => { hoverMeta.style.transition = "opacity 0.15s"; });
     seriesId === "guide"
       ? navigate({ layer: "guide" })
-      : navigate({ layer: "series", series: seriesId, subcollection: null, item: null });
+      : navigate({ layer: "series", series: deskTarget(seriesId), subcollection: null, item: null });
   });
   canvas.addEventListener("mousemove", (e) => {
     getNDC(e);
@@ -288,12 +289,15 @@ export function initScene() {
     if (hits.length) {
       const { seriesId } = hits[0].object.userData;
       const info = seriesInfo[seriesId];
+      // Title names where the object leads (swapped for labor/accumulation);
+      // the subtitle keeps describing the object you're actually looking at.
+      const targetInfo = seriesInfo[deskTarget(seriesId)] || info;
       if (info) {
         if (seriesId !== currentHoverId) {
           currentHoverId = seriesId;
           hoverMeta.style.opacity = "0";
           setTimeout(() => {
-            hoverTitle.textContent = info.label;
+            hoverTitle.textContent = targetInfo.label;
             hoverSubtitle.textContent = info.container;
             hoverMeta.style.opacity = "1";
           }, 150);

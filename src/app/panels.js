@@ -1,5 +1,5 @@
 import { navigate, replace } from "./router.js";
-import { subscribe, getState } from "./state.js";
+import { subscribe, getState, deskTarget } from "./state.js";
 import { imageUrl, modelUrl } from "./image-url.js";
 import { setSeriesInfo } from "./scene.js";
 import { resolveCreator, resolveSlots, titleIsGiven } from "../shared/field-schema.js";
@@ -207,11 +207,12 @@ function showSkipMenu(deskObjects) {
 
   deskObjects.forEach(({ type, key, label }) => {
     const btn = document.createElement("button");
-    btn.textContent = label;
+    // Name the destination (swapped for labor/accumulation), matching the desk hover.
+    btn.textContent = type === "series" ? (archive.series[deskTarget(key)]?.label || label) : label;
     btn.addEventListener("click", () => {
       menu.remove();
       if (type === "guide") navigate({ layer: "guide" });
-      else navigate({ layer: "series", series: key, subcollection: null, item: null });
+      else navigate({ layer: "series", series: deskTarget(key), subcollection: null, item: null });
     });
     menu.appendChild(btn);
   });
@@ -265,7 +266,7 @@ function renderDesk() {
     const key = btn.dataset.key;
     if (type === "series") {
       btn.addEventListener("click", () => {
-        navigate({ layer: "series", series: key, subcollection: null, item: null });
+        navigate({ layer: "series", series: deskTarget(key), subcollection: null, item: null });
       });
     } else if (type === "guide") {
       btn.addEventListener("click", () => {

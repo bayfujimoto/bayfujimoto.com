@@ -29,3 +29,14 @@ export function subscribe(fn) {
 export function isValidSeries(s) {
   return VALID_SERIES.has(s);
 }
+
+// Desk-object click remap. The labor and accumulation objects keep their forms,
+// positions, and labels, but clicking each opens the other's browse view.
+// Applied to every desk-entry path (3D click, keyboard skip menu, hidden HTML
+// desk) so all input modes navigate identically. URLs and deep links are
+// unaffected — only the act of clicking a desk object is swapped.
+const DESK_CLICK_REMAP = { labor: "accumulation", accumulation: "labor" };
+
+export function deskTarget(seriesId) {
+  return DESK_CLICK_REMAP[seriesId] || seriesId;
+}
