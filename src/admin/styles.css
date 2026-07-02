@@ -1147,7 +1147,7 @@ body.admin-gutter-dragging.dragging-h {
   display: grid;
   grid-template-columns: minmax(90px, max-content) 1fr auto;
   gap: 12px;
-  align-items: baseline;
+  align-items: center;
   padding: 6px 4px;
   text-decoration: none;
   color: var(--fg-muted);
@@ -1160,7 +1160,7 @@ body.admin-gutter-dragging.dragging-h {
 
 .admin-empty-state__id {
   font-size: var(--text-xs);
-  color: var(--fg-dim);
+  color: var(--fg-muted);
   white-space: nowrap;
 }
 
@@ -1217,6 +1217,14 @@ body.admin-gutter-dragging.dragging-h {
   min-height: 28px;
 }
 
+/* Hairline under the header only when pending rows follow it, so the header
+   reads apart from the pending list without doubling up the rule in the
+   empty / saving / saved states (where the list is empty). */
+.admin-log-header:has(+ .admin-log-list:not(:empty)) {
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-faint);
+}
+
 .admin-log-count {
   font-size: var(--text-sm);
   color: var(--fg-muted);
@@ -1253,10 +1261,10 @@ body.admin-gutter-dragging.dragging-h {
 
 .admin-log-row {
   display: grid;
-  grid-template-columns: 24px minmax(80px, max-content) 1fr;
-  gap: 10px;
-  padding: 4px 8px;
-  align-items: baseline;
+  grid-template-columns: 18px minmax(104px, max-content) 1fr;
+  gap: 14px;
+  padding: 5px 8px;
+  align-items: center;
   cursor: pointer;
   border-bottom: 1px solid var(--border-faint);
   color: var(--fg-muted);
@@ -1287,7 +1295,7 @@ body.admin-gutter-dragging.dragging-h {
 
 .admin-log-id {
   font-size: var(--text-xs);
-  color: var(--fg-dim);
+  color: var(--fg-muted);
   white-space: nowrap;
 }
 
@@ -1311,7 +1319,9 @@ body.admin-gutter-dragging.dragging-h {
 /* ── Recent commits history ───────────────────────────────────────────────── */
 
 .admin-log-history {
-  margin-top: 4px;
+  margin-top: 8px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
 }
 
 .admin-log-history-title {
@@ -1347,6 +1357,7 @@ body.admin-gutter-dragging.dragging-h {
   display: grid;
   grid-template-columns: max-content 1fr max-content;
   gap: 10px;
+  align-items: center;
   padding: 3px 8px;
   color: var(--fg-muted);
   border-bottom: 1px solid var(--border-faint);
@@ -1356,7 +1367,7 @@ body.admin-gutter-dragging.dragging-h {
 .admin-log-history-row.is-error    { color: var(--accent-red); }
 
 .admin-log-history-time {
-  color: var(--fg-dim);
+  color: var(--fg-muted);
 }
 
 .admin-log-history-msg {
@@ -1636,7 +1647,7 @@ body.admin-gutter-dragging.dragging-h {
   display: grid;
   grid-template-columns: 1.5ch 14ch 1fr 8ch;
   gap: 8px;
-  align-items: baseline;
+  align-items: center;
   padding: 3px 8px;
   font-family: var(--font-mono);
   font-size: var(--text-sm);
@@ -1644,6 +1655,9 @@ body.admin-gutter-dragging.dragging-h {
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
+
+/* VALUE header label sits over the boxed value text (box inset ≈ 7px). */
+.admin-form-header > :nth-child(3) { padding-left: 7px; }
 
 .admin-form-header-sep {
   height: 1px;
@@ -1656,13 +1670,25 @@ body.admin-gutter-dragging.dragging-h {
   display: grid;
   grid-template-columns: 1.5ch 14ch 1fr 8ch;
   gap: 8px;
-  align-items: baseline;
+  align-items: center;
   padding: 3px 8px;
   margin-bottom: 0;
   font-family: var(--font-mono);
   font-size: var(--text-sm);
   color: var(--fg);
   border-radius: 0;
+}
+
+/* Rows whose value is a textarea are tall — top-align the label to meet the
+   first line rather than centering it against the whole block. The data-depth
+   variant is listed too so it wins over the full-depth center rule below. */
+.admin-field:has(textarea),
+.admin-field[data-depth="full"]:has(textarea) {
+  align-items: start;
+}
+.admin-field:has(textarea) > label,
+.admin-field[data-depth="full"]:has(textarea) > label {
+  padding-top: 4px;
 }
 
 .admin-field.is-highlighted {
@@ -1699,7 +1725,7 @@ body.admin-gutter-dragging.dragging-h {
 
 /* Type column (column 4) — added by field-chrome.js */
 .admin-field-type {
-  color: var(--fg-dim);
+  color: var(--fg-muted);
   font-size: var(--text-xs);
   white-space: nowrap;
   text-align: left;
@@ -1711,15 +1737,30 @@ body.admin-gutter-dragging.dragging-h {
 }
 
 /* Full-depth + asset-upload + gallery-upload fields keep the same grid */
-.admin-field[data-depth="full"],
+.admin-field[data-depth="full"] {
+  display: grid;
+  grid-template-columns: 1.5ch 14ch 1fr 8ch;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 4px;
+  padding: 3px 8px;
+}
+
+/* Upload widgets carry tall content in the value column — top-align the label. */
 .admin-field--asset-upload,
 .admin-field--gallery-upload {
   display: grid;
   grid-template-columns: 1.5ch 14ch 1fr 8ch;
   gap: 8px;
-  align-items: baseline;
+  align-items: start;
   margin-bottom: 4px;
   padding: 3px 8px;
+}
+
+/* Uploads are also data-depth="full"; keep them top-aligned over that rule. */
+.admin-field[data-depth="full"].admin-field--asset-upload,
+.admin-field[data-depth="full"].admin-field--gallery-upload {
+  align-items: start;
 }
 
 .admin-field[data-depth="full"] > label,
@@ -1875,6 +1916,56 @@ body.admin-gutter-dragging.dragging-h {
   font-size: var(--text-xs);
   color: var(--fg-dim);
   margin-top: 2px;
+}
+
+/* ── Boxed value cell (field / value differentiation) ─────────────────────────
+   Each field's value gets its own bounded surface so it reads as distinct from
+   the field name to its left. Applies to the three containers that occupy the
+   value column: text/number wraps (.admin-input-wrap), the custom select, and
+   the date picker. Upload widgets and the meta rows keep their own chrome. The
+   box owns the boundary, so the old per-input underlines are dropped; focus /
+   open brightens the border to ink and drops the fill to the pane color.
+   ─────────────────────────────────────────────────────────────────────────── */
+.admin-field > .admin-input-wrap,
+.admin-field > .admin-select,
+.admin-field > .admin-datepicker {
+  border: 1px solid var(--border-faint);
+  background: var(--bg-elevated);
+  border-radius: 2px;
+  padding: 1px 3px;
+}
+
+.admin-field > .admin-input-wrap input,
+.admin-field > .admin-input-wrap textarea { border: none; }
+.admin-field > .admin-datepicker .admin-datepicker-trigger { border-bottom: none; }
+.admin-field > .admin-input-wrap .admin-field-display:hover { border-bottom-color: transparent; }
+
+.admin-field > .admin-input-wrap:focus-within,
+.admin-field > .admin-select:focus-within,
+.admin-field > .admin-select.open,
+.admin-field > .admin-datepicker:focus-within,
+.admin-field > .admin-datepicker.open {
+  border-color: var(--fg);
+  background: var(--bg);
+}
+
+/* Autofill rows hold a value + an [auto] button. Box the value itself so the
+   button stays outside the cell. */
+.admin-field > .admin-input-wrap.has-autofill {
+  border: none;
+  background: transparent;
+  padding: 0;
+}
+.admin-field > .admin-input-wrap.has-autofill > .admin-field-value,
+.admin-field > .admin-input-wrap.has-autofill > input {
+  border: 1px solid var(--border-faint);
+  background: var(--bg-elevated);
+  border-radius: 2px;
+  padding: 1px 3px;
+}
+.admin-field > .admin-input-wrap.has-autofill > .admin-field-value:focus-within {
+  border-color: var(--fg);
+  background: var(--bg);
 }
 
 /* ── Asset upload fields (single file) ── */
@@ -2416,7 +2507,16 @@ body.admin-gutter-dragging.dragging-h {
 }
 
 .admin-field--meta > .admin-field-meta-value.is-hint {
-  color: var(--fg-dim);
+  color: var(--fg-muted);
+}
+
+/* Fence the meta block (path / lock) off from the editable field table below,
+   so "about this file" reads as its own header band. The border falls under the
+   second meta row (lock). */
+.admin-field--meta + .admin-field--meta {
+  border-bottom: 1px solid var(--border-faint);
+  padding-bottom: 7px;
+  margin-bottom: 7px;
 }
 
 /* Lock toggle for stable ID / slug (Phase 10).
