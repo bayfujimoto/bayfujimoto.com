@@ -3,6 +3,7 @@
     "identity": {
       "label": "Identity",
       "container": "dossier",
+      "subtitle": "biography, CV, contact",
       "order": 0,
       "subcollections": {
         "biography": {
@@ -228,6 +229,7 @@
     "labor": {
       "label": "Labor",
       "container": "binder",
+      "subtitle": "projects, drawings, specifications, reports",
       "order": 1,
       "subcollections": {},
       "items": [
@@ -310,11 +312,33 @@
     "consumption": {
       "label": "Consumption",
       "container": "ledger",
+      "subtitle": "films, books, music, coffee, games",
       "order": 2,
       "subcollections": {
         "films": {
           "label": "films",
           "items": [
+            {
+              "id": "FILM-2026-520",
+              "slug": "it-follows-2014-2026-07-01",
+              "title": "It Follows",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2014",
+              "director": "",
+              "watch_date": "2026-07-01",
+              "display_date": "July 1, 2026",
+              "sort_date": "2026-07-01",
+              "rating": 0,
+              "rewatch": true,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/it-follows/",
+              "assets": {
+                "backdrop": "https://a.ltrbxd.com/resized/alternative-backdrop/1/9/3/5/5/4/tmdb/1QZi4BRLKOLvuHRhU2SB9I2tY6h-1200-1200-675-675-crop-000000.jpg?v=b11e176675",
+                "poster": "https://a.ltrbxd.com/resized/sm/upload/zr/lv/9v/wy/4MrwJZr0R9LbyOgZqwLNmtzzxbu-0-600-0-900-crop.jpg?v=0f234ef9c3"
+              }
+            },
             {
               "id": "FILM-2026-519",
               "slug": "evil-dead-2013-2026-06-30",
@@ -15363,6 +15387,7 @@
     "creation": {
       "label": "Creation",
       "container": "sketchbook",
+      "subtitle": "sketches, photos, prototypes, videos, notes",
       "order": 3,
       "subcollections": {
         "sketches": {
@@ -15585,29 +15610,29 @@
     "accumulation": {
       "label": "Accumulation",
       "container": "flat-file",
+      "subtitle": "tickets, receipts, brochures, printed matter",
       "order": 4,
       "subcollections": {},
       "items": [
         {
-          "id": "EPH-2026-021",
-          "slug": "leggett-ca-usa-2026-06-28",
+          "id": "EPH-2026-022",
+          "slug": "leggett-ca-usa-2026-07-01",
           "series": "accumulation",
           "item_type": "document",
           "status": "published",
-          "display_date": "June 28, 2026",
-          "sort_date": "2026-06-28",
-          "title": "Leggett Drive-Through Tree",
-          "issuer": "Drive-Thru Tree Park",
+          "display_date": "July 1, 2026",
+          "sort_date": "2026-07-01",
+          "title": "Rebate Coupon",
+          "issuer": "Leggett Drive-Through Tree",
           "place": "Leggett, CA, USA",
           "event": "Lassen Volcanic NP Roadtrip",
-          "dimensions": "101 x 38",
+          "dimensions": "102 x 38",
           "inspection": "document",
           "assets": {
-            "thumbnail": "EPH-2026-021-page-01-thumb.webp?v=19e33f2cc20x2",
             "pages": [
               {
-                "file": "EPH-2026-021-page-01.jpg?v=19e33f2cc20x2",
-                "thumbnail": "EPH-2026-021-page-01-thumb.webp?v=19e33f2cc20x2",
+                "file": "EPH-2026-022-page-01.jpg?v=72ec3cd6c20x2",
+                "thumbnail": "EPH-2026-022-page-01-thumb.webp?v=72ec3cd6c20x2",
                 "caption": "",
                 "alt": "",
                 "cutout": true,
@@ -15616,7 +15641,62 @@
                   "defringe": 2
                 }
               }
-            ]
+            ],
+            "thumbnail": "EPH-2026-022-page-01-thumb.webp?v=72ec3cd6c20x2"
+          }
+        },
+        {
+          "id": "EPH-2026-023",
+          "slug": "oakland-ca-usa-2026-06-20",
+          "series": "accumulation",
+          "item_type": "document",
+          "status": "published",
+          "display_date": "June 20, 2026",
+          "sort_date": "2026-06-20",
+          "title": "White Flare",
+          "place": "Oakland, CA, USA",
+          "context_note": "$15!!! for 7 cards. This is my favorite from generation 5.",
+          "issuer": "It's Your Move Games",
+          "dimensions": "63 x 88",
+          "inspection": "card",
+          "assets": {
+            "pages": [
+              {
+                "file": "EPH-2026-023-page-01.jpg?v=c50e41f7c20x2",
+                "thumbnail": "EPH-2026-023-page-01-thumb.webp?v=c50e41f7c20x2",
+                "caption": "",
+                "alt": "",
+                "cutout": true,
+                "cutout_params": {
+                  "tolerance": 20,
+                  "defringe": 2
+                }
+              }
+            ],
+            "thumbnail": "EPH-2026-023-front-thumb.webp?v=c50e41f7c10x2",
+            "front": "EPH-2026-023-front.jpg?v=c50e41f7c10x2",
+            "back": "EPH-2026-023-back.jpg?v=b45fc8e2c10x2"
+          }
+        },
+        {
+          "id": "EPH-2026-024",
+          "slug": "monterey-ca-usa-2026-06-07",
+          "series": "accumulation",
+          "item_type": "ticket",
+          "status": "published",
+          "display_date": "June 7, 2026",
+          "sort_date": "2026-06-07",
+          "title": "Admission Ticket",
+          "issuer": "Monterey Bay Aquarium",
+          "place": "Monterey, CA, USA",
+          "event": "atxsf road trip",
+          "extent": "1 ticket",
+          "dimensions": "86 x 54",
+          "inspection": "card",
+          "assets": {
+            "front": "EPH-2026-024-front.jpg?v=e3660c09c20x2",
+            "thumbnail": "EPH-2026-024-front-thumb.webp?v=e3660c09c20x2",
+            "back": "EPH-2026-024-back.jpg?v=0220701dc20x2"
           }
         },
         {
@@ -15667,10 +15747,9 @@
           "status": "published",
           "display_date": "June 1, 2025",
           "sort_date": "2025-06-01",
-          "title": "The Life of Chuck",
+          "title": "Commemorative Ticket",
           "place": "Austin, TX, USA",
           "event": "Film screening",
-          "source": "Commemorative ticket",
           "inspection": "card",
           "context_note": "Commemorative ticket",
           "dimensions": "180 x 60",
@@ -15780,12 +15859,13 @@
     "type": "guide",
     "label": "Guide",
     "container": "metadata",
+    "subtitle": "finding aid, sitemap, site notes",
     "order": 5
   },
   "_counters": {
-    "EPH": 21,
-    "FILM": 519,
-    "BOOK": 308,
+    "EPH": 24,
+    "FILM": 520,
+    "BOOK": 326,
     "MUSIC": 7,
     "COFFEE": 2,
     "GAME": 4,

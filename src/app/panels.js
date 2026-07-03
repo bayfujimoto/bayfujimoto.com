@@ -486,7 +486,6 @@ function makeBiographySheet() {
   function renderDocument(idx) {
     const bio = allVersions[idx];
     if (!bio) return;
-    const isCurrent = idx === 0;
 
     // Remove previous outside-click listener if any
     if (activeOutsideClickHandler) {
@@ -502,111 +501,12 @@ function makeBiographySheet() {
     doc.setAttribute("role", "document");
     doc.setAttribute("aria-label", "Biography");
 
-    // Version indicator
-    const versionWrap = el("div", "bio-document__version-wrap");
+    // Version indicator and history selector intentionally omitted: the
+    // biography view shows only the most recent version (index 0).
+    // renderDocument is always called with 0, so no date/version selector
+    // is rendered.
 
-    const versionBtn = el("button", "bio-document__version");
-    versionBtn.type = "button";
-    if (!isCurrent) {
-      const pastBadge = el("span", "bio-document__version-past");
-      pastBadge.textContent = "past version";
-      versionBtn.textContent = bio.display_date + " ";
-      versionBtn.appendChild(pastBadge);
-    } else {
-      versionBtn.textContent = bio.display_date;
-    }
-    versionWrap.appendChild(versionBtn);
-
-    // Version history dropdown (only if multiple versions exist)
-    if (allVersions.length > 1) {
-      versionBtn.setAttribute("aria-haspopup", "listbox");
-      versionBtn.setAttribute("aria-expanded", "false");
-      versionBtn.classList.add("bio-document__version--interactive");
-
-      const vList = el("ul", "bio-document__version-list");
-      vList.setAttribute("role", "listbox");
-      vList.setAttribute("aria-label", "Version history");
-      vList.style.setProperty("--total", allVersions.length);
-
-      const otherVersions = allVersions.map((v, i) => ({ v, i })).filter(({ i }) => i !== idx);
-      vList.style.setProperty("--total", otherVersions.length);
-      otherVersions.forEach(({ v, i }, j) => {
-        const li = document.createElement("li");
-        li.style.setProperty("--i", j);
-        const btn = el("button", "bio-document__version-option");
-        btn.type = "button";
-        btn.setAttribute("role", "option");
-        btn.setAttribute("aria-selected", "false");
-        btn.textContent = i === 0 ? `${v.display_date} — current` : v.display_date;
-        btn.addEventListener("click", (e) => {
-          e.stopPropagation();
-          closeVersionList();
-          renderDocument(i);
-        });
-        li.appendChild(btn);
-        vList.appendChild(li);
-      });
-
-      // Hoist to body so it escapes overflow:hidden on .bio-document__box
-      document.body.appendChild(vList);
-      hoistedVersionList = vList;
-
-      const positionVersionList = () => {
-        const r = versionBtn.getBoundingClientRect();
-        vList.style.position = "fixed";
-        vList.style.left = r.left + "px";
-        vList.style.top = (r.top - vList.offsetHeight + 8) + "px";
-      };
-
-      let closeTimer = null;
-
-      const closeVersionList = () => {
-        closeTimer = setTimeout(() => {
-          if (!vList.classList.contains("is-open")) return;
-          vList.classList.remove("is-open");
-          vList.classList.add("is-closing");
-          versionBtn.setAttribute("aria-expanded", "false");
-          const totalMs = (otherVersions.length - 1) * 35 + 100;
-          setTimeout(() => vList.classList.remove("is-closing"), totalMs);
-        }, 80);
-      };
-
-      const openVersionList = () => {
-        clearTimeout(closeTimer);
-        positionVersionList();
-        vList.classList.remove("is-closing");
-        vList.classList.add("is-open");
-        versionBtn.setAttribute("aria-expanded", "true");
-      };
-
-      versionWrap.addEventListener("mouseenter", openVersionList);
-      versionWrap.addEventListener("mouseleave", closeVersionList);
-      vList.addEventListener("mouseenter", openVersionList);
-      vList.addEventListener("mouseleave", closeVersionList);
-
-      // Tap toggle for touch devices
-      versionBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        if (versionWrap.classList.contains("is-open")) {
-          closeVersionList();
-        } else {
-          openVersionList();
-        }
-      });
-
-      activeOutsideClickHandler = (e) => {
-        if (!versionWrap.contains(e.target)) closeVersionList();
-      };
-      document.addEventListener("click", activeOutsideClickHandler);
-    }
-
-    doc.appendChild(versionWrap);
-
-    // Divider — outside scroll region so it stays fixed while content scrolls
-    const divider = el("hr", "bio-document__divider");
-    doc.appendChild(divider);
-
-    // Scrollable prose region (keeps overflow away from the version dropdown)
+    // Scrollable prose region
     const scroll = el("div", "bio-document__scroll");
 
     // Short bio — lead paragraph
@@ -1464,6 +1364,7 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
   });
 
   const content = makeContent();
+  content.classList.add("layer-content--item-card");
 
   function renderContent(idx) {
     currentIdx = idx;
@@ -1508,18 +1409,18 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
       frag.appendChild(v);
       return frag;
     };
-    const singleRow = (label, value, mono) => {
+    const singleRow = (label, value, mono, extraClass) => {
       if (!value) return; // unrecorded fields are suppressed, never faked
-      const row = el("div", "item-card__row");
+      const row = el("div", "item-card__row" + (extraClass ? " " + extraClass : ""));
       row.appendChild(pair(label, value, mono));
       fields.appendChild(row);
     };
     // Two pairs side by side; degrades to a single row if one side is absent.
-    const splitRow = (a, b) => {
+    const splitRow = (a, b, extraClass) => {
       const present = [a, b].filter(p => p && p[1]);
       if (present.length === 0) return;
-      if (present.length === 1) { singleRow(...present[0]); return; }
-      const row = el("div", "item-card__row item-card__row--split");
+      if (present.length === 1) { singleRow(...present[0], extraClass); return; }
+      const row = el("div", "item-card__row item-card__row--split" + (extraClass ? " " + extraClass : ""));
       present.forEach(p => row.appendChild(pair(...p)));
       fields.appendChild(row);
     };
@@ -1539,8 +1440,9 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
       fields.appendChild(row);
     };
 
-    // Accession — id + type, monospace codes, paired at the top.
-    splitRow(["ID", item.id, true], ["type", item.item_type, true]);
+    // Accession — id + type, monospace codes, paired at the top. On mobile this
+    // row compacts onto a single subtle line (see .item-card__row--accession).
+    splitRow(["ID", item.id, true], ["type", item.item_type, true], "item-card__row--accession");
 
     // Title — its own full-width field, kept as the card's heading.
     const titleRow = el("div", "item-card__row item-card__row--title");
@@ -1909,6 +1811,35 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
 
     wrap.appendChild(card);
     content.appendChild(wrap);
+
+    // Scroll-edge fade: on mobile the card is taller than the screen and scrolls
+    // inside this fixed viewport. Fade whichever edges overflow so content
+    // dissolves at the top edge and before the bottom breadcrumb rather than
+    // clashing with them. The bottom reaches full transparency by the
+    // breadcrumb's top; each fade drops away at its extreme so the first/last
+    // row lands crisp. Inert on desktop, where the card fits and never scrolls.
+    // Mirrors the horizontal updateScrollMask used by the labor panels.
+    const TOP_FADE = "2.5rem";   // soft dissolve at the top edge
+    const BOT_START = "7.5rem";  // bottom: opaque until here, then fade
+    const BOT_CLEAR = "4.5rem";  // bottom: fully clear by here (above the breadcrumb)
+    const updateCardMask = () => {
+      const atTop = wrap.scrollTop <= 0;
+      const atBottom = wrap.scrollTop + wrap.clientHeight >= wrap.scrollHeight - 1;
+      let mask;
+      if (atTop && atBottom) {
+        mask = "none";
+      } else if (atTop) {
+        mask = `linear-gradient(to bottom, black calc(100% - ${BOT_START}), transparent calc(100% - ${BOT_CLEAR}))`;
+      } else if (atBottom) {
+        mask = `linear-gradient(to bottom, transparent 0, black ${TOP_FADE})`;
+      } else {
+        mask = `linear-gradient(to bottom, transparent 0, black ${TOP_FADE}, black calc(100% - ${BOT_START}), transparent calc(100% - ${BOT_CLEAR}))`;
+      }
+      wrap.style.maskImage = mask;
+      wrap.style.webkitMaskImage = mask;
+    };
+    wrap.addEventListener("scroll", updateCardMask, { passive: true });
+    requestAnimationFrame(updateCardMask);
   }
 
   // ── Shared chrome: breadcrumb + prev/next ───────────────────────────────────
@@ -1955,6 +1886,43 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
     replace({ layer: "item", series: seriesKey, subcollection: subKey, item: allItems[idx].id });
   }
 
+  // Animated prev/next used by swipe: slide the outgoing card off in the swipe
+  // direction while the incoming card slides in from the opposite edge (a clean
+  // carousel push — the two stay adjacent the whole way). dir: +1 = next (card
+  // exits left), -1 = prev (card exits right). Reduced motion → instant swap.
+  function transitionTo(newIdx, dir) {
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const oldWrap = content.querySelector(".item-card-wrap");
+    if (!oldWrap || reduce) { navItem(newIdx); return; }
+    const exitX  = dir > 0 ? "-100%" : "100%";
+    const enterX = dir > 0 ? "100%"  : "-100%";
+    // Detach the outgoing card so navItem's rebuild of `content` leaves it alone,
+    // and float it above the scene while it slides away.
+    oldWrap.style.zIndex = "1000";
+    oldWrap.style.pointerEvents = "none";
+    document.body.appendChild(oldWrap);
+    // Render the incoming card and start it off-screen on the opposite edge.
+    navItem(newIdx);
+    const newWrap = content.querySelector(".item-card-wrap");
+    if (newWrap) {
+      newWrap.style.transition = "none";
+      newWrap.style.transform = `translateX(${enterX})`;
+    }
+    requestAnimationFrame(() => {
+      const t = "transform 0.28s cubic-bezier(0.4, 0, 0.2, 1)";
+      oldWrap.style.transition = t;
+      oldWrap.style.transform = `translateX(${exitX})`;
+      if (newWrap) {
+        newWrap.style.transition = t;
+        newWrap.style.transform = "translateX(0)";
+      }
+    });
+    setTimeout(() => {
+      oldWrap.remove();
+      if (newWrap) { newWrap.style.transition = ""; newWrap.style.transform = ""; }
+    }, 320);
+  }
+
   const onKey = (e) => {
     if (layerStack[layerStack.length - 1]?.content !== content) return;
     if (e.key === "Escape") navigate({ layer: "browse", series: seriesKey, subcollection: subKey, view: viewSlug || null, item: null });
@@ -1962,6 +1930,28 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
     if (e.key === "ArrowRight" && currentIdx < allItems.length - 1) navItem(currentIdx + 1);
   };
   document.addEventListener("keydown", onKey);
+
+  // Touch swipe → prev/next, replacing the on-screen arrows on mobile. A mostly
+  // horizontal flick advances (swipe left) or goes back (swipe right); vertical
+  // gestures fall through to the card's scroll. Passive — never blocks scrolling.
+  let swipeX = 0, swipeY = 0, swiping = false;
+  const SWIPE_MIN = 50; // min horizontal travel (px) to count as a swipe
+  content.addEventListener("touchstart", (e) => {
+    if (e.touches.length !== 1) { swiping = false; return; }
+    swipeX = e.touches[0].clientX;
+    swipeY = e.touches[0].clientY;
+    swiping = true;
+  }, { passive: true });
+  content.addEventListener("touchend", (e) => {
+    if (!swiping) return;
+    swiping = false;
+    const dx = e.changedTouches[0].clientX - swipeX;
+    const dy = e.changedTouches[0].clientY - swipeY;
+    // Require a clear, mostly-horizontal movement so vertical scrolls are ignored.
+    if (Math.abs(dx) < SWIPE_MIN || Math.abs(dx) <= Math.abs(dy)) return;
+    if (dx < 0) { if (currentIdx < allItems.length - 1) transitionTo(currentIdx + 1, 1); }
+    else        { if (currentIdx > 0)                    transitionTo(currentIdx - 1, -1); }
+  }, { passive: true });
 
   const cleanup = () => {
     document.removeEventListener("keydown", onKey);

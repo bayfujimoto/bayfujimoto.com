@@ -10,6 +10,13 @@
   text-underline-offset: 3px;
 }
 
+/* Single-scene, fixed-overlay SPA — the page itself never scrolls. Suppress the
+   phantom vertical scrollbar caused by mobile viewport rounding / 100vh. Inner
+   scroll containers (item grid, browse strip, document panels) are unaffected. */
+html, body {
+  overflow: hidden;
+}
+
 body {
   margin: 0;
   font-family: var(--font);
@@ -405,6 +412,13 @@ body {
 
 .series-subcollection-wrap {
   overflow-x: auto;
+  overflow-y: hidden;
+  /* Enable momentum touch scrolling. Also required on iOS for an overflow
+     container nested inside a transformed ancestor (.layer-center) to scroll
+     by touch at all; touch-action keeps the horizontal pan from being
+     intercepted. Matches .browse-strip-wrap. */
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x;
   scrollbar-width: none;
   max-width: 90vw;
   text-align: center;
@@ -455,6 +469,7 @@ body {
   transform: translateY(-50%);
   pointer-events: auto;
   overflow-x: auto;
+  overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   text-align: center;
@@ -534,8 +549,12 @@ body {
   left: 0;
   right: 0;
   transform: translateY(-50%);
-  pointer-events: none;
+  /* The scroll container itself must receive touch events, or it will not
+     scroll — a child opting back in with pointer-events:auto does not restore
+     scrolling of its ancestor. Matches .browse-strip-wrap. */
+  pointer-events: auto;
   overflow-x: auto;
+  overflow-y: hidden;   /* overflow-x:auto otherwise promotes overflow-y to auto → phantom vertical scrollbar */
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
 }
@@ -740,6 +759,14 @@ body {
   .item-grid__title {
     transition: none;
     transform: none;
+  }
+}
+/* Mobile: hide the film title overlays. On touch they are otherwise force-shown
+   over every card (see the hover:none rule above), which clutters the grid; the
+   title remains available on the item view. */
+@media (max-width: 600px) {
+  .item-grid--films .item-grid__title {
+    display: none;
   }
 }
 
@@ -1193,16 +1220,39 @@ body {
 
 @media (max-width: 600px) {
   .item-card-wrap { padding: 2rem var(--overlay-padding) 7rem; }
+  /* No prev/next arrows on the catalog card here — swipe left/right instead.
+     Scoped to the card so the labor horizontal-panel view keeps its arrows. */
+  .layer-content--item-card .layer-nav { display: none; }
   /* viewBox scales down ~0.75 on small screens; keep tick labels legible */
   .item-card__plate-svg text { font-size: 12px; }
   .item-card { grid-template-columns: 1fr; }
-  /* Mobile: single column flows naturally; the desktop fixed-height scroll is off. */
-  .item-card__fields { position: static; overflow: visible; border-right: none; border-bottom: 1px solid var(--border-dim); }
-  .item-card__fields-scroll { position: static; }
+  /* Mobile: promote the field rows to direct grid items (display:contents) so
+     the accession (ID/type) row can sit above the plate while the rest of the
+     metadata stays below it. Stacking order: accession → plate → other rows.
+     This also turns off the desktop fixed-height fields scroll (single column
+     now flows naturally). */
+  .item-card__fields { display: contents; }
+  .item-card__fields-scroll { display: contents; }
+  .item-card__row--accession { order: -2; }
+  .item-card__plate { order: -1; border-bottom: 1px solid var(--border-dim); }
   .item-card__fields-caret { display: none; }
   .item-card__row { grid-template-columns: 6rem 1fr; padding: 0.6rem 1rem; }
   /* Split rows stack their two pairs into two grid rows on narrow screens */
   .item-card__row--split { grid-template-columns: 6rem 1fr; }
+  /* Accession (ID + type): one compact, subtle line instead of the stacked
+     split treatment — it's reference metadata, not primary content. */
+  .item-card__row--accession {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: baseline;
+    gap: 0.4rem;
+    padding: 0.3rem 1rem;
+    font-size: var(--text-xs);
+    opacity: 0.6;
+  }
+  /* Right-justify the type: push its label + value to the right edge (ID stays
+     left). The row is [ID label][ID value][type label][type value] spans. */
+  .item-card__row--accession > span:nth-child(3) { margin-left: auto; }
   /* Date row keeps the rewatch mark to the right, just narrower label column */
   .item-card__row--date-film { grid-template-columns: 6rem 1fr auto; }
   .item-card__note, .item-card__riders { padding-left: 1rem; padding-right: 1rem; }
