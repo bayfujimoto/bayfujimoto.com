@@ -1354,11 +1354,6 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
   let currentIdx = allItems.findIndex(i => i.id === itemId);
   if (currentIdx === -1) currentIdx = 0;
 
-  // Grid click opens at a fit zoom so a small item isn't a speck on the field.
-  // Computed once, for the opened item only: flipping through prev/next keeps
-  // whatever zoom is current rather than re-fitting each item. Pan resets per item.
-  let sheetZoom = fitZoom(parseDimensions(allItems[currentIdx]));
-
   const veil = makeVeil(() => {
     navigate({ layer: "browse", series: seriesKey, subcollection: subKey, view: viewSlug || null, item: null });
   });
@@ -1371,12 +1366,15 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
     const item = allItems[idx];
 
     content.innerHTML = "";
-    renderCard(item);
+    content.appendChild(buildCardWrap(item));
     renderChrome(item, idx);
   }
 
   // ── Catalog-card inspection ─────────────────────────────────────────────────
-  function renderCard(item) {
+  // Builds and returns one card's .item-card-wrap for `item`. Used both for the
+  // visible card and for the off-screen neighbours pre-rendered during a swipe,
+  // so it must not touch `content` or shared state.
+  function buildCardWrap(item) {
     const wrap = el("div", "item-card-wrap");
     // Clicking the surround (not the card) exits, like the veil.
     wrap.addEventListener("click", (e) => {
@@ -1397,6 +1395,9 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
     fieldsCol.appendChild(fields);
 
     const dims = parseDimensions(item);
+    // Each card opens at its own fit zoom (a small item isn't a speck). The
+    // level is local to this card so pre-rendered neighbours don't disturb it.
+    let localZoom = fitZoom(dims);
 
     // A label/value pair as a fragment, ready to drop into a 2- or 4-col row.
     const pair = (label, value, mono) => {
@@ -1603,13 +1604,14 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
     let plateState = null; // { origin, pxPerMM, spanMM, scaleNote, panX, panY }
     let panX = 0, panY = 0; // current pan offset in field mm
     let dragging = false;   // a single-pointer pan is in progress
+    let swipeActive = false; // the swipe carousel has taken over — suppress plate pan
 
     // Redraw the calibrated plate at a given zoom and pan (field span shrinks as
     // zoom grows; pan slides the window across the reproduction). buildPlate
     // re-clamps the pan to the item's extent and returns the applied values, so
     // panX/panY stay honest after a zoom-out collapses the pannable range.
     const renderPlate = (zoom, nextPanX = panX, nextPanY = panY) => {
-      sheetZoom = zoom; // remember the level so it carries to the next item
+      localZoom = zoom; // remember the level for this card
       field.innerHTML = "";
       const plate = buildPlate(item, dims, PLATE_PX, reproImg, zoom, nextPanX, nextPanY);
       panX = plate.panX; panY = plate.panY;
@@ -1619,7 +1621,7 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
     };
 
     if (primary && dims) {
-      renderPlate(sheetZoom);
+      renderPlate(localZoom);
 
       // Crosshair readout — pointer position in field mm, offset by the pan so
       // the number reflects the panned window. Enhancement only; the typed
@@ -1680,7 +1682,7 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
         zoomLabel.textContent = "zoom";
         const zoom = el("input", "item-card__zoom-slider");
         zoom.type = "range";
-        zoom.min = "1"; zoom.max = "6"; zoom.step = "0.05"; zoom.value = String(sheetZoom);
+        zoom.min = "1"; zoom.max = "6"; zoom.step = "0.05"; zoom.value = String(localZoom);
         zoom.setAttribute("aria-label", "Zoom plate");
         zoom.addEventListener("input", () => renderPlate(parseFloat(zoom.value)));
         zoomWrap.appendChild(zoomLabel);
@@ -1725,7 +1727,7 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
               renderPlate(v);
             }
             lastDist = dist;
-          } else if (panStart && plateState) {
+          } else if (panStart && plateState && !swipeActive) {
             // Drag → pan. Convert the client-pixel delta to field mm and move
             // the window opposite the drag (dragging right reveals content to
             // the left). Computing from the drag origin keeps clamping stable.
@@ -1810,7 +1812,17 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
     }
 
     wrap.appendChild(card);
-    content.appendChild(wrap);
+
+    // Gesture arbitration hooks for the swipe carousel: report the plate's
+    // horizontal pan state, and let the carousel suppress plate panning once it
+    // takes over the gesture.
+    wrap.__setSwipeActive = (v) => { swipeActive = v; };
+    wrap.__plate = {
+      interactive: !!(primary && dims),
+      panState: () => (plateState && dims)
+        ? { panX: plateState.panX, panMaxX: Math.max(0, dims.w - plateState.spanMM) }
+        : null,
+    };
 
     // Scroll-edge fade: on mobile the card is taller than the screen and scrolls
     // inside this fixed viewport. Fade whichever edges overflow so content
@@ -1840,6 +1852,8 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
     };
     wrap.addEventListener("scroll", updateCardMask, { passive: true });
     requestAnimationFrame(updateCardMask);
+
+    return wrap;
   }
 
   // ── Shared chrome: breadcrumb + prev/next ───────────────────────────────────
@@ -1886,43 +1900,6 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
     replace({ layer: "item", series: seriesKey, subcollection: subKey, item: allItems[idx].id });
   }
 
-  // Animated prev/next used by swipe: slide the outgoing card off in the swipe
-  // direction while the incoming card slides in from the opposite edge (a clean
-  // carousel push — the two stay adjacent the whole way). dir: +1 = next (card
-  // exits left), -1 = prev (card exits right). Reduced motion → instant swap.
-  function transitionTo(newIdx, dir) {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const oldWrap = content.querySelector(".item-card-wrap");
-    if (!oldWrap || reduce) { navItem(newIdx); return; }
-    const exitX  = dir > 0 ? "-100%" : "100%";
-    const enterX = dir > 0 ? "100%"  : "-100%";
-    // Detach the outgoing card so navItem's rebuild of `content` leaves it alone,
-    // and float it above the scene while it slides away.
-    oldWrap.style.zIndex = "1000";
-    oldWrap.style.pointerEvents = "none";
-    document.body.appendChild(oldWrap);
-    // Render the incoming card and start it off-screen on the opposite edge.
-    navItem(newIdx);
-    const newWrap = content.querySelector(".item-card-wrap");
-    if (newWrap) {
-      newWrap.style.transition = "none";
-      newWrap.style.transform = `translateX(${enterX})`;
-    }
-    requestAnimationFrame(() => {
-      const t = "transform 0.28s cubic-bezier(0.4, 0, 0.2, 1)";
-      oldWrap.style.transition = t;
-      oldWrap.style.transform = `translateX(${exitX})`;
-      if (newWrap) {
-        newWrap.style.transition = t;
-        newWrap.style.transform = "translateX(0)";
-      }
-    });
-    setTimeout(() => {
-      oldWrap.remove();
-      if (newWrap) { newWrap.style.transition = ""; newWrap.style.transform = ""; }
-    }, 320);
-  }
-
   const onKey = (e) => {
     if (layerStack[layerStack.length - 1]?.content !== content) return;
     if (e.key === "Escape") navigate({ layer: "browse", series: seriesKey, subcollection: subKey, view: viewSlug || null, item: null });
@@ -1931,27 +1908,145 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
   };
   document.addEventListener("keydown", onKey);
 
-  // Touch swipe → prev/next, replacing the on-screen arrows on mobile. A mostly
-  // horizontal flick advances (swipe left) or goes back (swipe right); vertical
-  // gestures fall through to the card's scroll. Passive — never blocks scrolling.
-  let swipeX = 0, swipeY = 0, swiping = false;
-  const SWIPE_MIN = 50; // min horizontal travel (px) to count as a swipe
+  // ── Swipe carousel (mobile) ─────────────────────────────────────────────────
+  // The card tracks the finger horizontally with its neighbours pre-rendered
+  // just off-screen, so the next/previous card is visible as you drag. Release
+  // past a threshold completes to that neighbour; otherwise everything snaps
+  // back. A drag that begins on the zoom slider — or on a plate image that can
+  // still pan in the drag direction — is left to those controls; only once the
+  // image is panned to its horizontal extent does the drag become a swipe.
+  let dragStartX = 0, dragStartY = 0, dragTarget = null;
+  let dragMode = null;               // null | 'v' | 'carousel' | 'yield' | 'native'
+  let curWrap = null, prevWrap = null, nextWrap = null;
+  let dragDX = 0, vw = 0, animating = false;
+  const DRAG_LOCK = 8;               // px before committing to an axis
+  const EASE = "transform 0.26s cubic-bezier(0.4, 0, 0.2, 1)";
+  const reduceMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Leave the gesture to the plate (pan) rather than swiping? Only when the drag
+  // began on the image and it can still pan in the drag direction.
+  const yieldToPlate = (dir) => {
+    const plate = curWrap && curWrap.__plate;
+    if (!plate || !plate.interactive || !dragTarget || !dragTarget.closest) return false;
+    if (!dragTarget.closest(".item-card__field")) return false;
+    const st = plate.panState();
+    if (!st || st.panMaxX <= 0.5) return false;         // nothing to pan → swipe
+    return dir === "next" ? st.panX < st.panMaxX - 0.5  // can still pan right
+                          : st.panX > 0.5;              // can still pan left
+  };
+
+  const placeNeighbor = (w, baseX) => {
+    w.style.pointerEvents = "none";
+    w.style.transition = "none";
+    w.style.transform = `translateX(${baseX}px)`;
+    curWrap.after(w); // sit alongside the current card, below the chrome
+  };
+  const buildNeighbors = () => {
+    if (currentIdx > 0) { prevWrap = buildCardWrap(allItems[currentIdx - 1]); placeNeighbor(prevWrap, -vw); }
+    if (currentIdx < allItems.length - 1) { nextWrap = buildCardWrap(allItems[currentIdx + 1]); placeNeighbor(nextWrap, vw); }
+  };
+  const dropNeighbors = () => {
+    if (prevWrap) prevWrap.remove();
+    if (nextWrap) nextWrap.remove();
+    prevWrap = nextWrap = null;
+  };
+
   content.addEventListener("touchstart", (e) => {
-    if (e.touches.length !== 1) { swiping = false; return; }
-    swipeX = e.touches[0].clientX;
-    swipeY = e.touches[0].clientY;
-    swiping = true;
+    if (animating || e.touches.length !== 1) { dragMode = "native"; return; }
+    dragStartX = e.touches[0].clientX;
+    dragStartY = e.touches[0].clientY;
+    dragTarget = e.target;
+    dragMode = null;
+    dragDX = 0;
+    curWrap = content.querySelector(".item-card-wrap");
+    prevWrap = nextWrap = null;
+    if (dragTarget && dragTarget.closest && dragTarget.closest(".item-card__zoom-slider")) {
+      dragMode = "native"; // let the range input handle its own drag
+    }
   }, { passive: true });
-  content.addEventListener("touchend", (e) => {
-    if (!swiping) return;
-    swiping = false;
-    const dx = e.changedTouches[0].clientX - swipeX;
-    const dy = e.changedTouches[0].clientY - swipeY;
-    // Require a clear, mostly-horizontal movement so vertical scrolls are ignored.
-    if (Math.abs(dx) < SWIPE_MIN || Math.abs(dx) <= Math.abs(dy)) return;
-    if (dx < 0) { if (currentIdx < allItems.length - 1) transitionTo(currentIdx + 1, 1); }
-    else        { if (currentIdx > 0)                    transitionTo(currentIdx - 1, -1); }
-  }, { passive: true });
+
+  content.addEventListener("touchmove", (e) => {
+    if (dragMode === "native" || dragMode === "v" || dragMode === "yield" || !curWrap || e.touches.length !== 1) return;
+    const dx = e.touches[0].clientX - dragStartX;
+    const dy = e.touches[0].clientY - dragStartY;
+    if (dragMode === null) {
+      if (Math.abs(dx) < DRAG_LOCK && Math.abs(dy) < DRAG_LOCK) return;
+      if (Math.abs(dx) <= Math.abs(dy)) { dragMode = "v"; return; }            // vertical → native scroll
+      if (yieldToPlate(dx < 0 ? "next" : "prev")) { dragMode = "yield"; return; }
+      dragMode = "carousel";
+      vw = window.innerWidth;
+      curWrap.style.transition = "none";
+      if (curWrap.__setSwipeActive) curWrap.__setSwipeActive(true);            // suppress plate pan
+      if (!reduceMotion()) buildNeighbors();
+    }
+    if (dragMode !== "carousel") return;
+    e.preventDefault(); // own the gesture; suppress native scroll
+    // Rubber-band resistance when pulling toward a non-existent neighbour.
+    const atEnd = (dx < 0 && currentIdx >= allItems.length - 1) ||
+                  (dx > 0 && currentIdx <= 0);
+    dragDX = atEnd ? dx * 0.3 : dx;
+    curWrap.style.transform = `translateX(${dragDX}px)`;
+    if (prevWrap) prevWrap.style.transform = `translateX(${dragDX - vw}px)`;
+    if (nextWrap) nextWrap.style.transform = `translateX(${dragDX + vw}px)`;
+  }, { passive: false });
+
+  const endDrag = () => {
+    const mode = dragMode;
+    dragMode = null;
+    if (mode !== "carousel" || !curWrap) return;
+    const cur = curWrap;
+    const threshold = Math.min(120, vw * 0.33);
+    const goNext = dragDX <= -threshold && currentIdx < allItems.length - 1;
+    const goPrev = dragDX >=  threshold && currentIdx > 0;
+    const clearCur = () => {
+      cur.style.transition = ""; cur.style.transform = "";
+      if (cur.__setSwipeActive) cur.__setSwipeActive(false);
+    };
+
+    if (!goNext && !goPrev) {
+      if (reduceMotion()) { dropNeighbors(); clearCur(); return; }
+      // Snap back into place.
+      animating = true;
+      cur.style.transition = EASE; cur.style.transform = "translateX(0px)";
+      if (prevWrap) { prevWrap.style.transition = EASE; prevWrap.style.transform = `translateX(${-vw}px)`; }
+      if (nextWrap) { nextWrap.style.transition = EASE; nextWrap.style.transform = `translateX(${vw}px)`; }
+      setTimeout(() => { dropNeighbors(); clearCur(); animating = false; }, 280);
+      return;
+    }
+
+    const newIdx = goNext ? currentIdx + 1 : currentIdx - 1;
+    if (reduceMotion()) { dropNeighbors(); navItem(newIdx); return; }
+
+    const incoming = goNext ? nextWrap : prevWrap;
+    const other    = goNext ? prevWrap : nextWrap;
+    animating = true;
+    cur.style.transition = EASE;
+    incoming.style.transition = EASE;
+    if (other) other.style.transition = EASE;
+    cur.style.transform = `translateX(${goNext ? -vw : vw}px)`;
+    incoming.style.transform = "translateX(0px)";
+    if (other) other.style.transform = `translateX(${goNext ? -2 * vw : 2 * vw}px)`;
+    setTimeout(() => {
+      // Promote the already-rendered incoming card to be the live one rather than
+      // rebuilding it via navItem — a rebuild reloads the plate image and flashes
+      // it blank for a frame. Here the incoming card (image already decoded) just
+      // becomes current; only the old card, spare neighbour, and chrome are swapped.
+      cur.remove();
+      if (other) other.remove();
+      incoming.style.transition = "";
+      incoming.style.transform = "";
+      incoming.style.pointerEvents = ""; // restore interactivity (was a neighbour)
+      currentIdx = newIdx;
+      curWrap = incoming;
+      prevWrap = nextWrap = null;
+      content.querySelectorAll(".layer-breadcrumb, .layer-nav").forEach(n => n.remove());
+      renderChrome(allItems[newIdx], newIdx);
+      replace({ layer: "item", series: seriesKey, subcollection: subKey, item: allItems[newIdx].id });
+      animating = false;
+    }, 280);
+  };
+  content.addEventListener("touchend", endDrag, { passive: true });
+  content.addEventListener("touchcancel", endDrag, { passive: true });
 
   const cleanup = () => {
     document.removeEventListener("keydown", onKey);

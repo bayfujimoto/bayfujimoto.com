@@ -1219,7 +1219,13 @@ body {
 }
 
 @media (max-width: 600px) {
-  .item-card-wrap { padding: 2rem var(--overlay-padding) 7rem; }
+  /* Top-align the card instead of centering it: a centered near-full-height card
+     drops its bottom into the fixed breadcrumb, and if it doesn't scroll the fade
+     never engages. Top-aligned, short cards sit above the breadcrumb and clear it;
+     tall cards scroll (the fade handles their overlap). Bottom padding reserves
+     just the breadcrumb's footprint (~3.75rem) so more cards fit fully on screen. */
+  .item-card-wrap { align-items: flex-start; padding: 2rem var(--overlay-padding) 4.5rem; touch-action: pan-y; }
+  .item-card { margin-top: 0; margin-bottom: 0; }
   /* No prev/next arrows on the catalog card here — swipe left/right instead.
      Scoped to the card so the labor horizontal-panel view keeps its arrows. */
   .layer-content--item-card .layer-nav { display: none; }

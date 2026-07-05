@@ -319,6 +319,27 @@
           "label": "films",
           "items": [
             {
+              "id": "FILM-2026-521",
+              "slug": "lawrence-of-arabia-1962-2026-07-04",
+              "title": "Lawrence of Arabia",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "1962",
+              "director": "",
+              "watch_date": "2026-07-04",
+              "display_date": "July 4, 2026",
+              "sort_date": "2026-07-04",
+              "rating": 0,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/lawrence-of-arabia/",
+              "assets": {
+                "backdrop": "https://a.ltrbxd.com/resized/alternative-backdrop/6/0/2/9/9/tmdb/AbIL5ZA3RPrMgppdhhqZ4lDjM5k-1200-1200-675-675-crop-000000.jpg?v=1c07f4e5be",
+                "poster": "https://a.ltrbxd.com/resized/film-poster/6/0/2/9/9/60299-lawrence-of-arabia-0-600-0-900-crop.jpg?v=a3c56f9487"
+              }
+            },
+            {
               "id": "FILM-2026-520",
               "slug": "it-follows-2014-2026-07-01",
               "title": "It Follows",
@@ -15740,6 +15761,46 @@
           "dimensions": "200 x 89"
         },
         {
+          "id": "EPH-2026-026",
+          "slug": "santa-fe-nm-usa-2026-06-02",
+          "series": "accumulation",
+          "item_type": "ticket",
+          "status": "published",
+          "display_date": "June 2, 2026",
+          "sort_date": "2026-06-02",
+          "title": "Admission Ticket",
+          "issuer": "New Mexico Museum of Art",
+          "place": "Santa Fe, NM, USA",
+          "event": "atxsf road trip",
+          "dimensions": "140 x 82",
+          "inspection": "card",
+          "assets": {
+            "front": "EPH-2026-026-front.jpg?v=a72326f6c20x2",
+            "thumbnail": "EPH-2026-026-front-thumb.webp?v=a72326f6c20x2",
+            "back": "EPH-2026-026-back.jpg?v=740a06a7c20x2"
+          }
+        },
+        {
+          "id": "EPH-2026-025",
+          "slug": "santa-fe-nm-usa-2026-06-02",
+          "series": "accumulation",
+          "item_type": "ticket",
+          "status": "published",
+          "display_date": "June 2, 2026",
+          "sort_date": "2026-06-02",
+          "title": "Admission Ticket",
+          "issuer": "Museum of Indian Arts + Culture",
+          "place": "Santa Fe, NM, USA",
+          "event": "atxsf road trip",
+          "inspection": "card",
+          "assets": {
+            "front": "EPH-2026-025-front.jpg?v=dbc85fbcc20x2",
+            "thumbnail": "EPH-2026-025-front-thumb.webp?v=dbc85fbcc20x2",
+            "back": "EPH-2026-025-back.jpg?v=0320b00bc20x2"
+          },
+          "dimensions": "139 x 50"
+        },
+        {
           "id": "EPH-2026-018",
           "slug": "austin-tx-usa-2025-06-01",
           "series": "accumulation",
@@ -15863,9 +15924,9 @@
     "order": 5
   },
   "_counters": {
-    "EPH": 24,
-    "FILM": 520,
-    "BOOK": 326,
+    "EPH": 26,
+    "FILM": 521,
+    "BOOK": 329,
     "MUSIC": 7,
     "COFFEE": 2,
     "GAME": 4,
