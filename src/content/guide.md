@@ -1,6 +1,6 @@
 # Guide
 
-A finding aid for this archive — what it holds, how it is arranged, and how to read it.
+Memory keeps revising itself: softening, reordering, letting things go on its own schedule. A record holds still. A date stays the date; a ticket keeps what it carried the night I saved it. So these are some of my memories, set down where they'll stay put: records, scans, logs, and the small printed things that survived a pocket or a suitcase or my glovebox.
 
 ## Arrangement
 
@@ -11,11 +11,3 @@ The collection is organized into five series:
 - **Consumption** — films, books, music, coffee, games.
 - **Creation** — sketches, photos, prototypes, videos, notes.
 - **Accumulation** — tickets, receipts, brochures, printed matter.
-
-## How to read a record
-
-Each record carries its own metadata — dates, source, and context notes — alongside any scans, images, or documents held with it.
-
-## Notes
-
-Compose this page in the admin's Guide editor. It is written in Markdown and committed to `src/content/guide.md`.
