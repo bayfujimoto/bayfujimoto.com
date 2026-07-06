@@ -1304,13 +1304,54 @@ body {
   color: var(--overlay-text);
   text-align: left;
 }
-/* First paragraph stays at the primary colour (a lead, like the bio short);
-   the rest drops to the body/secondary colour, like the bio long. */
-.guide-content > :not(:first-child) { color: var(--overlay-muted); }
+/* Body copy drops to the secondary colour; headings, the lead line, and rules
+   stay at the primary colour. */
+.guide-content p,
+.guide-content ul,
+.guide-content ol,
+.guide-content blockquote { color: var(--overlay-muted); }
+.guide-content > :first-child { color: var(--overlay-text); margin-top: 0; }
 .guide-content p { margin: 0 0 1rem; }
 .guide-content ul { margin: 0 0 1rem; padding-left: 1.25rem; }
+.guide-content ol { margin: 0 0 1rem; padding-left: 1.35rem; }
 .guide-content li { margin-bottom: 0.4rem; }
 .guide-content strong { font-weight: var(--weight-normal); opacity: 0.85; }
+.guide-content em { font-style: italic; }
+.guide-content h1,
+.guide-content h2,
+.guide-content h3,
+.guide-content h4 {
+  color: var(--overlay-text);
+  font-weight: var(--weight-normal);
+  line-height: 1.25;
+  margin: 1.6rem 0 0.7rem;
+}
+.guide-content h1 { font-size: var(--text-lg); }
+.guide-content h2 { font-size: var(--text-md); }
+.guide-content h3,
+.guide-content h4 { font-size: var(--text-base); letter-spacing: 0.02em; opacity: 0.9; }
+.guide-content a {
+  color: var(--overlay-text);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.guide-content a:hover { opacity: 0.75; }
+.guide-content code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  padding: 0 0.3em;
+}
+.guide-content blockquote {
+  margin: 0 0 1rem;
+  padding-left: 0.9rem;
+  border-left: 1px solid var(--overlay-muted);
+}
+.guide-content hr {
+  border: none;
+  border-top: 1px solid var(--overlay-muted);
+  opacity: 0.4;
+  margin: 1.4rem 0;
+}
 
 /* ── Keyboard skip link ──────────────────────────────────────────────────────── */
 .scene-skip-link {

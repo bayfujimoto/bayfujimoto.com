@@ -3,6 +3,7 @@ import { subscribe, getState, deskTarget } from "./state.js";
 import { imageUrl, modelUrl } from "./image-url.js";
 import { setSeriesInfo, pauseSceneRender, resumeSceneRender } from "./scene.js";
 import { resolveCreator, resolveSlots, titleIsGiven } from "../shared/field-schema.js";
+import { mdToHtml } from "./markdown.js";
 
 let archive = null;
 const app = document.getElementById("app");
@@ -355,17 +356,12 @@ function makeGuideSheet() {
 
   const scroll = el("div", "bio-document__scroll");
   const inner = el("div", "guide-content");
-  inner.innerHTML = `
-    <p>This is a personal archive — a collection of records, artifacts, documents, and traces that describe a life through material evidence rather than through a simplified personal brand narrative.</p>
-    <p>Navigate through the desk objects to explore the archive. Each series contains different types of material:</p>
-    <ul>
-      <li><strong>Identity:</strong> Biography, CV, and contact information</li>
-      <li><strong>Labor:</strong> Work, projects, and professional effort</li>
-      <li><strong>Consumption:</strong> Records of films, books, music, coffee, and games</li>
-      <li><strong>Creation:</strong> Sketches, photos, prototypes, videos, and notes</li>
-      <li><strong>Accumulation:</strong> Collected ephemera and physical artifacts</li>
-    </ul>
-  `;
+  // Render the guide composed in the admin (archive.guide.content, Markdown).
+  // Falls back to a short note if nothing has been written yet.
+  const md = (archive.guide && archive.guide.content) || "";
+  inner.innerHTML = md.trim()
+    ? mdToHtml(md)
+    : `<p>This is a personal archive — a collection of records, artifacts, documents, and traces that describe a life through material evidence rather than through a simplified personal brand narrative.</p>`;
   scroll.appendChild(inner);
   doc.appendChild(scroll);
 
