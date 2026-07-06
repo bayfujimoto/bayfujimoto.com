@@ -13,6 +13,7 @@ import {
 import { renderEmptyState } from "./views/dashboard.js";
 import { renderEditItem }   from "./views/edit-item.js";
 import { renderNewItem }    from "./views/new-item.js";
+import { renderGuide }      from "./views/guide.js";
 import { renderImportLetterboxd } from "./views/import-letterboxd.js";
 import { initLog, setLogCallbacks, triggerCommit } from "./views/log.js";
 import { initStatusline, setBaseState, setHelpExpanded, getHelpExpanded, setFocusedPane } from "./statusline.js";
@@ -303,6 +304,7 @@ function deleteItemFromViews(id, series, subcollection, archive) {
 
   renderExplorer(archive, {
     onItemSelect: (it) => openItem(it, allItems, archive),
+    onGuideSelect: () => openGuide(archive, allItems),
   });
   setLogCallbacks({
     onItemSelect: (it) => openItem(it, allItems, archive),
@@ -328,6 +330,18 @@ function openEmpty(archive, allItems) {
       onItemSelect: (item) => openItem(item, allItems, archive),
     });
   });
+}
+
+// Open the top-level Guide editor in the Record pane. Reads the live guide
+// content from state so staged edits survive reopening.
+function openGuide(archive, allItems) {
+  openRecord((body) => {
+    renderGuide(body, {
+      onClose: () => openEmpty(getState().archive || archive, getState().allItems || allItems),
+    });
+  });
+  setMobileActivePane('r');
+  setFocusedPane('r');
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────────
@@ -363,6 +377,7 @@ async function init() {
 
     renderExplorer(archive, {
       onItemSelect: (item) => openItem(item, allItems, archive),
+      onGuideSelect: () => openGuide(archive, allItems),
     });
     setLogCallbacks({
       onItemSelect: (item) => openItem(item, allItems, archive),

@@ -15208,6 +15208,27 @@
               "dimensions": "314 x 314"
             },
             {
+              "id": "MUSIC-2026-008",
+              "slug": "uncle-chris-uncle-chris",
+              "series": "consumption",
+              "subcollection": "music",
+              "item_type": "ep",
+              "status": "published",
+              "display_date": "October 1, 2023",
+              "sort_date": "2023-10-01",
+              "title": "Uncle Chris",
+              "artist": "Uncle Chris",
+              "year": "2020",
+              "assets": {
+                "cover": "MUSIC-2026-008-cover.jpeg?v=efcd64dco",
+                "thumbnail": "MUSIC-2026-008-cover-thumb.jpg?v=efcd64dco"
+              },
+              "tags": [
+                "jazz"
+              ],
+              "dimensions": "314 x 314"
+            },
+            {
               "id": "MUSIC-2026-006",
               "slug": "benee-lychee",
               "series": "consumption",
@@ -15921,13 +15942,14 @@
     "label": "Guide",
     "container": "metadata",
     "subtitle": "finding aid, sitemap, site notes",
-    "order": 5
+    "order": 5,
+    "content": "# Guide\n\nA finding aid for this archive — what it holds, how it is arranged, and how to read it.\n\n## Arrangement\n\nThe collection is organized into five series:\n\n- **Identity** — biography, CV, contact.\n- **Labor** — projects, drawings, specifications, reports.\n- **Consumption** — films, books, music, coffee, games.\n- **Creation** — sketches, photos, prototypes, videos, notes.\n- **Accumulation** — tickets, receipts, brochures, printed matter.\n\n## How to read a record\n\nEach record carries its own metadata — dates, source, and context notes — alongside any scans, images, or documents held with it.\n\n## Notes\n\nCompose this page in the admin's Guide editor. It is written in Markdown and committed to `src/content/guide.md`.\n"
   },
   "_counters": {
     "EPH": 26,
     "FILM": 521,
-    "BOOK": 329,
-    "MUSIC": 7,
+    "BOOK": 332,
+    "MUSIC": 8,
     "COFFEE": 2,
     "GAME": 4,
     "SKETCH": 2,

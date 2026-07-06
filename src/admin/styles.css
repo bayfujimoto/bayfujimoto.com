@@ -1206,6 +1206,59 @@ body.admin-gutter-dragging.dragging-h {
   padding: 0 4px;
 }
 
+/* ── Guide editor ─────────────────────────────────────────────────────────────
+   Record-pane view behind the top-level Guide node. A full-height Markdown
+   textarea in the same boxed-value idiom as the form inputs.
+   ─────────────────────────────────────────────────────────────────────────── */
+.admin-guide {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 12px;
+}
+.admin-guide-hint {
+  font-size: var(--text-sm);
+  color: var(--fg-muted);
+  letter-spacing: 0.02em;
+}
+.admin-guide-hint code {
+  color: var(--fg);
+  background: var(--bg-elevated);
+  padding: 0 4px;
+}
+.admin-guide-hint kbd {
+  font-family: inherit;
+  font-style: normal;
+  color: var(--fg);
+  background: transparent;
+  padding: 0 1px;
+}
+.admin-guide-editor {
+  flex: 1;
+  width: 100%;
+  min-height: 220px;
+  resize: none;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  color: var(--fg);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-faint);
+  border-radius: 2px;
+  padding: 12px 14px;
+}
+.admin-guide-editor:focus {
+  outline: none;
+  border-color: var(--fg);
+  background: var(--bg);
+}
+@media (max-width: 700px) {
+  .admin-guide-editor { font-size: 16px; }  /* ≥16px: suppress iOS zoom-on-focus */
+}
+
+/* Top-level Guide node — a touch of space to set it off from the archive tree. */
+.admin-tree-guide { margin-top: 4px; }
+
 /* ── Log pane (Phase 4) ──────────────────────────────────────────────────────
    Pending changes (git status shorthand) + commit button + session history.
    Two-layer selection: the row tints on hover/selected; inside, the action

@@ -26,6 +26,7 @@ const EXPANDED_KEY = 'admin.explorer.expanded';
 let expanded         = null;
 let itemsByPath      = new Map();
 let onItemSelectFn   = null;
+let onGuideSelectFn  = null;
 let navRegistered    = false;
 
 // Filter state (Phase 6.5):
@@ -87,10 +88,20 @@ export function renderExplorer(archive, callbacks = {}) {
 
   if (!expanded) expanded = loadExpanded();
 
-  onItemSelectFn = callbacks.onItemSelect || null;
+  onItemSelectFn  = callbacks.onItemSelect  || null;
+  onGuideSelectFn = callbacks.onGuideSelect || null;
   itemsByPath = new Map();
 
   const model = buildModel(archive);
+
+  // A 'guide' node sits at the same level as 'archive' — a top-level, editable
+  // meta page (composed in Markdown), not part of the series tree.
+  const guideNode = {
+    type:  'guide',
+    label: archive?.guide?.label || 'Guide',
+    path:  'guide',
+  };
+  const forest = [model, guideNode];
 
   // First-time defaults: open the root and every series so the user lands on
   // a meaningful skeleton instead of a single collapsed line.
@@ -99,8 +110,8 @@ export function renderExplorer(archive, callbacks = {}) {
     for (const s of model.children) expanded.add(s.path);
   }
 
-  wrap.innerHTML = renderTree(model);
-  wrap.__model = model;
+  wrap.innerHTML = renderForest(forest);
+  wrap.__forest = forest;
 
   if (!wrap.__handlerAttached) {
     wrap.addEventListener('click', onTreeClick);
@@ -377,8 +388,8 @@ function updateFilterCount(matched) {
 
 function renderCurrent() {
   const wrap = document.getElementById('explorer-tree-wrap');
-  if (!wrap || !wrap.__model) return;
-  wrap.innerHTML = renderTree(wrap.__model);
+  if (!wrap || !wrap.__forest) return;
+  wrap.innerHTML = renderForest(wrap.__forest);
   refreshHighlight('e');
 }
 
@@ -401,6 +412,10 @@ function registerExplorerNav() {
         row.classList.add('is-selected');
         const item = itemsByPath.get(path);
         if (item && onItemSelectFn) onItemSelectFn(item);
+      } else if (type === 'guide') {
+        wrap.querySelectorAll('.admin-tree-row.is-selected').forEach(r => r.classList.remove('is-selected'));
+        row.classList.add('is-selected');
+        if (onGuideSelectFn) onGuideSelectFn();
       } else {
         // Toggle expansion (same as click on a group row)
         if (expanded.has(path)) expanded.delete(path);
@@ -500,7 +515,7 @@ function wrapMatchPositions(label, positions) {
  */
 export function selectInTree(itemId) {
   const wrap = document.getElementById('explorer-tree-wrap');
-  if (!wrap || !wrap.__model) return;
+  if (!wrap || !wrap.__forest) return;
 
   // Locate the path for this item id
   let itemPath = null;
@@ -557,6 +572,14 @@ function onTreeClick(e) {
 
     const item = itemsByPath.get(path);
     if (item && onItemSelectFn) onItemSelectFn(item);
+    return;
+  }
+
+  if (type === 'guide') {
+    wrap.querySelectorAll('.admin-tree-row.is-selected')
+      .forEach(r => r.classList.remove('is-selected'));
+    row.classList.add('is-selected');
+    if (onGuideSelectFn) onGuideSelectFn();
     return;
   }
 
@@ -653,8 +676,8 @@ function countLeaves(node) {
 const INDENT_PX = 14;
 const ROW_PAD_LEFT_PX = 8;
 
-function renderTree(root) {
-  return `<div class="admin-tree">${renderNode(root, 0)}</div>`;
+function renderForest(nodes) {
+  return `<div class="admin-tree">${nodes.map(n => renderNode(n, 0)).join('')}</div>`;
 }
 
 function renderNode(node, depth) {
@@ -662,6 +685,19 @@ function renderNode(node, depth) {
   // query is empty — then ancestorSet is null and everything renders).
   if (filter && filter.query && filter.ancestorSet && !filter.ancestorSet.has(node.path)) {
     return '';
+  }
+
+  // Guide: a top-level, clickable meta node (no children, no expansion). Reads
+  // like the archive root (star + label) but opens the Markdown editor instead.
+  if (node.type === 'guide') {
+    let cls = 'admin-tree-row admin-tree-root admin-tree-guide';
+    if (!filter && matchedPaths.has(node.path)) cls += ' is-matched';
+    const pad = depth * INDENT_PX + ROW_PAD_LEFT_PX;
+    return `<div class="${cls}" data-path="${escapeAttr(node.path)}" data-type="guide" style="padding-left: ${pad}px">`
+      + `<span class="admin-tree-marker"> </span>`
+      + `<span class="admin-tree-star">*</span> `
+      + `<span class="admin-tree-label">${escapeHTML(node.label)}</span>`
+      + `</div>`;
   }
 
   const isLeaf  = node.type === 'item';

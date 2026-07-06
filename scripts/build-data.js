@@ -30,6 +30,17 @@ const GUIDE = {
   order: 5,
 };
 
+// Read the editable guide markdown (composed in the admin's Guide editor and
+// committed to src/content/guide.md). Stored outside the records glob so it is
+// never parsed as a record; an absent file just yields empty content.
+function readGuideContent() {
+  try {
+    return readFileSync("src/content/guide.md", "utf8");
+  } catch {
+    return "";
+  }
+}
+
 function resolveAssetPaths(assets) {
   if (!assets || typeof assets !== "object") return assets;
 
@@ -87,9 +98,11 @@ function countItems(archive, predicate = () => true) {
 }
 
 function buildArchive() {
-  const files = glob.sync("src/content/**/*.md", { ignore: "src/content/_templates/**" });
+  const files = glob.sync("src/content/**/*.md", {
+    ignore: ["src/content/_templates/**", "src/content/guide.md"],
+  });
 
-  const archive = { series: {}, guide: GUIDE };
+  const archive = { series: {}, guide: { ...GUIDE, content: readGuideContent() } };
 
   // Track every frontmatter id → source file(s) so we can fail loudly on any
   // duplicate. Two files sharing an id render as duplicate cards downstream.
