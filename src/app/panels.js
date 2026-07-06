@@ -8,21 +8,72 @@ import { mdToHtml } from "./markdown.js";
 let archive = null;
 const app = document.getElementById("app");
 
-// Load the display (web-size) derivative into an <img>, falling back to the full
-// original for items ingested before the display pipeline existed, then to onFail.
-// Keeps full originals out of the browser for everything that has a web size.
-function loadDisplayWithFallback(img, filename, onFail) {
+// Fade an <img> in once it has decoded, so it resolves onto the page instead of
+// popping in. Reduced motion shows it instantly (the CSS transition is disabled
+// there). Safe if the image is already complete, or if decode() is unsupported or
+// rejects. The load listener stays armed across a display→original retry.
+function fadeInOnLoad(img) {
+  img.decoding = "async";
+  img.classList.add("img-fade");
+  const reveal = () => img.classList.add("img-fade--in");
+  const onLoad = () => { img.decode ? img.decode().then(reveal, reveal) : reveal(); };
+  if (img.complete && img.naturalWidth) { onLoad(); return; }
+  img.addEventListener("load", onLoad);
+}
+
+// Progressive reproduction loader for the item-card plate. Paints a low-res
+// placeholder into `img` at once — the exact `thumbnail` URL the grid already
+// loaded, so it is cache-warm and appears without a network wait — then loads the
+// web-size `display` derivative off-screen and swaps it in only once it can paint.
+// The placeholder (or a previously shown side) is therefore never cleared to
+// blank; the swap reads as a sharpening. Falls back display → original, and calls
+// `onFail` only if nothing ever painted. With no thumbnail (e.g. a film card,
+// whose poster the grid never loaded) it degrades to loading `display` straight in
+// while leaving whatever is already showing untouched until the new image decodes.
+function loadReproProgressive(img, filename, thumbFilename, onFail) {
+  const thumbUrl = thumbFilename ? imageUrl(thumbFilename, "thumbnail") : null;
+  if (thumbUrl) img.src = thumbUrl;
+
+  const loader = new Image();
   let stage = "display";
-  img.onerror = () => {
+  const swap = () => { img.src = loader.src; };
+  loader.onload = () => { loader.decode ? loader.decode().then(swap, swap) : swap(); };
+  loader.onerror = () => {
     if (stage === "display") {
       stage = "original";
-      img.src = imageUrl(filename, "original");
+      loader.src = imageUrl(filename, "original");
     } else {
-      img.onerror = null;
-      if (onFail) onFail();
+      loader.onerror = null;
+      if (!img.currentSrc && onFail) onFail(); // nothing ever painted → bare plate
     }
   };
-  img.src = imageUrl(filename, "display");
+  loader.src = imageUrl(filename, "display");
+}
+
+// Film backdrops are external Letterboxd URLs scraped at 1200×675 — roughly five
+// times the pixels a grid cell (~213px wide) can show, so each cell waits on an
+// oversized download before it paints. Letterboxd serves on-demand resized
+// derivatives whose target size is encoded in the path
+// ("…-1200-1200-675-675-crop-000000.jpg"); rewrite that token to a smaller preset
+// for grid use (~30–50 KB instead of ~150–250 KB). The full size is not used
+// elsewhere — the item card shows the poster, not the backdrop — so this is
+// grid-only. Non-Letterboxd URLs (TMDB, R2, empty) pass through unchanged; callers
+// keep the original URL as an onerror fallback so a rewrite can never blank a cell.
+const GRID_BACKDROP_SIZE = "500-500-281-281";
+function gridBackdropUrl(url) {
+  if (!url || !url.includes("a.ltrbxd.com/resized/")) return url;
+  return url.replace(/-\d+-\d+-\d+-\d+-crop-/, `-${GRID_BACKDROP_SIZE}-crop-`);
+}
+
+// Attach a grid backdrop to `img`: small Letterboxd derivative for speed, falling
+// back once to the full URL if that preset isn't available, so a cell never blanks.
+function setGridBackdrop(img, fullUrl) {
+  const small = gridBackdropUrl(fullUrl);
+  fadeInOnLoad(img);
+  if (small !== fullUrl) {
+    img.onerror = () => { img.onerror = null; img.src = fullUrl; };
+  }
+  img.src = small;
 }
 
 // Labor and Accumulation use view-based URLs regardless of subcollection data structure
@@ -758,11 +809,21 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
 
   const content = makeContent();
   let hoistedMeta = null; // tracks the .layer-meta element after pushSheet hoists it to document.body
+  let lazyIO = null;      // preloads grid thumbnails ahead of the horizontal scroll
 
   function renderContent(activeSubKey, activeView) {
     const dropdownWasOpen = content.querySelector(".layer-breadcrumb__seg-wrap.is-open, .layer-breadcrumb__seg-wrap.is-open-instant") != null;
     // Clear previous children except veil (veil is not in content)
     content.innerHTML = "";
+
+    // Deferred image loading (see the IntersectionObserver built after the grid).
+    // Each grid image registers a loader instead of fetching at build time; the
+    // observer calls it as the cell nears the scroll window. The observed element
+    // is the sized button, not the (initially empty) <img>, so a zero-size image
+    // can't defeat the intersection test.
+    if (lazyIO) { lazyIO.disconnect(); lazyIO = null; }
+    const lazyTargets = [];
+    const lazyRegister = (targetEl, load) => { targetEl.__lazyLoad = load; lazyTargets.push(targetEl); };
 
     let activeSub, years;
 
@@ -921,7 +982,8 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
       const bd = imageUrl(f.assets?.backdrop, "original");
       if (bd) {
         const img = el("img", "item-grid__thumb item-grid__thumb--backdrop");
-        img.src = bd; img.alt = ""; img.loading = "lazy";
+        img.alt = "";
+        lazyRegister(btn, () => setGridBackdrop(img, bd));
         btn.appendChild(img);
       } else {
         const ph = el("span", "item-grid__noimg");
@@ -981,9 +1043,8 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
           const backdrop = imageUrl(item.assets?.backdrop, "original");
           if (backdrop) {
             const img = el("img", "item-grid__thumb item-grid__thumb--backdrop");
-            img.src = backdrop;
             img.alt = "";
-            img.loading = "lazy";
+            lazyRegister(btn, () => setGridBackdrop(img, backdrop));
             btn.appendChild(img);
           } else {
             const ph = el("span", "item-grid__noimg");
@@ -999,9 +1060,8 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
           const thumbSrc = imageUrl(item.assets?.thumbnail, "thumbnail") || imageUrl(primaryAsset(item), "display");
           if (thumbSrc) {
             const img = el("img", "item-grid__thumb");
-            img.src = thumbSrc;
             img.alt = "";
-            img.loading = "lazy";
+            lazyRegister(btn, () => { fadeInOnLoad(img); img.src = thumbSrc; });
 
             // Singles read as a record: crop the square cover to a disc.
             if (item.item_type === "single") cell.classList.add("item-grid__cell--disc");
@@ -1069,6 +1129,28 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
       if (!document.contains(gridWrap)) { gridRO.disconnect(); mo.disconnect(); }
     }).observe(document.body, { childList: true, subtree: true });
 
+    // Preload grid thumbnails ahead of the horizontal scroll. Native
+    // loading="lazy" keys off the viewport and won't preload within this nested
+    // horizontal scroller, so cells to the right blank as you scroll into them.
+    // Observe each cell against the scroll container with a wide horizontal
+    // margin instead, so its image fetches a few screen-widths before entering
+    // view. Falls back to loading everything where IntersectionObserver is absent.
+    if (lazyTargets.length) {
+      if ("IntersectionObserver" in window) {
+        const io = new IntersectionObserver((entries, obs) => {
+          for (const e of entries) {
+            if (!e.isIntersecting) continue;
+            obs.unobserve(e.target);
+            if (e.target.__lazyLoad) { e.target.__lazyLoad(); e.target.__lazyLoad = null; }
+          }
+        }, { root: gridWrap, rootMargin: "0px 1200px" });
+        lazyIO = io;
+        requestAnimationFrame(() => lazyTargets.forEach(t => { if (t.isConnected) io.observe(t); }));
+      } else {
+        lazyTargets.forEach(t => { if (t.__lazyLoad) { t.__lazyLoad(); t.__lazyLoad = null; } });
+      }
+    }
+
     // Breadcrumb
     const segments = [
       { label: "desk", onClick: () => navigate({ layer: "desk" }) }
@@ -1127,7 +1209,8 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
     }
   };
 
-  const cleanup = attachEscapeHandler(content, closeBrowse);
+  const escCleanup = attachEscapeHandler(content, closeBrowse);
+  const cleanup = () => { escCleanup(); if (lazyIO) { lazyIO.disconnect(); lazyIO = null; } };
 
   renderContent(subKey, viewSlug);
 
@@ -1357,6 +1440,34 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
   const content = makeContent();
   content.classList.add("layer-content--item-card");
 
+  // Prefetch a neighbour's plate images so arrow/keyboard stepping lands on an
+  // already-cached image instead of reloading (soft thumbnail → sharp display) in
+  // view. The detached Image only warms the browser's HTTP cache; a Set avoids
+  // re-warming a URL. Deferred to idle time so it never competes with the active
+  // card's own load.
+  const prefetched = new Set();
+  const prefetchImg = (url) => {
+    if (!url || prefetched.has(url)) return;
+    prefetched.add(url);
+    const im = new Image();
+    im.decoding = "async";
+    im.src = url;
+  };
+  const prefetchNeighbors = (idx) => {
+    for (const j of [idx - 1, idx + 1]) {
+      const it = allItems[j];
+      if (!it) continue;
+      const primary = primaryAsset(it);
+      if (primary) prefetchImg(imageUrl(primary, "display"));
+      if (it.assets?.thumbnail) prefetchImg(imageUrl(it.assets.thumbnail, "thumbnail"));
+    }
+  };
+  const schedulePrefetch = (idx) => {
+    const run = () => prefetchNeighbors(idx);
+    if ("requestIdleCallback" in window) requestIdleCallback(run, { timeout: 1500 });
+    else setTimeout(run, 300);
+  };
+
   function renderContent(idx) {
     currentIdx = idx;
     const item = allItems[idx];
@@ -1364,6 +1475,7 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
     content.innerHTML = "";
     content.appendChild(buildCardWrap(item));
     renderChrome(item, idx);
+    schedulePrefetch(idx);
   }
 
   // ── Catalog-card inspection ─────────────────────────────────────────────────
@@ -1594,7 +1706,9 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
       reproImg = el("img");
       reproImg.alt = item.title;
       reproImg.draggable = false;
-      loadDisplayWithFallback(reproImg, primary, showNone);
+      reproImg.decoding = "async";
+      // Show the grid's cache-warm thumbnail immediately, then swap in `display`.
+      loadReproProgressive(reproImg, primary, item.assets?.thumbnail, showNone);
     }
 
     let plateState = null; // { origin, pxPerMM, spanMM, scaleNote, panX, panY }
@@ -1661,7 +1775,8 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
         flip.setAttribute("aria-label", "Overturn: show the other side");
         flip.addEventListener("click", () => {
           showingBack = !showingBack;
-          if (reproImg) loadDisplayWithFallback(reproImg, showingBack ? back : primary, showNone);
+          // No thumbnail for the far side: hold the current side until it decodes.
+          if (reproImg) loadReproProgressive(reproImg, showingBack ? back : primary, null, showNone);
           assetLabel.textContent = showingBack ? "verso" : "recto";
         });
         controls.appendChild(flip);
@@ -2037,6 +2152,7 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
       prevWrap = nextWrap = null;
       content.querySelectorAll(".layer-breadcrumb, .layer-nav").forEach(n => n.remove());
       renderChrome(allItems[newIdx], newIdx);
+      schedulePrefetch(newIdx); // warm the next step's neighbours after a swipe
       replace({ layer: "item", series: seriesKey, subcollection: subKey, item: allItems[newIdx].id });
       animating = false;
     }, 280);
@@ -2298,11 +2414,11 @@ function makeLaborItemSheet(seriesKey, itemId, viewSlug) {
       if (sub.type && sub.type !== "image") return;
 
       const imgPanel = el("div", "labor-item__panel labor-item__panel--image");
-      imgPanel.style.width = "300px"; // placeholder until natural dimensions load
+      imgPanel.style.width = "300px"; // placeholder until the aspect ratio is known
 
       const imgWrap = el("div", "labor-item__image-wrap");
       const img = el("img", "labor-item__image");
-      loadDisplayWithFallback(img, sub.file);
+      fadeInOnLoad(img);
       img.alt = sub.caption || `${item.title} — image ${i + 1}`;
       img.draggable = false;
       imgWrap.appendChild(img);
@@ -2313,13 +2429,21 @@ function makeLaborItemSheet(seriesKey, itemId, viewSlug) {
       cap.textContent = sub.caption || "";
       imgPanel.appendChild(cap);
 
-      // Set panel width from aspect ratio once image dimensions are known
-      img.addEventListener("load", () => {
+      // Reserve the panel's width from the image's aspect ratio as early as
+      // possible. Progressive load paints the small subitem thumbnail first (often
+      // cache-warm from the labor grid) and swaps in the full display image once it
+      // decodes; sizing off whichever paints first lands the panel at its final
+      // width almost immediately, instead of reflowing from 300px when the full
+      // image arrives. Both carry the same aspect ratio, so the later display load
+      // recomputes to the same width — no second shift.
+      const sizePanel = () => {
+        if (!img.naturalWidth || !img.naturalHeight) return;
         const imageH = scroll.clientHeight - captionH;
-        const panelW = imageH * (img.naturalWidth / img.naturalHeight);
-        imgPanel.style.width = `${panelW}px`;
+        imgPanel.style.width = `${imageH * (img.naturalWidth / img.naturalHeight)}px`;
         updateScrollMask();
-      });
+      };
+      img.addEventListener("load", sizePanel);
+      loadReproProgressive(img, sub.file, sub.thumbnail);
 
       scroll.appendChild(imgPanel);
     });

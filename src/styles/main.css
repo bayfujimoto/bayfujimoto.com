@@ -641,6 +641,14 @@ body {
   max-height: 100%;
 }
 
+/* Images resolve onto the page rather than popping: start transparent and fade
+   in once decoded (JS adds --in on load). Reduced motion shows them instantly. */
+.img-fade { opacity: 0; transition: opacity var(--dur-base) var(--ease-base); }
+.img-fade--in { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .img-fade { transition: none; }
+}
+
 /* Books grid: covers sized to (estimated) true physical scale, inset with a little
    padding and centered within each cell. Scoped to books so the film/music/ephemera
    grids are untouched. The per-item size comes from the shared dimension scaling in
