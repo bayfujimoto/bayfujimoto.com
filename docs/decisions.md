@@ -361,6 +361,13 @@ Its purpose is to prevent drift, repetition, and silent contradictions over time
 - why_it_matters: Prevents unnecessary scope and performance cost.
 - current_bias: actual 3D only when spatial reading materially improves understanding
 
+### Cross-series lists (seventh desk object)
+- status: open
+- question: Should the desk gain an object holding curated lists that gather items across several series at once (e.g. an "Austin → SF" road-trip list pulling music, ephemera, and photos)? What is it called, what object represents it, and is it a series or a meta-object like the Guide?
+- why_it_matters: Introduces a lateral, subject/event-based access layer over the provenance-based hierarchy; affects the object set, URL scheme, ingest, and item-inspection backlinks.
+- current_bias: cross-reference/index model (items stay in their home series); curated not exhaustive; likely a meta-object near the Guide rather than a sixth series
+- see: `docs/cross-series-lists.md`
+
 ### Auth model
 - status: open
 - question: How should the admin interface be authenticated?
