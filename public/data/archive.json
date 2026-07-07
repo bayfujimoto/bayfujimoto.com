@@ -319,6 +319,48 @@
           "label": "films",
           "items": [
             {
+              "id": "FILM-2026-522",
+              "slug": "minions-monsters-2026-2026-07-06",
+              "title": "Minions & Monsters",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2026",
+              "director": "",
+              "watch_date": "2026-07-06",
+              "display_date": "July 6, 2026",
+              "sort_date": "2026-07-06",
+              "rating": 3.5,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/minions-monsters-2026/",
+              "assets": {
+                "backdrop": "https://a.ltrbxd.com/resized/alternative-backdrop/1/1/9/6/8/0/8/tmdb/3cSytWui6zbxvP7UcScWgxgnCqg-1200-1200-675-675-crop-000000.jpg?v=f54c628f0b",
+                "poster": "https://a.ltrbxd.com/resized/film-poster/1/1/9/6/8/0/8/1196808-minions-monsters-2026-0-600-0-900-crop.jpg?v=8ff282e996"
+              }
+            },
+            {
+              "id": "FILM-2026-523",
+              "slug": "the-invite-2026-2026-07-05",
+              "title": "The Invite",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2026",
+              "director": "",
+              "watch_date": "2026-07-05",
+              "display_date": "July 5, 2026",
+              "sort_date": "2026-07-05",
+              "rating": 4,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/the-invite-2026/",
+              "assets": {
+                "backdrop": "https://a.ltrbxd.com/resized/alternative-backdrop/8/5/4/8/3/1/tmdb/8MKAsvQSYFGNH0NdH57Ra3G0KIx-1200-1200-675-675-crop-000000.jpg?v=bc46d164b2",
+                "poster": "https://a.ltrbxd.com/resized/film-poster/8/5/4/8/3/1/854831-the-invite-2026-0-600-0-900-crop.jpg?v=ee72905e48"
+              }
+            },
+            {
               "id": "FILM-2026-521",
               "slug": "lawrence-of-arabia-1962-2026-07-04",
               "title": "Lawrence of Arabia",
@@ -15947,7 +15989,7 @@
   },
   "_counters": {
     "EPH": 26,
-    "FILM": 521,
+    "FILM": 523,
     "BOOK": 335,
     "MUSIC": 8,
     "COFFEE": 2,
