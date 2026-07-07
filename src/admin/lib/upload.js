@@ -15,13 +15,19 @@ async function getPresignedUrl(filename, contentType, prefix) {
     throw new Error(`Upload API returned non-JSON (status ${res.status}): ${text.slice(0, 120)}`);
   }
   if (!data.ok) throw new Error(data.error || "Failed to get upload URL");
-  return data.uploadUrl;
+  // Return the signed cache-control alongside the URL. The server signs it into
+  // the presigned PUT, so putToR2 must send exactly this value back (see below).
+  return { url: data.uploadUrl, cacheControl: data.cacheControl };
 }
 
-async function putToR2(url, blob, contentType) {
-  const res = await fetch(url, {
+async function putToR2(presign, blob, contentType) {
+  const headers = { "Content-Type": contentType };
+  // Echo the exact Cache-Control the server signed into the presigned URL. A
+  // mismatched or missing value would fail SigV4 verification with a 403.
+  if (presign.cacheControl) headers["Cache-Control"] = presign.cacheControl;
+  const res = await fetch(presign.url, {
     method: "PUT",
-    headers: { "Content-Type": contentType },
+    headers,
     body: blob,
   });
   if (!res.ok) throw new Error(`R2 upload failed: ${res.status}`);

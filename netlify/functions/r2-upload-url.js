@@ -45,6 +45,19 @@ export async function handler(event) {
 
   const key = `${prefix}/${filename}`;
 
+  // Cache policy stamped onto the object. Image derivatives (originals, thumbnails,
+  // display, cutouts) are always addressed by the site with a ?v= cache-bust token,
+  // so a given URL never changes its bytes — cache it immutably for a year. Model
+  // files (uploaded to originals/ as <id>-model.<glb|gltf>) carry no ?v= token, so
+  // they get a modest TTL instead to stay replaceable. This value is SIGNED into
+  // the presigned PUT, so the client must send it back verbatim — it is returned
+  // below and echoed by putToR2() in src/admin/lib/upload.js. Without a header the
+  // r2.dev origin sends no Cache-Control and every prefetch / re-view re-fetches.
+  const isModel = prefix === "originals" && /(-model\.|\.glb$|\.gltf$)/i.test(filename);
+  const cacheControl = isModel
+    ? "public, max-age=86400"
+    : "public, max-age=31536000, immutable";
+
   const client = new S3Client({
     region: "auto",
     endpoint: `https://${ACCOUNT_ID}.r2.cloudflarestorage.com`,
@@ -52,11 +65,11 @@ export async function handler(event) {
   });
 
   try {
-    const command = new PutObjectCommand({ Bucket: BUCKET, Key: key, ContentType: contentType });
+    const command = new PutObjectCommand({ Bucket: BUCKET, Key: key, ContentType: contentType, CacheControl: cacheControl });
     const uploadUrl = await getSignedUrl(client, command, { expiresIn: 120 });
     return {
       statusCode: 200,
-      body: JSON.stringify({ ok: true, uploadUrl, key }),
+      body: JSON.stringify({ ok: true, uploadUrl, key, cacheControl }),
     };
   } catch (e) {
     return {

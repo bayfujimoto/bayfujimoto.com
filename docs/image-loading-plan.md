@@ -51,10 +51,11 @@ That reflow is now removed by sizing each panel from the small subitem thumbnail
 
 - ☐ Deferred, for exact zero-shift before any bytes arrive: capture display-derivative width/height during the backfill (a one-line `sharp` `metadata()` read) into a manifest, thread it through `build-data.js`, and reserve panel/box size from it directly. Requires re-running the backfill with R2 credentials, so it is left as a follow-up.
 
-## Phase 7: Network-level wins ☐
+## Phase 7: Network-level wins ◐
 
 - `<link rel="preconnect">` to the R2 base URL (and to `a.ltrbxd.com` while backdrops remain external) in `index.html`, so the first image request does not wait on DNS/TLS.
-- Long-lived immutable cache headers on the derivatives — safe given the existing `?v=` cache-bust.
+- ◐ **Long-lived immutable cache headers on the R2 derivatives — safe given the existing `?v=` cache-bust.** The durable fix for a caching gap found while testing Phase 5: the public `pub-*.r2.dev` origin sends no `Cache-Control` and is not edge-cached, so prefetched (and previously-viewed) R2 images were re-fetched on use — the neighbour preload and thumbnail placeholder only "stuck" for the external-CDN categories (films' Letterboxd posters, books' Goodreads covers), not the R2-hosted ones (music, ephemera). Now written by every upload path: `CacheControl: "public, max-age=31536000, immutable"` in `backfill-display-sizes.js` (display) and `migrate-thumbnails.js` (thumbnails), and on the admin presigned path — `netlify/functions/r2-upload-url.js` signs the value into the PUT and returns it, and `src/admin/lib/upload.js` (`putToR2`) echoes it verbatim (a mismatch would fail SigV4). Model files, whose URLs carry no `?v=`, get a shorter `max-age=86400` instead of `immutable` so they stay replaceable. **Remaining:** re-run `backfill-display-sizes.js --force` and `migrate-thumbnails.js` with R2 credentials to stamp the header onto already-uploaded objects, and smoke-test one admin upload after deploy (the presigned PUT now requires the client to send the signed `Cache-Control`). New admin uploads are already covered.
+- ✓ Interim mitigation shipped in `makeItemSheet`: prefetched neighbour images are now *retained* (held in a bounded Map, cleared on sheet close) so their decoded bytes stay in the in-memory image cache until navigation, making the preload stick within a session even while existing R2 objects remain uncached.
 - A service worker precaching `thumbnail`/`display` derivatives so return visitors never see a blank.
 
 ## Priority

@@ -117,6 +117,10 @@ for (const key of originalKeys) {
       Key: dispKey,
       Body: web,
       ContentType: "image/webp",
+      // Derivatives are addressed with a ?v= cache-bust token, so the object at a
+      // given URL never changes — safe to cache immutably for a year. Without this,
+      // r2.dev sends no Cache-Control and prefetches/re-views re-fetch every time.
+      CacheControl: "public, max-age=31536000, immutable",
     }));
 
     console.log(`done (${(web.length / 1024).toFixed(0)} KB)`);

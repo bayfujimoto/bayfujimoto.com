@@ -1442,16 +1442,22 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
 
   // Prefetch a neighbour's plate images so arrow/keyboard stepping lands on an
   // already-cached image instead of reloading (soft thumbnail → sharp display) in
-  // view. The detached Image only warms the browser's HTTP cache; a Set avoids
-  // re-warming a URL. Deferred to idle time so it never competes with the active
-  // card's own load.
-  const prefetched = new Set();
+  // view. Each prefetched Image is RETAINED (kept in the Map, not discarded) so its
+  // decoded bytes stay in the browser's in-memory image cache until we navigate.
+  // This is what makes the preload stick for the R2-hosted derivatives: r2.dev
+  // sends no Cache-Control and is not edge-cached, so a dropped prefetch gets
+  // re-fetched on use and the preload is wasted — unlike the external CDN
+  // posters/covers (films, books), which cache on their own. Deferred to idle time
+  // so it never competes with the active card's own load; bounded to the most
+  // recent handful so memory stays flat while stepping through.
+  const prefetched = new Map(); // url → retained HTMLImageElement
   const prefetchImg = (url) => {
     if (!url || prefetched.has(url)) return;
-    prefetched.add(url);
     const im = new Image();
     im.decoding = "async";
     im.src = url;
+    prefetched.set(url, im);
+    if (prefetched.size > 12) prefetched.delete(prefetched.keys().next().value);
   };
   const prefetchNeighbors = (idx) => {
     for (const j of [idx - 1, idx + 1]) {
@@ -2162,6 +2168,7 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
 
   const cleanup = () => {
     document.removeEventListener("keydown", onKey);
+    prefetched.clear(); // release retained prefetch images when the sheet closes
   };
 
   renderContent(currentIdx);

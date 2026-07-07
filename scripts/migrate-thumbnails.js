@@ -91,6 +91,10 @@ for (const thumbKey of thumbKeys) {
       Key: thumbKey,
       Body: newThumb,
       ContentType: "image/jpeg",
+      // Thumbnails are addressed with a ?v= cache-bust token, so a given URL is
+      // stable — cache immutably for a year. Without this, r2.dev serves no
+      // Cache-Control and every prefetch / re-view re-fetches the bytes.
+      CacheControl: "public, max-age=31536000, immutable",
     }));
 
     console.log("done");
