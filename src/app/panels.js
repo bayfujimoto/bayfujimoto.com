@@ -26,28 +26,41 @@ function fadeInOnLoad(img) {
 // loaded, so it is cache-warm and appears without a network wait — then loads the
 // web-size `display` derivative off-screen and swaps it in only once it can paint.
 // The placeholder (or a previously shown side) is therefore never cleared to
-// blank; the swap reads as a sharpening. Falls back display → original, and calls
-// `onFail` only if nothing ever painted. With no thumbnail (e.g. a film card,
-// whose poster the grid never loaded) it degrades to loading `display` straight in
-// while leaving whatever is already showing untouched until the new image decodes.
-function loadReproProgressive(img, filename, thumbFilename, onFail) {
+// blank; the swap reads as a sharpening. It walks the `variants` fallback chain
+// (default display → original) and calls `onFail` only if nothing ever painted.
+// With no thumbnail (e.g. a film card, whose poster the grid never loaded) it
+// degrades to loading the first variant straight in, leaving whatever is already
+// showing untouched until the new image decodes.
+function loadReproProgressive(img, filename, thumbFilename, onFail, variants = ["display", "original"]) {
   const thumbUrl = thumbFilename ? imageUrl(thumbFilename, "thumbnail") : null;
   if (thumbUrl) img.src = thumbUrl;
 
   const loader = new Image();
-  let stage = "display";
+  let i = 0;
   const swap = () => { img.src = loader.src; };
   loader.onload = () => { loader.decode ? loader.decode().then(swap, swap) : swap(); };
   loader.onerror = () => {
-    if (stage === "display") {
-      stage = "original";
-      loader.src = imageUrl(filename, "original");
+    if (++i < variants.length) {
+      loader.src = imageUrl(filename, variants[i]);
     } else {
       loader.onerror = null;
       if (!img.currentSrc && onFail) onFail(); // nothing ever painted → bare plate
     }
   };
-  loader.src = imageUrl(filename, "display");
+  loader.src = imageUrl(filename, variants[0]);
+}
+
+// The scanned ephemera keep a transparent full-resolution cut-out
+// (cutouts/<base>-cut.png) beside the raw scan. When an asset was cut out, its
+// ?v= token records the cut-out mode (e.g. "…c20x2", from the tolerance/defringe);
+// the plate should then show that cut-out rather than the opaque, scan-derived
+// display. Non-cut-out assets keep the plain display → original chain.
+function isCutoutAsset(value) {
+  const qi = value ? value.indexOf("?v=") : -1;
+  return qi !== -1 && /c\d+x\d+$/.test(value.slice(qi + 3));
+}
+function fullVariants(value) {
+  return isCutoutAsset(value) ? ["cutout", "display", "original"] : ["display", "original"];
 }
 
 // Film backdrops are external Letterboxd URLs scraped at 1200×675 — roughly five
@@ -1464,7 +1477,7 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
       const it = allItems[j];
       if (!it) continue;
       const primary = primaryAsset(it);
-      if (primary) prefetchImg(imageUrl(primary, "display"));
+      if (primary) prefetchImg(imageUrl(primary, isCutoutAsset(primary) ? "cutout" : "display"));
       if (it.assets?.thumbnail) prefetchImg(imageUrl(it.assets.thumbnail, "thumbnail"));
     }
   };
@@ -1713,8 +1726,10 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
       reproImg.alt = item.title;
       reproImg.draggable = false;
       reproImg.decoding = "async";
-      // Show the grid's cache-warm thumbnail immediately, then swap in `display`.
-      loadReproProgressive(reproImg, primary, item.assets?.thumbnail, showNone);
+      // Show the grid's cache-warm thumbnail immediately, then swap in the full
+      // reproduction — the transparent cut-out where the item has one (scanned
+      // ephemera), otherwise the display scan.
+      loadReproProgressive(reproImg, primary, item.assets?.thumbnail, showNone, fullVariants(primary));
     }
 
     let plateState = null; // { origin, pxPerMM, spanMM, scaleNote, panX, panY }
@@ -1782,7 +1797,9 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
         flip.addEventListener("click", () => {
           showingBack = !showingBack;
           // No thumbnail for the far side: hold the current side until it decodes.
-          if (reproImg) loadReproProgressive(reproImg, showingBack ? back : primary, null, showNone);
+          // The verso is cut out too when the recto is, so pick variants per side.
+          const side = showingBack ? back : primary;
+          if (reproImg) loadReproProgressive(reproImg, side, null, showNone, fullVariants(side));
           assetLabel.textContent = showingBack ? "verso" : "recto";
         });
         controls.appendChild(flip);
