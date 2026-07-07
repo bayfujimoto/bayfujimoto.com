@@ -19,6 +19,26 @@ import { initLog, setLogCallbacks, triggerCommit } from "./views/log.js";
 import { initStatusline, setBaseState, setHelpExpanded, getHelpExpanded, setFocusedPane } from "./statusline.js";
 import { initModes } from "./modes.js";
 
+// ── Stale-deploy recovery ─────────────────────────────────────────────────────
+// The upload flow (and other admin features) load their code via lazy `import()`
+// chunks whose filenames are content-hashed by Vite. When the site redeploys
+// while an admin tab is left open — which happens routinely, since content
+// ingests auto-deploy — those chunk names change, and the still-running old page
+// keeps requesting the old names. The missing file falls through Netlify's SPA
+// catch-all to index.html (200 text/html), so the dynamic import fails with
+// "Failed to fetch dynamically imported module". Vite fires `vite:preloadError`
+// for exactly this case; reload once to pull the fresh entry HTML (and thus the
+// current chunk names). A short time-window guard breaks any reload loop if a
+// chunk is genuinely, permanently gone rather than merely re-hashed.
+window.addEventListener("vite:preloadError", (event) => {
+  const KEY = "admin:preload-reload-at";
+  const last = Number(sessionStorage.getItem(KEY) || 0);
+  if (Date.now() - last < 10_000) return; // just reloaded — don't loop
+  sessionStorage.setItem(KEY, String(Date.now()));
+  event.preventDefault();
+  window.location.reload();
+});
+
 // Type → series lookup for `:new <type>` command. Mirrors SERIES_TYPES in
 // new-item.js; kept here so :new can resolve the series before delegating.
 const SERIES_TYPES = {
