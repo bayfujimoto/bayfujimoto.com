@@ -15,7 +15,25 @@ export function getState() {
 }
 
 export function setState(patch, { silent = false } = {}) {
-  Object.assign(state, patch);
+  // `subcollection` and `view` are series-scoped: they name a group or a filter
+  // that only exists inside one series, so they cannot survive a change of
+  // series, and nothing survives a return to the desk. Because this is a merge,
+  // a partial patch would otherwise carry a stale value across — e.g. leaving a
+  // constellation (view: "2026-atx-sf") for accumulation, whose browse then
+  // filters on a slug no item carries and renders an empty grid. Callers that
+  // mean to set these still win: an explicit key in the patch is never cleared.
+  const next = { ...patch };
+  if (patch.layer === "desk") {
+    next.series ??= null;
+    next.subcollection ??= null;
+    next.view ??= null;
+    next.item ??= null;
+  } else if ("series" in patch && patch.series !== state.series) {
+    if (!("subcollection" in patch)) next.subcollection = null;
+    if (!("view" in patch)) next.view = null;
+  }
+
+  Object.assign(state, next);
   if (!silent) {
     for (const fn of listeners) fn({ ...state });
   }

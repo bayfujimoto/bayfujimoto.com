@@ -134,13 +134,33 @@ function onStateChange(state) {
     // After popping, update the newly-exposed layer
     if (layerStack.length > 0) {
       const exposed = layerStack[layerStack.length - 1];
-      exposed.update(state);
+      reconcile(exposed, state);
     }
   } else if (depth > current) {
-    pushLayerForState(state);
+    // pushLayerForState only adds the topmost layer, so a jump of more than one
+    // level would leave the layers beneath it missing — a popstate from the desk
+    // straight to an item deep-link would open the modal over an empty stage.
+    // restoreFromState knows the whole ladder for a state, so rebuild with it.
+    if (depth - current > 1) {
+      while (layerStack.length) popSheet();
+      restoreFromState(state);
+    } else {
+      pushLayerForState(state);
+    }
   } else if (depth > 0) {
     const top = layerStack[layerStack.length - 1];
-    top.update(state);
+    reconcile(top, state);
+  }
+}
+
+// A sheet updates itself in place when the new state still belongs to it. When
+// it does not — a same-depth move across series, e.g. one constellation page to
+// another series' browse — update() returns false, and the sheet is replaced
+// rather than left showing stale content beneath the new URL.
+function reconcile(layer, state) {
+  if (layer.update(state) === false) {
+    popSheet();
+    pushLayerForState(state);
   }
 }
 
@@ -1260,9 +1280,12 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
   renderContent(subKey, viewSlug);
 
   function update(state) {
-    // A sheet only updates within its own series — a cross-series state (e.g. a
-    // constellation jump) replaces the stack rather than mutating this sheet.
-    if (state.series !== seriesKey) return;
+    // A sheet only updates within its own series. A cross-series state (e.g. a
+    // constellation page giving way to another series' browse at the same depth)
+    // cannot be represented by mutating this sheet — report that so the caller
+    // replaces it. Returning early instead would leave the old series' grid on
+    // screen under the new URL.
+    if (state.series !== seriesKey) return false;
     if (state.subcollection && state.subcollection !== subKey) {
       subKey = state.subcollection;
       renderContent(subKey, viewSlug);
