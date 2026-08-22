@@ -319,6 +319,488 @@
           "label": "films",
           "items": [
             {
+              "id": "FILM-2026-547",
+              "slug": "spider-man-brand-new-day-2026-2026-08-09",
+              "title": "Spider-Man: Brand New Day",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2026",
+              "director": "",
+              "watch_date": "2026-08-09",
+              "display_date": "August 9, 2026",
+              "sort_date": "2026-08-09",
+              "rating": 4.5,
+              "rewatch": true,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/spider-man-brand-new-day/1/",
+              "assets": {
+                "backdrop": "https://a.ltrbxd.com/resized/alternative-backdrop/8/7/2/8/7/1/tmdb/nwA2uzjjtDYHF0KxXL2YvxAHLSA-1200-1200-675-675-crop-000000.jpg?v=e57a9e03d6",
+                "poster": "https://a.ltrbxd.com/resized/film-poster/8/7/2/8/7/1/872871-spider-man-brand-new-day-0-600-0-900-crop.jpg?v=ebe6beb4fc"
+              }
+            },
+            {
+              "id": "FILM-2026-546",
+              "slug": "the-samurai-and-the-prisoner-2026-2026-08-07",
+              "title": "The Samurai and the Prisoner",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2026",
+              "director": "",
+              "watch_date": "2026-08-07",
+              "display_date": "August 7, 2026",
+              "sort_date": "2026-08-07",
+              "rating": 0,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/the-samurai-and-the-prisoner/",
+              "assets": {
+                "backdrop": "https://a.ltrbxd.com/resized/alternative-backdrop/1/4/8/8/8/2/0/tmdb/pPThPhqsh5bKwJoZDlWd67qCHcc-1200-1200-675-675-crop-000000.jpg?v=8087274145",
+                "poster": "https://a.ltrbxd.com/resized/film-poster/1/4/8/8/8/2/0/1488820-the-samurai-and-the-prisoner-0-600-0-900-crop.jpg?v=45ed2fe898"
+              }
+            },
+            {
+              "id": "FILM-2026-545",
+              "slug": "watcher-2022-2026-08-06",
+              "title": "Watcher",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2022",
+              "director": "",
+              "watch_date": "2026-08-06",
+              "display_date": "August 6, 2026",
+              "sort_date": "2026-08-06",
+              "rating": 4,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/watcher/",
+              "assets": {
+                "backdrop": "https://a.ltrbxd.com/resized/alternative-backdrop/7/2/4/2/8/9/tmdb/5s5WwghhCNna1Z3f6bje7Jpy8Uc-1200-1200-675-675-crop-000000.jpg?v=cbd0803805",
+                "poster": "https://a.ltrbxd.com/resized/film-poster/7/2/4/2/8/9/724289-watcher-0-600-0-900-crop.jpg?v=20f5e266d9"
+              }
+            },
+            {
+              "id": "FILM-2026-544",
+              "slug": "ice-cream-man-2026-2026-08-03",
+              "title": "Ice Cream Man",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2026",
+              "director": "",
+              "watch_date": "2026-08-03",
+              "display_date": "August 3, 2026",
+              "sort_date": "2026-08-03",
+              "rating": 1.5,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/ice-cream-man-2026/",
+              "assets": {
+                "backdrop": "https://a.ltrbxd.com/resized/alternative-backdrop/1/3/5/4/7/2/7/tmdb/1QN7Y5raLQ6drgFt1mAeT43Snp0-1200-1200-675-675-crop-000000.jpg?v=fca3b2d2fe",
+                "poster": "https://a.ltrbxd.com/resized/film-poster/1/3/5/4/7/2/7/1354727-ice-cream-man-2026-0-600-0-900-crop.jpg?v=e4362adf67"
+              }
+            },
+            {
+              "id": "FILM-2026-543",
+              "slug": "spider-man-brand-new-day-2026-2026-07-30",
+              "title": "Spider-Man: Brand New Day",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2026",
+              "director": "",
+              "watch_date": "2026-07-30",
+              "display_date": "July 30, 2026",
+              "sort_date": "2026-07-30",
+              "rating": 4.5,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/spider-man-brand-new-day/",
+              "assets": {
+                "backdrop": "https://a.ltrbxd.com/resized/alternative-backdrop/8/7/2/8/7/1/tmdb/nwA2uzjjtDYHF0KxXL2YvxAHLSA-1200-1200-675-675-crop-000000.jpg?v=e57a9e03d6",
+                "poster": "https://a.ltrbxd.com/resized/film-poster/8/7/2/8/7/1/872871-spider-man-brand-new-day-0-600-0-900-crop.jpg?v=ebe6beb4fc"
+              }
+            },
+            {
+              "id": "FILM-2026-542",
+              "slug": "300-2006-2026-07-29",
+              "title": "300",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2006",
+              "director": "",
+              "watch_date": "2026-07-29",
+              "display_date": "July 29, 2026",
+              "sort_date": "2026-07-29",
+              "rating": 3.5,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/300/",
+              "assets": {
+                "backdrop": "https://a.ltrbxd.com/resized/alternative-backdrop/5/1/1/1/1/tmdb/dw4LpoQ0qvcSYWmN7fjdwgnMmF3-1200-1200-675-675-crop-000000.jpg?v=84481abe95",
+                "poster": "https://a.ltrbxd.com/resized/film-poster/5/1/1/1/1/51111-300-0-600-0-900-crop.jpg?v=84df44bf2e"
+              }
+            },
+            {
+              "id": "FILM-2026-541",
+              "slug": "scanners-1981-2026-07-27",
+              "title": "Scanners",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "1981",
+              "director": "",
+              "watch_date": "2026-07-27",
+              "display_date": "July 27, 2026",
+              "sort_date": "2026-07-27",
+              "rating": 2.5,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/scanners/",
+              "assets": {
+                "backdrop": "https://a.ltrbxd.com/resized/alternative-backdrop/4/7/0/6/2/tmdb/q172dvfwXhC8WykhZtst2CcEvEv-1200-1200-675-675-crop-000000.jpg?v=06a3cfdb75",
+                "poster": "https://a.ltrbxd.com/resized/film-poster/4/7/0/6/2/47062-scanners-0-600-0-900-crop.jpg?v=41f5e788db"
+              }
+            },
+            {
+              "id": "FILM-2026-540",
+              "slug": "the-odyssey-2026-2026-07-26",
+              "title": "The Odyssey",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2026",
+              "director": "",
+              "watch_date": "2026-07-26",
+              "display_date": "July 26, 2026",
+              "sort_date": "2026-07-26",
+              "rating": 4,
+              "rewatch": true,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/the-odyssey-2026/1/",
+              "assets": {
+                "backdrop": "https://a.ltrbxd.com/resized/alternative-backdrop/1/2/5/5/3/9/4/tmdb/gTZya6zdEwwLd0rfnrdeNNVt5WE-1200-1200-675-675-crop-000000.jpg?v=23a5abf16e",
+                "poster": "https://a.ltrbxd.com/resized/film-poster/1/2/5/5/3/9/4/1255394-the-odyssey-2026-0-600-0-900-crop.jpg?v=1eed046d0c"
+              }
+            },
+            {
+              "id": "FILM-2026-539",
+              "slug": "the-odyssey-the-making-of-an-epic-2026-2026-07-25",
+              "title": "The Odyssey: The Making of an Epic",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2026",
+              "director": "",
+              "watch_date": "2026-07-25",
+              "display_date": "July 25, 2026",
+              "sort_date": "2026-07-25",
+              "rating": 0,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/the-odyssey-the-making-of-an-epic/",
+              "assets": {
+                "backdrop": "https://a.ltrbxd.com/resized/alternative-backdrop/1/5/9/8/0/6/9/tmdb/fXUxAL8w724dI9yT5UbwJuk29K9-1200-1200-675-675-crop-000000.jpg?v=791fe0262a",
+                "poster": "https://a.ltrbxd.com/resized/film-poster/1/5/9/8/0/6/9/1598069-the-odyssey-the-making-of-an-epic-0-600-0-900-crop.jpg?v=9cf17d19d6"
+              }
+            },
+            {
+              "id": "FILM-2026-538",
+              "slug": "eyes-without-a-face-1960-2026-07-25",
+              "title": "Eyes Without a Face",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "1960",
+              "director": "",
+              "watch_date": "2026-07-25",
+              "display_date": "July 25, 2026",
+              "sort_date": "2026-07-25",
+              "rating": 0,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/eyes-without-a-face/",
+              "assets": {
+                "backdrop": "https://a.ltrbxd.com/resized/alternative-backdrop/3/1/1/9/4/tmdb/ysnKTz8QAWLPpjw9ZMx9cR219fA-1200-1200-675-675-crop-000000.jpg?v=94da181726",
+                "poster": "https://a.ltrbxd.com/resized/film-poster/3/1/1/9/4/31194-eyes-without-a-face-0-600-0-900-crop.jpg?v=80edfca3cc"
+              }
+            },
+            {
+              "id": "FILM-2026-537",
+              "slug": "vertigo-1958-2026-07-22",
+              "title": "Vertigo",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "1958",
+              "director": "",
+              "watch_date": "2026-07-22",
+              "display_date": "July 22, 2026",
+              "sort_date": "2026-07-22",
+              "rating": 0,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/vertigo/",
+              "assets": {
+                "backdrop": "https://a.ltrbxd.com/resized/sm/upload/4r/2r/1e/rd/vertigo-1200-1200-675-675-crop-000000.jpg?v=faac39f9d3",
+                "poster": "https://a.ltrbxd.com/resized/sm/upload/q9/3o/ng/om/obhM86qyv8RsE69XSMTtT9FdE0b-0-600-0-900-crop.jpg?v=1403a5e003"
+              }
+            },
+            {
+              "id": "FILM-2026-536",
+              "slug": "alien-romulus-2024-2026-07-22",
+              "title": "Alien: Romulus",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2024",
+              "director": "",
+              "watch_date": "2026-07-22",
+              "display_date": "July 22, 2026",
+              "sort_date": "2026-07-22",
+              "rating": 4,
+              "rewatch": true,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/alien-romulus/1/",
+              "assets": {
+                "backdrop": "https://a.ltrbxd.com/resized/alternative-backdrop/8/5/0/4/5/9/tmdb/ps2DXCsDJPkYsjflzTLWw0e7b3Z-1200-1200-675-675-crop-000000.jpg?v=2eb6510cc0",
+                "poster": "https://a.ltrbxd.com/resized/film-poster/8/5/0/4/5/9/850459-alien-romulus-0-600-0-900-crop.jpg?v=acabb7fd83"
+              }
+            },
+            {
+              "id": "FILM-2026-535",
+              "slug": "pacific-rim-2013-2026-07-21",
+              "title": "Pacific Rim",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2013",
+              "director": "",
+              "watch_date": "2026-07-21",
+              "display_date": "July 21, 2026",
+              "sort_date": "2026-07-21",
+              "rating": 4.5,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/pacific-rim/",
+              "assets": {
+                "backdrop": "https://a.ltrbxd.com/resized/alternative-backdrop/5/2/5/0/8/tmdb/z8QuRbX7Uf2ssVOBRT1vVas6qkX-1200-1200-675-675-crop-000000.jpg?v=9b41acaa3a",
+                "poster": "https://a.ltrbxd.com/resized/film-poster/5/2/5/0/8/52508-pacific-rim-0-600-0-900-crop.jpg?v=f8a975b8cc"
+              }
+            },
+            {
+              "id": "FILM-2026-534",
+              "slug": "donnie-darko-2001-2026-07-21",
+              "title": "Donnie Darko",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2001",
+              "director": "",
+              "watch_date": "2026-07-21",
+              "display_date": "July 21, 2026",
+              "sort_date": "2026-07-21",
+              "rating": 0,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/donnie-darko/",
+              "assets": {
+                "backdrop": "https://a.ltrbxd.com/resized/alternative-backdrop/5/1/9/1/0/tmdb/mE8cFlsv1TumieK8q1x0y2GHoct-1200-1200-675-675-crop-000000.jpg?v=5eced5200a",
+                "poster": "https://a.ltrbxd.com/resized/sm/upload/ye/jq/f3/22/nmb4QhCRmdfNP6rgb81yUFgI83l-0-600-0-900-crop.jpg?v=caa3999c6f"
+              }
+            },
+            {
+              "id": "FILM-2026-533",
+              "slug": "isle-of-dogs-2018-2026-07-20",
+              "title": "Isle of Dogs",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2018",
+              "director": "",
+              "watch_date": "2026-07-20",
+              "display_date": "July 20, 2026",
+              "sort_date": "2026-07-20",
+              "rating": 4.5,
+              "rewatch": true,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/isle-of-dogs-2018/",
+              "assets": {
+                "backdrop": "https://a.ltrbxd.com/resized/sm/upload/w4/nv/ni/8l/isle-of-dogs-1200-1200-675-675-crop-000000.jpg?v=a95eb8683a",
+                "poster": "https://a.ltrbxd.com/resized/sm/upload/z2/5l/zn/to/uMcbu3qVseJGH24xUAyIVzmcQV4-0-600-0-900-crop.jpg?v=8bc488a9ff"
+              }
+            },
+            {
+              "id": "FILM-2026-532",
+              "slug": "hoppers-2026-2026-07-20",
+              "title": "Hoppers",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2026",
+              "director": "",
+              "watch_date": "2026-07-20",
+              "display_date": "July 20, 2026",
+              "sort_date": "2026-07-20",
+              "rating": 4.5,
+              "rewatch": true,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/hoppers/1/",
+              "assets": {
+                "backdrop": "https://a.ltrbxd.com/resized/alternative-backdrop/1/2/0/7/5/5/7/tmdb/1oqNHtVupMgMQyLcY22vpG5DF58-1200-1200-675-675-crop-000000.jpg?v=cd0c03bd6b",
+                "poster": "https://a.ltrbxd.com/resized/film-poster/1/2/0/7/5/5/7/1207557-hoppers-0-600-0-900-crop.jpg?v=7711e7b5a7"
+              }
+            },
+            {
+              "id": "FILM-2026-531",
+              "slug": "david-lynch-cooks-quinoa-2007-2026-07-19",
+              "title": "David Lynch Cooks Quinoa",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2007",
+              "director": "",
+              "watch_date": "2026-07-19",
+              "display_date": "July 19, 2026",
+              "sort_date": "2026-07-19",
+              "rating": 0,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/david-lynch-cooks-quinoa/",
+              "assets": {
+                "backdrop": "https://a.ltrbxd.com/resized/sm/upload/y8/f6/jk/4e/jmuC6KZkEtUe2XsQPUaCIAGmYtK-1200-1200-675-675-crop-000000.jpg?v=a7844a0a55",
+                "poster": "https://a.ltrbxd.com/resized/film-poster/1/1/2/7/5/9/6/1127596-david-lynch-cooks-quinoa-0-600-0-900-crop.jpg?v=4bee045427"
+              }
+            },
+            {
+              "id": "FILM-2026-530",
+              "slug": "7-days-in-hell-2015-2026-07-19",
+              "title": "7 Days in Hell",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2015",
+              "director": "",
+              "watch_date": "2026-07-19",
+              "display_date": "July 19, 2026",
+              "sort_date": "2026-07-19",
+              "rating": 3.5,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/7-days-in-hell/",
+              "assets": {
+                "backdrop": "https://a.ltrbxd.com/resized/alternative-backdrop/2/1/2/9/5/2/tmdb/v2DK7fqr5tp0ojuctRAJQWRjdg9-1200-1200-675-675-crop-000000.jpg?v=a65384ca14",
+                "poster": "https://a.ltrbxd.com/resized/film-poster/2/1/2/9/5/2/212952-7-days-in-hell-0-600-0-900-crop.jpg?v=d8d626c7c4"
+              }
+            },
+            {
+              "id": "FILM-2026-529",
+              "slug": "challengers-2024-2026-07-19",
+              "title": "Challengers",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2024",
+              "director": "",
+              "watch_date": "2026-07-19",
+              "display_date": "July 19, 2026",
+              "sort_date": "2026-07-19",
+              "rating": 5,
+              "rewatch": true,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/challengers/4/",
+              "assets": {
+                "backdrop": "https://a.ltrbxd.com/resized/sm/upload/1v/t5/ny/lk/MV5BYWRmZWM2ZTktMzE1Ny00NmQyLWE3ZDItZTk5MjY5OGQ5NzdhXkEyXkFqcGdeQXVyMTUzMTg2ODkz._V1_-1200-1200-675-675-crop-000000.jpg?v=bc9f57c5b8",
+                "poster": "https://a.ltrbxd.com/resized/film-poster/8/4/2/3/0/1/842301-challengers-0-600-0-900-crop.jpg?v=a7cd63cbef"
+              }
+            },
+            {
+              "id": "FILM-2026-528",
+              "slug": "the-odyssey-2026-2026-07-17",
+              "title": "The Odyssey",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2026",
+              "director": "",
+              "watch_date": "2026-07-17",
+              "display_date": "July 17, 2026",
+              "sort_date": "2026-07-17",
+              "rating": 3.5,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/the-odyssey-2026/",
+              "assets": {
+                "backdrop": "https://a.ltrbxd.com/resized/alternative-backdrop/1/2/5/5/3/9/4/tmdb/gTZya6zdEwwLd0rfnrdeNNVt5WE-1200-1200-675-675-crop-000000.jpg?v=23a5abf16e",
+                "poster": "https://a.ltrbxd.com/resized/film-poster/1/2/5/5/3/9/4/1255394-the-odyssey-2026-0-600-0-900-crop.jpg?v=1eed046d0c"
+              }
+            },
+            {
+              "id": "FILM-2026-526",
+              "slug": "nickel-boys-2024-2026-07-15",
+              "title": "Nickel Boys",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2024",
+              "director": "",
+              "watch_date": "2026-07-15",
+              "display_date": "July 15, 2026",
+              "sort_date": "2026-07-15",
+              "rating": 4.5,
+              "rewatch": true,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/nickel-boys/1/",
+              "assets": {
+                "backdrop": "https://a.ltrbxd.com/resized/alternative-backdrop/9/2/6/5/8/9/tmdb/AnpN6XNkZrcfg7zfJiOjyOVngGT-1200-1200-675-675-crop-000000.jpg?v=b09b798d32",
+                "poster": "https://a.ltrbxd.com/resized/film-poster/9/2/6/5/8/9/926589-nickel-boys-0-600-0-900-crop.jpg?v=c90912e607"
+              }
+            },
+            {
+              "id": "FILM-2026-527",
+              "slug": "jurassic-park-1993-2026-07-15",
+              "title": "Jurassic Park",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "1993",
+              "watch_date": "2026-07-15",
+              "display_date": "July 15, 2026",
+              "sort_date": "2026-07-14",
+              "rating": 5,
+              "rewatch": true,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/jurassic-park/",
+              "assets": {
+                "backdrop": "https://a.ltrbxd.com/resized/sm/upload/8x/wj/zt/pp/jurassic-park-1200-1200-675-675-crop-000000.jpg?v=ec7c8120cd",
+                "poster": "https://a.ltrbxd.com/resized/sm/upload/1g/zz/ez/d8/yyCKYaW908ZbpexpnBJ3p8o87HA-0-600-0-900-crop.jpg?v=19a50874d0"
+              }
+            },
+            {
+              "id": "FILM-2026-525",
+              "slug": "evil-dead-burn-2026-2026-07-09",
+              "title": "Evil Dead Burn",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2026",
+              "director": "",
+              "watch_date": "2026-07-09",
+              "display_date": "July 9, 2026",
+              "sort_date": "2026-07-09",
+              "rating": 4,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/evil-dead-burn/",
+              "assets": {
+                "backdrop": "https://a.ltrbxd.com/resized/alternative-backdrop/1/0/9/7/0/2/2/tmdb/zYFowV45rznTh1Sb2ImsGUpnREO-1200-1200-675-675-crop-000000.jpg?v=d11845aefa",
+                "poster": "https://a.ltrbxd.com/resized/film-poster/1/0/9/7/0/2/2/1097022-evil-dead-burn-0-600-0-900-crop.jpg?v=398ff82d46"
+              }
+            },
+            {
               "id": "FILM-2026-522",
               "slug": "minions-monsters-2026-2026-07-06",
               "title": "Minions & Monsters",
@@ -830,9 +1312,9 @@
               }
             },
             {
-              "id": "FILM-2026-503",
-              "slug": "star-wars-the-mandalorian-and-grogu-2026-2026-05-26",
-              "title": "Star Wars: The Mandalorian and Grogu",
+              "id": "FILM-2026-524",
+              "slug": "the-mandalorian-and-grogu-2026-2026-05-26",
+              "title": "The Mandalorian and Grogu",
               "series": "consumption",
               "subcollection": "films",
               "item_type": "film",
@@ -844,7 +1326,7 @@
               "sort_date": "2026-05-26",
               "rating": 4,
               "rewatch": false,
-              "letterboxd_link": "https://letterboxd.com/bayf/film/star-wars-the-mandalorian-and-grogu/",
+              "letterboxd_link": "https://letterboxd.com/bayf/film/the-mandalorian-and-grogu/",
               "assets": {
                 "backdrop": "https://a.ltrbxd.com/resized/alternative-backdrop/1/1/1/1/0/7/3/tmdb/y3sU5eti9O5M2TbGl2yh95FcDHj-1200-1200-675-675-crop-000000.jpg?v=93ab09d25d",
                 "poster": "https://a.ltrbxd.com/resized/film-poster/1/1/1/1/0/7/3/1111073-star-wars-the-mandalorian-and-grogu-0-600-0-900-crop.jpg?v=5da24e2cba"
@@ -15699,6 +16181,29 @@
       "subcollections": {},
       "items": [
         {
+          "id": "EPH-2026-027",
+          "slug": "berkeley-ca-usa-2026-07-06",
+          "series": "accumulation",
+          "item_type": "handout",
+          "status": "published",
+          "display_date": "July 6, 2026",
+          "sort_date": "2026-07-06",
+          "title": "Loyalty Card",
+          "issuer": "Spats x Aburaya",
+          "place": "Berkeley, CA, USA",
+          "dimensions": "99 x 89",
+          "inspection": "card",
+          "assets": {
+            "front": "EPH-2026-027-front.jpg?v=8a1b1debc10x2",
+            "thumbnail": "EPH-2026-027-front-thumb.webp?v=8a1b1debc10x2",
+            "back": "EPH-2026-027-back.jpg?v=8091a79ec20x2"
+          },
+          "tags": [
+            "food"
+          ],
+          "context_note": "went on a whim. best fried chicken i've had in a restaurant"
+        },
+        {
           "id": "EPH-2026-022",
           "slug": "leggett-ca-usa-2026-07-01",
           "series": "accumulation",
@@ -16245,9 +16750,9 @@
     }
   },
   "_counters": {
-    "EPH": 26,
-    "FILM": 523,
-    "BOOK": 335,
+    "EPH": 27,
+    "FILM": 547,
+    "BOOK": 344,
     "MUSIC": 8,
     "COFFEE": 2,
     "GAME": 4,
