@@ -370,6 +370,16 @@ body {
   margin: 0 0 2rem;
 }
 
+/* Constellation note — the registry record's short reflective paragraph.
+   Prose register (serif, sentence case), distinct from the uppercase subtitle. */
+.overlay-subtitle--note {
+  text-transform: none;
+  letter-spacing: normal;
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  margin: -1.25rem 0 0;
+}
+
 .overlay-label {
   font-size: var(--text-xs);
   color: var(--overlay-muted);

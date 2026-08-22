@@ -60,6 +60,8 @@ function inferType(field) {
   // Asset and gallery widgets keep their own chrome — label them by their role.
   if (field.classList.contains('admin-field--asset-upload'))   return 'asset';
   if (field.classList.contains('admin-field--gallery-upload')) return 'gallery';
+  // Constellation chip field — a registry-controlled list.
+  if (field.classList.contains('admin-field--constellation'))  return 'list';
 
   // Custom select widget (used for status, inspection, etc.)
   if (field.querySelector(':scope > .admin-select, :scope > .admin-input-wrap .admin-select, :scope > .admin-input-wrap > .admin-select')) {

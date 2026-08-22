@@ -25,6 +25,7 @@ Recommended:
 - description
 - context_note
 - tags
+- constellations
 - people
 - places
 - source
@@ -33,6 +34,15 @@ Recommended:
 - related_ids
 - assets
 - visibility
+
+### `constellations`
+An optional **array** of constellation slugs (e.g. `constellations: [2026-atx-sf]`).
+Available on every record type except Identity. Each slug must resolve to a
+constellation registry record (below); `build-data.js` warns on unresolved slugs.
+An item may belong to any number of constellations; membership never moves or
+duplicates the item out of its series. Distinct from `tags`, which are occasion
+descriptors (venue, companions, format, subject) — properties of an item, not
+contexts it belongs to. See decisions.md → "Constellations: cross-series grouping".
 
 Possible status values:
 - draft
@@ -311,7 +321,7 @@ Required:
 
 Optional:
 - place
-- event
+- constellations (replaces the former `event` field — see shared fields above)
 - extent: count of physical pieces (e.g. "1 ticket", "3 prints")
 - dimensions: physical size in mm as "W x H" (e.g. "89 x 54"). Used to render thumbnails at true relative size in the browse strip. Items without this field fall back to natural image aspect ratio.
 - front/back assets
@@ -321,6 +331,25 @@ Optional:
 
 ### Ticket / receipt / brochure / scanned document
 Use the ephemera item model with subtype-specific metadata as needed. All Accumulation record types share one model; `item_type` carries the subtype distinction.
+
+## Constellation records
+
+A constellation is a lateral grouping across series — a trip, an event, a
+preoccupation — defined once as a registry record at
+`src/content/constellations/<slug>.md`. Items reference it via their
+`constellations` array; the registry record never lists members itself
+(membership is derived at build time). Phase 1 membership is exhaustive and
+chronological; authored ordering and per-item captions are deferred to the
+meta-object phase (see `docs/cross-series-lists.md`).
+
+Required:
+- slug (year-first kebab-case when dated: `2026-atx-sf`; thematic constellations omit the year)
+- title
+- status
+
+Recommended:
+- display_date or date range (date_start / date_end)
+- note (a short reflective paragraph — the constellation's voice)
 
 ## Asset types
 Supported asset types:
@@ -354,7 +383,6 @@ Suggested relationships:
 - related_to
 - made_for
 - watched_with
-- linked_event
 - linked_place
 - source_for
 - derived_from
@@ -367,7 +395,7 @@ Common filters:
 - type
 - subcollection
 - place
-- event
+- constellation
 - people
 - tags
 - status

@@ -1,10 +1,36 @@
-# Cross-Series Lists (working title)
+# Constellations (formerly: Cross-Series Lists)
 
-- status: idea / not yet designed
-- proposed as: a seventh desk object (an eighth counting the amber block)
-- concept name: undecided — see *Candidate names* below
-- data relationship: cross-reference / index (confirmed direction)
+- status: **Phase 1 decided** (2026-08-22) — field, registry, and flat route confirmed; the desk meta-object remains open
+- concept name: **Constellations** (decided 2026-08-22; see *Candidate names* below for the field considered)
+- data relationship: cross-reference / index (confirmed)
 - physical object: undecided — see *Candidate objects* below
+
+## Phase 1 decision (2026-08-22)
+
+The concept enters the archive metadata-first, before any desk object. Recorded
+in `docs/decisions.md` → "Constellations: cross-series grouping"; summarized:
+
+- Items (all types except Identity) carry an optional `constellations` **array**
+  of slugs — the many-to-many shape below, realized item-side.
+- Each constellation is a registry record at
+  `src/content/constellations/<slug>.md` (title, slug, date range, optional
+  note); `build-data.js` derives membership and warns on unresolved slugs.
+  Slugs are year-first kebab-case when dated (`2026-atx-sf`).
+- The Accumulation `event` field is retired: grouping values migrate to
+  constellations, source-context values reclassify into `source`/`context_note`.
+- Tags stay separate — in practice they are occasion descriptors (venue,
+  companions, format), not contexts.
+- A flat route `/constellations/<slug>/` renders each constellation now, reusing
+  the Accumulation contact-sheet grid, chronological and cross-series. Catalog
+  cards print constellations as clickable riders pointing there. Admin intake
+  autocompletes against the registry with inline creation
+  (`docs/admin-interface.md`).
+- Deferred to the meta-object phase: curation (authored order, per-item
+  captions), the desk object, and its placement. Phase 1 membership is
+  exhaustive and derived; the curated layer will sit on top of it.
+
+The sections below remain the working record for what is still open — the
+physical object, its placement, and the curated layer.
 
 ## Outline
 
@@ -28,7 +54,10 @@ Two older, more essayistic precedents describe the *feeling* of the thing rather
 
 ## Candidate names
 
-Left undecided for now, consistent with how the amber block remains unresolved. The name should not collide with the five series (which are nouns of domain: Labor, Consumption, Creation, Accumulation, Identity) and should read as a lateral, gathering concept.
+**Resolved: Constellations** (2026-08-22). The field considered is kept below as
+a record of the reasoning. The name should not collide with the five series
+(which are nouns of domain: Labor, Consumption, Creation, Accumulation,
+Identity) and should read as a lateral, gathering concept.
 
 - **Threads** — each list is a thread pulled through the archive, gathering items across series. Emphasizes continuity and tracing; pairs naturally with a physical object made of actual thread or string (though note the string-tied bundle already uses string as its closure — see *Constraints*).
 - **Occasions** — each list is an occasion or episode: a trip, a period, a spell of attention. Emphasizes the event framing that the road-trip example leads with.
@@ -78,14 +107,21 @@ Consequences that follow from the index model and should be designed for:
 Provisional URL shape, following the existing scheme:
 
 ```
-/lists/                      the object's interior: all lists
-/lists/austin-sf/            one list, its gathered items in authored order
-/lists/austin-sf/?item=FILM-2026-001   deep-link to an item's inspection, opened from this list's context
+/constellations/                        the object's interior: all constellations (deferred to meta-object phase)
+/constellations/2026-atx-sf/            one constellation, its gathered items (Phase 1: chronological; authored order deferred)
+/constellations/2026-atx-sf/?item=FILM-2026-001   deep-link to an item's inspection, opened from this constellation's context
 ```
 
-The concept name, once chosen, would replace `lists` in the path.
-
 ## Open questions
+
+Several of these were resolved by the Phase 1 decision (2026-08-22): the data
+model is item-side field + registry (a variation on the list-record shape
+sketched above — membership is authored on the item, derived on the
+constellation); membership is exhaustive-by-field for now, with curation
+deferred; a constellation carries its own optional note; the Accumulation event
+filter is subsumed. What follows is kept for the record; the still-open
+questions are the object, its placement, list-of-lists nesting, and shelf
+ordering.
 
 - **Series or meta-object?** This may not belong beside the five series at all. Functionally it is an *access layer over the archive* rather than a *domain of content* — which makes it a sibling of the Guide (the finding aid, the only other object that describes the archive rather than adding to it) more than a sibling of Consumption. Its object might therefore want to sit near the key, at the same slight remove, rather than in the ring of series objects. This is the first thing to resolve, because it determines placement, naming register, and metaphor.
 - **Curated or exhaustive?** Is a list a hand-picked selection ("the fifteen things that matter from that trip"), or does it aim to gather *everything* tagged to that event? The road-trip example reads as curated. Curated is more consistent with the archive's stated preference for significance and selective highlighting over completeness (see `decisions.md` → Accumulation scale, Content thresholds). Recommend curated by default, exhaustive never assumed.

@@ -9,7 +9,8 @@ sort_date: "2024-03-11"
 title: Chamonix Gondola
 place: Chamonix, France
 source: Chamonix gondola
-event: Spring break
+constellations:
+  - 2024-spring-break
 inspection: card
 assets:
   front: EPH-2026-006-front.jpg

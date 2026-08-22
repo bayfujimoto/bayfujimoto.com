@@ -45,7 +45,7 @@ film, a coffee bag, and a ticket each show their most identifying metadata.
 | 5–7 | **typed slots** | per-type (see table) | up to three rows; absent values suppressed, never faked |
 | 8 | physical | `extent` + `dimensions` | dimensions carried by the plate; `extent` a literal row |
 | 9 | note | `context_note` | scope-and-content note |
-| 10 | riders | `related_ids` + `tags` | "see also" buttons; tags as a closing row |
+| 10 | riders | `related_ids` + `constellations` + `tags` | three rows: "see also" buttons; **constellations as their own row** of clickable tokens (→ `/constellations/<slug>/`); tags as the closing row |
 | — | status | `status` | non-published renders as a stamp/overprint, not a row |
 
 ### 2. Creator (responsibility) — role label by type, with a self-default
@@ -89,12 +89,17 @@ qualifier. **These cells are the main thing to review and edit.**
 | prototype | medium | material | related project |
 | video | duration | source | related project |
 | note | note_type | related project | — |
-| ephemera | place + event | source (provenance) | — |
+| ephemera | place | source (provenance) | — |
 
-Ephemera renders **`place` and `event` together in one split row** — the same
-two-pairs-on-one-line pattern `date` / `source` already uses, via the existing
-`splitRow` helper, so each side keeps its own label and suppresses independently
-when blank. `source` (provenance) takes the following row.
+Ephemera's slot 1 is `place` alone — the former `place` + `event` split row is
+retired along with the `event` field (see decisions.md → "Constellations").
+`source` (provenance) takes the following row.
+
+**Constellations on the card.** Every card-using type prints its
+`constellations` as **its own rider row** near tags (spine row 10) — never in a
+split row, never sharing a line with another field. Each value is a
+**clickable token** navigating to `/constellations/<slug>/`. The rule is
+uniform: ephemera included, one rendering everywhere.
 
 ---
 
@@ -145,7 +150,7 @@ format-bearing fields. Starter examples — **edit freely**:
 | process | `e.g. washed, natural` |
 | varietal | `e.g. Caturra` |
 | place | `e.g. Chamonix, France` |
-| event | `e.g. SXSW 2026` |
+| constellations | `autocomplete, e.g. 2026-atx-sf` |
 | camera | `e.g. Pentax K1000` |
 | medium | `e.g. graphite on paper` |
 | material | `e.g. Bristol board` |
@@ -162,8 +167,8 @@ A field earns a ruled row only if it **identifies or situates** the item. Fields
 that merely **elaborate** stay in the data (and surface in the note when they
 matter) but get no row — the difference between a catalogue entry and a log.
 
-- **Card-visible:** the spine, the typed slots, `note`, `related_ids`, `tags`, and
-  the status stamp.
+- **Card-visible:** the spine, the typed slots, `note`, `related_ids`,
+  `constellations`, `tags`, and the status stamp.
 - **Record-only (kept in data, never a card row):** `slug`, `sort_date`,
   `created_date`, `visibility`, `inspection` mode; coffee brew parameters (method,
   grinder, ratio, dose); camera EXIF; playtime; rewatch flag; labor tools /
@@ -204,10 +209,12 @@ every discrete value, given or supplied, stays monospace as catalog data.
   and a Creation `creator` (a collaborator) — transcribed names of others.
 - `display_date`, `year`, `dimensions`, `extent` — given or measured facts.
 - all typed-slot tokens — `seen_via`, `edition`, `music_label`, `origin`, `process`,
-  `varietal`, `platform`, `play_status`, `place`, `event`, `camera`, `photo_series`,
+  `varietal`, `platform`, `play_status`, `place`, `camera`, `photo_series`,
   `medium`, `material`, `related_project`, `duration`, `video_source`, `source`,
   `note_type`.
-- `tags` and `see also` references — discrete index / navigation tokens.
+- `tags`, `constellations`, and `see also` references — discrete index /
+  navigation tokens. Constellation tokens are additionally links (they navigate
+  to `/constellations/<slug>/`), styled like see-also buttons, not like prose links.
 
 **Magnitude.** This makes the card *predominantly monospace*, with serif appearing
 only in the note, your own titles, and the rating score. `display_date` and the

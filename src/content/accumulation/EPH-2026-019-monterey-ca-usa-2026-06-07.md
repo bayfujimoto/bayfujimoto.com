@@ -10,7 +10,8 @@ inspection: card
 title: Seafood Watch Guide
 issuer: Monterey Bay Aquarium
 place: Monterey, CA, USA
-event: atxsf road trip
+constellations:
+  - 2026-atx-sf
 assets:
   front: EPH-2026-019-front.jpg
   thumbnail: EPH-2026-019-front-thumb.jpg

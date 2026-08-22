@@ -5,6 +5,7 @@ import { makeCutoutControl } from "./cutout-control.js";
 import { assetFieldRow } from "./field-row.js";
 import { imageUrl } from "../../app/image-url.js";
 import { applyFieldChrome } from "./field-chrome.js";
+import { makeConstellationField } from "./constellation-field.js";
 
 // A form section: a labelled panel whose heading collapses/expands the fields
 // below it. The heading is a real <button> so it's keyboard-reachable; clicking
@@ -954,6 +955,8 @@ export function renderForm(container, groups, initialData, onChange) {
         el = makeModelUploadField(field, value, handleChange, getItemId);
       } else if (field.type === "subitem-list") {
         el = makeSubitemListField(field, value, handleChange, getItemId);
+      } else if (field.type === "constellation-list") {
+        el = makeConstellationField(field, value, handleChange, getValue);
       } else {
         el = makeField(field, value, handleChange, getValue);
       }

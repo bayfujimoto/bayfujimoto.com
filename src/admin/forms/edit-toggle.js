@@ -44,6 +44,8 @@ export function applyEditToggle(formContainer) {
     // Reorganized Assets group rows manage their own widgets (image/toggle/
     // number) — don't wrap their inputs in the click-to-edit buffer toggle.
     if (field.classList.contains('admin-field--asset-row')) continue;
+    // Constellation chip field manages its own input + autocomplete widget.
+    if (field.classList.contains('admin-field--constellation')) continue;
 
     // Find the primary input inside this field row.
     const input = field.querySelector('input, textarea, select');

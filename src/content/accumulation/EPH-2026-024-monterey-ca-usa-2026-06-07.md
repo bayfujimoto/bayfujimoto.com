@@ -9,7 +9,8 @@ sort_date: "2026-06-07"
 title: Admission Ticket
 issuer: Monterey Bay Aquarium
 place: Monterey, CA, USA
-event: atxsf road trip
+constellations:
+  - 2026-atx-sf
 extent: 1 ticket
 dimensions: 86 x 54
 inspection: card

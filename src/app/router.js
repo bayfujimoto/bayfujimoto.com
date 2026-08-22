@@ -17,6 +17,16 @@ function locationToState() {
     return { layer: "guide", series: null, subcollection: null, view: null, item: null };
   }
 
+  // Constellations — the lateral cross-series layer. Routes are slug-addressed
+  // (/constellations/<slug>/); a bare /constellations/ index is deferred to the
+  // meta-object phase, so without a slug we fall back to the desk.
+  if (first === "constellations") {
+    if (second) {
+      return { layer: item ? "item" : "browse", series: "constellations", subcollection: null, view: second, item };
+    }
+    return { layer: "desk", series: null, subcollection: null, view: null, item: null };
+  }
+
   if (!isValidSeries(first)) {
     return { layer: "desk", series: null, subcollection: null, view: null, item: null };
   }
@@ -42,6 +52,13 @@ function locationToState() {
 function stateToURL(s) {
   if (s.layer === "desk") return "/";
   if (s.layer === "guide") return "/guide/";
+
+  // Constellations: slug-addressed, no series sheet, no index route yet
+  if (s.series === "constellations") {
+    if (!s.view) return "/";
+    const search = s.item ? `?item=${encodeURIComponent(s.item)}` : "";
+    return `/constellations/${s.view}/${search}`;
+  }
 
   // Labor and Accumulation: second segment is view slug, not subcollection key
   if (s.series === "labor" || s.series === "accumulation") {

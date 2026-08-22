@@ -84,8 +84,48 @@ function publishedOnly(archive) {
     if (s.items) ns.items = s.items.filter(isPublished);
     out.series[key] = ns;
   }
+  // Constellations: published registry records only, members filtered to
+  // published items. An empty (member-less) constellation is still shipped —
+  // it may be declared before its items are entered.
+  out.constellations = {};
+  for (const [slug, c] of Object.entries(archive.constellations || {})) {
+    if (!isPublished(c)) continue;
+    out.constellations[slug] = { ...c, items: (c.items || []).filter(isPublished) };
+  }
   out._counters = archive._counters;
   return out;
+}
+
+// ── Constellations ────────────────────────────────────────────────────────────
+// Lateral cross-series groupings (decisions.md → "Constellations: cross-series
+// grouping"). Registry records live at src/content/constellations/<slug>.md;
+// items reference them via a `constellations` array of slugs. Membership is
+// derived here — the registry never lists members itself. Unresolved slugs are
+// a build warning, not a silent gap.
+function readConstellationRegistry() {
+  const registry = {};
+  const files = glob.sync("src/content/constellations/*.md");
+  for (const file of files) {
+    const raw = readFileSync(file, "utf8");
+    const { data, content } = matter(raw);
+    const slug = data.slug || file.split("/").pop().replace(/\.md$/, "");
+    if (registry[slug]) {
+      console.warn(`[build-data] duplicate constellation slug "${slug}" in ${file}`);
+      continue;
+    }
+    registry[slug] = {
+      slug,
+      title: data.title || slug,
+      status: data.status || "published",
+      display_date: data.display_date || "",
+      date_start: data.date_start || "",
+      date_end: data.date_end || "",
+      // The constellation's voice: front-matter `note`, else the markdown body.
+      note: data.note || content.trim() || "",
+      items: [],
+    };
+  }
+  return registry;
 }
 
 function countItems(archive, predicate = () => true) {
@@ -99,10 +139,11 @@ function countItems(archive, predicate = () => true) {
 
 function buildArchive() {
   const files = glob.sync("src/content/**/*.md", {
-    ignore: ["src/content/_templates/**", "src/content/guide.md"],
+    ignore: ["src/content/_templates/**", "src/content/guide.md", "src/content/constellations/**"],
   });
 
   const archive = { series: {}, guide: { ...GUIDE, content: readGuideContent() } };
+  archive.constellations = readConstellationRegistry();
 
   // Track every frontmatter id → source file(s) so we can fail loudly on any
   // duplicate. Two files sharing an id render as duplicate cards downstream.
@@ -165,6 +206,25 @@ function buildArchive() {
       data.assets = resolveAssetPaths(data.assets);
     }
 
+    // Constellation membership — validate each referenced slug against the
+    // registry and attach the item to its constellation(s). A missing registry
+    // record warns loudly; the item still ships with its reference intact so
+    // fixing the registry alone repairs the link.
+    if (data.constellations) {
+      if (!Array.isArray(data.constellations)) {
+        console.warn(`[build-data] "constellations" must be an array in ${file} — got ${typeof data.constellations}`);
+        data.constellations = [String(data.constellations)];
+      }
+      for (const slug of data.constellations) {
+        const c = archive.constellations[slug];
+        if (!c) {
+          console.warn(`[build-data] unresolved constellation "${slug}" in ${file} — no registry record at src/content/constellations/${slug}.md`);
+          continue;
+        }
+        c.items.push(data);
+      }
+    }
+
     // Music: derive the physical footprint from the release type so records stay
     // minimal (see docs/music-display-plan.md). album/ep read as 12" sleeves;
     // single as a 12" disc face. The browse grid and catalog-card plate size
@@ -212,6 +272,16 @@ function buildArchive() {
     }
   }
 
+  // Sort constellation members by sort_date descending, matching every other
+  // item list (the browse grid groups by year, newest first).
+  for (const c of Object.values(archive.constellations)) {
+    c.items.sort((a, b) => {
+      const da = a.sort_date ? new Date(a.sort_date) : new Date(0);
+      const db = b.sort_date ? new Date(b.sort_date) : new Date(0);
+      return db - da;
+    });
+  }
+
   // Embed ID counters so the admin interface can read them from archive.json
   const countersRaw = readFileSync("src/content/_id-counters.yaml", "utf8");
   archive._counters = Object.fromEntries(
@@ -252,9 +322,11 @@ function buildArchive() {
   writeFileSync("public/data/archive.json", JSON.stringify(publishedOnly(archive), null, 2));
 
   const seriesCount = Object.keys(archive.series).length;
+  const constCount = Object.keys(archive.constellations).length;
   console.log(
     `archive.json — ${countItems(archive, isPublished)} published; ` +
-    `_admin-archive.json — ${countItems(archive)} record(s) (all statuses) across ${seriesCount} series + Guide`
+    `_admin-archive.json — ${countItems(archive)} record(s) (all statuses) across ${seriesCount} series + Guide; ` +
+    `${constCount} constellation(s)`
   );
 }
 

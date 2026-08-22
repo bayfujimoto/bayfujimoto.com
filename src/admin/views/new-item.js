@@ -139,7 +139,7 @@ function renderFormStep(body, archive) {
 
   initialData.slug = generateSlug(itemType, initialData);
 
-  const groups = orderGroups([...getBaseGroups(), ...getTypeGroups(itemType)]);
+  const groups = orderGroups([...getBaseGroups(series), ...getTypeGroups(itemType)]);
 
   // Meta row at top — file path preview (no lock row: new items always allow id edit)
   const pathRow = document.createElement("div");

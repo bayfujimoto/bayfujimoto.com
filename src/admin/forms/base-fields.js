@@ -13,7 +13,28 @@ export function orderGroups(groups) {
   });
 }
 
-export function getBaseGroups() {
+// `series` scopes the context group: every series except Identity carries the
+// constellations field (decisions.md → "Constellations: cross-series grouping").
+// Identity records describe the subject, not lived time, and sit outside the
+// lateral layer.
+export function getBaseGroups(series) {
+  const contextFields = [
+    { id: "context_note", label: "context note", type: "textarea",
+      hint: "Short archival note. Markdown supported." },
+    { id: "tags",         label: "tags",         type: "tag-list",
+      hint: "Comma-separated" },
+  ];
+  if (series !== "identity") {
+    contextFields.push({
+      id: "constellations", label: "constellations", type: "constellation-list",
+      hint: "Type to search; select to assign. Registry-controlled — create new inline.",
+    });
+  }
+  contextFields.push(
+    { id: "related_ids",  label: "related ids",  type: "id-list",
+      hint: "One ID per line, e.g. EPH-2025-001" },
+  );
+
   return [
     {
       id: "record",
@@ -42,14 +63,7 @@ export function getBaseGroups() {
       id: "context",
       label: "Context",
       depth: "full",
-      fields: [
-        { id: "context_note", label: "context note", type: "textarea",
-          hint: "Short archival note. Markdown supported." },
-        { id: "tags",         label: "tags",         type: "tag-list",
-          hint: "Comma-separated" },
-        { id: "related_ids",  label: "related ids",  type: "id-list",
-          hint: "One ID per line, e.g. EPH-2025-001" },
-      ],
+      fields: contextFields,
     },
   ];
 }

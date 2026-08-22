@@ -31,6 +31,7 @@ export const FIELDS = {
   dimensions:   { label: "dimensions", mono: true, example: "e.g. 89 x 54  (mm, W x H)" },
   context_note: { label: "note",       example: "e.g. Kept from the first ascent; ink smudged at the fold." },
   related_ids:  { label: "see also",   example: "one ID per line, e.g. EPH-2025-001" },
+  constellations: { label: "constellations", mono: true, example: "autocomplete, e.g. 2026-atx-sf" },
   tags:         { label: "tags",       example: "comma-separated, e.g. travel, chamonix" },
 
   // ── responsibility (creator) — data keys match existing records ──
@@ -56,7 +57,6 @@ export const FIELDS = {
   platform:     { label: "platform",   example: "e.g. PC, Switch" },
   play_status:  { label: "status",     example: "completed / playing / abandoned" }, // NOTE: distinct from record `status`
   place:        { label: "place",      example: "e.g. Chamonix, France" },
-  event:        { label: "event",      example: "e.g. SXSW 2026" },
   camera:       { label: "camera",     example: "e.g. Pentax K1000" },
   photo_series: { label: "series",     example: "e.g. Alps 2024 (contact sheet)" },  // NOTE: distinct from archive `series`
   medium:       { label: "medium",     example: "e.g. graphite on paper" },
@@ -100,9 +100,12 @@ const creation = (slots, creatorLabel, opts = {}) => ({
   slots,
   ...opts,
 });
+// Ephemera slot 1 is `place` alone — the former place + event split row is
+// retired with the `event` field. Constellations render as their own rider row
+// (see SPINE below), never in a split row. decisions.md → "Constellations".
 const EPHEMERA = {
   creator: { key: "issuer", mode: "optional" },
-  slots: [["place", "event"], "source"],
+  slots: ["place", "source"],
   physical: true,
 };
 
@@ -134,7 +137,9 @@ export const SPINE = [
   { row: "slots" },                                  // resolveSlots(item)
   { row: "physical", split: ["extent", "dimensions"] },
   { row: "note", key: "context_note" },
-  { row: "riders", keys: ["related_ids", "tags"] },
+  // Riders render as three separate rows: see-also buttons, constellations as
+  // their own row of clickable tokens (→ /constellations/<slug>/), then tags.
+  { row: "riders", keys: ["related_ids", "constellations", "tags"] },
   // status -> stamp overprint, not a row
 ];
 

@@ -94,7 +94,7 @@ export function generateSlug(itemType, data) {
       return s(data.title) || "untitled";
     default:
       // ephemera: ticket, brochure, receipt, handout, document
-      return [s(data.place || data.event || "item"), date].filter(Boolean).join("-");
+      return [s(data.place || "item"), date].filter(Boolean).join("-");
   }
 }
 

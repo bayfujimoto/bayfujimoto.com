@@ -1,6 +1,6 @@
 ---
 id: EPH-YYYY-NNN
-slug: {place-or-event}-{descriptor}-{YYYY-MM-DD}
+slug: {place}-{descriptor}-{YYYY-MM-DD}
 title:
 series: accumulation
 subcollection:
@@ -10,7 +10,7 @@ status: draft
 display_date:
 sort_date: YYYY-MM-DD
 place:
-event:
+constellations: []
 source:
 tags: []
 inspection: none

@@ -220,7 +220,7 @@ Its purpose is to prevent drift, repetition, and silent contradictions over time
 - status: confirmed
 - decision: Accumulation uses a single flat ephemera browse with no subcollection tabs. The `ephemera` key is the only subcollection. All item subtypes (tickets, receipts, brochures, documents, handouts) share the ephemera record model, distinguished by `item_type`.
 - reason: The ephemera/documents distinction was weak — "handouts" appeared in both definitions and `documents` was always empty. A flat browse grouped by year, event, place, or type serves the content better.
-- deferred: Grouping/sort UI (year · event · place · type) is deferred to Phase 7.
+- deferred: Grouping/sort UI (year · constellation · place · type) is deferred to Phase 7. (Event-based grouping is subsumed by Constellations, 2026-08-22.)
 
 ### Admin shell architecture: three-pane TUI
 - status: confirmed
@@ -247,11 +247,27 @@ Its purpose is to prevent drift, repetition, and silent contradictions over time
 - reason: Vim-style keyboard interaction doesn't translate to phones. The bottom-tab pattern is familiar and the form fields keep the 16px input minimum to suppress iOS zoom-on-focus.
 - date: 2026-05-12
 
+### Constellations: cross-series grouping (Phase 1 — field, registry, flat route)
+- status: confirmed
+- decision: The cross-series lists concept (`docs/cross-series-lists.md`) is named **Constellations** and enters the archive metadata-first, ahead of any desk object. Item records carry an optional `constellations` field — an **array** of constellation slugs — preserving the many-to-many direction (one record, several contexts; no item is moved or duplicated out of its series). Each constellation is defined once by a **registry record** at `src/content/constellations/<slug>.md` (title, slug, date or date range, optional short note); `build-data.js` resolves item references against the registry and warns on unresolved slugs.
+- sub-decisions:
+  - **Scope:** all record types except Identity (biography, cv, contact) may carry the field.
+  - **`event` is replaced.** Genuine groupings among existing `event` values (e.g. `atxsf road trip`, `Lassen Volcanic NP Roadtrip`) migrate to constellations; stray source-context values (e.g. `Film screening`) reclassify into `source` / `context_note`. The field is removed from the schema.
+  - **Tags stay separate.** In practice tags are occasion descriptors (venue, companions, format) — properties of an item, not contexts it belongs to. No migration; the two coexist.
+  - **Browse now:** a flat public route `/constellations/<slug>/` renders each constellation as a cross-series, chronological browse using the same contact-sheet grid as the Accumulation subcollection view. This subsumes the deferred Accumulation event-filter idea (`/accumulation/sxsw-2026/`, Phase 7).
+  - **Card display:** constellations print on the catalog card as **their own rider row** near tags — never a split row, uniform across all card-using types. Each value is **clickable**, navigating to `/constellations/<slug>/`. Ephemera's slot 1 becomes `place` alone (the former place + event split row is retired with the field). Register: monospace (index/navigation token), like tags and see-also.
+  - **Admin intake:** the constellation input on any item form autocompletes against the registry, with an inline "create new constellation" path when no match exists (title → suggested slug → registry file added to pending changes alongside the item). See `docs/admin-interface.md`.
+  - **Slugs:** year-first kebab-case for dated constellations (`2026-atx-sf`, `2024-paralympics`); thematic, undated constellations omit the year.
+- deferred to the meta-object phase: curation (authored member order, per-item captions), the desk object and its name-register, placement near the Guide. The field gives exhaustive, derived membership now; the curated layer arrives later on top of it, not instead of it.
+- reason: Preserves provenance-based arrangement (respect des fonds) while adding the lateral access layer archival practice locates in description rather than arrangement — the finding aid's subject index given a data model (Peter Scott's series system: many-to-many links between records and contexts). Field-first sequencing gets the plumbing and the migration done before the object metaphor is designed.
+- reference: `docs/cross-series-lists.md`, `docs/content-model.md`, `docs/field-schema.md`, `docs/information-architecture.md`, `docs/admin-interface.md`
+- date: 2026-08-22
+
 ### Accumulation URL model
 - status: confirmed
 - decision: Accumulation uses a view-based second URL segment rather than a subcollection key.
   - `/accumulation/all/` — unfiltered browse (default)
-  - `/accumulation/sxsw-2026/` — filtered by event slug (filter logic deferred to Phase 7)
+  - `/accumulation/sxsw-2026/` — filtered by event slug (superseded: the event field and this filter idea are subsumed by Constellations — see "Constellations: cross-series grouping", 2026-08-22; the view segment remains available for future grouping/sort views)
   - `/accumulation/all/?item=EPH-2025-001` — item inspection, unfiltered context
   - `/accumulation/sxsw-2026/?item=EPH-2025-001` — item inspection, filter context preserved
 - reason: `/accumulation/ephemera/` exposes the internal data key rather than describing a view. The view segment will later carry the active filter/group, making URLs semantically meaningful and shareable. Back from a filter view goes to `/accumulation/all/`.
@@ -361,12 +377,13 @@ Its purpose is to prevent drift, repetition, and silent contradictions over time
 - why_it_matters: Prevents unnecessary scope and performance cost.
 - current_bias: actual 3D only when spatial reading materially improves understanding
 
-### Cross-series lists (seventh desk object)
-- status: open
-- question: Should the desk gain an object holding curated lists that gather items across several series at once (e.g. an "Austin → SF" road-trip list pulling music, ephemera, and photos)? What is it called, what object represents it, and is it a series or a meta-object like the Guide?
-- why_it_matters: Introduces a lateral, subject/event-based access layer over the provenance-based hierarchy; affects the object set, URL scheme, ingest, and item-inspection backlinks.
-- current_bias: cross-reference/index model (items stay in their home series); curated not exhaustive; likely a meta-object near the Guide rather than a sixth series
-- see: `docs/cross-series-lists.md`
+### Constellations meta-object (desk object for the cross-series layer)
+- status: open (narrowed)
+- question: What physical object represents Constellations on the desk, and where does it sit? Does the curated layer (authored member order, per-item captions) arrive with the object?
+- resolved (2026-08-22): the name (**Constellations**), the data model (item-side `constellations` array + registry records, cross-reference/index, many-to-many), the flat browse route, the card rider, and the admin intake — see "Constellations: cross-series grouping" under confirmed decisions.
+- why_it_matters: The object choice affects the desk composition, naming register, and whether curation is authored per-list; the earlier bias toward a meta-object near the Guide (a sibling of the finding aid, not of the series) still stands.
+- current_bias: meta-object near the Guide; curated layer ships with the object, on top of the exhaustive field-derived membership
+- see: `docs/cross-series-lists.md` (candidate objects and constraints)
 
 ### Auth model
 - status: open

@@ -8,7 +8,8 @@ display_date: April 27, 2025
 sort_date: "2025-04-27"
 title: Borderline Drifter
 place: Houston, Texas, USA
-event: Grand National Tour
+constellations:
+  - 2025-grand-national-tour
 source: Received as a gift from a friend
 inspection: card
 assets:

@@ -89,8 +89,16 @@ function setGridBackdrop(img, fullUrl) {
   img.src = small;
 }
 
-// Labor and Accumulation use view-based URLs regardless of subcollection data structure
-const FLAT_URL_SERIES = new Set(["labor", "accumulation"]);
+// Labor and Accumulation use view-based URLs regardless of subcollection data structure.
+// "constellations" is not a series but the lateral cross-series layer; it shares
+// the flat-URL shape (/constellations/<slug>/) and the flat layer depth.
+const FLAT_URL_SERIES = new Set(["labor", "accumulation", "constellations"]);
+
+// Constellation registry lookup (archive.constellations, built by build-data.js).
+// Returns { slug, title, display_date, note, items } or null.
+function constellationFor(slug) {
+  return (archive && archive.constellations && archive.constellations[slug]) || null;
+}
 
 // Stack of active layer contents, each: { veil, content, cleanup, update }
 const layerStack = [];
@@ -803,7 +811,20 @@ function makeCVSheet() {
 // ── Browse sheet ──────────────────────────────────────────────────────────────
 
 function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
-  const s = archive.series[seriesKey];
+  // Constellation browse: a cross-series view synthesized from the registry.
+  // Members were gathered at build time; the sheet reuses the flat-series
+  // machinery (accumulation grid, year groups) with the constellation's title
+  // and note as the sheet's identity.
+  const isConstellation = seriesKey === "constellations";
+  const constellation = isConstellation ? constellationFor(viewSlug) : null;
+  const s = isConstellation
+    ? {
+        label: constellation?.title || viewSlug,
+        subtitle: constellation?.display_date || "",
+        items: constellation?.items || [],
+        subcollections: {},
+      }
+    : archive.series[seriesKey];
   const isFlatSeries = FLAT_URL_SERIES.has(seriesKey);
   const subs = isFlatSeries ? [] : Object.entries(s.subcollections);
 
@@ -842,10 +863,12 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
 
     if (isFlatSeries) {
       let items = getFlatItems();
-      if (activeView && activeView !== "all") {
+      // Constellation members are already the view (the slug picked them at
+      // build time); only labor/accumulation filter flat items by context.
+      if (!isConstellation && activeView && activeView !== "all") {
         items = items.filter(item => item.context === activeView || item.view === activeView);
       }
-      activeSub = { label: activeView || "all", items };
+      activeSub = { label: isConstellation ? s.label : (activeView || "all"), items };
       years = groupByYear(items);
     } else {
       activeSub = s.subcollections[activeSubKey];
@@ -868,7 +891,9 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
     if (isFilms) grid.classList.add("item-grid--films");
     // Accumulation (ephemera) scopes the undimensioned-thumbnail padding below, so
     // items without recorded dimensions don't butt edge-to-edge against the cell.
-    if (seriesKey === "accumulation") grid.classList.add("item-grid--accumulation");
+    // Constellation pages reuse the same contact-sheet treatment — cross-series
+    // members render as one chronological sequence in the accumulation grid.
+    if (seriesKey === "accumulation" || isConstellation) grid.classList.add("item-grid--accumulation");
     // Music: albums/EPs are square sleeves; singles render as a vinyl picture
     // disc (round crop). The per-item disc class is applied to single cells below.
     if (activeSubKey === "music") grid.classList.add("item-grid--music");
@@ -1210,6 +1235,13 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
       subtitle.textContent = subtitleText;
       meta.appendChild(h1);
       meta.appendChild(subtitle);
+      // Constellation pages carry the registry note — the grouping's voice —
+      // under the title and date range.
+      if (isConstellation && constellation?.note) {
+        const note = el("p", "overlay-subtitle overlay-subtitle--note");
+        note.textContent = constellation.note;
+        meta.appendChild(note);
+      }
       content.appendChild(meta);
     }
   }
@@ -1228,6 +1260,9 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
   renderContent(subKey, viewSlug);
 
   function update(state) {
+    // A sheet only updates within its own series — a cross-series state (e.g. a
+    // constellation jump) replaces the stack rather than mutating this sheet.
+    if (state.series !== seriesKey) return;
     if (state.subcollection && state.subcollection !== subKey) {
       subKey = state.subcollection;
       renderContent(subKey, viewSlug);
@@ -1433,10 +1468,19 @@ function buildPlate(item, dims, sidePx, img, zoom = 1, panX = 0, panY = 0) {
 }
 
 function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
-  const s = archive.series[seriesKey];
+  // Constellation context: the browse context is the constellation's member
+  // list (cross-series, chronological), so prev/next steps through the
+  // constellation rather than a subcollection.
+  const isConstellation = seriesKey === "constellations";
+  const constellation = isConstellation ? constellationFor(viewSlug) : null;
+  const s = isConstellation
+    ? { label: constellation?.title || viewSlug, subcollections: {} }
+    : archive.series[seriesKey];
   let allItems;
 
-  if (subKey && s.subcollections[subKey]) {
+  if (isConstellation) {
+    allItems = constellation?.items || [];
+  } else if (subKey && s.subcollections[subKey]) {
     allItems = s.subcollections[subKey].items;
   } else if (Object.keys(s.subcollections || {}).length > 0) {
     allItems = Object.values(s.subcollections).flatMap(sc => sc.items || []);
@@ -1643,12 +1687,18 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
       fields.appendChild(note);
     }
 
-    if (item.related_ids?.length || item.tags?.length) {
+    if (item.related_ids?.length || item.constellations?.length || item.tags?.length) {
       const riders = el("div", "item-card__riders");
-      if (item.related_ids?.length) {
+      let firstRiderRow = true;
+      const riderLabel = (text) => {
         const l = el("span", "overlay-label");
-        l.textContent = "see also";
-        riders.appendChild(l);
+        l.textContent = text;
+        if (!firstRiderRow) l.style.marginTop = "0.5rem";
+        firstRiderRow = false;
+        return l;
+      };
+      if (item.related_ids?.length) {
+        riders.appendChild(riderLabel("see also"));
         item.related_ids.forEach(rid => {
           const rel = allItems.find(i => i.id === rid);
           const btn = el("button", "item-card__rider");
@@ -1661,13 +1711,32 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
           riders.appendChild(btn);
         });
       }
+      // Constellations — their own rider row of clickable tokens, each opening
+      // the constellation's cross-series browse (/constellations/<slug>/).
+      // Mono register: an index/navigation token, like tags and see-also.
+      if (item.constellations?.length) {
+        riders.appendChild(riderLabel("constellations"));
+        item.constellations.forEach(slug => {
+          const c = constellationFor(slug);
+          const btn = el("button", "item-card__rider");
+          btn.type = "button";
+          btn.textContent = c ? c.title : slug;
+          btn.setAttribute("aria-label", `Constellation: ${c ? c.title : slug}`);
+          btn.addEventListener("click", () => {
+            // Cross-series jump: the layer stack under this modal belongs to the
+            // item's home series, so return to the desk first, then open the
+            // constellation as a fresh depth-1 sheet. (Back therefore retraces
+            // through the desk — consistent with the spatial model.)
+            navigate({ layer: "desk", series: null, subcollection: null, view: null, item: null });
+            navigate({ layer: "browse", series: "constellations", subcollection: null, view: slug, item: null });
+          });
+          riders.appendChild(btn);
+        });
+      }
       if (item.tags?.length) {
-        const l = el("span", "overlay-label");
-        l.textContent = "tags";
-        l.style.marginTop = "0.5rem";
+        riders.appendChild(riderLabel("tags"));
         const v = el("span", "overlay-value overlay-value--mono");
         v.textContent = item.tags.join(" · ");
-        riders.appendChild(l);
         riders.appendChild(v);
       }
       fields.appendChild(riders);
@@ -1995,18 +2064,28 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
     const hasPrev = idx > 0;
     const hasNext = idx < allItems.length - 1;
 
-    // Breadcrumb — bottom left
+    // Breadcrumb — bottom left. A constellation item reads
+    // desk / <constellation title> / <item title>; the slug never prints.
     const isFlatItem = FLAT_URL_SERIES.has(seriesKey);
-    const subLabel = isFlatItem
-      ? (viewSlug || "all")
-      : (subKey ? (s.subcollections[subKey]?.label || subKey) : s.label);
+    let segments;
+    if (isConstellation) {
+      segments = [
+        { label: "desk", onClick: () => navigate({ layer: "desk" }) },
+        { label: s.label, onClick: () => navigate({ layer: "browse", series: seriesKey, subcollection: null, view: viewSlug, item: null }) },
+        { label: item.title, current: true },
+      ];
+    } else {
+      const subLabel = isFlatItem
+        ? (viewSlug || "all")
+        : (subKey ? (s.subcollections[subKey]?.label || subKey) : s.label);
 
-    const segments = [
-      { label: "desk", onClick: () => navigate({ layer: "desk" }) },
-      { label: s.label, onClick: () => navigate({ layer: isFlatItem ? "browse" : "series", series: seriesKey, subcollection: null, view: isFlatItem ? (viewSlug || "all") : null, item: null }) }
-    ];
-    segments.push({ label: subLabel, onClick: () => navigate({ layer: "browse", series: seriesKey, subcollection: subKey, view: viewSlug || "all", item: null }) });
-    segments.push({ label: item.title, current: true });
+      segments = [
+        { label: "desk", onClick: () => navigate({ layer: "desk" }) },
+        { label: s.label, onClick: () => navigate({ layer: isFlatItem ? "browse" : "series", series: seriesKey, subcollection: null, view: isFlatItem ? (viewSlug || "all") : null, item: null }) }
+      ];
+      segments.push({ label: subLabel, onClick: () => navigate({ layer: "browse", series: seriesKey, subcollection: subKey, view: viewSlug || "all", item: null }) });
+      segments.push({ label: item.title, current: true });
+    }
 
     const bc = makeBreadcrumb(segments);
     content.appendChild(bc);

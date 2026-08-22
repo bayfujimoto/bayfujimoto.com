@@ -115,7 +115,7 @@ export function renderEditItem(container, item, allItems, archive, callbacks = {
   // `item_type` becomes an editable select (same subcollection / prefix / slug,
   // so switching never moves the file).
   function buildGroups(type) {
-    const groups = orderGroups([...getBaseGroups(), ...getTypeGroups(type)]);
+    const groups = orderGroups([...getBaseGroups(series), ...getTypeGroups(type)]);
     const family = TYPE_FAMILIES[type];
     if (family && family.length > 1) {
       const rec = groups.find(g => g.id === "record");

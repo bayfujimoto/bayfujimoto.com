@@ -9,7 +9,8 @@ sort_date: "2026-06-07"
 title: Popular Seafood Guide
 issuer: Monterey Bay Aquarium
 place: Monterey, CA, USA
-event: atxsf road trip
+constellations:
+  - 2026-atx-sf
 dimensions: 200 x 89
 inspection: card
 assets:

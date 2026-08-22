@@ -15709,7 +15709,9 @@
           "title": "Rebate Coupon",
           "issuer": "Leggett Drive-Through Tree",
           "place": "Leggett, CA, USA",
-          "event": "Lassen Volcanic NP Roadtrip",
+          "constellations": [
+            "2026-lassen-volcanic"
+          ],
           "dimensions": "102 x 38",
           "inspection": "document",
           "assets": {
@@ -15773,7 +15775,9 @@
           "title": "Admission Ticket",
           "issuer": "Monterey Bay Aquarium",
           "place": "Monterey, CA, USA",
-          "event": "atxsf road trip",
+          "constellations": [
+            "2026-atx-sf"
+          ],
           "extent": "1 ticket",
           "dimensions": "86 x 54",
           "inspection": "card",
@@ -15794,7 +15798,9 @@
           "title": "Popular Seafood Guide",
           "issuer": "Monterey Bay Aquarium",
           "place": "Monterey, CA, USA",
-          "event": "atxsf road trip",
+          "constellations": [
+            "2026-atx-sf"
+          ],
           "dimensions": "200 x 89",
           "inspection": "card",
           "assets": {
@@ -15815,7 +15821,9 @@
           "title": "Seafood Watch Guide",
           "issuer": "Monterey Bay Aquarium",
           "place": "Monterey, CA, USA",
-          "event": "atxsf road trip",
+          "constellations": [
+            "2026-atx-sf"
+          ],
           "assets": {
             "front": "EPH-2026-019-front.jpg",
             "thumbnail": "EPH-2026-019-front-thumb.jpg",
@@ -15834,7 +15842,9 @@
           "title": "Admission Ticket",
           "issuer": "New Mexico Museum of Art",
           "place": "Santa Fe, NM, USA",
-          "event": "atxsf road trip",
+          "constellations": [
+            "2026-atx-sf"
+          ],
           "dimensions": "140 x 82",
           "inspection": "card",
           "assets": {
@@ -15854,7 +15864,9 @@
           "title": "Admission Ticket",
           "issuer": "Museum of Indian Arts + Culture",
           "place": "Santa Fe, NM, USA",
-          "event": "atxsf road trip",
+          "constellations": [
+            "2026-atx-sf"
+          ],
           "inspection": "card",
           "assets": {
             "front": "EPH-2026-025-front.jpg?v=dbc85fbcc20x2",
@@ -15873,7 +15885,7 @@
           "sort_date": "2025-06-01",
           "title": "Commemorative Ticket",
           "place": "Austin, TX, USA",
-          "event": "Film screening",
+          "source": "kept from a film screening",
           "inspection": "card",
           "context_note": "Commemorative ticket",
           "dimensions": "180 x 60",
@@ -15892,7 +15904,9 @@
           "sort_date": "2025-04-27",
           "title": "Borderline Drifter",
           "place": "Houston, Texas, USA",
-          "event": "Grand National Tour",
+          "constellations": [
+            "2025-grand-national-tour"
+          ],
           "source": "Received as a gift from a friend",
           "inspection": "card",
           "assets": {
@@ -15948,7 +15962,6 @@
           "title": "Scratch & Sniff",
           "context_note": "Received for a screening of Sasquatch Sunset.",
           "place": "New York, NY, USA",
-          "event": "Film screening",
           "source": "Alamo Drafthouse, Downtown Brooklyn",
           "inspection": "card",
           "assets": {
@@ -15968,7 +15981,9 @@
           "title": "Chamonix Gondola",
           "place": "Chamonix, France",
           "source": "Chamonix gondola",
-          "event": "Spring break",
+          "constellations": [
+            "2024-spring-break"
+          ],
           "inspection": "card",
           "assets": {
             "front": "EPH-2026-006-front.jpg",
@@ -15986,6 +16001,248 @@
     "subtitle": "finding aid, sitemap, site notes",
     "order": 5,
     "content": "# Guide\n\nMemory keeps revising itself: softening, reordering, letting things go on its own schedule. A record holds still. A date stays the date; a ticket keeps what it carried the night I saved it. So these are some of my memories, set down where they'll stay put: records, scans, logs, and the small printed things that survived a pocket or a suitcase or my glovebox.\n\n## Arrangement\n\nThe collection is organized into five series:\n\n- **Identity** — biography, CV, contact.\n- **Labor** — projects, drawings, specifications, reports.\n- **Consumption** — films, books, music, coffee, games.\n- **Creation** — sketches, photos, prototypes, videos, notes.\n- **Accumulation** — tickets, receipts, brochures, printed matter."
+  },
+  "constellations": {
+    "2026-lassen-volcanic": {
+      "slug": "2026-lassen-volcanic",
+      "title": "Lassen Volcanic Road Trip",
+      "status": "published",
+      "display_date": "July 2026",
+      "date_start": "",
+      "date_end": "",
+      "note": "",
+      "items": [
+        {
+          "id": "EPH-2026-022",
+          "slug": "leggett-ca-usa-2026-07-01",
+          "series": "accumulation",
+          "item_type": "document",
+          "status": "published",
+          "display_date": "July 1, 2026",
+          "sort_date": "2026-07-01",
+          "title": "Rebate Coupon",
+          "issuer": "Leggett Drive-Through Tree",
+          "place": "Leggett, CA, USA",
+          "constellations": [
+            "2026-lassen-volcanic"
+          ],
+          "dimensions": "102 x 38",
+          "inspection": "document",
+          "assets": {
+            "pages": [
+              {
+                "file": "EPH-2026-022-page-01.jpg?v=72ec3cd6c20x2",
+                "thumbnail": "EPH-2026-022-page-01-thumb.webp?v=72ec3cd6c20x2",
+                "caption": "",
+                "alt": "",
+                "cutout": true,
+                "cutout_params": {
+                  "tolerance": 20,
+                  "defringe": 2
+                }
+              }
+            ],
+            "thumbnail": "EPH-2026-022-page-01-thumb.webp?v=72ec3cd6c20x2"
+          }
+        }
+      ]
+    },
+    "2026-atx-sf": {
+      "slug": "2026-atx-sf",
+      "title": "Austin → SF",
+      "status": "published",
+      "display_date": "June 2026",
+      "date_start": "",
+      "date_end": "",
+      "note": "",
+      "items": [
+        {
+          "id": "EPH-2026-024",
+          "slug": "monterey-ca-usa-2026-06-07",
+          "series": "accumulation",
+          "item_type": "ticket",
+          "status": "published",
+          "display_date": "June 7, 2026",
+          "sort_date": "2026-06-07",
+          "title": "Admission Ticket",
+          "issuer": "Monterey Bay Aquarium",
+          "place": "Monterey, CA, USA",
+          "constellations": [
+            "2026-atx-sf"
+          ],
+          "extent": "1 ticket",
+          "dimensions": "86 x 54",
+          "inspection": "card",
+          "assets": {
+            "front": "EPH-2026-024-front.jpg?v=e3660c09c20x2",
+            "thumbnail": "EPH-2026-024-front-thumb.webp?v=e3660c09c20x2",
+            "back": "EPH-2026-024-back.jpg?v=0220701dc20x2"
+          }
+        },
+        {
+          "id": "EPH-2026-020",
+          "slug": "monterey-ca-usa-2026-06-07",
+          "series": "accumulation",
+          "item_type": "brochure",
+          "status": "published",
+          "display_date": "June 7, 2026",
+          "sort_date": "2026-06-07",
+          "title": "Popular Seafood Guide",
+          "issuer": "Monterey Bay Aquarium",
+          "place": "Monterey, CA, USA",
+          "constellations": [
+            "2026-atx-sf"
+          ],
+          "dimensions": "200 x 89",
+          "inspection": "card",
+          "assets": {
+            "front": "EPH-2026-020-front.jpg",
+            "thumbnail": "EPH-2026-020-front-thumb.jpg",
+            "back": "EPH-2026-020-back.jpg"
+          }
+        },
+        {
+          "id": "EPH-2026-019",
+          "slug": "monterey-ca-usa-2026-06-07",
+          "series": "accumulation",
+          "item_type": "brochure",
+          "status": "published",
+          "display_date": "June 7, 2026",
+          "sort_date": "2026-06-07",
+          "inspection": "card",
+          "title": "Seafood Watch Guide",
+          "issuer": "Monterey Bay Aquarium",
+          "place": "Monterey, CA, USA",
+          "constellations": [
+            "2026-atx-sf"
+          ],
+          "assets": {
+            "front": "EPH-2026-019-front.jpg",
+            "thumbnail": "EPH-2026-019-front-thumb.jpg",
+            "back": "EPH-2026-019-back.jpg"
+          },
+          "dimensions": "200 x 89"
+        },
+        {
+          "id": "EPH-2026-026",
+          "slug": "santa-fe-nm-usa-2026-06-02",
+          "series": "accumulation",
+          "item_type": "ticket",
+          "status": "published",
+          "display_date": "June 2, 2026",
+          "sort_date": "2026-06-02",
+          "title": "Admission Ticket",
+          "issuer": "New Mexico Museum of Art",
+          "place": "Santa Fe, NM, USA",
+          "constellations": [
+            "2026-atx-sf"
+          ],
+          "dimensions": "140 x 82",
+          "inspection": "card",
+          "assets": {
+            "front": "EPH-2026-026-front.jpg?v=a72326f6c20x2",
+            "thumbnail": "EPH-2026-026-front-thumb.webp?v=a72326f6c20x2",
+            "back": "EPH-2026-026-back.jpg?v=740a06a7c20x2"
+          }
+        },
+        {
+          "id": "EPH-2026-025",
+          "slug": "santa-fe-nm-usa-2026-06-02",
+          "series": "accumulation",
+          "item_type": "ticket",
+          "status": "published",
+          "display_date": "June 2, 2026",
+          "sort_date": "2026-06-02",
+          "title": "Admission Ticket",
+          "issuer": "Museum of Indian Arts + Culture",
+          "place": "Santa Fe, NM, USA",
+          "constellations": [
+            "2026-atx-sf"
+          ],
+          "inspection": "card",
+          "assets": {
+            "front": "EPH-2026-025-front.jpg?v=dbc85fbcc20x2",
+            "thumbnail": "EPH-2026-025-front-thumb.webp?v=dbc85fbcc20x2",
+            "back": "EPH-2026-025-back.jpg?v=0320b00bc20x2"
+          },
+          "dimensions": "139 x 50"
+        }
+      ]
+    },
+    "2025-grand-national-tour": {
+      "slug": "2025-grand-national-tour",
+      "title": "Grand National Tour",
+      "status": "published",
+      "display_date": "April 2025",
+      "date_start": "",
+      "date_end": "",
+      "note": "",
+      "items": [
+        {
+          "id": "EPH-2026-017",
+          "slug": "houston-texas-usa-2025-04-27",
+          "series": "accumulation",
+          "item_type": "document",
+          "status": "published",
+          "display_date": "April 27, 2025",
+          "sort_date": "2025-04-27",
+          "title": "Borderline Drifter",
+          "place": "Houston, Texas, USA",
+          "constellations": [
+            "2025-grand-national-tour"
+          ],
+          "source": "Received as a gift from a friend",
+          "inspection": "card",
+          "assets": {
+            "front": "EPH-2026-017-front.jpg",
+            "thumbnail": "EPH-2026-017-front-thumb.jpg"
+          },
+          "dimensions": "62 x 88"
+        }
+      ]
+    },
+    "2024-spring-break": {
+      "slug": "2024-spring-break",
+      "title": "Spring Break",
+      "status": "published",
+      "display_date": "March 2024",
+      "date_start": "",
+      "date_end": "",
+      "note": "",
+      "items": [
+        {
+          "id": "EPH-2026-006",
+          "slug": "chamonix-france-2024-03-11",
+          "series": "accumulation",
+          "item_type": "ticket",
+          "status": "published",
+          "display_date": "March 11, 2024",
+          "sort_date": "2024-03-11",
+          "title": "Chamonix Gondola",
+          "place": "Chamonix, France",
+          "source": "Chamonix gondola",
+          "constellations": [
+            "2024-spring-break"
+          ],
+          "inspection": "card",
+          "assets": {
+            "front": "EPH-2026-006-front.jpg",
+            "thumbnail": "EPH-2026-006-front-thumb.jpg"
+          },
+          "dimensions": "54 x 85"
+        }
+      ]
+    },
+    "2024-paralympics": {
+      "slug": "2024-paralympics",
+      "title": "2024 Paralympic Games",
+      "status": "published",
+      "display_date": "September 2024",
+      "date_start": "",
+      "date_end": "",
+      "note": "",
+      "items": []
+    }
   },
   "_counters": {
     "EPH": 26,

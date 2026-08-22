@@ -326,6 +326,46 @@ Must support:
 - viewing linked records
 - preserving bidirectional clarity where useful
 
+### Constellation intake
+
+Any item form (every type except Identity) carries a **constellations** input
+that assigns the item to one or more constellations (see decisions.md →
+"Constellations: cross-series grouping"). The input is a token field: assigned
+constellations render as removable chips; the free-text cursor after the last
+chip drives autocomplete.
+
+**Autocomplete.** Typing filters the constellation registry (loaded with the
+archive; the same data `build-data.js` reads from `src/content/constellations/`),
+matching against slug and title. The suggestion list reuses the `:new `
+suggestion pattern from the command bar — each row shows `slug — title`, with a
+member count; ArrowUp/ArrowDown navigate, Tab/Enter/click select, Esc closes.
+Matching is substring by default, `~`-prefixed for fuzzy, consistent with the
+Explorer filter. Selecting appends a chip; the field accepts any number of
+chips (the data model is an array).
+
+**Inline creation.** When the query matches nothing, the last suggestion row is
+always **`+ new constellation "<query>"`**. Selecting it opens a minimal inline
+sub-form in place of the suggestion list: title (prefilled from the query),
+slug (suggested year-first kebab-case via `slug-generator.js`, e.g.
+`2026-atx-sf`; editable; collision-checked against the registry), optional date
+range, optional note. Confirming (a) stages a new registry file
+`src/content/constellations/<slug>.md` as an `A` entry in the Log pane's
+pending changes, bundled into the same commit as the item, and (b) appends the
+chip to the current item. Cancel returns to the suggestion list. A constellation
+therefore never has to be created outside the flow of cataloguing the item that
+prompted it.
+
+**Modality and mobile.** The input is an ordinary editable field: focusing it
+enters INSERT; Esc first closes the suggestion list, then blurs to NORMAL. On
+mobile the same field works by tap — native focus, 16px minimum font, the
+suggestion list tap-selectable, chips removed by tapping their ✕. No
+vim-dependent behavior is required for any part of the flow.
+
+**Vocabulary control.** The registry is the only source of assignable values —
+free text never lands in an item's `constellations` array except through the
+create path. This keeps the field a controlled vocabulary rather than a second
+tag field, which is what separates constellations from tags in the first place.
+
 ## Field behavior
 
 The admin interface should use the schemas defined in `content-model.md`.
@@ -352,6 +392,7 @@ Behavior rules:
 - display date
 - sort date
 - tags
+- constellations
 - context note
 - source
 - related items
@@ -399,7 +440,7 @@ Examples:
 - subtype
 - date
 - place
-- event
+- constellations
 - front asset
 - back asset
 - dimensions
@@ -491,8 +532,8 @@ Because the public archive relies on retrieval, the admin interface should encou
 - dates
 - type
 - tags
+- constellations
 - places
-- event links
 - people
 - source
 - related items

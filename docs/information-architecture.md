@@ -23,6 +23,13 @@ Collection
 - **Subcollection** — an optional group of related records within a series. Represented as pages, tabs, or sections within the series' physical container. Not all series use subcollections.
 - **Item** — an individual archive record. Has metadata, assets, status, and optional inspection behavior.
 
+Lateral to this tree sit **Constellations** — cross-series groupings (a trip, an
+event, a preoccupation) that gather items from several series without moving or
+duplicating any of them. An item carries a `constellations` array of slugs; each
+slug resolves to a registry record. Constellations are an access layer over the
+hierarchy, not a level within it. See decisions.md → "Constellations:
+cross-series grouping" and `docs/cross-series-lists.md`.
+
 ---
 
 ## The Six Top-Level Objects and the Amber Block
@@ -137,6 +144,7 @@ Features by subcollection type:
 - Projects: card grid or list with role, date, summary
 - Sketches / photos: contact-sheet grid
 - Documents: list with document type and date
+- Constellations: the Accumulation contact-sheet grid, reused unchanged — cross-series members render as thumbnails in one chronological sequence; the constellation's title, date range, and note head the page
 
 ### Layer 4 — Item Inspection (modal overlay)
 Clicking any item opens an inspection modal. The browse view behind dims and blurs heavily so everything feels like it exists in the same physical space.
@@ -185,12 +193,15 @@ Clicking any item opens an inspection modal. The browse view behind dims and blu
 
 /accumulation/                 accumulation (redirects to /accumulation/all/)
 /accumulation/all/             ephemera browse, unfiltered
-/accumulation/sxsw-2026/      ephemera browse, filtered by event (filter logic Phase 7)
+
+/constellations/2026-atx-sf/   one constellation: cross-series browse, chronological
 ```
 
 Notes:
 - Labor and Accumulation both use view-based second segments rather than subcollection keys. See decisions.md for rationale.
 - Labor context filters (`academic`, `professional`, `personal`) are metadata-based, not structural subcollections.
+- The earlier `/accumulation/sxsw-2026/` event-filter idea is subsumed by constellation routes (decisions.md, 2026-08-22). The Accumulation view segment remains reserved for future grouping/sort views (Phase 7).
+- `/constellations/<slug>/` renders the constellation's gathered items — drawn from every series — in one chronological view using the same contact-sheet grid as the Accumulation browse. A bare `/constellations/` index is deferred to the meta-object phase; in Phase 1 constellation pages are reached from catalog-card riders and deep links.
 
 ### Item inspection deep-links
 
@@ -198,10 +209,14 @@ Item inspection uses URL query params to open a modal from a browse page:
 
 ```
 /accumulation/all/?item=EPH-2025-041
-/accumulation/sxsw-2026/?item=EPH-2025-041
+/constellations/2026-atx-sf/?item=EPH-2025-041
 /work/projects/?item=PROJ-2025-002
 /consumption/films/?item=FILM-2026-001
 ```
+
+Prev/next inside the modal follows the current browse context — on a
+constellation page, that means stepping through the constellation's members
+across series, in chronological order.
 
 The browse page reads the `item` param on load and opens the corresponding inspection modal. This preserves:
 - linkability and bookmarking
@@ -265,6 +280,17 @@ sort_date: 2025-03-12
 
 The `series` and `subcollection` fields drive collection membership and template selection. `sort_date` should always be a parseable date for correct chronological sorting. See `docs/content-model.md` for full field definitions per item type.
 
+### Constellation resolution
+
+Constellation registry records live at `src/content/constellations/<slug>.md`
+(front matter: `slug`, `title`, `status`, date or date range, optional `note`).
+At build time, `build-data.js` collects every item's `constellations` array,
+validates each slug against the registry, and attaches derived membership to
+each constellation in `archive.json` (sorted by `sort_date`). An item slug that
+resolves to no registry record is a **build warning, not a silent gap**; a
+registry record with zero members is permitted (a constellation may be declared
+before its items are entered).
+
 ---
 
 ## Directory Structure
@@ -308,9 +334,10 @@ src/
 │  │  ├─ prototypes/
 │  │  ├─ videos/
 │  │  └─ notes/
-│  └─ accumulation/
-│     ├─ ephemera/
-│     └─ documents/
+│  ├─ accumulation/
+│  │  ├─ ephemera/
+│  │  └─ documents/
+│  └─ constellations/                 registry records, one file per constellation
 ├─ assets/
 │  ├─ images/
 │  ├─ scans/
