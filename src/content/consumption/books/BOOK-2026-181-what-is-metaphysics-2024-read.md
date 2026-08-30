@@ -1,16 +1,18 @@
 ---
 id: BOOK-2026-181
 slug: what-is-metaphysics-2024-read
-title: "What is Metaphysics?"
+title: What is Metaphysics?
 series: consumption
 subcollection: books
 item_type: book
 status: published
-author: "Martin Heidegger"
+author: Martin Heidegger
 year: "2016"
 date_read: "2024-12-22"
-display_date: "December 22, 2024"
+display_date: December 22, 2024
 sort_date: "2024-12-22"
-goodreads_link: "https://www.goodreads.com/book/show/32567666"
-
+goodreads_link: https://www.goodreads.com/book/show/32567666
+assets:
+  cover: BOOK-2026-181-cover.jpg?v=40b55a21o
+  thumbnail: BOOK-2026-181-cover-thumb.jpg?v=40b55a21o
 ---
