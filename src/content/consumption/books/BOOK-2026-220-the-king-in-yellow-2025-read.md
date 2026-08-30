@@ -1,22 +1,23 @@
 ---
 id: BOOK-2026-220
 slug: the-king-in-yellow-2025-read
-title: "The King in Yellow"
+title: The King in Yellow
 series: consumption
 subcollection: books
 item_type: book
 status: published
-author: "Robert W. Chambers"
+author: Robert W. Chambers
 year: "2016"
 date_read: "2025-07-28"
-display_date: "July 28, 2025"
+display_date: July 28, 2025
 sort_date: "2025-07-28"
 rating: 4
-goodreads_link: "https://www.goodreads.com/book/show/32277642"
+goodreads_link: https://www.goodreads.com/book/show/32277642
 isbn13: "9781539053446"
-isbn: "153905344X"
+isbn: 153905344X
 dimensions: 122 x 210
 dimensions_estimated: true
 assets:
-  cover: "https://covers.openlibrary.org/b/id/4752788-L.jpg"
+  cover: BOOK-2026-220-cover.jpg?v=74a7a20ao
+  thumbnail: BOOK-2026-220-cover-thumb.jpg?v=74a7a20ao
 ---
