@@ -2,7 +2,9 @@
 // Ingests Goodreads CSV export (from https://www.goodreads.com/review/import)
 // Writes new .md files to src/content/consumption/books/ for any entries not already present.
 //
-// Safe to run repeatedly — skips files that already exist (matched by goodreads_link).
+// Safe to run repeatedly — skips books already in the archive (matched by
+// Goodreads book id, with title|date_read as a fallback; see
+// scripts/utils/goodreads-identity.js).
 //
 // Usage:
 //   npm run ingest:books:csv
@@ -11,9 +13,11 @@
 import { existsSync, writeFileSync, readFileSync } from "fs";
 import { join } from "path";
 import { glob } from "glob";
+import matter from "gray-matter";
 import csv from "csv-parser";
 import { createReadStream } from "fs";
 import { resolveCover, cleanIsbn } from "./utils/book-covers.js";
+import { goodreadsKey, readingKey } from "./utils/goodreads-identity.js";
 
 const CONTENT_DIR = "src/content/consumption/books";
 const COUNTERS_PATH = "src/content/_id-counters.yaml";
@@ -130,15 +134,18 @@ async function main() {
 
   console.log(`[ingest-goodreads-csv] Reading ${CSV_PATH}`);
 
-  // Build a set of all existing goodreads_links to check for duplicates
+  // Index existing records by normalized Goodreads book id and by reading
+  // identity (title|date_read). Parsed front matter, not a regex over the raw
+  // file — the admin re-serializes records with js-yaml, which drops the quotes
+  // the old `goodreads_link: "…"` pattern depended on. See
+  // scripts/utils/goodreads-identity.js.
   const existingLinks = new Set();
+  const existingReadings = new Set();
   const existingFiles = glob.sync(join(CONTENT_DIR, "*.md"));
   for (const file of existingFiles) {
-    const raw = readFileSync(file, "utf8");
-    const match = raw.match(/goodreads_link: "([^"]*)"/);
-    if (match) {
-      existingLinks.add(match[1]);
-    }
+    const { data } = matter(readFileSync(file, "utf8"));
+    if (data.goodreads_link) existingLinks.add(goodreadsKey(data.goodreads_link));
+    if (data.title) existingReadings.add(readingKey(data.title, data.date_read || data.sort_date));
   }
 
   const counters = readCounters();
@@ -173,14 +180,18 @@ async function main() {
           const bookId = row["Book Id"];
           const goodreads_link = buildGoodreadsLink(bookId);
 
-          // Check if this book already exists
-          if (existingLinks.has(goodreads_link)) {
+          const dateRead = parseDate(row["Date Read"]);
+          if (!dateRead) {
             skipCount++;
             continue;
           }
+          const sortDate = dateRead.toISOString().split("T")[0];
 
-          const dateRead = parseDate(row["Date Read"]);
-          if (!dateRead) {
+          // Already in the archive? Either key is enough.
+          if (
+            existingLinks.has(goodreadsKey(goodreads_link)) ||
+            existingReadings.has(readingKey(title, sortDate))
+          ) {
             skipCount++;
             continue;
           }
@@ -196,7 +207,7 @@ async function main() {
           const resolved = await resolveCover({ title, author, isbn13, isbn });
 
           const id = nextId(counters);
-          const sortDateStr = dateRead.toISOString().split("T")[0];
+          const sortDateStr = sortDate;
 
           const fields = {
             id,
@@ -217,6 +228,10 @@ async function main() {
 
           const outPath = join(CONTENT_DIR, `${id}-${slug}.md`);
           writeFileSync(outPath, buildMarkdown(fields));
+          // Keep the in-run indexes current so a CSV listing the same book
+          // twice can't produce two records in a single pass.
+          existingLinks.add(goodreadsKey(goodreads_link));
+          existingReadings.add(readingKey(title, sortDateStr));
           newCount++;
           const coverNote = resolved ? ` [cover: ${resolved.source}]` : "";
           console.log(`[ingest-goodreads-csv] + "${title}" by ${author} — ${sortDateStr}${coverNote}`);

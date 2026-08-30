@@ -2,7 +2,9 @@
 // Fetches the Goodreads RSS feed and writes new .md files to
 // src/content/consumption/books/ for any entries not already present.
 //
-// Safe to run repeatedly — skips files that already exist (matched by goodreads_link).
+// Safe to run repeatedly — skips books already in the archive (matched by
+// Goodreads book id, with title|date_read as a fallback; see
+// scripts/utils/goodreads-identity.js).
 //
 // Requires:
 //   GOODREADS_USER_ID (the numeric ID from your Goodreads profile URL)
@@ -11,8 +13,10 @@
 import { existsSync, writeFileSync, readFileSync } from "fs";
 import { join } from "path";
 import { glob } from "glob";
+import matter from "gray-matter";
 import RSSParser from "rss-parser";
 import { stripGoodreadsSize } from "./utils/book-covers.js";
+import { goodreadsKey, readingKey } from "./utils/goodreads-identity.js";
 
 const CONTENT_DIR = "src/content/consumption/books";
 const EXCLUDE_DIR = "src/content/consumption/books/_excluded";
@@ -201,16 +205,20 @@ async function main() {
 
   console.log(`[ingest-goodreads] ${feed.items.length} entries in feed`);
 
-  // Build a set of all existing goodreads_links to check for duplicates
+  // Index existing records two ways so a book already in the archive is never
+  // re-created: by normalized Goodreads book id — the reliable key — and by
+  // reading identity (title|date_read) as a secondary match. This used to be a
+  // regex over the raw file (`goodreads_link: "…"`), which made dedup depend on
+  // front-matter *formatting*: the admin re-serializes a record with js-yaml on
+  // every save and js-yaml drops those quotes, so any book edited in the admin
+  // looked absent and was re-ingested under a fresh id on the next build.
   const existingLinks = new Set();
+  const existingReadings = new Set();
   const existingFiles = glob.sync(join(CONTENT_DIR, "*.md"));
   for (const file of existingFiles) {
-    const raw = readFileSync(file, "utf8");
-    // Extract goodreads_link from front matter
-    const match = raw.match(/goodreads_link: "([^"]*)"/);
-    if (match) {
-      existingLinks.add(match[1]);
-    }
+    const { data } = matter(readFileSync(file, "utf8"));
+    if (data.goodreads_link) existingLinks.add(goodreadsKey(data.goodreads_link));
+    if (data.title) existingReadings.add(readingKey(data.title, data.date_read || data.sort_date));
   }
 
   // Exclusion list — books deleted in the admin (or by hand). Each *.txt marker
@@ -220,7 +228,7 @@ async function main() {
   for (const file of glob.sync(join(EXCLUDE_DIR, "*.txt"))) {
     for (const line of readFileSync(file, "utf8").split("\n")) {
       const link = line.trim();
-      if (link && !link.startsWith("#")) excludedLinks.add(link);
+      if (link && !link.startsWith("#")) excludedLinks.add(goodreadsKey(link));
     }
   }
   if (excludedLinks.size) {
@@ -243,25 +251,30 @@ async function main() {
     const goodreads_link = normalizeGoodreadsLink(item);
 
     // Skip books explicitly excluded via the admin delete / _excluded markers.
-    if (goodreads_link && excludedLinks.has(goodreads_link)) {
-      skipCount++;
-      continue;
-    }
-
-    // Check if this book already exists by its goodreads link
-    if (goodreads_link && existingLinks.has(goodreads_link)) {
+    if (goodreads_link && excludedLinks.has(goodreadsKey(goodreads_link))) {
       skipCount++;
       continue;
     }
 
     const dateRead = new Date(item.pubDate);
+    const sortDate = dateRead.toISOString().split("T")[0];
+
+    // Already in the archive? Either key is enough.
+    if (
+      (goodreads_link && existingLinks.has(goodreadsKey(goodreads_link))) ||
+      existingReadings.has(readingKey(title, sortDate))
+    ) {
+      skipCount++;
+      continue;
+    }
+
     const slug = buildSlug(title, null, dateRead);
     const rating = extractRating(item);
     const cover = extractCover(item);
     const year = extractYear(item);
 
     const id = nextId(counters);
-    const sortDateStr = dateRead.toISOString().split("T")[0];
+    const sortDateStr = sortDate;
 
     const fields = {
       id,
@@ -280,6 +293,10 @@ async function main() {
 
     const outPath = join(CONTENT_DIR, `${id}-${slug}.md`);
     writeFileSync(outPath, buildMarkdown(fields));
+    // Keep the in-run indexes current so a feed that lists the same book twice
+    // can't produce two records in a single pass.
+    if (goodreads_link) existingLinks.add(goodreadsKey(goodreads_link));
+    existingReadings.add(readingKey(title, sortDateStr));
     newCount++;
     console.log(`[ingest-goodreads] + "${title}" by ${author} — ${sortDateStr}`);
   }

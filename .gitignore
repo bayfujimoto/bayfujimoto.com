@@ -30,3 +30,6 @@ Goodreads Library Export.csv
 # scripts/build-data.js, bundled into the passkey-gated archive-admin function;
 # never served statically, not versioned.
 netlify/functions/_admin-archive.json
+
+# Local scratch — repo tarballs and staging for deletion, never committed
+_to_delete/

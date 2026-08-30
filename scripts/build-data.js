@@ -2,6 +2,7 @@ import { glob } from "glob";
 import matter from "gray-matter";
 import { readFileSync, writeFileSync, mkdirSync } from "fs";
 import { dirname } from "path";
+import { goodreadsKey, readingKey } from "./utils/goodreads-identity.js";
 
 // Series definitions: order, labels, and container metaphors
 const SERIES = {
@@ -156,6 +157,16 @@ function buildArchive() {
   const filmKey = (d) =>
     `${String(d.title || "").toLowerCase().replace(/['’]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}|${d.year || ""}|${d.watch_date || ""}`;
 
+  // Same guard for books. The Goodreads ingest runs on every production build,
+  // so a record it fails to recognize comes back under a fresh id — different
+  // id, same reading. Keyed by Goodreads book id where present, else by reading
+  // identity (title|date_read). A reread differs by date and stays distinct.
+  const bookIndex = new Map();
+  const bookKey = (d) =>
+    d.goodreads_link
+      ? goodreadsKey(d.goodreads_link)
+      : readingKey(d.title, d.date_read || d.sort_date);
+
   // Pre-populate all series and subcollections so they exist even if empty
   for (const [seriesKey, seriesDef] of Object.entries(SERIES)) {
     archive.series[seriesKey] = {
@@ -192,6 +203,11 @@ function buildArchive() {
       const key = filmKey(data);
       if (!viewingIndex.has(key)) viewingIndex.set(key, []);
       viewingIndex.get(key).push(file);
+    }
+    if (data.status === "published" && data.item_type === "book") {
+      const key = bookKey(data);
+      if (!bookIndex.has(key)) bookIndex.set(key, []);
+      bookIndex.get(key).push(file);
     }
 
     const { series, subcollection } = data;
@@ -297,14 +313,18 @@ function buildArchive() {
   // …and on any duplicate film viewing — catches a re-ingested copy of a film
   // already in the archive (different id, same title/year/watch_date).
   const dupViewings = [...viewingIndex].filter(([, paths]) => paths.length > 1);
-  if (dupIds.length || dupViewings.length) {
+  // …and on any duplicate book — catches a re-ingested copy of a book already
+  // in the archive (different id, same Goodreads record or same title/date).
+  const dupBooks = [...bookIndex].filter(([, paths]) => paths.length > 1);
+  if (dupIds.length || dupViewings.length || dupBooks.length) {
     const fmt = (label, groups) =>
       groups.map(([k, paths]) => `  Duplicate ${label} ${k} in:\n${paths.map(p => `    ${p}`).join("\n")}`).join("\n");
     const detail = [
-      dupIds.length    ? fmt("id", dupIds)             : "",
+      dupIds.length      ? fmt("id", dupIds)                : "",
       dupViewings.length ? fmt("film viewing", dupViewings) : "",
+      dupBooks.length    ? fmt("book", dupBooks)            : "",
     ].filter(Boolean).join("\n");
-    throw new Error(`build-data: ${dupIds.length} duplicate id(s), ${dupViewings.length} duplicate viewing(s) found —\n${detail}`);
+    throw new Error(`build-data: ${dupIds.length} duplicate id(s), ${dupViewings.length} duplicate viewing(s), ${dupBooks.length} duplicate book(s) found —\n${detail}`);
   }
 
   mkdirSync(dirname("public/data/archive.json"), { recursive: true });
