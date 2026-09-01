@@ -9,10 +9,9 @@ status: published
 display_date: January 20, 2024
 sort_date: "2024-01-20"
 tags: []
-inspection: none
 assets:
-  primary:
   thumbnail:
+  gallery: []
 related_ids: []
 context_note: >
 ---

@@ -917,6 +917,11 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
     // Music: albums/EPs are square sleeves; singles render as a vinyl picture
     // disc (round crop). The per-item disc class is applied to single cells below.
     if (activeSubKey === "music") grid.classList.add("item-grid--music");
+    // Photos: a pile of prints per cell, the whole photo always visible with
+    // padding — scoped like the books/films/music modifiers.
+    // decisions.md → "Photo entries — display treatment".
+    const isPhotos = activeSubKey === "photos";
+    if (isPhotos) grid.classList.add("item-grid--photos");
     grid.setAttribute("role", "list");
     grid.setAttribute("aria-label", `${activeSub.label} items`);
 
@@ -1114,6 +1119,45 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
           const title = el("span", "item-grid__title");
           title.textContent = item.title;
           btn.appendChild(title);
+        } else if (isPhotos) {
+          // A pile of prints: cover on top, sheet edges rotated behind when
+          // the record holds several exposures; a single photo is a pile of
+          // one, slightly tilted. The stack takes the cover's true aspect
+          // ratio once the thumbnail decodes, so the sheets match the print's
+          // bounds and the photo is never cropped.
+          const gAssets = galleryAssets(item);
+          const cover = gAssets[0] || null;
+          const thumbSrc = imageUrl(item.assets?.thumbnail || cover?.thumbnail, "thumbnail")
+            || imageUrl(cover?.file || primaryAsset(item), "display");
+          if (thumbSrc) {
+            btn.classList.add("item-grid__btn--photo");
+            const stack = el("span", "photo-pile");
+            if (gAssets.length <= 1) stack.style.transform = `rotate(${photoTilt(item.id)}deg)`;
+            if (gAssets.length > 2) stack.appendChild(el("span", "photo-pile__sheet photo-pile__sheet--u2"));
+            if (gAssets.length > 1) stack.appendChild(el("span", "photo-pile__sheet photo-pile__sheet--u1"));
+            const img = el("img", "photo-pile__print");
+            img.alt = "";
+            img.addEventListener("load", () => {
+              if (!img.naturalWidth || !img.naturalHeight) return;
+              stack.style.aspectRatio = `${img.naturalWidth} / ${img.naturalHeight}`;
+              if (img.naturalWidth >= img.naturalHeight) stack.style.width = "100%";
+              else stack.style.height = "100%";
+            });
+            lazyRegister(btn, () => { fadeInOnLoad(img); img.src = thumbSrc; });
+            stack.appendChild(img);
+            if (gAssets.length > 1) {
+              const count = el("span", "photo-pile__count");
+              count.textContent = `×${gAssets.length}`;
+              count.setAttribute("aria-hidden", "true");
+              stack.appendChild(count);
+              btn.setAttribute("aria-label", `${item.title}, ${gAssets.length} exposures`);
+            }
+            btn.appendChild(stack);
+          } else {
+            const ph = el("span", "item-grid__noimg");
+            ph.textContent = "no reproduction";
+            btn.appendChild(ph);
+          }
         } else {
           const thumbSrc = imageUrl(item.assets?.thumbnail, "thumbnail") || imageUrl(primaryAsset(item), "display");
           if (thumbSrc) {
@@ -1589,6 +1633,13 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
     fieldsCol.appendChild(fields);
 
     const dims = parseDimensions(item);
+    // Gallery-backed records (photos, and any record with gallery images):
+    // the set steps within the plate column. decisions.md →
+    // "Photo entries — display treatment".
+    const gAssets = galleryAssets(item);
+    let galleryIdx = 0;
+    let showFrame = () => {};      // assigned once the strip exists
+    let frameCaptionEl = null;     // the fields column's "frame" caption row
     // Each card opens at its own fit zoom (a small item isn't a speck). The
     // level is local to this card so pre-rendered neighbours don't disturb it.
     let localZoom = fitZoom(dims);
@@ -1692,6 +1743,19 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
         singleRow(row.label, row.value, row.mono);
       }
     });
+
+    // Frame caption — a multi-exposure record carries the selected frame's
+    // caption as its own row; stepping the plate updates it. Suppressed when
+    // no frame has a caption recorded (unrecorded fields are never faked).
+    if (gAssets.length > 1 && gAssets.some(g => g.caption)) {
+      const row = el("div", "item-card__row");
+      const l = el("span", "overlay-label");
+      l.textContent = "frame";
+      frameCaptionEl = el("span", "overlay-value");
+      row.appendChild(l);
+      row.appendChild(frameCaptionEl);
+      fields.appendChild(row);
+    }
 
     // Physical — extent + dimensions (the calibrated plate carries true size).
     // A leading "≈" flags an estimated size (books, sized by format) so the mm
@@ -1843,7 +1907,14 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
       field.appendChild(plate.svg);
     };
 
-    if (primary && dims) {
+    if (primary && gAssets.length) {
+      // Gallery reproduction (photos): shown whole, centered and padded at
+      // its own aspect ratio — no calibrated plate. The rule: the full photo
+      // is always visible, never cropped.
+      field.classList.add("item-card__field--photo");
+      if (reproImg) field.appendChild(reproImg);
+      scaleNote.textContent = "dimensions not recorded";
+    } else if (primary && dims) {
       renderPlate(localZoom);
 
       // Crosshair readout — pointer position in field mm, offset by the pan so
@@ -1881,7 +1952,23 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
 
       const controls = el("div", "item-card__plate-controls");
       const assetLabel = el("span", "item-card__asset-label");
-      if (back) {
+      if (gAssets.length > 1) {
+        // Multi-exposure: prev/next step the plate through the set, in the
+        // overturn control's register; the asset label becomes the frame
+        // counter (kept current by showFrame, defined with the strip below).
+        const prevB = el("button", "item-card__flip");
+        prevB.type = "button";
+        prevB.textContent = "\u2039 prev";
+        prevB.setAttribute("aria-label", "Previous exposure");
+        prevB.addEventListener("click", () => showFrame(galleryIdx - 1));
+        controls.appendChild(prevB);
+        const nextB = el("button", "item-card__flip");
+        nextB.type = "button";
+        nextB.textContent = "next \u203a";
+        nextB.setAttribute("aria-label", "Next exposure");
+        nextB.addEventListener("click", () => showFrame(galleryIdx + 1));
+        controls.appendChild(nextB);
+      } else if (back) {
         const flip = el("button", "item-card__flip");
         flip.type = "button";
         flip.textContent = "overturn";
@@ -1896,13 +1983,14 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
         });
         controls.appendChild(flip);
       }
-      assetLabel.textContent = back ? "recto" : "1/1";
+      assetLabel.textContent = gAssets.length > 1 ? "" : (back ? "recto" : "1/1");
       controls.appendChild(assetLabel);
       foot.appendChild(controls);
 
       // Zoom slider — only meaningful when there is a calibrated field to
       // rescale. Dragging shrinks the field span and enlarges the item.
-      if (dims) {
+      // Gallery fields (photos) show the whole reproduction instead.
+      if (dims && !gAssets.length) {
         const zoomWrap = el("label", "item-card__zoom-wrap");
         const zoomLabel = el("span", "item-card__asset-label");
         zoomLabel.textContent = "zoom";
@@ -2021,6 +2109,46 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
         }, { passive: false });
       }
 
+      // Contact strip — a record holding 2+ gallery images shows the whole
+      // set between the field and the foot, each exposure in its entirety in
+      // its padded cell. Clicking a frame (or the foot's prev/next) steps the
+      // plate; the fields column's frame caption and the counter follow.
+      if (gAssets.length > 1) {
+        const strip = el("div", "item-card__strip");
+        strip.setAttribute("role", "tablist");
+        strip.setAttribute("aria-label", "exposures");
+        const stripBtns = gAssets.map((g, i) => {
+          const b = el("button", "item-card__strip-btn");
+          b.type = "button";
+          b.setAttribute("role", "tab");
+          b.setAttribute("aria-label", `Frame ${i + 1} of ${gAssets.length}${g.caption ? `: ${g.caption}` : ""}`);
+          const t = el("img", "item-card__strip-img");
+          t.alt = "";
+          t.decoding = "async";
+          t.loading = "lazy";
+          t.src = g.thumbnail ? imageUrl(g.thumbnail, "thumbnail") : imageUrl(g.file, "display");
+          b.appendChild(t);
+          b.addEventListener("click", () => showFrame(i));
+          strip.appendChild(b);
+          return b;
+        });
+        const pad2 = n => String(n).padStart(2, "0");
+        showFrame = (i) => {
+          const from = galleryIdx;
+          galleryIdx = (i + gAssets.length) % gAssets.length;
+          const g = gAssets[galleryIdx];
+          if (reproImg && galleryIdx !== from) {
+            loadReproProgressive(reproImg, g.file, g.thumbnail, showNone, fullVariants(g.file));
+          }
+          if (reproImg) reproImg.alt = g.caption || item.title;
+          assetLabel.textContent = `${pad2(galleryIdx + 1)}/${pad2(gAssets.length)}`;
+          if (frameCaptionEl) frameCaptionEl.textContent = g.caption || "\u2014";
+          stripBtns.forEach((b, j) => b.setAttribute("aria-current", j === galleryIdx));
+        };
+        showFrame(0);
+        plateCol.appendChild(strip);
+      }
+
       plateCol.appendChild(foot);
     } else {
       // Reserve the foot's height so a card with no reproduction keeps the
@@ -2044,7 +2172,7 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
     // takes over the gesture.
     wrap.__setSwipeActive = (v) => { swipeActive = v; };
     wrap.__plate = {
-      interactive: !!(primary && dims),
+      interactive: !!(primary && dims && !gAssets.length),
       panState: () => (plateState && dims)
         ? { panX: plateState.panX, panMaxX: Math.max(0, dims.w - plateState.spanMM) }
         : null,
@@ -2427,6 +2555,15 @@ function primaryAsset(item) {
 
 export function galleryAssets(item) {
   return item.assets?.gallery ?? [];
+}
+
+// Deterministic slight rotation per record id — a print laid down by hand.
+// Used by the photos grid for single-photo piles.
+function photoTilt(id) {
+  let h = 0;
+  for (const c of String(id)) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+  const a = ((h % 100) / 100 - 0.5) * 5; // -2.5 … 2.5 deg
+  return Math.abs(a) < 0.8 ? (a < 0 ? -0.8 : 0.8) : a;
 }
 
 function groupByYear(items) {

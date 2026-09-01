@@ -275,6 +275,14 @@ Its purpose is to prevent drift, repetition, and silent contradictions over time
 
 ---
 
+### Photo entries — display treatment
+- status: confirmed
+- decision: Photo reproductions are always shown in their entirety, with padding — never cropped. In the browse grid, every photo record renders as a pile of prints in its cell (a single-photo record is a pile of one: slightly rotated, whole photo visible; multi-photo records show the cover print over rotated sheet edges). In the inspection card, multi-photo records use a contact strip under the plate: the plate shows the selected exposure whole, and each exposure appears in its entirety in the strip.
+- reason: Chosen from the photo-entry layout studies (mockups/photo-entries/, rev 3). The pile reads physically at a glance without breaking the grid's rhythm; the strip keeps the whole set visible while the catalog card stays unchanged.
+- date: 2026-09-01
+
+---
+
 ## Provisional decisions
 
 ### Tech stack

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Photos inspection — contact strip under the plate</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+/* ── The decided inspection treatment (docs/decisions.md): the live catalog
+   card, fields LEFT / plate RIGHT, with a contact strip ruled off between
+   the field and the plate-foot. The rule for photo entries applies in both
+   places: the plate shows the selected exposure WHOLE, padded, at its own
+   aspect ratio; every exposure in the strip is likewise shown in its
+   entirety inside its padded cell — never cropped. Click or arrow to swap
+   the plate; the frame caption row on the left follows. */
+
+/* Plate: the square field gains padding and centers the whole photograph. */
+.item-card__field--photo {
+  padding: 1.5rem;
+}
+.plate-photo {
+  position: relative;
+  display: block;
+  flex: none;
+  border: 1px solid var(--border-dim);
+  background: var(--bg-surface);
+}
+/* The field's content box is square, so one axis pins the photo's fit. */
+.plate-photo.exp--l { width: 100%; }
+.plate-photo.exp--p { height: 100%; }
+.plate-photo.exp--s { width: 92%; }
+
+/* Contact strip: every frame whole inside its padded square cell. */
+.contact-strip {
+  display: flex;
+  border-top: 1px solid var(--border-dim);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.contact-strip::-webkit-scrollbar { display: none; }
+.contact-strip__btn {
+  flex: 1 0 calc(100% / 6);
+  aspect-ratio: 1 / 1;
+  padding: 0.45rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  border-left: 1px solid var(--border-dim);
+  cursor: pointer;
+  opacity: 0.45;
+  transition: opacity var(--dur-base) var(--ease-base);
+}
+.contact-strip__btn:first-child { border-left: none; }
+.contact-strip__btn:hover { opacity: 0.8; }
+.contact-strip__btn[aria-current="true"] { opacity: 1; }
+.contact-strip__btn:focus-visible { outline: 1px solid var(--overlay-text); outline-offset: -1px; }
+.contact-strip__btn .exp {
+  flex: none;
+  border: 1px solid var(--border-dim);
+}
+.contact-strip__btn .exp--l { width: 100%; }
+.contact-strip__btn .exp--p { height: 100%; }
+.contact-strip__btn .exp--s { width: 90%; }
+.contact-strip__btn[aria-current="true"] .exp { border-color: var(--overlay-muted); }
+</style>
+</head>
+<body>
+
+<div class="mock-banner">
+  <span>photos inspection — contact strip under the plate (decided)</span>
+  <span><a href="grid-piles.html">← grid</a> · <a href="index.html">index</a></span>
+</div>
+
+<div id="backdrop"></div>
+<div id="card-root"></div>
+
+<nav class="layer-breadcrumb" aria-label="breadcrumb" style="z-index:45">
+  <span>desk</span><span class="sep">/</span><span>creation</span>
+  <span class="sep">/</span><span>photos</span>
+  <span class="sep">/</span><span class="current">pho-2024-021</span>
+</nav>
+
+<script src="photos.js"></script>
+<script>
+buildBackdropGrid(document.getElementById('backdrop'));
+
+let captionValue;
+const parts = buildPhotoCard(FEATURED, (api) => {
+  const row = api.singleRow('frame', FEATURED.frames[0].caption, false);
+  captionValue = row.querySelector('.overlay-value');
+});
+
+parts.scaleNote.textContent = 'no scale recorded';
+parts.field.classList.add('item-card__field--photo');
+
+// Contact strip between the field and the foot — each exposure whole.
+const strip = el('div', 'contact-strip');
+strip.setAttribute('role', 'tablist');
+strip.setAttribute('aria-label', 'exposures');
+const stripBtns = FEATURED.frames.map((f, i) => {
+  const b = el('button', 'contact-strip__btn');
+  b.type = 'button';
+  b.setAttribute('aria-label', `Frame ${i + 1}: ${f.caption}`);
+  b.appendChild(expEl(f.seed, f.or));
+  b.addEventListener('click', () => show(i));
+  strip.appendChild(b);
+  return b;
+});
+parts.plateCol.insertBefore(strip, parts.foot);
+parts.foot.appendChild(parts.assetLabel);
+
+let cur = 0;
+function show(i) {
+  cur = (i + FEATURED.frames.length) % FEATURED.frames.length;
+  const f = FEATURED.frames[cur];
+  parts.field.innerHTML = '';
+  const photo = expEl(f.seed, f.or);
+  photo.classList.add('plate-photo');
+  parts.field.appendChild(photo);
+  captionValue.textContent = f.caption;
+  parts.assetLabel.textContent =
+    String(cur + 1).padStart(2, '0') + '/' + String(FEATURED.frames.length).padStart(2, '0');
+  stripBtns.forEach((b, j) => b.setAttribute('aria-current', j === cur));
+}
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowLeft') show(cur - 1);
+  if (e.key === 'ArrowRight') show(cur + 1);
+});
+show(0);
+
+document.getElementById('card-root').appendChild(parts.wrap);
+</script>
+</body>
+</html>

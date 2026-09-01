@@ -1,10 +1,10 @@
 ---
-id: {SKETCH|PHOTO|PROTO|VIDEO|NOTE}-YYYY-NNN
+id: {SKETCH|PROTO|VIDEO|NOTE}-YYYY-NNN
 slug: {descriptor}-{YYYY-MM-DD}
 title:
 series: creation
-subcollection: sketches | photos | prototypes | videos | notes
-item_type: sketch | photo | prototype | video | note
+subcollection: sketches | prototypes | videos | notes   # photos: see creation-photo.md
+item_type: sketch | prototype | video | note
 status: draft
 display_date:
 sort_date: YYYY-MM-DD

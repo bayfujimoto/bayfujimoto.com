@@ -130,8 +130,24 @@ export function getTypeGroups(itemType) {
 
     // ── Creation (schema-driven meta + inspection assets) ────
 
-    case "sketch":
+    // Photos always edit as an ordered exposures list (file + caption,
+    // reorder, remove) — the same widget labor's images use — because a photo
+    // record almost always holds several exposures. No inspection dropdown:
+    // the list IS the photo record's reproduction. A single photo is a
+    // one-item list. decisions.md → "Photo entries — display treatment".
     case "photo":
+      return [
+        schemaMetaGroup("photo", "photo-meta", "Photo"),
+        {
+          id: "photo-content", label: "Exposures",
+          depth: "full",
+          fields: [
+            { id: "assets.gallery", label: "exposures", type: "gallery-upload" },
+          ],
+        },
+      ];
+
+    case "sketch":
     case "prototype":
     case "video":
     case "note":

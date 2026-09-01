@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Photos grid — piles in the cell</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+/* ── The decided grid treatment (docs/decisions.md, "Photo entries — display
+   treatment"), inside the live item grid as item-grid--photos:
+   - every record is a pile of prints in its padded cell, the whole photo
+     always visible (the print carries the photo's own aspect ratio);
+   - a single-photo record is a pile of one, slightly rotated;
+   - multi-photo records show the cover straight over rotated sheet edges,
+     with the exposure count in the corner. Clicking opens the inspection. */
+</style>
+</head>
+<body>
+
+<div class="mock-banner">
+  <span>photos grid — piles in the cell (decided)</span>
+  <span><a href="index.html">index</a> · <a href="inspection-contact-strip.html">inspection →</a></span>
+</div>
+
+<div id="root"></div>
+
+<nav class="layer-breadcrumb" aria-label="breadcrumb">
+  <span>desk</span><span class="sep">/</span><span>creation</span>
+  <span class="sep">/</span><span class="current">photos</span>
+</nav>
+
+<div class="layer-meta">
+  <h1 class="overlay-title">photos</h1>
+  <p class="overlay-subtitle">creation</p>
+</div>
+
+<script src="photos.js"></script>
+<script>
+buildPhotoGrid(document.getElementById('root'), GRID_ENTRIES, (entry) => ({
+  cells: [pileBtn(entry, () => { location.href = 'inspection-contact-strip.html'; })],
+}));
+</script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Photo entry mockups — index</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+html, body { overflow: auto; }
+.idx {
+  width: min(720px, 92vw);
+  margin: 0 auto;
+  padding: 6rem 0 4rem;
+}
+.idx h1 { font-size: var(--text-xl); font-weight: 400; margin: 0 0 0.5rem; }
+.idx .sub {
+  font-size: var(--text-sm);
+  color: var(--overlay-muted);
+  margin-bottom: 3rem;
+  max-width: 54ch;
+  line-height: var(--leading-loose);
+}
+.idx a.entry {
+  display: grid;
+  grid-template-columns: 3.5rem 1fr;
+  gap: 0.35rem 1.25rem;
+  align-items: baseline;
+  padding: 1rem 0.5rem;
+  border-bottom: 1px solid var(--border-dim);
+  text-decoration: none;
+  color: var(--overlay-text);
+  transition: background var(--dur-base) var(--ease-out);
+}
+.idx a.entry:hover { background: var(--hover-bg); }
+.idx .num {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--overlay-muted);
+  letter-spacing: var(--tracking-wider);
+}
+.idx .name { font-size: var(--text-md); }
+.idx .desc {
+  grid-column: 2;
+  font-size: var(--text-sm);
+  color: var(--overlay-muted);
+  line-height: var(--leading-base);
+  max-width: 50ch;
+}
+.idx .rule {
+  margin: 0 0 2.5rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--border-dim);
+  font-size: var(--text-sm);
+  color: var(--overlay-text);
+  line-height: var(--leading-loose);
+  max-width: 54ch;
+}
+.idx .rule .overlay-label { font-family: var(--font-mono); margin-bottom: 0.5rem; }
+</style>
+</head>
+<body>
+
+<div class="mock-banner">
+  <span>photo entry mockups · rev 3 · 2026-09-01</span>
+  <span>decided treatment</span>
+</div>
+
+<main class="idx">
+  <h1>Photo entries — decided treatment</h1>
+  <p class="sub">The chosen direction from the rev 2 studies, recorded in
+  docs/decisions.md ("Photo entries — display treatment"). Sample record:
+  PHO-2024-021, Chamonix, morning ascent, 6 exposures of mixed orientation;
+  exposures are generated stand-ins.</p>
+
+  <div class="rule">
+    <span class="overlay-label">rule</span>
+    The full photo is always shown, with padding — never cropped. Each
+    reproduction keeps its own aspect ratio in the grid pile, on the plate,
+    and in the contact strip.
+  </div>
+
+  <a class="entry" href="grid-piles.html">
+    <span class="num">grid</span><span class="name">Piles in the cell</span>
+    <span class="desc">Every record is a pile of prints in its padded cell
+    (item-grid--photos). A single photo is a pile of one — slightly rotated,
+    shown whole; multi-photo records show the cover straight over rotated
+    sheet edges, count in the corner.</span>
+  </a>
+  <a class="entry" href="inspection-contact-strip.html">
+    <span class="num">card</span><span class="name">Contact strip under the plate</span>
+    <span class="desc">The catalog card unchanged — fields left, plate right.
+    The plate shows the selected exposure whole and padded at its own aspect
+    ratio; a ruled-off strip below shows every exposure in its entirety.
+    Click or arrow to swap; the frame caption row follows.</span>
+  </a>
+</main>
+
+<nav class="layer-breadcrumb" aria-label="breadcrumb">
+  <span>mockups</span><span class="sep">/</span><span class="current">photo-entries</span>
+</nav>
+
+</body>
+</html>

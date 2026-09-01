@@ -691,6 +691,61 @@ body {
           mask: radial-gradient(circle closest-side at 50% 50%, transparent 0 9%, #000 9%);
 }
 
+/* Photos grid: every record sits in its padded cell as a pile of prints —
+   the whole photo always visible at its own aspect ratio, never cropped
+   (decisions.md → "Photo entries — display treatment"). The pile stack takes
+   the cover's aspect ratio from JS once the thumbnail decodes, so the sheet
+   edges behind match the print's true bounds. A single-photo record is a
+   pile of one, slightly tilted (deterministic per id, applied in JS). */
+.item-grid--photos .item-grid__btn--photo {
+  padding: 0.9rem;
+}
+.photo-pile {
+  position: relative;
+  display: block;
+  flex: none;
+  max-width: 100%;
+  max-height: 100%;
+}
+.photo-pile__print {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  border: 1px solid var(--border-dim);
+  background: var(--bg-surface);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.55);
+}
+.photo-pile__sheet {
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--border-dim);
+  background: #26211a;
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+.photo-pile__sheet--u1 { transform: rotate(-2.4deg) translate(-3px, 3px); }
+.photo-pile__sheet--u2 { transform: rotate(1.8deg) translate(4px, -2px); }
+.item-grid__btn:hover .photo-pile__sheet--u1 { transform: rotate(-4.2deg) translate(-6px, 5px); }
+.item-grid__btn:hover .photo-pile__sheet--u2 { transform: rotate(3.4deg) translate(7px, -4px); }
+@media (prefers-reduced-motion: reduce) {
+  .item-grid__btn:hover .photo-pile__sheet--u1 { transform: rotate(-2.4deg) translate(-3px, 3px); }
+  .item-grid__btn:hover .photo-pile__sheet--u2 { transform: rotate(1.8deg) translate(4px, -2px); }
+}
+.photo-pile__count {
+  position: absolute;
+  right: 5px;
+  bottom: 4px;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  color: var(--overlay-text);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
+  user-select: none;
+  z-index: 1;
+}
+
 .item-grid__text {
   font-size: var(--text-xs);
   max-width: 80px;
@@ -1207,6 +1262,63 @@ body {
 .item-card__zoom-slider:hover::-webkit-slider-thumb,
 .item-card__zoom-slider:focus-visible::-webkit-slider-thumb {
   border-color: var(--overlay-text);
+}
+
+/* Photo/gallery plate field: the reproduction is shown whole, centered and
+   padded at its own aspect ratio — no calibrated grid. The rule for photo
+   entries: the full photo is always visible, never cropped. */
+.item-card__field--photo {
+  padding: 1.5rem;
+}
+.item-card__field--photo img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border: 1px solid var(--border-dim);
+  background: var(--bg-surface);
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* Contact strip — a multi-exposure record's whole set, ruled off between the
+   field and the plate-foot. Each exposure shows in its entirety inside its
+   padded square cell; the selected frame reads at full strength. */
+.item-card__strip {
+  display: flex;
+  border-top: 1px solid var(--border-dim);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.item-card__strip::-webkit-scrollbar { display: none; }
+.item-card__strip-btn {
+  flex: 1 0 calc(100% / 6);
+  min-width: 3rem;
+  aspect-ratio: 1 / 1;
+  padding: 0.45rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  border-left: 1px solid var(--border-dim);
+  cursor: pointer;
+  opacity: 0.45;
+  transition: opacity var(--dur-base) var(--ease-base);
+}
+.item-card__strip-btn:first-child { border-left: none; }
+.item-card__strip-btn:hover { opacity: 0.8; }
+.item-card__strip-btn[aria-current="true"] { opacity: 1; }
+.item-card__strip-btn:focus-visible { outline: 1px solid var(--overlay-text); outline-offset: -1px; }
+.item-card__strip-img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border: 1px solid var(--border-dim);
+}
+.item-card__strip-btn[aria-current="true"] .item-card__strip-img {
+  border-color: var(--overlay-muted);
 }
 .item-card__zoom-slider:hover::-moz-range-thumb,
 .item-card__zoom-slider:focus-visible::-moz-range-thumb {
