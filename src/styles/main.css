@@ -593,10 +593,11 @@ body {
 .item-grid__group:first-child .item-grid__cell--first-col { border-left: 1px solid var(--grid-line); }
 
 .item-grid__year {
+  font-family: var(--font-mono);
   font-size: var(--text-xs);
-  color: rgba(232, 224, 208, 0.2);
+  color: var(--overlay-muted);
   text-transform: uppercase;
-  letter-spacing: var(--tracking-wider);
+  letter-spacing: var(--tracking-wide);
   padding: 0 0.75rem 0.4rem;
   user-select: none;
   white-space: nowrap;
