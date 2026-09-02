@@ -16,13 +16,6 @@ location: Houston, TX
 links:
   - label: GitHub
     url: https://github.com/bayfujimoto
-short_bio: Bay Fujimoto is a designer and researcher based in Houston, Texas. He studied architecture at Rice University and works at Low Design Office.
-long_bio: |-
-  His practice sits at the intersection of design, technology, and material culture. Trained as an architect, he is drawn to the conditions under which objects, spaces, and systems acquire meaning through use rather than through intent — the scuff on a handrail, the shortcut worn into a lawn, the form that outlasts its original purpose.
-
-  At Rice University he studied the formal and cultural logic of buildings as objects, and the ways institutions shape the people who move through them. He completed a semester abroad through the Rice School of Architecture Paris program, where he began thinking more seriously about the relationship between archival practices and design research.
-
-  At Low Design Office he works on projects that take their constraints seriously — material, budgetary, organizational — and finds in those constraints the conditions for something honest. He is interested in work that resists the reduction of design to styling or to the management of appearances.
-
-  This site is an attempt to document that work in a form closer to an archive than a portfolio: less argument, more evidence.
+short_bio: I am a designer and researcher based in Houston, Texas. I studied architecture at Rice University and work at Low Design Office.
+long_bio: wassup.
 ---
