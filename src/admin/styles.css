@@ -2364,6 +2364,10 @@ body.admin-gutter-dragging.dragging-h {
 }
 .asset-choose:hover { color: var(--fg); }
 
+/* Biography text — the two front-matter prose fields get room to write. */
+#field-short_bio { min-height: 80px; }
+#field-long_bio  { min-height: 240px; }
+
 /* Rotate controls — 90° steps on an uploaded single asset. The ordered-list
    rows reuse .gallery-upload__reorder's button treatment via the
    .gallery-upload__rotate class; this mirrors it for the asset field. */

@@ -167,6 +167,19 @@ export function getTypeGroups(itemType) {
               hint: "One per line: label: url" },
           ],
         },
+        // The biography's text lives in front matter (short_bio / long_bio),
+        // rendered by makeBiographySheet — one-paragraph introduction, then
+        // the long form split on blank lines.
+        {
+          id: "bio-text", label: "Text",
+          depth: "full",
+          fields: [
+            { id: "short_bio", label: "short bio", type: "textarea",
+              hint: "One-paragraph introduction, shown first." },
+            { id: "long_bio",  label: "long bio",  type: "textarea",
+              hint: "Separate paragraphs with a blank line." },
+          ],
+        },
       ];
 
     case "cv-entry":
