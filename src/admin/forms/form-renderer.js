@@ -146,6 +146,48 @@ function makeAssetUploadField(field, value, handleChange, getItemId) {
   trigger.textContent = value ? "replace" : "choose file";
   media.appendChild(trigger);
 
+  // Rotate the uploaded image in 90° steps (hidden until there is one).
+  const rotateWrap = document.createElement("div");
+  rotateWrap.className = "asset-rotate";
+  const doRotate = async (turns) => {
+    if (!current) return;
+    status.textContent = "Rotating…";
+    status.classList.add("is-busy");
+    fileInput.disabled = true;
+    try {
+      const { rotateUploadedImage } = await import("../lib/upload.js");
+      const result = await rotateUploadedImage(current, turns);
+      current = result.original;
+      handleChange(field.id, result.original);
+      // Same thumbnail-claim rule as a re-upload (see the change handler).
+      if (!field.skipThumbnail && (handleChange._thumbField == null || handleChange._thumbField === field.id)) {
+        handleChange("assets.thumbnail", result.thumbnail);
+        handleChange._thumbField = field.id;
+      }
+      filename.textContent = displayFilename(result.original);
+      setPreview(result.original);
+      status.textContent = "Rotated";
+    } catch (err) {
+      status.textContent = `Error: ${err.message}`;
+    } finally {
+      fileInput.disabled = false;
+      status.classList.remove("is-busy");
+    }
+  };
+  const mkRotate = (turns, glyph, label) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.textContent = glyph;
+    b.setAttribute("aria-label", label);
+    b.title = label.toLowerCase();
+    b.addEventListener("click", () => doRotate(turns));
+    rotateWrap.appendChild(b);
+  };
+  mkRotate(-1, "⟲", "Rotate 90° counter-clockwise");
+  mkRotate(1, "⟳", "Rotate 90° clockwise");
+  rotateWrap.style.display = value ? "" : "none";
+  media.appendChild(rotateWrap);
+
   const status = document.createElement("div");
   status.className = "asset-upload__status";
   media.appendChild(status);
@@ -199,6 +241,7 @@ function makeAssetUploadField(field, value, handleChange, getItemId) {
       filename.textContent = displayFilename(result.original);
       filename.classList.remove("is-empty");
       trigger.textContent = "replace";
+      rotateWrap.style.display = "";
       setPreview(result.original);
       status.textContent = "Uploaded";
     } catch (err) {
@@ -378,6 +421,48 @@ function makeOrderedImageField(opts) {
       reorderDiv.appendChild(upBtn);
       reorderDiv.appendChild(downBtn);
       actions.appendChild(reorderDiv);
+
+      // Rotate the uploaded image in 90° steps: the original is fetched back
+      // from R2, rotated on a canvas, and all derivatives re-derived under the
+      // same name (see rotateUploadedImage in lib/upload.js).
+      const rotateDiv = document.createElement("div");
+      rotateDiv.className = "gallery-upload__reorder gallery-upload__rotate";
+      const doRotate = async (turns) => {
+        if (!items[i]?.file) return;
+        status.textContent = "Rotating…";
+        status.classList.add("is-busy");
+        fileInput.disabled = true;
+        try {
+          const { rotateUploadedImage } = await import("../lib/upload.js");
+          const r = await rotateUploadedImage(items[i].file, turns);
+          items[i].file = r.original;
+          items[i].thumbnail = r.thumbnail;
+          if (r.cutout) { items[i].cutout = true; items[i].cutout_params = r.cutout_params; }
+          renderList();
+          commit();
+          status.textContent = "Rotated";
+        } catch (err) {
+          status.textContent = `Error: ${err.message}`;
+        } finally {
+          fileInput.disabled = false;
+          status.classList.remove("is-busy");
+        }
+      };
+      const ccwBtn = document.createElement("button");
+      ccwBtn.type = "button";
+      ccwBtn.textContent = "⟲";
+      ccwBtn.setAttribute("aria-label", "Rotate 90° counter-clockwise");
+      ccwBtn.title = "rotate 90° counter-clockwise";
+      ccwBtn.addEventListener("click", () => doRotate(-1));
+      const cwBtn = document.createElement("button");
+      cwBtn.type = "button";
+      cwBtn.textContent = "⟳";
+      cwBtn.setAttribute("aria-label", "Rotate 90° clockwise");
+      cwBtn.title = "rotate 90° clockwise";
+      cwBtn.addEventListener("click", () => doRotate(1));
+      rotateDiv.appendChild(ccwBtn);
+      rotateDiv.appendChild(cwBtn);
+      actions.appendChild(rotateDiv);
 
       const removeBtn = document.createElement("button");
       removeBtn.type = "button";

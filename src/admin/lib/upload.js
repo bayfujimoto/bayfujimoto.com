@@ -269,3 +269,75 @@ export async function uploadImageAsset(file, itemId, role, options) {
   const r = await uploadImageWithDerivatives(file, `${itemId}-${role}`, options);
   return { original: withV(r.originalName, r.version), thumbnail: withV(r.thumbName, r.version), ...cutFields(r) };
 }
+
+// ── Rotation ─────────────────────────────────────────────────────────────────
+// Rotate an ALREADY-UPLOADED image in 90° steps: fetch the original back from
+// R2 through a short-lived presigned GET (same-origin API + the S3 endpoint
+// the browser already reaches for presigned PUTs), rotate it on a canvas, and
+// re-run the normal derivative pipeline under the same base name — thumbnail,
+// display, and any cut-out are re-derived from the rotated master, and the
+// content-hash ?v= token changes so every cached URL busts.
+
+// Canvas-encodable formats keep their type; anything else (HEIC, TIFF…)
+// re-encodes as high-quality JPEG.
+const ROTATE_MIMES = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" };
+
+function rotateToCanvas(img, turns) {
+  const t = ((turns % 4) + 4) % 4;
+  const w = img.naturalWidth, h = img.naturalHeight;
+  const canvas = document.createElement("canvas");
+  if (t % 2 === 1) { canvas.width = h; canvas.height = w; }
+  else { canvas.width = w; canvas.height = h; }
+  const ctx = canvas.getContext("2d");
+  ctx.translate(canvas.width / 2, canvas.height / 2);
+  ctx.rotate((t * Math.PI) / 2);
+  ctx.drawImage(img, -w / 2, -h / 2);
+  return canvas;
+}
+
+// Parse cut-out mode back out of a stored value's ?v= token ("…c20x2"), so a
+// rotated scan re-runs its cut-out with the same parameters.
+function cutoutOptionsFromStored(stored) {
+  const qi = String(stored).indexOf("?v=");
+  if (qi === -1) return {};
+  const m = String(stored).slice(qi + 3).match(/c(\d+)x(\d+)$/);
+  return m ? { cutout: true, tolerance: Number(m[1]), defringe: Number(m[2]) } : {};
+}
+
+// stored: the record's current value for the asset (filename, may carry ?v=).
+// turns: +1 = 90° clockwise, -1 = 90° counter-clockwise.
+// Returns the same shape as uploadImageAsset ({ original, thumbnail, … }).
+export async function rotateUploadedImage(stored, turns, extraOptions = {}) {
+  const name = String(stored).split("?")[0];
+  const base = name.replace(/\.[^./]+$/, "");
+
+  const res = await fetch("/api/r2-get-url", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ key: `originals/${name}` }),
+  });
+  const data = await res.json().catch(() => null);
+  if (!data?.ok) throw new Error(data?.error || "Could not fetch the original for rotation");
+
+  const objRes = await fetch(data.url);
+  if (!objRes.ok) throw new Error(`Original fetch failed: ${objRes.status}`);
+  const blob = await objRes.blob();
+
+  const img = await loadImage(blob);
+  let canvas;
+  try {
+    canvas = rotateToCanvas(img, turns);
+  } finally {
+    URL.revokeObjectURL(img.src);
+  }
+
+  const mime = ROTATE_MIMES[blob.type] ? blob.type : "image/jpeg";
+  const ext = ROTATE_MIMES[mime] || "jpg";
+  const outBlob = await canvasToBlob(canvas, mime, 0.95);
+  if (!outBlob) throw new Error("Rotation encode failed");
+  const file = new File([outBlob], `${base}.${ext}`, { type: mime });
+
+  const options = { ...cutoutOptionsFromStored(stored), ...extraOptions, replaces: stored };
+  const r = await uploadImageWithDerivatives(file, base, options);
+  return { original: withV(r.originalName, r.version), thumbnail: withV(r.thumbName, r.version), ...cutFields(r) };
+}
