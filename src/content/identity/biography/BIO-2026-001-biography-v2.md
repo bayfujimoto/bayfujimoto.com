@@ -11,11 +11,10 @@ sort_date: "2026-04-01"
 version: 2
 roles:
   - Designer
-  - Researcher
-location: Houston, TX
+location: Austin, TX
 links:
   - label: GitHub
     url: https://github.com/bayfujimoto
-short_bio: I am a designer and researcher based in Houston, Texas. I studied architecture at Rice University and work at Low Design Office.
+short_bio: I am a designer based in Houston, Texas. I studied architecture at Rice University and work at Low Design Office.
 long_bio: wassup.
 ---
