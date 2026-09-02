@@ -732,18 +732,12 @@ body {
   .item-grid__btn:hover .photo-pile__sheet--u1 { transform: rotate(-2.4deg) translate(-3px, 3px); }
   .item-grid__btn:hover .photo-pile__sheet--u2 { transform: rotate(1.8deg) translate(4px, -2px); }
 }
-.photo-pile__count {
-  position: absolute;
-  right: 5px;
-  bottom: 4px;
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  letter-spacing: var(--tracking-wide);
-  color: var(--overlay-text);
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
-  pointer-events: none;
-  user-select: none;
-  z-index: 1;
+/* Title overlay on the cover print, films-style: hidden until hover/focus
+   (the shared hover:none rule keeps it always visible on touch). */
+.item-grid--photos .item-grid__btn:hover .item-grid__title,
+.item-grid--photos .item-grid__btn:focus-visible .item-grid__title {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .item-grid__text {
@@ -960,6 +954,29 @@ body {
   grid-template-columns: 1fr minmax(300px, 42%);
   text-align: left;
 }
+/* Photo/gallery cards flip the split: the plate (the photographs) takes the
+   larger share and the fields column the smaller — the reproduction is the
+   record's substance. Applied by buildCardWrap when the record is
+   gallery-backed. */
+.item-card--photo {
+  grid-template-columns: minmax(280px, 42%) 1fr;
+}
+/* The narrower fields column reuses the mobile breakpoint's treatments:
+   tighter label columns, split rows stacking their two pairs, and the
+   accession (ID + type) compacting onto one subtle flex line so the
+   monospace ID never wraps. */
+.item-card--photo .item-card__row { grid-template-columns: 6rem 1fr; }
+.item-card--photo .item-card__row--split { grid-template-columns: 6rem 1fr; }
+.item-card--photo .item-card__row--accession {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: baseline;
+  gap: 0.4rem;
+  padding: 0.4rem 1.25rem;
+  font-size: var(--text-xs);
+  opacity: 0.6;
+}
+.item-card--photo .item-card__row--accession > span:nth-child(3) { margin-left: auto; }
 
 .item-card__fields {
   position: relative;
@@ -1362,7 +1379,8 @@ body {
   .layer-content--item-card .layer-nav { display: none; }
   /* viewBox scales down ~0.75 on small screens; keep tick labels legible */
   .item-card__plate-svg text { font-size: 12px; }
-  .item-card { grid-template-columns: 1fr; }
+  .item-card,
+  .item-card--photo { grid-template-columns: 1fr; }
   /* Mobile: promote the field rows to direct grid items (display:contents) so
      the accession (ID/type) row can sit above the plate while the rest of the
      metadata stays below it. Stacking order: accession → plate → other rows.

@@ -139,10 +139,10 @@ export function getTypeGroups(itemType) {
       return [
         schemaMetaGroup("photo", "photo-meta", "Photo"),
         {
-          id: "photo-content", label: "Exposures",
+          id: "photo-content", label: "Photos",
           depth: "full",
           fields: [
-            { id: "assets.gallery", label: "exposures", type: "gallery-upload" },
+            { id: "assets.gallery", label: "photos", type: "gallery-upload" },
           ],
         },
       ];

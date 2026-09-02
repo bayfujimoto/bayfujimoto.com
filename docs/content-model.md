@@ -271,23 +271,24 @@ Optional:
 - related project
 
 ### Photo
-A photo record almost always holds several exposures; the record's
+A photo record almost always holds several photos; the record's
 reproduction is an ordered gallery list (file + thumbnail + caption + alt per
-exposure), edited in the admin with the same ordered-image widget labor uses.
+photo), edited in the admin with the same ordered-image widget labor uses.
 Reproductions are always displayed whole, with padding — never cropped
 (decisions.md → "Photo entries — display treatment").
 
 Required:
 - title
 - date
-- gallery (1+ exposures; a single photo is a one-item list)
+- gallery (1+ photos; a single photo is a one-item list)
 
 Optional:
 - place
 - camera
 - series (photo_series)
-- per-exposure captions
+- per-photo captions
 - notes
+- extent (defaults to the photo count, e.g. "6 photos", when not recorded)
 
 ### Video
 Required:

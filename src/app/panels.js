@@ -1121,7 +1121,7 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
           btn.appendChild(title);
         } else if (isPhotos) {
           // A pile of prints: cover on top, sheet edges rotated behind when
-          // the record holds several exposures; a single photo is a pile of
+          // the record holds several photos; a single photo is a pile of
           // one, slightly tilted. The stack takes the cover's true aspect
           // ratio once the thumbnail decodes, so the sheets match the print's
           // bounds and the photo is never cropped.
@@ -1145,12 +1145,15 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
             });
             lazyRegister(btn, () => { fadeInOnLoad(img); img.src = thumbSrc; });
             stack.appendChild(img);
+            // Title overlay on the cover print, revealed on hover/focus like
+            // the films grid (always visible on touch via the shared
+            // hover:none rule). The count is not shown in the grid — the
+            // card's extent row carries it.
+            const title = el("span", "item-grid__title");
+            title.textContent = item.title;
+            stack.appendChild(title);
             if (gAssets.length > 1) {
-              const count = el("span", "photo-pile__count");
-              count.textContent = `×${gAssets.length}`;
-              count.setAttribute("aria-hidden", "true");
-              stack.appendChild(count);
-              btn.setAttribute("aria-label", `${item.title}, ${gAssets.length} exposures`);
+              btn.setAttribute("aria-label", `${item.title}, ${gAssets.length} photos`);
             }
             btn.appendChild(stack);
           } else {
@@ -1744,7 +1747,7 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
       }
     });
 
-    // Frame caption — a multi-exposure record carries the selected frame's
+    // Frame caption — a multi-photo record carries the selected frame's
     // caption as its own row; stepping the plate updates it. Suppressed when
     // no frame has a caption recorded (unrecorded fields are never faked).
     if (gAssets.length > 1 && gAssets.some(g => g.caption)) {
@@ -1761,7 +1764,11 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
     // A leading "≈" flags an estimated size (books, sized by format) so the mm
     // plate is not read as a measurement.
     const dimText = dims ? `${item.dimensions_estimated ? "≈ " : ""}${dims.w} × ${dims.h} mm` : null;
-    splitRow(["extent", item.extent, true], ["dimensions", dimText, true]);
+    // Gallery-backed records (photos): extent defaults to the photo count —
+    // a recorded extent still wins.
+    const extentText = item.extent
+      || (gAssets.length ? `${gAssets.length} photo${gAssets.length > 1 ? "s" : ""}` : null);
+    splitRow(["extent", extentText, true], ["dimensions", dimText, true]);
 
     if (item.context_note) {
       const note = el("div", "item-card__note");
@@ -1912,7 +1919,30 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
       // its own aspect ratio — no calibrated plate. The rule: the full photo
       // is always visible, never cropped.
       field.classList.add("item-card__field--photo");
-      if (reproImg) field.appendChild(reproImg);
+      // Flip the card's column split: the plate outweighs the fields column.
+      card.classList.add("item-card--photo");
+      if (reproImg) {
+        // Pin the layout box from the photo's aspect ratio, not the loaded
+        // resolution: the low-res thumbnail shows first, and sizing from its
+        // intrinsic pixels would render it small and then "grow" when the
+        // display derivative swaps in. Thumb and display share the photo's
+        // ratio, so the box computed here holds through the swap. The padded
+        // field is square, so pinning the long axis at 100% fits exactly.
+        const sizePhoto = () => {
+          if (!reproImg.naturalWidth || !reproImg.naturalHeight) return;
+          reproImg.style.aspectRatio = `${reproImg.naturalWidth} / ${reproImg.naturalHeight}`;
+          if (reproImg.naturalWidth >= reproImg.naturalHeight) {
+            reproImg.style.width = "100%";
+            reproImg.style.height = "auto";
+          } else {
+            reproImg.style.height = "100%";
+            reproImg.style.width = "auto";
+          }
+        };
+        reproImg.addEventListener("load", sizePhoto);
+        sizePhoto(); // the thumbnail may already be decoded
+        field.appendChild(reproImg);
+      }
       scaleNote.textContent = "dimensions not recorded";
     } else if (primary && dims) {
       renderPlate(localZoom);
@@ -1953,19 +1983,19 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
       const controls = el("div", "item-card__plate-controls");
       const assetLabel = el("span", "item-card__asset-label");
       if (gAssets.length > 1) {
-        // Multi-exposure: prev/next step the plate through the set, in the
+        // Multi-photo: prev/next step the plate through the set, in the
         // overturn control's register; the asset label becomes the frame
         // counter (kept current by showFrame, defined with the strip below).
         const prevB = el("button", "item-card__flip");
         prevB.type = "button";
         prevB.textContent = "\u2039 prev";
-        prevB.setAttribute("aria-label", "Previous exposure");
+        prevB.setAttribute("aria-label", "Previous photo");
         prevB.addEventListener("click", () => showFrame(galleryIdx - 1));
         controls.appendChild(prevB);
         const nextB = el("button", "item-card__flip");
         nextB.type = "button";
         nextB.textContent = "next \u203a";
-        nextB.setAttribute("aria-label", "Next exposure");
+        nextB.setAttribute("aria-label", "Next photo");
         nextB.addEventListener("click", () => showFrame(galleryIdx + 1));
         controls.appendChild(nextB);
       } else if (back) {
@@ -2110,13 +2140,13 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
       }
 
       // Contact strip — a record holding 2+ gallery images shows the whole
-      // set between the field and the foot, each exposure in its entirety in
+      // set between the field and the foot, each photo in its entirety in
       // its padded cell. Clicking a frame (or the foot's prev/next) steps the
       // plate; the fields column's frame caption and the counter follow.
       if (gAssets.length > 1) {
         const strip = el("div", "item-card__strip");
         strip.setAttribute("role", "tablist");
-        strip.setAttribute("aria-label", "exposures");
+        strip.setAttribute("aria-label", "photos");
         const stripBtns = gAssets.map((g, i) => {
           const b = el("button", "item-card__strip-btn");
           b.type = "button";
