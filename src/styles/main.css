@@ -1107,6 +1107,11 @@ body {
 .item-card__plate {
   display: flex;
   flex-direction: column;
+  /* A grid item refuses to shrink below its content's min-content width by
+     default, so a long contact strip (many photos at min 3rem each) would
+     inflate the column and push the field out of the card. min-width: 0 lets
+     the track hold its size and the strip scroll within it. */
+  min-width: 0;
 }
 .item-card__plate-head {
   padding: 0.8rem 1.25rem;
@@ -1303,6 +1308,8 @@ body {
    padded square cell; the selected frame reads at full strength. */
 .item-card__strip {
   display: flex;
+  min-width: 0;
+  max-width: 100%;
   border-top: 1px solid var(--border-dim);
   overflow-x: auto;
   scrollbar-width: none;

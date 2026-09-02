@@ -2174,6 +2174,10 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
           assetLabel.textContent = `${pad2(galleryIdx + 1)}/${pad2(gAssets.length)}`;
           if (frameCaptionEl) frameCaptionEl.textContent = g.caption || "\u2014";
           stripBtns.forEach((b, j) => b.setAttribute("aria-current", j === galleryIdx));
+          // Long sets scroll within the strip — keep the active frame in view
+          // when stepping from the foot controls. block: "nearest" so the
+          // page itself never jumps.
+          stripBtns[galleryIdx]?.scrollIntoView?.({ block: "nearest", inline: "nearest" });
         };
         showFrame(0);
         plateCol.appendChild(strip);
