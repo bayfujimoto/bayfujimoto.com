@@ -16,5 +16,5 @@ links:
   - label: GitHub
     url: https://github.com/bayfujimoto
 short_bio: I am a designer based in Houston, Texas. I studied architecture at Rice University and work at Low Design Office.
-long_bio: wassup.
+long_bio: work in progress!
 ---
