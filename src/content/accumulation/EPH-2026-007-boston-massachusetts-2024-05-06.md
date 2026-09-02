@@ -14,5 +14,5 @@ inspection: card
 assets:
   front: EPH-2026-007-front.jpg
   thumbnail: EPH-2026-007-front-thumb.jpg
-  back: EPH-2026-007-back.jpg
+  back: EPH-2026-007-back.jpg?v=20260902
 ---

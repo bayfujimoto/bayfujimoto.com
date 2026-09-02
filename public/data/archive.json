@@ -16156,40 +16156,154 @@
           "label": "photos",
           "items": [
             {
-              "id": "PHOTO-2026-001",
-              "slug": "houston-texas-2024-01-20",
-              "title": "Houston, Texas",
+              "id": "PHOTO-2026-003",
+              "slug": "edinburgh-2024-10-20",
               "series": "creation",
               "subcollection": "photos",
               "item_type": "photo",
               "status": "published",
-              "display_date": "January 20, 2024",
-              "sort_date": "2024-01-20",
-              "tags": [],
+              "display_date": "October 2024",
+              "sort_date": "2024-10-20",
+              "title": "Edinburgh",
+              "place": "Edinburgh, Scotland",
+              "camera": "Fujifilm X100T",
               "assets": {
-                "thumbnail": null,
-                "gallery": []
-              },
-              "related_ids": [],
-              "context_note": ""
-            },
-            {
-              "id": "PHOTO-2026-002",
-              "slug": "tokyo-japan-2023-08-05",
-              "title": "Tokyo, Japan",
-              "series": "creation",
-              "subcollection": "photos",
-              "item_type": "photo",
-              "status": "published",
-              "display_date": "August 5, 2023",
-              "sort_date": "2023-08-05",
-              "tags": [],
-              "assets": {
-                "thumbnail": null,
-                "gallery": []
-              },
-              "related_ids": [],
-              "context_note": ""
+                "gallery": [
+                  {
+                    "file": "PHOTO-2026-003-gallery-01.jpeg?v=285fb61bo",
+                    "thumbnail": "PHOTO-2026-003-gallery-01-thumb.jpg?v=285fb61bo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-003-gallery-02.jpeg?v=cc117fado",
+                    "thumbnail": "PHOTO-2026-003-gallery-02-thumb.jpg?v=cc117fado",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-003-gallery-03.jpeg?v=13b59f77o",
+                    "thumbnail": "PHOTO-2026-003-gallery-03-thumb.jpg?v=13b59f77o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-003-gallery-04.jpeg?v=107a71d8o",
+                    "thumbnail": "PHOTO-2026-003-gallery-04-thumb.jpg?v=107a71d8o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-003-gallery-05.jpeg?v=35505dd2o",
+                    "thumbnail": "PHOTO-2026-003-gallery-05-thumb.jpg?v=35505dd2o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-003-gallery-06.jpeg?v=ee87ab7ao",
+                    "thumbnail": "PHOTO-2026-003-gallery-06-thumb.jpg?v=ee87ab7ao",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-003-gallery-07.jpeg?v=e891a275o",
+                    "thumbnail": "PHOTO-2026-003-gallery-07-thumb.jpg?v=e891a275o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-003-gallery-08.jpeg?v=5c0c5d4ao",
+                    "thumbnail": "PHOTO-2026-003-gallery-08-thumb.jpg?v=5c0c5d4ao",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-003-gallery-09.jpeg?v=8aae43a7o",
+                    "thumbnail": "PHOTO-2026-003-gallery-09-thumb.jpg?v=8aae43a7o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-003-gallery-10.jpeg?v=8aa38152o",
+                    "thumbnail": "PHOTO-2026-003-gallery-10-thumb.jpg?v=8aa38152o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-003-gallery-11.jpeg?v=4d59f20eo",
+                    "thumbnail": "PHOTO-2026-003-gallery-11-thumb.jpg?v=4d59f20eo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-003-gallery-12.jpeg?v=77bc360fo",
+                    "thumbnail": "PHOTO-2026-003-gallery-12-thumb.jpg?v=77bc360fo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-003-gallery-13.jpeg?v=40622f97o",
+                    "thumbnail": "PHOTO-2026-003-gallery-13-thumb.jpg?v=40622f97o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-003-gallery-14.jpeg?v=9628bbd8o",
+                    "thumbnail": "PHOTO-2026-003-gallery-14-thumb.jpg?v=9628bbd8o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-003-gallery-15.jpeg?v=0986cac9o",
+                    "thumbnail": "PHOTO-2026-003-gallery-15-thumb.jpg?v=0986cac9o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-003-gallery-16.jpeg?v=deaaa4d8o",
+                    "thumbnail": "PHOTO-2026-003-gallery-16-thumb.jpg?v=deaaa4d8o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-003-gallery-17.jpeg?v=8cb4890eo",
+                    "thumbnail": "PHOTO-2026-003-gallery-17-thumb.jpg?v=8cb4890eo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-003-gallery-18.jpeg?v=53b3487eo",
+                    "thumbnail": "PHOTO-2026-003-gallery-18-thumb.jpg?v=53b3487eo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-003-gallery-19.jpeg?v=d752e177o",
+                    "thumbnail": "PHOTO-2026-003-gallery-19-thumb.jpg?v=d752e177o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-003-gallery-20.jpeg?v=98ef158ao",
+                    "thumbnail": "PHOTO-2026-003-gallery-20-thumb.jpg?v=98ef158ao",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-003-gallery-21.jpeg?v=d9722e3bo",
+                    "thumbnail": "PHOTO-2026-003-gallery-21-thumb.jpg?v=d9722e3bo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-003-gallery-22.jpeg?v=fdfbaf2fo",
+                    "thumbnail": "PHOTO-2026-003-gallery-22-thumb.jpg?v=fdfbaf2fo",
+                    "caption": "",
+                    "alt": ""
+                  }
+                ],
+                "thumbnail": "PHOTO-2026-003-gallery-01-thumb.jpg?v=285fb61bo"
+              }
             }
           ]
         },
@@ -16460,9 +16574,9 @@
           "dimensions": "200 x 89",
           "inspection": "card",
           "assets": {
-            "front": "EPH-2026-020-front.jpg",
-            "thumbnail": "EPH-2026-020-front-thumb.jpg",
-            "back": "EPH-2026-020-back.jpg"
+            "front": "EPH-2026-020-front.jpg?v=20260902",
+            "thumbnail": "EPH-2026-020-front-thumb.jpg?v=20260902",
+            "back": "EPH-2026-020-back.jpg?v=20260902"
           }
         },
         {
@@ -16481,9 +16595,9 @@
             "2026-atx-sf"
           ],
           "assets": {
-            "front": "EPH-2026-019-front.jpg",
-            "thumbnail": "EPH-2026-019-front-thumb.jpg",
-            "back": "EPH-2026-019-back.jpg"
+            "front": "EPH-2026-019-front.jpg?v=20260902",
+            "thumbnail": "EPH-2026-019-front-thumb.jpg?v=20260902",
+            "back": "EPH-2026-019-back.jpg?v=20260902"
           },
           "dimensions": "200 x 89"
         },
@@ -16752,9 +16866,9 @@
           "dimensions": "200 x 89",
           "inspection": "card",
           "assets": {
-            "front": "EPH-2026-020-front.jpg",
-            "thumbnail": "EPH-2026-020-front-thumb.jpg",
-            "back": "EPH-2026-020-back.jpg"
+            "front": "EPH-2026-020-front.jpg?v=20260902",
+            "thumbnail": "EPH-2026-020-front-thumb.jpg?v=20260902",
+            "back": "EPH-2026-020-back.jpg?v=20260902"
           }
         },
         {
@@ -16773,9 +16887,9 @@
             "2026-atx-sf"
           ],
           "assets": {
-            "front": "EPH-2026-019-front.jpg",
-            "thumbnail": "EPH-2026-019-front-thumb.jpg",
-            "back": "EPH-2026-019-back.jpg"
+            "front": "EPH-2026-019-front.jpg?v=20260902",
+            "thumbnail": "EPH-2026-019-front-thumb.jpg?v=20260902",
+            "back": "EPH-2026-019-back.jpg?v=20260902"
           },
           "dimensions": "200 x 89"
         },
@@ -16903,12 +17017,12 @@
   "_counters": {
     "EPH": 27,
     "FILM": 552,
-    "BOOK": 348,
+    "BOOK": 356,
     "MUSIC": 8,
     "COFFEE": 2,
     "GAME": 4,
     "SKETCH": 2,
-    "PHOTO": 2,
+    "PHOTO": 3,
     "PROTO": 2,
     "VIDEO": 2,
     "NOTE": 2,

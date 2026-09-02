@@ -108,6 +108,7 @@ for (const key of originalKeys) {
     const buf = await streamToBuffer(getRes.Body);
 
     const web = await sharp(buf)
+      .rotate() // apply EXIF orientation — sharp ignores it by default
       .resize({ width: MAX_EDGE, height: MAX_EDGE, fit: "inside", withoutEnlargement: true })
       .webp({ quality: 82 })
       .toBuffer();

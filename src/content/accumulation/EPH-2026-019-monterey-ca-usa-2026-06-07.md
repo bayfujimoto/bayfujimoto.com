@@ -13,8 +13,8 @@ place: Monterey, CA, USA
 constellations:
   - 2026-atx-sf
 assets:
-  front: EPH-2026-019-front.jpg
-  thumbnail: EPH-2026-019-front-thumb.jpg
-  back: EPH-2026-019-back.jpg
+  front: EPH-2026-019-front.jpg?v=20260902
+  thumbnail: EPH-2026-019-front-thumb.jpg?v=20260902
+  back: EPH-2026-019-back.jpg?v=20260902
 dimensions: 200 x 89
 ---

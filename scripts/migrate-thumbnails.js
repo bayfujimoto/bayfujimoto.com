@@ -82,6 +82,7 @@ for (const thumbKey of thumbKeys) {
     const buf = await streamToBuffer(getRes.Body);
 
     const newThumb = await sharp(buf)
+      .rotate() // apply EXIF orientation — sharp ignores it by default
       .resize({ width: 200, height: 200, fit: "inside", withoutEnlargement: true })
       .jpeg({ quality: 80 })
       .toBuffer();

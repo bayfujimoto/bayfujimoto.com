@@ -14,7 +14,7 @@ constellations:
 dimensions: 200 x 89
 inspection: card
 assets:
-  front: EPH-2026-020-front.jpg
-  thumbnail: EPH-2026-020-front-thumb.jpg
-  back: EPH-2026-020-back.jpg
+  front: EPH-2026-020-front.jpg?v=20260902
+  thumbnail: EPH-2026-020-front-thumb.jpg?v=20260902
+  back: EPH-2026-020-back.jpg?v=20260902
 ---

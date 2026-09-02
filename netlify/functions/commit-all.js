@@ -42,7 +42,16 @@ export async function handler(event) {
 
   try {
     const allFiles = [...files, { filePath: countersPath, content: countersContent }];
-    const sha = await githubCommitAll(allFiles, GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO, GITHUB_BRANCH, message);
+    let sha;
+    try {
+      sha = await githubCommitAll(allFiles, GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO, GITHUB_BRANCH, message);
+    } catch (e) {
+      // Non-fast-forward: the branch advanced between reading the base and
+      // moving the ref (another commit landed mid-flight). The whole build is
+      // cheap and idempotent, so rebuild once from the fresh base.
+      if (!e.nonFastForward) throw e;
+      sha = await githubCommitAll(allFiles, GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO, GITHUB_BRANCH, message);
+    }
     return { statusCode: 200, body: JSON.stringify({ ok: true, mode: "github", sha }) };
   } catch (e) {
     return { statusCode: 500, body: JSON.stringify({ ok: false, error: e.message }) };
@@ -102,11 +111,34 @@ async function githubCommitAll(files, token, owner, repo, branch, message) {
   if (!newCommitRes.ok) throw new Error(`Failed to create commit: ${newCommitRes.status}${await ghErr(newCommitRes)}`);
   const newCommit = await newCommitRes.json();
 
-  const updateRefRes = await fetch(`${base}/git/refs/heads/${branch}`, {
-    method: "PATCH", headers,
-    body: JSON.stringify({ sha: newCommit.sha }),
-  });
-  if (!updateRefRes.ok) throw new Error(`Failed to update ref: ${updateRefRes.status}${await ghErr(updateRefRes)}`);
+  // The ref update is the one non-idempotent-looking step, but retrying a
+  // PATCH with the same commit sha IS safe — the commit object already exists.
+  // GitHub intermittently 500s here; a failed save at this point loses nothing
+  // but the pointer move, so retry transient (5xx / network) failures with
+  // backoff before giving up. A 422 means the branch advanced under us
+  // (non-fast-forward) — surface that distinctly so the caller can rebuild
+  // from the new base rather than retrying blindly.
+  let updateRefRes;
+  for (let attempt = 1; ; attempt++) {
+    try {
+      updateRefRes = await fetch(`${base}/git/refs/heads/${branch}`, {
+        method: "PATCH", headers,
+        body: JSON.stringify({ sha: newCommit.sha }),
+      });
+    } catch (e) {
+      if (attempt >= 4) throw new Error(`Failed to update ref: network error (${e.message})`);
+      await new Promise(r => setTimeout(r, attempt * 750));
+      continue;
+    }
+    if (updateRefRes.ok) break;
+    if (updateRefRes.status >= 500 && attempt < 4) {
+      await new Promise(r => setTimeout(r, attempt * 750));
+      continue;
+    }
+    const err = new Error(`Failed to update ref: ${updateRefRes.status}${await ghErr(updateRefRes)}`);
+    err.nonFastForward = updateRefRes.status === 422;
+    throw err;
+  }
 
   return newCommit.sha;
 }
