@@ -1584,7 +1584,7 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
     im.decoding = "async";
     im.src = url;
     prefetched.set(url, im);
-    if (prefetched.size > 12) prefetched.delete(prefetched.keys().next().value);
+    if (prefetched.size > 24) prefetched.delete(prefetched.keys().next().value);
   };
   const prefetchNeighbors = (idx) => {
     for (const j of [idx - 1, idx + 1]) {
@@ -1592,6 +1592,10 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
       if (!it) continue;
       const primary = primaryAsset(it);
       if (primary) prefetchImg(imageUrl(primary, isCutoutAsset(primary) ? "cutout" : "display"));
+      // Gallery neighbours: warm the second frame too, so arriving and
+      // immediately flipping doesn't drop to the thumbnail phase.
+      const g2 = it.assets?.gallery?.[1]?.file;
+      if (g2) prefetchImg(imageUrl(g2, isCutoutAsset(g2) ? "cutout" : "display"));
       if (it.assets?.thumbnail) prefetchImg(imageUrl(it.assets.thumbnail, "thumbnail"));
     }
   };
@@ -1606,7 +1610,11 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
     const item = allItems[idx];
 
     content.innerHTML = "";
-    content.appendChild(buildCardWrap(item));
+    const cardWrap = buildCardWrap(item);
+    content.appendChild(cardWrap);
+    // Only the visible card pre-loads its whole set (pre-rendered swipe
+    // neighbours would otherwise fetch entire sets on touchstart).
+    cardWrap.__prefetchFrames?.();
     renderChrome(item, idx);
     schedulePrefetch(idx);
   }
@@ -2162,6 +2170,38 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
           strip.appendChild(b);
           return b;
         });
+        // Pre-load the set's display derivatives so flipping rarely shows
+        // the thumbnail phase: the current frame's neighbours immediately on
+        // every step, the whole set during idle time (started by
+        // renderContent via wrap.__prefetchFrames, so pre-rendered swipe
+        // neighbours don't fetch entire sets). Loaded Images are RETAINED so
+        // their decoded bytes stay in the browser cache — same reasoning as
+        // the sheet-level neighbour prefetch above.
+        const frameCache = new Map(); // url → retained HTMLImageElement
+        const prefetchFrame = (j) => {
+          const g = gAssets[((j % gAssets.length) + gAssets.length) % gAssets.length];
+          if (!g?.file) return;
+          const url = imageUrl(g.file, fullVariants(g.file)[0]);
+          if (!url || frameCache.has(url)) return;
+          const im = new Image();
+          im.decoding = "async";
+          im.src = url;
+          frameCache.set(url, im);
+        };
+        wrap.__prefetchFrames = () => {
+          let j = 0;
+          const idle = (fn) => ("requestIdleCallback" in window)
+            ? requestIdleCallback(fn, { timeout: 2000 })
+            : setTimeout(fn, 250);
+          const step = () => {
+            if (!wrap.isConnected) return; // card replaced — stop fetching
+            let budget = 2;
+            while (j < gAssets.length && budget-- > 0) prefetchFrame(j++);
+            if (j < gAssets.length) idle(step);
+          };
+          idle(step);
+        };
+
         const pad2 = n => String(n).padStart(2, "0");
         showFrame = (i) => {
           const from = galleryIdx;
@@ -2178,6 +2218,9 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
           // when stepping from the foot controls. block: "nearest" so the
           // page itself never jumps.
           stripBtns[galleryIdx]?.scrollIntoView?.({ block: "nearest", inline: "nearest" });
+          // Stay ahead of rapid flipping in either direction.
+          prefetchFrame(galleryIdx + 1);
+          prefetchFrame(galleryIdx - 1);
         };
         showFrame(0);
         plateCol.appendChild(strip);
