@@ -2181,6 +2181,10 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
         };
         showFrame(0);
         plateCol.appendChild(strip);
+        // Keyboard hook: ↑/↓ flip through the set (see onKey) — exposed on
+        // the wrap like the swipe/plate hooks so the sheet-level handler can
+        // reach the current card's stepper.
+        wrap.__stepGallery = (delta) => showFrame(galleryIdx + delta);
       }
 
       plateCol.appendChild(foot);
@@ -2303,6 +2307,16 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
     if (e.key === "Escape") navigate({ layer: "browse", series: seriesKey, subcollection: subKey, view: viewSlug || null, item: null });
     if (e.key === "ArrowLeft"  && currentIdx > 0) navItem(currentIdx - 1);
     if (e.key === "ArrowRight" && currentIdx < allItems.length - 1) navItem(currentIdx + 1);
+    // ↑/↓ flip through a multi-image record's set (contact strip), wrapping.
+    // preventDefault only when handled, so the keys still scroll a card with
+    // no strip (mobile-height layouts).
+    if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+      const w = content.querySelector(".item-card-wrap");
+      if (w?.__stepGallery) {
+        e.preventDefault();
+        w.__stepGallery(e.key === "ArrowDown" ? 1 : -1);
+      }
+    }
   };
   document.addEventListener("keydown", onKey);
 
