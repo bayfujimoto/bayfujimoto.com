@@ -1071,6 +1071,9 @@ body {
   flex: 1;
 }
 .item-card__note .overlay-label { margin-bottom: 0.6rem; }
+/* Prose mid-column (gallery cards, where the frame row moved below it):
+   rule it off from the rows that follow. */
+.item-card__note--mid { border-bottom: 1px solid var(--border-dim); }
 /* The note is your prose — serif, the archivist's voice (Typographic register). */
 .item-card__note p {
   margin: 0;
@@ -1302,6 +1305,16 @@ body {
   user-select: none;
   -webkit-user-drag: none;
 }
+/* Zoomed photo: directly manipulable — grab to pan, wheel/pinch to rescale.
+   touch-action none only while zoomed, so the swipe carousel keeps the
+   gesture at zoom 1. */
+.item-card__field--photo.item-card__field--zoomed {
+  cursor: grab;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.item-card__field--photo.item-card__field--zoomed.is-grabbing { cursor: grabbing; }
 
 /* Contact strip — a multi-exposure record's whole set, ruled off between the
    field and the plate-foot. Each exposure shows in its entirety inside its

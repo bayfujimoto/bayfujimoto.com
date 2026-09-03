@@ -1649,6 +1649,7 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
     const gAssets = galleryAssets(item);
     let galleryIdx = 0;
     let showFrame = () => {};      // assigned once the strip exists
+    let photoView = null;          // zoom/pan controller for the photo field
     let frameCaptionEl = null;     // the fields column's "frame" caption row
     // Each card opens at its own fit zoom (a small item isn't a speck). The
     // level is local to this card so pre-rendered neighbours don't disturb it.
@@ -1754,18 +1755,25 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
       }
     });
 
-    // Frame caption — a multi-photo record carries the selected frame's
-    // caption as its own row; stepping the plate updates it. Suppressed when
-    // no frame has a caption recorded (unrecorded fields are never faked).
-    if (gAssets.length > 1 && gAssets.some(g => g.caption)) {
-      const row = el("div", "item-card__row");
+    // On cards with a frame caption row (multi-image records with captions),
+    // the prose block and the frame caption swap positions: the note/thesis
+    // reads with the metadata above, and the frame caption sits at the bottom
+    // of the column, nearest the strip it describes. Cards without a frame
+    // row keep the prose in its usual last-place spot.
+    const hasFrameRow = gAssets.length > 1 && gAssets.some(g => g.caption);
+    const noteText = item.context_note || item.thesis;
+    const appendNote = (mid) => {
+      const note = el("div", "item-card__note" + (mid ? " item-card__note--mid" : ""));
       const l = el("span", "overlay-label");
-      l.textContent = "frame";
-      frameCaptionEl = el("span", "overlay-value");
-      row.appendChild(l);
-      row.appendChild(frameCaptionEl);
-      fields.appendChild(row);
-    }
+      // Labor records carry their prose as `thesis`; label it truthfully.
+      l.textContent = item.context_note ? "note" : "thesis";
+      const p = el("p");
+      p.textContent = noteText;
+      note.appendChild(l);
+      note.appendChild(p);
+      fields.appendChild(note);
+    };
+    if (hasFrameRow && noteText) appendNote(true);
 
     // Physical — extent + dimensions (the calibrated plate carries true size).
     // A leading "≈" flags an estimated size (books, sized by format) so the mm
@@ -1777,18 +1785,19 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
       || (gAssets.length ? `${gAssets.length} photo${gAssets.length > 1 ? "s" : ""}` : null);
     splitRow(["extent", extentText, true], ["dimensions", dimText, true]);
 
-    const noteText = item.context_note || item.thesis;
-    if (noteText) {
-      const note = el("div", "item-card__note");
+    // Frame caption — the selected frame's caption; stepping the plate
+    // updates it. Suppressed when no frame has a caption recorded.
+    if (hasFrameRow) {
+      const row = el("div", "item-card__row");
       const l = el("span", "overlay-label");
-      // Labor records carry their prose as `thesis`; label it truthfully.
-      l.textContent = item.context_note ? "note" : "thesis";
-      const p = el("p");
-      p.textContent = noteText;
-      note.appendChild(l);
-      note.appendChild(p);
-      fields.appendChild(note);
+      l.textContent = "frame";
+      frameCaptionEl = el("span", "overlay-value");
+      row.appendChild(l);
+      row.appendChild(frameCaptionEl);
+      fields.appendChild(row);
     }
+
+    if (!hasFrameRow && noteText) appendNote(false);
 
     if (item.related_ids?.length || item.constellations?.length || item.tags?.length) {
       const riders = el("div", "item-card__riders");
@@ -1951,6 +1960,106 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
         reproImg.addEventListener("load", sizePhoto);
         sizePhoto(); // the thumbnail may already be decoded
         field.appendChild(reproImg);
+
+        // Zoom + pan — the accumulation plate's manipulability without the
+        // calibrated scales: a CSS-transform magnifier. The slider, wheel
+        // (pinned to the pointer) and pinch drive the zoom; a single-pointer
+        // drag pans, clamped so the photo's edges never pull inside the
+        // field. Content coords: visible = scale(z) then translate(t), so a
+        // visible drag of d moves t by d/z, and pinning a point c (client px
+        // from the image center) across a zoom change means
+        // t' = t + c·(1/z' − 1/z).
+        let pz = 1, ptx = 0, pty = 0; // zoom; pan in unscaled px
+        const clampPan = () => {
+          const mx = Math.max(0, reproImg.offsetWidth  * (pz - 1) / (2 * pz));
+          const my = Math.max(0, reproImg.offsetHeight * (pz - 1) / (2 * pz));
+          ptx = Math.min(mx, Math.max(-mx, ptx));
+          pty = Math.min(my, Math.max(-my, pty));
+          return { mx, my };
+        };
+        const applyView = () => {
+          clampPan();
+          const zoomed = pz > 1.001;
+          reproImg.style.transform = zoomed ? `scale(${pz}) translate(${ptx}px, ${pty}px)` : "";
+          field.classList.toggle("item-card__field--zoomed", zoomed);
+        };
+        photoView = {
+          get zoom() { return pz; },
+          setZoom(z, cx = 0, cy = 0) {
+            const nz = Math.min(6, Math.max(1, z));
+            ptx += cx * (1 / nz - 1 / pz);
+            pty += cy * (1 / nz - 1 / pz);
+            pz = nz;
+            applyView();
+            photoView.syncSlider?.(pz);
+          },
+          resetPan() { ptx = 0; pty = 0; applyView(); },
+          // Same shape as the plate's pan state, in px instead of mm, so the
+          // swipe carousel yields to a zoomed photo the same way.
+          panState() {
+            const { mx } = clampPan();
+            return { panX: mx - ptx, panMaxX: 2 * mx };
+          },
+        };
+
+        // Drag pan / pinch zoom (mirrors the plate's pointer machinery).
+        const ptrs = new Map();
+        let lastDist = null;
+        let panStart = null;
+        field.addEventListener("pointerdown", (e) => {
+          field.setPointerCapture?.(e.pointerId);
+          ptrs.set(e.pointerId, e);
+          if (ptrs.size === 1 && pz > 1.001) {
+            panStart = { x: e.clientX, y: e.clientY, ptx, pty };
+            dragging = true;
+            field.classList.add("is-grabbing");
+          } else if (ptrs.size > 1) {
+            panStart = null;
+            dragging = false;
+            field.classList.remove("is-grabbing");
+          }
+        });
+        field.addEventListener("pointermove", (e) => {
+          if (!ptrs.has(e.pointerId)) return;
+          ptrs.set(e.pointerId, e);
+          if (ptrs.size === 2) {
+            const [a, b] = [...ptrs.values()];
+            const dist = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+            if (lastDist !== null) photoView.setZoom(pz + (dist - lastDist) * 0.01);
+            lastDist = dist;
+          } else if (panStart && !swipeActive) {
+            ptx = panStart.ptx + (e.clientX - panStart.x) / pz;
+            pty = panStart.pty + (e.clientY - panStart.y) / pz;
+            applyView();
+          }
+        });
+        const endPtr = (e) => {
+          ptrs.delete(e.pointerId);
+          if (ptrs.size < 2) lastDist = null;
+          if (ptrs.size === 0) {
+            panStart = null;
+            dragging = false;
+            field.classList.remove("is-grabbing");
+          }
+        };
+        field.addEventListener("pointerup", endPtr);
+        field.addEventListener("pointercancel", endPtr);
+
+        // Wheel / trackpad zoom, pinned to the pointer (scrolling down zooms
+        // in, as on the plate).
+        field.addEventListener("wheel", (e) => {
+          e.preventDefault();
+          let dy = e.deltaY;
+          if (e.deltaMode === 1) dy *= 16;
+          else if (e.deltaMode === 2) dy *= 400;
+          dy = Math.max(-50, Math.min(50, dy));
+          const r = reproImg.getBoundingClientRect();
+          photoView.setZoom(
+            pz * Math.exp(dy * 0.0022),
+            e.clientX - (r.left + r.width / 2),
+            e.clientY - (r.top + r.height / 2)
+          );
+        }, { passive: false });
       }
       scaleNote.textContent = "dimensions not recorded";
     } else if (primary && dims) {
@@ -1997,13 +2106,13 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
         // counter (kept current by showFrame, defined with the strip below).
         const prevB = el("button", "item-card__flip");
         prevB.type = "button";
-        prevB.textContent = "\u2039 prev";
+        prevB.textContent = "\u2191 prev";
         prevB.setAttribute("aria-label", "Previous photo");
         prevB.addEventListener("click", () => showFrame(galleryIdx - 1));
         controls.appendChild(prevB);
         const nextB = el("button", "item-card__flip");
         nextB.type = "button";
-        nextB.textContent = "next \u203a";
+        nextB.textContent = "next \u2193";
         nextB.setAttribute("aria-label", "Next photo");
         nextB.addEventListener("click", () => showFrame(galleryIdx + 1));
         controls.appendChild(nextB);
@@ -2025,6 +2134,23 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
       assetLabel.textContent = gAssets.length > 1 ? "" : (back ? "recto" : "1/1");
       controls.appendChild(assetLabel);
       foot.appendChild(controls);
+
+      // Gallery fields: the photo magnifier's slider, in the plate zoom's
+      // exact dress. Wheel/pinch keep it in sync via photoView.syncSlider.
+      if (photoView) {
+        const zoomWrap = el("label", "item-card__zoom-wrap");
+        const zoomLabel = el("span", "item-card__asset-label");
+        zoomLabel.textContent = "zoom";
+        const zoom = el("input", "item-card__zoom-slider");
+        zoom.type = "range";
+        zoom.min = "1"; zoom.max = "6"; zoom.step = "0.05"; zoom.value = "1";
+        zoom.setAttribute("aria-label", "Zoom photo");
+        zoom.addEventListener("input", () => photoView.setZoom(parseFloat(zoom.value)));
+        photoView.syncSlider = (v) => { zoom.value = String(v); };
+        zoomWrap.appendChild(zoomLabel);
+        zoomWrap.appendChild(zoom);
+        foot.appendChild(zoomWrap);
+      }
 
       // Zoom slider — only meaningful when there is a calibrated field to
       // rescale. Dragging shrinks the field span and enlarges the item.
@@ -2219,6 +2345,8 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
           // when stepping from the foot controls. block: "nearest" so the
           // page itself never jumps.
           stripBtns[galleryIdx]?.scrollIntoView?.({ block: "nearest", inline: "nearest" });
+          // A new frame starts centered; the zoom level is kept.
+          photoView?.resetPan();
           // Stay ahead of rapid flipping in either direction.
           prefetchFrame(galleryIdx + 1);
           prefetchFrame(galleryIdx - 1);
@@ -2254,10 +2382,14 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
     // takes over the gesture.
     wrap.__setSwipeActive = (v) => { swipeActive = v; };
     wrap.__plate = {
-      interactive: !!(primary && dims && !gAssets.length),
-      panState: () => (plateState && dims)
-        ? { panX: plateState.panX, panMaxX: Math.max(0, dims.w - plateState.spanMM) }
-        : null,
+      get interactive() {
+        return !!(primary && dims && !gAssets.length) || (photoView ? photoView.zoom > 1.001 : false);
+      },
+      panState: () => {
+        if (plateState && dims) return { panX: plateState.panX, panMaxX: Math.max(0, dims.w - plateState.spanMM) };
+        if (photoView && photoView.zoom > 1.001) return photoView.panState();
+        return null;
+      },
     };
 
     // Scroll-edge fade: on mobile the card is taller than the screen and scrolls
