@@ -1665,7 +1665,7 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
     // extends the object at the same scale. docs/brochure-fold-states-plan.md.
     const dimsOpen = parseDimensions(item, "dimensions_open");
     const openFaces = [item.assets?.inside || null, item.assets?.outside || null];
-    const folded = isFolded(item) && !!(openFaces[0] || openFaces[1]);
+    const folded = isFolded(item); // carries an open-state scan
     const ratioDims = folded ? largerDims(dims, dimsOpen) : dims;
     let curDims = dims;          // the state being drawn (closed by default)
     let foldState = "closed";

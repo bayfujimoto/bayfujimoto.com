@@ -331,10 +331,8 @@ Optional:
 - extent: count of physical pieces (e.g. "1 ticket", "3 prints")
 - dimensions: physical size in mm as "W x H" (e.g. "89 x 54"). Used to render thumbnails at true relative size in the browse strip. Items without this field fall back to natural image aspect ratio.
 - front/back assets (closed recto / verso)
-- fold: `half` | `tri` | `accordion` for folded matter (brochures, fold-out guides, folded maps); absent = flat
-- panels: count on one face
-- dimensions_open: unfolded size in mm as "W x H" — a second measurement, never derived from the closed size
-- inside/outside assets: the open state's two faces. The record thumbnail stays the closed recto. See `docs/brochure-fold-states-plan.md`.
+- dimensions_open: unfolded size in mm as "W x H" for folded matter (brochures, fold-out guides, folded maps) — a second measurement, never derived from the closed size
+- inside/outside assets: the open state's two faces; either one makes the record folded on the card. The record thumbnail stays the closed recto. The fold family, if worth recording, goes in `extent` ("1 brochure, tri-fold"). See `docs/brochure-fold-states-plan.md`.
 - note
 - related items
 - inspection eligibility

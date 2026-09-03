@@ -89,14 +89,12 @@ qualifier. **These cells are the main thing to review and edit.**
 | prototype | medium | material | related project |
 | video | duration | source | related project |
 | note | note_type | related project | — |
-| ephemera | place | source (provenance) | fold (folded matter only) |
+| ephemera | place | source (provenance) | — |
 
 Ephemera's slot 1 is `place` alone — the former `place` + `event` split row is
 retired along with the `event` field (see decisions.md → "Constellations").
-`source` (provenance) takes the following row. Slot 3, `fold`, appears only on
-folded matter (`fold: half | tri | accordion`) and prints the family with its
-panel count — `tri-fold · 3 panels` — from `fold` + `panels` (`panels` is
-record-only, folded into this row's text).
+`source` (provenance) takes the following row. Folded matter gets no slot of its
+own: the fold family, when worth recording, is written into `extent`.
 
 **Constellations on the card.** Every card-using type prints its
 `constellations` as **its own rider row** near tags (spine row 10) — never in a
@@ -118,7 +116,8 @@ uniform: ephemera included, one rendering everywhere.
   the **closed** size; **`dimensions_open`** (same grammar) is the unfolded size
   and the physical row prints both: `200 × 89 mm · open 594 × 89 mm`. The plate's
   field ratio is chosen from the larger of the two and held for both states, so
-  unfolding changes the object's extent on the plate, never its scale
+  unfolding changes the object's extent on the plate, never its scale. A record
+  is folded when it carries an `inside` or `outside` scan
   (`docs/brochure-fold-states-plan.md`).
 - **`medium`** is not a spine field. It lives in the typed slots of the types that
   need it (e.g. sketch / prototype: medium + material) and nowhere else.

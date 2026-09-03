@@ -5,8 +5,6 @@ title:
 series: accumulation
 subcollection:
 item_type: ticket | brochure | receipt | handout | document
-fold:                  # half | tri | accordion — leave blank for flat matter
-panels:                # count on one face (half 2, tri 3, accordion as counted)
 status: draft
 display_date:
 sort_date: YYYY-MM-DD
@@ -16,7 +14,7 @@ source:
 tags: []
 inspection: none
 dimensions:            # closed, W x H mm
-dimensions_open:       # unfolded, W x H mm — measured, not derived
+dimensions_open:       # unfolded, W x H mm — folded matter only; measured, not derived
 assets:
   front:               # closed recto
   back:                # closed verso
