@@ -67,6 +67,11 @@ export const FIELDS = {
   note_type:    { label: "note_type",  example: "sketch / written note / idea / draft" },
   source:       { label: "source",     example: "e.g. kept from the trip; gift from M." }, // Accumulation provenance
 
+  // ── labor (catalog-card rows since the bespoke labor view was retired) ──
+  role:         { label: "role",         example: "e.g. Student" },
+  organization: { label: "organization", example: "e.g. Rice University" },
+  context:      { label: "context",      example: "academic / professional / personal" },
+
   // ── book identifiers (record-only; back the cover lookup, not a card row) ──
   isbn13:       { label: "ISBN-13",    mono: true },
   isbn:         { label: "ISBN",       mono: true },
@@ -103,6 +108,10 @@ const creation = (slots, creatorLabel, opts = {}) => ({
 // Ephemera slot 1 is `place` alone — the former place + event split row is
 // retired with the `event` field. Constellations render as their own rider row
 // (see SPINE below), never in a split row. decisions.md → "Constellations".
+const LABOR = {
+  creator: { key: null, mode: "none" },
+  slots: [["context", "role"], "organization"],
+};
 const EPHEMERA = {
   creator: { key: "issuer", mode: "optional" },
   slots: ["place", "source"],
@@ -126,6 +135,11 @@ export const TYPES = {
 
   // ── Accumulation (ephemera subtypes share one model) ──
   ticket: EPHEMERA, brochure: EPHEMERA, receipt: EPHEMERA, handout: EPHEMERA, document: EPHEMERA,
+
+  // ── Labor (catalog card since 2026-09: the bespoke labor inspection view
+  //    was retired in favor of the photo/gallery card treatment; subitems are
+  //    the record's gallery, thesis its prose) ──
+  project: LABOR, artifact: LABOR, commission: LABOR, contribution: LABOR,
 };
 
 // ── Spine order (for reference; renderCard special-cases the framed rows) ─────

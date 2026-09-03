@@ -1,6 +1,6 @@
 import { navigate, replace } from "./router.js";
 import { subscribe, getState, deskTarget } from "./state.js";
-import { imageUrl, modelUrl } from "./image-url.js";
+import { imageUrl } from "./image-url.js";
 import { setSeriesInfo, pauseSceneRender, resumeSceneRender } from "./scene.js";
 import { resolveCreator, resolveSlots, titleIsGiven } from "../shared/field-schema.js";
 import { mdToHtml } from "./markdown.js";
@@ -227,11 +227,10 @@ function pushLayerForState(state, silent = false) {
       break;
     }
     case "item":
-      if (state.series === "labor") {
-        pushSheet(makeLaborItemSheet(state.series, state.item, state.view));
-      } else {
-        pushSheet(makeItemSheet(state.series, state.subcollection, state.item, state.view));
-      }
+      // Labor items use the standard catalog card too (the bespoke labor
+      // inspection view was retired 2026-09 — subitems render as the card's
+      // gallery, thesis as the note).
+      pushSheet(makeItemSheet(state.series, state.subcollection, state.item, state.view));
       break;
   }
 }
@@ -1778,12 +1777,14 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
       || (gAssets.length ? `${gAssets.length} photo${gAssets.length > 1 ? "s" : ""}` : null);
     splitRow(["extent", extentText, true], ["dimensions", dimText, true]);
 
-    if (item.context_note) {
+    const noteText = item.context_note || item.thesis;
+    if (noteText) {
       const note = el("div", "item-card__note");
       const l = el("span", "overlay-label");
-      l.textContent = "note";
+      // Labor records carry their prose as `thesis`; label it truthfully.
+      l.textContent = item.context_note ? "note" : "thesis";
       const p = el("p");
-      p.textContent = item.context_note;
+      p.textContent = noteText;
       note.appendChild(l);
       note.appendChild(p);
       fields.appendChild(note);
@@ -2641,11 +2642,16 @@ function primaryAsset(item) {
     || item.assets?.gallery?.[0]?.file
     || item.assets?.pages?.[0]?.file            // document inspection
     || item.assets?.states?.[0]?.images?.[0]?.file  // contraption inspection
+    || item.subitems?.[0]?.file                     // labor images
     || null;
 }
 
 export function galleryAssets(item) {
-  return item.assets?.gallery ?? [];
+  if (item.assets?.gallery?.length) return item.assets.gallery;
+  // Labor subitems carry the same shape (file / thumbnail / caption), so the
+  // card's gallery machinery — whole-photo plate, contact strip, stepping —
+  // treats them as the record's set.
+  return (item.subitems || []).filter(si => si.file && (!si.type || si.type === "image"));
 }
 
 // Deterministic slight rotation per record id — a print laid down by hand.
@@ -2667,328 +2673,4 @@ function groupByYear(items) {
   return Array.from(map.entries())
     .sort((a, b) => b[0].localeCompare(a[0]))
     .map(([year, items]) => ({ year, items }));
-}
-
-// ── Labor item sheet ──────────────────────────────────────────────────────────
-
-function makeLaborItemSheet(seriesKey, itemId, viewSlug) {
-  const s = archive.series[seriesKey];
-  const allItems = s.items || [];
-  let currentIdx = allItems.findIndex(i => i.id === itemId);
-  if (currentIdx === -1) currentIdx = 0;
-
-  const veil = makeVeil(() => {
-    navigate({ layer: "browse", series: seriesKey, subcollection: null, view: viewSlug || "all", item: null });
-  });
-
-  const content = makeContent();
-  content.classList.add("labor-item-content");
-
-  const metaEl = el("div", "layer-meta");
-  metaEl.setAttribute("aria-label", "Item metadata");
-
-  // Track Three.js scene disposal across renders
-  let disposeScene = null;
-
-  function buildMeta(item) {
-    metaEl.innerHTML = "";
-
-    const titleEl = el("p", "overlay-title");
-    titleEl.textContent = item.title;
-    metaEl.appendChild(titleEl);
-
-    const metaFields = [
-      ["organization", item.organization],
-      ["date",         item.display_date],
-    ];
-
-    metaFields.forEach(([label, value]) => {
-      if (!value) return;
-      const fieldEl = el("div", "overlay-field");
-      const labelEl = el("span", "overlay-label");
-      labelEl.textContent = label;
-      const valueEl = el("span", "overlay-value");
-      valueEl.textContent = value;
-      fieldEl.appendChild(labelEl);
-      fieldEl.appendChild(valueEl);
-      metaEl.appendChild(fieldEl);
-    });
-
-    const idEl = el("div", "overlay-id");
-    idEl.textContent = item.id;
-    metaEl.appendChild(idEl);
-  }
-
-  function renderContent(idx) {
-    currentIdx = idx;
-    const item = allItems[idx];
-    const hasPrev = idx > 0;
-    const hasNext = idx < allItems.length - 1;
-
-    // Dispose previous Three.js scene
-    if (disposeScene) { disposeScene(); disposeScene = null; }
-
-    content.innerHTML = "";
-
-    // Breadcrumb
-    const bc = makeBreadcrumb([
-      { label: "desk",    onClick: () => navigate({ layer: "desk" }) },
-      { label: s.label,  onClick: () => navigate({ layer: "browse", series: seriesKey, subcollection: null, view: viewSlug || "all", item: null }) },
-      { label: item.title, current: true },
-    ]);
-    content.appendChild(bc);
-
-    // Horizontal scroll container
-    const scroll = el("div", "labor-item");
-    scroll.setAttribute("aria-label", `Project: ${item.title}`);
-
-    // ── Panel 1: 3D object ──
-    const objectPanel = el("div", "labor-item__panel labor-item__panel--object");
-    const canvas = el("canvas", "labor-item__canvas");
-    canvas.setAttribute("aria-label", `3D model for ${item.title}`);
-    objectPanel.appendChild(canvas);
-    scroll.appendChild(objectPanel);
-
-    // ── Panel 2: Thesis ──
-    const thesisPanel = el("div", "labor-item__panel labor-item__panel--thesis");
-    if (item.thesis) {
-      const p = el("p", "labor-item__thesis");
-      p.textContent = item.thesis;
-      thesisPanel.appendChild(p);
-    }
-    scroll.appendChild(thesisPanel);
-
-    // ── Panels 3+: Subitems ──
-    // captionH must match the CSS height of .labor-item__caption (5.34rem)
-    const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
-    const captionH = 5.34 * rem;
-
-    (item.subitems || []).forEach((sub, i) => {
-      // Skip only explicitly non-image types; pass through when type is absent
-      if (sub.type && sub.type !== "image") return;
-
-      const imgPanel = el("div", "labor-item__panel labor-item__panel--image");
-      imgPanel.style.width = "300px"; // placeholder until the aspect ratio is known
-
-      const imgWrap = el("div", "labor-item__image-wrap");
-      const img = el("img", "labor-item__image");
-      fadeInOnLoad(img);
-      img.alt = sub.caption || `${item.title} — image ${i + 1}`;
-      img.draggable = false;
-      imgWrap.appendChild(img);
-      imgPanel.appendChild(imgWrap);
-
-      // Always render caption div — keeps image area height uniform across all panels
-      const cap = el("p", "labor-item__caption");
-      cap.textContent = sub.caption || "";
-      imgPanel.appendChild(cap);
-
-      // Reserve the panel's width from the image's aspect ratio as early as
-      // possible. Progressive load paints the small subitem thumbnail first (often
-      // cache-warm from the labor grid) and swaps in the full display image once it
-      // decodes; sizing off whichever paints first lands the panel at its final
-      // width almost immediately, instead of reflowing from 300px when the full
-      // image arrives. Both carry the same aspect ratio, so the later display load
-      // recomputes to the same width — no second shift.
-      const sizePanel = () => {
-        if (!img.naturalWidth || !img.naturalHeight) return;
-        const imageH = scroll.clientHeight - captionH;
-        imgPanel.style.width = `${imageH * (img.naturalWidth / img.naturalHeight)}px`;
-        updateScrollMask();
-      };
-      img.addEventListener("load", sizePanel);
-      loadReproProgressive(img, sub.file, sub.thumbnail);
-
-      scroll.appendChild(imgPanel);
-    });
-
-    content.appendChild(scroll);
-
-    // Scroll-edge fade mask — updates on scroll to fade whichever edges have overflow
-    function updateScrollMask() {
-      const atStart = scroll.scrollLeft <= 0;
-      const atEnd   = scroll.scrollLeft + scroll.clientWidth >= scroll.scrollWidth - 1;
-      let mask;
-      if (atStart && !atEnd) {
-        mask = "linear-gradient(to right, black calc(100% - 4rem), transparent 100%)";
-      } else if (!atStart && !atEnd) {
-        mask = "linear-gradient(to right, transparent 0, black 4rem, black calc(100% - 4rem), transparent 100%)";
-      } else if (!atStart && atEnd) {
-        mask = "linear-gradient(to right, transparent 0, black 4rem, black 100%)";
-      } else {
-        mask = "none";
-      }
-      scroll.style.maskImage = mask;
-      scroll.style.webkitMaskImage = mask;
-    }
-    scroll.addEventListener("scroll", updateScrollMask, { passive: true });
-    // Run after layout so scrollWidth is accurate
-    requestAnimationFrame(updateScrollMask);
-
-    // Prev / next arrows
-    const prevBtn = el("button", "layer-nav layer-nav--prev");
-    prevBtn.type = "button";
-    prevBtn.textContent = "←";
-    prevBtn.setAttribute("aria-label", "Previous item");
-    if (!hasPrev) prevBtn.disabled = true;
-    prevBtn.addEventListener("click", () => { if (currentIdx > 0) navItem(currentIdx - 1); });
-    content.appendChild(prevBtn);
-
-    const nextBtn = el("button", "layer-nav layer-nav--next");
-    nextBtn.type = "button";
-    nextBtn.textContent = "→";
-    nextBtn.setAttribute("aria-label", "Next item");
-    if (!hasNext) nextBtn.disabled = true;
-    nextBtn.addEventListener("click", () => { if (currentIdx < allItems.length - 1) navItem(currentIdx + 1); });
-    content.appendChild(nextBtn);
-
-    buildMeta(item);
-
-    // Init Three.js after the canvas is in the DOM
-    requestAnimationFrame(() => {
-      disposeScene = initLaborModelScene(canvas, item.model ? modelUrl(item.model) : null);
-    });
-  }
-
-  function navItem(idx) {
-    renderContent(idx);
-    replace({ layer: "item", series: seriesKey, subcollection: null, item: allItems[idx].id, view: viewSlug || "all" });
-  }
-
-  const onKey = (e) => {
-    if (layerStack[layerStack.length - 1]?.content !== content) return;
-    if (e.key === "Escape") navigate({ layer: "browse", series: seriesKey, subcollection: null, view: viewSlug || "all", item: null });
-    if (e.key === "ArrowLeft"  && currentIdx > 0) navItem(currentIdx - 1);
-    if (e.key === "ArrowRight" && currentIdx < allItems.length - 1) navItem(currentIdx + 1);
-  };
-  document.addEventListener("keydown", onKey);
-
-  const cleanup = () => {
-    document.removeEventListener("keydown", onKey);
-    if (disposeScene) { disposeScene(); disposeScene = null; }
-    metaEl.remove();
-  };
-
-  renderContent(currentIdx);
-
-  const depth = layerStack.length + 1;
-  metaEl.style.zIndex = depth * 10 + 2;
-  metaEl.style.transition = "opacity 0.2s var(--ease-base)";
-  document.body.appendChild(metaEl);
-
-  return { veil, content, cleanup };
-}
-
-// ── Labor Three.js model scene ────────────────────────────────────────────────
-
-function initLaborModelScene(canvas, glbUrl) {
-  import("three").then(({ WebGLRenderer, Scene, PerspectiveCamera, AmbientLight,
-    DirectionalLight, BoxGeometry, MeshStandardMaterial, Mesh, Color, Box3, Vector3 }) => {
-    import("three/examples/jsm/controls/OrbitControls.js").then(({ OrbitControls }) => {
-
-      if (!canvas.isConnected) return; // panel may have been removed before RAF fired
-
-      const renderer = new WebGLRenderer({ canvas, antialias: true, alpha: true });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      renderer.setSize(canvas.offsetWidth, canvas.offsetHeight);
-
-      const scene = new Scene();
-
-      const camera = new PerspectiveCamera(45, canvas.offsetWidth / canvas.offsetHeight, 0.1, 100);
-      camera.position.set(2, 1.5, 3);
-      camera.lookAt(0, 0, 0);
-
-      // Lighting
-      const ambient = new AmbientLight(0xffffff, 0.7);
-      scene.add(ambient);
-      const dir = new DirectionalLight(0xffffff, 1.2);
-      dir.position.set(3, 6, 4);
-      scene.add(dir);
-
-      // Fallback geometry — always load first, replace if GLB loads
-      const boxGeo = new BoxGeometry(1, 1, 1);
-      const boxMat = new MeshStandardMaterial({ color: 0x999999, roughness: 0.6, metalness: 0.1 });
-      const box = new Mesh(boxGeo, boxMat);
-      scene.add(box);
-      let model = box;
-
-      // OrbitControls — constrained so model can't flip upside down
-      const controls = new OrbitControls(camera, renderer.domElement);
-      controls.enableDamping = true;
-      controls.dampingFactor = 0.08;
-      controls.minPolarAngle = 0.1;
-      controls.maxPolarAngle = Math.PI * 0.85;
-      controls.autoRotate = true;
-      controls.autoRotateSpeed = 0.6;
-      controls.addEventListener("start", () => { controls.autoRotate = false; });
-
-      // Load GLB if provided
-      if (glbUrl) {
-        import("three/examples/jsm/loaders/GLTFLoader.js").then(({ GLTFLoader }) => {
-          new GLTFLoader().load(
-            glbUrl,
-            (gltf) => {
-              scene.remove(model);
-              model = gltf.scene;
-              scene.add(model);
-
-              // Auto-fit camera to bounding box so any model scale works
-              const bbox = new Box3().setFromObject(model);
-              const center = new Vector3();
-              bbox.getCenter(center);
-              const size = new Vector3();
-              bbox.getSize(size);
-              const radius = Math.max(size.x, size.y, size.z) * 0.75;
-
-              controls.target.copy(center);
-              camera.position.set(
-                center.x + radius * 0.9,
-                center.y + radius * 0.7,
-                center.z + radius * 1.5
-              );
-              camera.near = radius * 0.01;
-              camera.far  = radius * 20;
-              camera.updateProjectionMatrix();
-              controls.update();
-            },
-            undefined,
-            () => { /* load error — keep fallback box */ }
-          );
-        });
-      }
-
-      let rafId;
-      const animate = () => {
-        rafId = requestAnimationFrame(animate);
-        controls.update();
-        renderer.render(scene, camera);
-      };
-      animate();
-
-      // Resize observer
-      const ro = new ResizeObserver(() => {
-        const w = canvas.offsetWidth;
-        const h = canvas.offsetHeight;
-        if (w === 0 || h === 0) return;
-        renderer.setSize(w, h);
-        camera.aspect = w / h;
-        camera.updateProjectionMatrix();
-      });
-      ro.observe(canvas);
-
-      // Disposal function returned to caller
-      function dispose() {
-        cancelAnimationFrame(rafId);
-        ro.disconnect();
-        controls.dispose();
-        renderer.dispose();
-      }
-      canvas._laborDispose = dispose;
-    });
-  });
-
-  // Return a synchronous dispose handle that works even before Three.js resolves
-  return () => {
-    if (canvas._laborDispose) canvas._laborDispose();
-  };
 }

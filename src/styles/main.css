@@ -1316,7 +1316,10 @@ body {
 }
 .item-card__strip::-webkit-scrollbar { display: none; }
 .item-card__strip-btn {
-  flex: 1 0 calc(100% / 6);
+  /* Fixed sixth-of-strip cells: no grow, so a small set leaves empty space
+     to the right instead of inflating cell size (and, via the square aspect,
+     the strip's height). */
+  flex: 0 0 calc(100% / 6);
   min-width: 3rem;
   aspect-ratio: 1 / 1;
   padding: 0.45rem;
@@ -1331,6 +1334,7 @@ body {
   transition: opacity var(--dur-base) var(--ease-base);
 }
 .item-card__strip-btn:first-child { border-left: none; }
+.item-card__strip-btn:last-child { border-right: 1px solid var(--border-dim); }
 .item-card__strip-btn:hover { opacity: 0.8; }
 .item-card__strip-btn[aria-current="true"] { opacity: 1; }
 .item-card__strip-btn:focus-visible { outline: 1px solid var(--overlay-text); outline-offset: -1px; }

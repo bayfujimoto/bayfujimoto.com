@@ -283,6 +283,14 @@ Its purpose is to prevent drift, repetition, and silent contradictions over time
 
 ---
 
+### Labor items — catalog-card inspection
+- status: confirmed
+- decision: The bespoke labor item view (horizontal panel scroll, 3D model scene, per-image width_vw) is retired. Labor items open in the standard catalog card: subitems render as the record's gallery (whole-image plate, contact strip, prev/next stepping), the thesis renders as the card's prose row (labelled "thesis"), and context/role/organization render as typed rows via the shared field schema. The admin's labor editor is unchanged; `model` and `width_vw` are still stored but no longer displayed.
+- reason: One inspection grammar across the archive; the photo/gallery card treatment covers what the bespoke view did, with less machinery.
+- date: 2026-09-02
+
+---
+
 ## Provisional decisions
 
 ### Tech stack
