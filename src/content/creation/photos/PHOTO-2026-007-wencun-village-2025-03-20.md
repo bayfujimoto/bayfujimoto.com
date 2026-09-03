@@ -4,7 +4,7 @@ slug: wencun-village-2025-03-20
 series: creation
 subcollection: photos
 item_type: photo
-status: draft
+status: published
 display_date: March 20, 2025
 sort_date: "2025-03-20"
 title: Wencun Village
