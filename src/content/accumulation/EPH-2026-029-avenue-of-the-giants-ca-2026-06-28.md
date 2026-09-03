@@ -16,6 +16,6 @@ assets:
   front: EPH-2026-029-front.png?v=e610c1b7o
   thumbnail: EPH-2026-029-front-thumb.jpg?v=e610c1b7o
   back: EPH-2026-029-back.png?v=54c85ed8o
-  inside: EPH-2026-029-inside.png?v=4bcbbd6do
+  inside: EPH-2026-029-inside.png?v=17ed22e6o
   outside: EPH-2026-029-outside.png?v=fbe73e4bo
 ---
