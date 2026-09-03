@@ -6,7 +6,7 @@ the catalog card, alongside the existing closed recto/verso, with one honest sca
 across all four views. Covers the record model, the plate's dimensioning rules, the
 card controls, the browse grid, and the admin form.
 
-Status: implemented 2026-09-03 (open cells resolved as proposed: inside / outside; unfold lands on the inside; extent autofills "1 <type>" for folded records; grid hint deferred). **Revision, same day:** `fold` and `panels` were cut before commit — Bay's call: with the open size typed by hand, a fold-family select is metadata without a mechanism. A record is folded when it carries an `inside` or `outside` scan; the fold family, when worth recording, goes in `extent`. Passages below that mention `fold` / `panels` describe the original proposal. Last updated: 2026-09-03.
+Status: implemented 2026-09-03 (open cells resolved as proposed: inside / outside; unfold lands on the inside; extent autofills "1 <type>" for folded records; grid hint deferred). **Revision, same day:** `fold` and `panels` were cut before commit — Bay's call: with the open size typed by hand, a fold-family select is metadata without a mechanism. A record is folded when it carries an `inside` or `outside` scan; the fold family, when worth recording, goes in `extent`. Passages below that mention `fold` / `panels` describe the original proposal. Also revised: the overturn button is now `flip` on every card, and folded records show no `closed · recto` text in the foot (flip · unfold · zoom must fit one line). Last updated: 2026-09-03.
 
 ## Purpose
 

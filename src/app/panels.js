@@ -2132,7 +2132,7 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
       const assetLabel = el("span", "item-card__asset-label");
       if (gAssets.length > 1) {
         // Multi-photo: prev/next step the plate through the set, in the
-        // overturn control's register; the asset label becomes the frame
+        // flip control's register; the asset label becomes the frame
         // counter (kept current by showFrame, defined with the strip below).
         const prevB = el("button", "item-card__flip");
         prevB.type = "button";
@@ -2148,26 +2148,28 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
         controls.appendChild(nextB);
       } else if (back || folded) {
         // Faces by state: closed = recto / verso, open = inside / outside.
-        // Overturn flips within the state; unfold / fold switches states.
+        // Flip turns the object within the state; unfold / fold switches states.
         const faces = { closed: [primary, back], open: openFaces };
         const faceNames = { closed: ["recto", "verso"], open: ["inside", "outside"] };
-        const faceLabel = () => {
-          const name = faceNames[foldState][showingBack ? 1 : 0];
-          return folded ? `${foldState} \u00b7 ${name}` : name;
-        };
+        // Folded records carry no text label in the foot — two buttons and
+        // the zoom must fit one line — so the state is spoken by the
+        // buttons' aria-labels instead.
+        const faceLabel = () => folded ? "" : faceNames[foldState][showingBack ? 1 : 0];
         const flip = el("button", "item-card__flip");
         flip.type = "button";
-        flip.textContent = "overturn";
-        flip.setAttribute("aria-label", "Overturn: show the other side");
+        flip.textContent = "flip";
+        flip.setAttribute("aria-label", "Flip: show the other side");
         const showFace = () => {
           // No thumbnail for the far side: hold the current side until it decodes.
           // The verso is cut out too when the recto is, so pick variants per side.
           const side = faces[foldState][showingBack ? 1 : 0];
           if (reproImg && side) loadReproProgressive(reproImg, side, null, showNone, fullVariants(side));
           assetLabel.textContent = faceLabel();
-          // Overturn only where the state has both faces (hidden, as for a
+          // Flip only where the state has both faces (hidden, as for a
           // flat record with no back).
           flip.hidden = !(faces[foldState][0] && faces[foldState][1]);
+          const other = faceNames[foldState][showingBack ? 0 : 1];
+          flip.setAttribute("aria-label", `Flip: show the ${other}`);
         };
         flip.addEventListener("click", () => {
           showingBack = !showingBack;
@@ -2207,7 +2209,9 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
           else setTimeout(warm, 500);
         }
         flip.hidden = !(faces.closed[0] && faces.closed[1]);
+        flip.setAttribute("aria-label", "Flip: show the verso");
         assetLabel.textContent = faceLabel();
+        if (folded) assetLabel.hidden = true;
       }
       if (gAssets.length > 1) assetLabel.textContent = "";
       else if (!back && !folded) assetLabel.textContent = "1/1";

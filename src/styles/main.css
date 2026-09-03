@@ -1375,8 +1375,9 @@ body {
   font-size: var(--text-xs);
   color: var(--overlay-muted);
   opacity: 0.6;
-  white-space: nowrap; /* "closed · recto" / "open · inside" stay on one line */
+  white-space: nowrap; /* "recto" / "verso" / "01/12" stay on one line */
 }
+.item-card__asset-label[hidden] { display: none; } /* folded records: buttons + zoom only */
 
 /* Status stamp — archival documents wear their status */
 .item-card__stamp {
@@ -1408,7 +1409,7 @@ body {
   .layer-content--item-card .layer-nav { display: none; }
   /* viewBox scales down ~0.75 on small screens; keep tick labels legible */
   .item-card__plate-svg text { font-size: 12px; }
-  /* Folded matter adds a fourth token to the foot (overturn · unfold · label);
+  /* Folded matter adds a third control to the foot (flip · unfold · zoom);
      let the zoom drop to a second line rather than squeezing the label. */
   .item-card__plate-foot { flex-wrap: wrap; row-gap: 0.25rem; }
   .item-card,
