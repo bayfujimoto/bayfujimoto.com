@@ -1243,6 +1243,10 @@ body {
   min-height: 44px;
 }
 .item-card__flip:hover { color: var(--overlay-text); }
+/* A face control the current state cannot use (no verso / no outside) is
+   removed from the foot, as for a flat record with no back — inline-flex
+   above would otherwise override the hidden attribute. */
+.item-card__flip[hidden] { display: none; }
 
 /* Zoom slider — magnifies the reproduction within its cell */
 .item-card__zoom-wrap {
@@ -1371,6 +1375,7 @@ body {
   font-size: var(--text-xs);
   color: var(--overlay-muted);
   opacity: 0.6;
+  white-space: nowrap; /* "closed · recto" / "open · inside" stay on one line */
 }
 
 /* Status stamp — archival documents wear their status */
@@ -1403,6 +1408,9 @@ body {
   .layer-content--item-card .layer-nav { display: none; }
   /* viewBox scales down ~0.75 on small screens; keep tick labels legible */
   .item-card__plate-svg text { font-size: 12px; }
+  /* Folded matter adds a fourth token to the foot (overturn · unfold · label);
+     let the zoom drop to a second line rather than squeezing the label. */
+  .item-card__plate-foot { flex-wrap: wrap; row-gap: 0.25rem; }
   .item-card,
   .item-card--photo { grid-template-columns: 1fr; }
   /* Mobile: promote the field rows to direct grid items (display:contents) so

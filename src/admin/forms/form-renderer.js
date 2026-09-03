@@ -638,6 +638,19 @@ function makeInspectionAwareAssets(mode, currentData, handleChange, getItemId) {
     handleChange._thumbSet = !!currentData.assets?.thumbnail;
     container.appendChild(makeAssetUploadField(frontField, currentData.assets?.front, handleChange, getItemId));
     container.appendChild(makeAssetUploadField(backField,  currentData.assets?.back,  handleChange, getItemId));
+    // Folded matter: the open state's two faces. Shown only while `fold` is
+    // set (renderForm's handleChange toggles [data-fold-only] on change). Never
+    // the record thumbnail — that stays the closed recto. Scanned on the
+    // carrier sheet like the closed faces, so cut-out is offered.
+    // docs/brochure-fold-states-plan.md.
+    const foldOnly = document.createElement("div");
+    foldOnly.dataset.foldOnly = "true";
+    foldOnly.hidden = !currentData.fold;
+    const insideField  = { id: "assets.inside",  label: "inside (open)",  type: "asset-upload", assetRole: "inside",  allowCutout: true, skipThumbnail: true };
+    const outsideField = { id: "assets.outside", label: "outside (open, optional)", type: "asset-upload", assetRole: "outside", allowCutout: true, skipThumbnail: true };
+    foldOnly.appendChild(makeAssetUploadField(insideField,  currentData.assets?.inside,  handleChange, getItemId));
+    foldOnly.appendChild(makeAssetUploadField(outsideField, currentData.assets?.outside, handleChange, getItemId));
+    container.appendChild(foldOnly);
     return container;
   }
 
@@ -829,7 +842,8 @@ function makeField(field, value, onChange, getValue) {
     label.id = labelId;
 
     const handle = makeSelect(
-      (field.options || []).map(o => ({ value: o, label: o })),
+      // A blank option (e.g. `fold` unset = flat) reads as "none".
+      (field.options || []).map(o => ({ value: o, label: o === "" ? "none" : o })),
       value ?? field.options?.[0] ?? "",
       (v) => onChange(field.id, v),
       { className: field.statusColors ? "admin-select--status" : undefined }
@@ -994,6 +1008,24 @@ function makeInspectionFieldset(group, currentData, handleChange, getItemId) {
   return fieldset;
 }
 
+// Placeholder text for `dimensions_open`: the schema example, or — once fold
+// and closed size are known — the arithmetic suggestion, marked ≈ so it reads
+// as a hint to measure against, not a value.
+function openSizeHint(data) {
+  const base = "e.g. 594 x 89  (mm, W x H, unfolded)";
+  const fold = data.fold;
+  const m = String(data.dimensions || "").split("x").map(s => parseFloat(s.trim()));
+  if (!fold || !(m[0] > 0 && m[1] > 0)) return base;
+  const n = parseInt(data.panels, 10) || (fold === "half" ? 2 : fold === "tri" ? 3 : 0);
+  if (!n) return `${base} — accordion: set panels for a suggestion`;
+  const [w, h] = m;
+  // Panels usually run along the width; a half-fold on a landscape piece
+  // may run along the height instead — offer both readings.
+  const along = `≈ ${n * w} x ${h}`;
+  const across = fold === "half" ? ` or ${w} x ${n * h}` : "";
+  return `${along}${across}  (${n} × closed — measure, don't derive)`;
+}
+
 export function renderForm(container, groups, initialData, onChange) {
   const form = document.createElement("div");
   form.className = "admin-form";
@@ -1003,6 +1035,17 @@ export function renderForm(container, groups, initialData, onChange) {
   function handleChange(fieldId, value) {
     setNestedValue(currentData, fieldId, value);
     onChange?.(fieldId, value, currentData);
+    // Folded matter: the open-state upload spots follow the fold select, and
+    // the open-size placeholder suggests panels × closed size. The suggestion
+    // is a placeholder only — the stored open size must be measured (a
+    // tri-fold's tucked panel is cut narrower, so 3 × closed is not the truth).
+    if (fieldId === "fold") {
+      form.querySelectorAll("[data-fold-only]").forEach(n => { n.hidden = !value; });
+    }
+    if (fieldId === "fold" || fieldId === "panels" || fieldId === "dimensions") {
+      const input = form.querySelector("#field-dimensions_open");
+      if (input) input.placeholder = openSizeHint(currentData);
+    }
   }
 
   function getItemId() {
@@ -1053,6 +1096,10 @@ export function renderForm(container, groups, initialData, onChange) {
       form.appendChild(fieldset);
     }
   }
+
+  // Open-size hint for an already-folded record (see handleChange).
+  const dimOpenInput = form.querySelector("#field-dimensions_open");
+  if (dimOpenInput) dimOpenInput.placeholder = openSizeHint(currentData);
 
   container.appendChild(form);
 

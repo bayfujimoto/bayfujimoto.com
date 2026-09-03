@@ -21,18 +21,17 @@
               "sort_date": "2026-04-01",
               "version": 2,
               "roles": [
-                "Designer",
-                "Researcher"
+                "Designer"
               ],
-              "location": "Houston, TX",
+              "location": "Austin, TX",
               "links": [
                 {
                   "label": "GitHub",
                   "url": "https://github.com/bayfujimoto"
                 }
               ],
-              "short_bio": "Bay Fujimoto is a designer and researcher based in Houston, Texas. He studied architecture at Rice University and works at Low Design Office.",
-              "long_bio": "His practice sits at the intersection of design, technology, and material culture. Trained as an architect, he is drawn to the conditions under which objects, spaces, and systems acquire meaning through use rather than through intent — the scuff on a handrail, the shortcut worn into a lawn, the form that outlasts its original purpose.\n\nAt Rice University he studied the formal and cultural logic of buildings as objects, and the ways institutions shape the people who move through them. He completed a semester abroad through the Rice School of Architecture Paris program, where he began thinking more seriously about the relationship between archival practices and design research.\n\nAt Low Design Office he works on projects that take their constraints seriously — material, budgetary, organizational — and finds in those constraints the conditions for something honest. He is interested in work that resists the reduction of design to styling or to the management of appearances.\n\nThis site is an attempt to document that work in a form closer to an archive than a portfolio: less argument, more evidence."
+              "short_bio": "I am a designer based in Houston, Texas. I studied architecture at Rice University and work at Low Design Office.",
+              "long_bio": "work in progress!"
             },
             {
               "id": "BIO-2025-001",
@@ -318,6 +317,27 @@
         "films": {
           "label": "films",
           "items": [
+            {
+              "id": "FILM-2026-553",
+              "slug": "something-very-bad-is-going-to-happen-2026-2026-09-02",
+              "title": "Something Very Bad Is Going to Happen",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2026",
+              "director": "",
+              "watch_date": "2026-09-02",
+              "display_date": "September 2, 2026",
+              "sort_date": "2026-09-02",
+              "rating": 3.5,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/something-very-bad-is-going-to-happen/",
+              "assets": {
+                "backdrop": "https://a.ltrbxd.com/resized/alternative-backdrop/1/5/2/1/7/8/6/tmdb/fEcmEbrf1C3Le0qStDJXwBtBbXb-1200-1200-675-675-crop-000000.jpg?v=405427f39f",
+                "poster": "https://a.ltrbxd.com/resized/film-poster/1/5/2/1/7/8/6/1521786-something-very-bad-is-going-to-happen-0-600-0-900-crop.jpg?v=0d4f8e3ae9"
+              }
+            },
             {
               "id": "FILM-2026-552",
               "slug": "teenage-sex-and-death-at-camp-miasma-2026-2026-08-29",
@@ -16156,6 +16176,321 @@
           "label": "photos",
           "items": [
             {
+              "id": "PHOTO-2026-008",
+              "slug": "alaska-2025-06-09",
+              "series": "creation",
+              "subcollection": "photos",
+              "item_type": "photo",
+              "status": "published",
+              "display_date": "June 9, 2025",
+              "sort_date": "2025-06-09",
+              "title": "Alaska",
+              "place": "Alaska",
+              "camera": "Fujifilm X100T",
+              "assets": {
+                "gallery": [
+                  {
+                    "file": "PHOTO-2026-008-gallery-09.jpeg?v=c195a453o",
+                    "thumbnail": "PHOTO-2026-008-gallery-09-thumb.jpg?v=c195a453o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-008-gallery-02.jpeg?v=c8fc4647o",
+                    "thumbnail": "PHOTO-2026-008-gallery-02-thumb.jpg?v=c8fc4647o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-008-gallery-03.jpeg?v=2bfb653fo",
+                    "thumbnail": "PHOTO-2026-008-gallery-03-thumb.jpg?v=2bfb653fo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-008-gallery-04.jpeg?v=ad378ae1o",
+                    "thumbnail": "PHOTO-2026-008-gallery-04-thumb.jpg?v=ad378ae1o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-008-gallery-05.jpeg?v=1a05fe39o",
+                    "thumbnail": "PHOTO-2026-008-gallery-05-thumb.jpg?v=1a05fe39o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-008-gallery-06.jpeg?v=25dfff8ao",
+                    "thumbnail": "PHOTO-2026-008-gallery-06-thumb.jpg?v=25dfff8ao",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-008-gallery-07.jpeg?v=08c9185eo",
+                    "thumbnail": "PHOTO-2026-008-gallery-07-thumb.jpg?v=08c9185eo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-008-gallery-08.jpeg?v=b5ac9b76o",
+                    "thumbnail": "PHOTO-2026-008-gallery-08-thumb.jpg?v=b5ac9b76o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-008-gallery-10.jpeg?v=e032420eo",
+                    "thumbnail": "PHOTO-2026-008-gallery-10-thumb.jpg?v=e032420eo",
+                    "caption": "",
+                    "alt": ""
+                  }
+                ],
+                "thumbnail": "PHOTO-2026-008-gallery-09-thumb.jpg?v=c195a453o"
+              }
+            },
+            {
+              "id": "PHOTO-2026-006",
+              "slug": "sw-road-trip-2024-12-20",
+              "series": "creation",
+              "subcollection": "photos",
+              "item_type": "photo",
+              "status": "published",
+              "display_date": "December 20, 2024",
+              "sort_date": "2024-12-20",
+              "title": "SW Road Trip",
+              "assets": {
+                "gallery": [
+                  {
+                    "file": "PHOTO-2026-006-gallery-01.jpeg?v=7d345d87o",
+                    "thumbnail": "PHOTO-2026-006-gallery-01-thumb.jpg?v=7d345d87o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-006-gallery-02.jpeg?v=f47e0172o",
+                    "thumbnail": "PHOTO-2026-006-gallery-02-thumb.jpg?v=f47e0172o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-006-gallery-03.jpeg?v=f4e4c739o",
+                    "thumbnail": "PHOTO-2026-006-gallery-03-thumb.jpg?v=f4e4c739o",
+                    "caption": "",
+                    "alt": ""
+                  }
+                ],
+                "thumbnail": "PHOTO-2026-006-gallery-01-thumb.jpg?v=7d345d87o"
+              },
+              "place": "Southwestern United States",
+              "camera": "Fujifilm X100T"
+            },
+            {
+              "id": "PHOTO-2026-005",
+              "slug": "chamonix-2024-11-02",
+              "series": "creation",
+              "subcollection": "photos",
+              "item_type": "photo",
+              "status": "published",
+              "display_date": "November 2, 2024",
+              "sort_date": "2024-11-02",
+              "title": "Chamonix",
+              "place": "Chamonix, France",
+              "camera": "Fujifilm X100T",
+              "constellations": [
+                "2024-study-abroad"
+              ],
+              "assets": {
+                "gallery": [
+                  {
+                    "file": "PHOTO-2026-005-gallery-05.jpeg?v=78f69b97o",
+                    "thumbnail": "PHOTO-2026-005-gallery-05-thumb.jpg?v=78f69b97o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-005-gallery-01.jpeg?v=19443f10o",
+                    "thumbnail": "PHOTO-2026-005-gallery-01-thumb.jpg?v=19443f10o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-005-gallery-02.jpeg?v=35a811b2o",
+                    "thumbnail": "PHOTO-2026-005-gallery-02-thumb.jpg?v=35a811b2o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-005-gallery-03.jpeg?v=01b94e37o",
+                    "thumbnail": "PHOTO-2026-005-gallery-03-thumb.jpg?v=01b94e37o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-005-gallery-04.jpeg?v=e9d7853fo",
+                    "thumbnail": "PHOTO-2026-005-gallery-04-thumb.jpg?v=e9d7853fo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-005-gallery-06.jpeg?v=0253accfo",
+                    "thumbnail": "PHOTO-2026-005-gallery-06-thumb.jpg?v=0253accfo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-005-gallery-07.jpeg?v=5d5503eco",
+                    "thumbnail": "PHOTO-2026-005-gallery-07-thumb.jpg?v=5d5503eco",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-005-gallery-08.jpeg?v=84c172d2o",
+                    "thumbnail": "PHOTO-2026-005-gallery-08-thumb.jpg?v=84c172d2o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-005-gallery-09.jpeg?v=2c77714fo",
+                    "thumbnail": "PHOTO-2026-005-gallery-09-thumb.jpg?v=2c77714fo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-005-gallery-10.jpeg?v=bab22196o",
+                    "thumbnail": "PHOTO-2026-005-gallery-10-thumb.jpg?v=bab22196o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-005-gallery-11.jpeg?v=f2bb1203o",
+                    "thumbnail": "PHOTO-2026-005-gallery-11-thumb.jpg?v=f2bb1203o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-005-gallery-12.jpeg?v=7d726c14o",
+                    "thumbnail": "PHOTO-2026-005-gallery-12-thumb.jpg?v=7d726c14o",
+                    "caption": "",
+                    "alt": ""
+                  }
+                ],
+                "thumbnail": "PHOTO-2026-005-gallery-05-thumb.jpg?v=78f69b97o"
+              }
+            },
+            {
+              "id": "PHOTO-2026-004",
+              "slug": "couvent-sainte-marie-de-la-tourette-2024-10-31",
+              "series": "creation",
+              "subcollection": "photos",
+              "item_type": "photo",
+              "status": "published",
+              "display_date": "October 31, 2024",
+              "sort_date": "2024-10-31",
+              "title": "Couvent Sainte-Marie de la Tourette",
+              "assets": {
+                "gallery": [
+                  {
+                    "file": "PHOTO-2026-004-gallery-01.jpeg?v=c3918ab7o",
+                    "thumbnail": "PHOTO-2026-004-gallery-01-thumb.jpg?v=c3918ab7o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-004-gallery-02.jpeg?v=046e178fo",
+                    "thumbnail": "PHOTO-2026-004-gallery-02-thumb.jpg?v=046e178fo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-004-gallery-03.jpeg?v=f8e2c33fo",
+                    "thumbnail": "PHOTO-2026-004-gallery-03-thumb.jpg?v=f8e2c33fo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-004-gallery-04.jpeg?v=defdab85o",
+                    "thumbnail": "PHOTO-2026-004-gallery-04-thumb.jpg?v=defdab85o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-004-gallery-05.jpeg?v=8bcbd005o",
+                    "thumbnail": "PHOTO-2026-004-gallery-05-thumb.jpg?v=8bcbd005o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-004-gallery-06.jpeg?v=dc7ce888o",
+                    "thumbnail": "PHOTO-2026-004-gallery-06-thumb.jpg?v=dc7ce888o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-004-gallery-07.jpeg?v=c7259e4ao",
+                    "thumbnail": "PHOTO-2026-004-gallery-07-thumb.jpg?v=c7259e4ao",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-004-gallery-08.jpeg?v=da15ebafo",
+                    "thumbnail": "PHOTO-2026-004-gallery-08-thumb.jpg?v=da15ebafo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-004-gallery-09.jpeg?v=26e0d631o",
+                    "thumbnail": "PHOTO-2026-004-gallery-09-thumb.jpg?v=26e0d631o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-004-gallery-10.jpeg?v=9e7ad7fdo",
+                    "thumbnail": "PHOTO-2026-004-gallery-10-thumb.jpg?v=9e7ad7fdo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-004-gallery-11.jpeg?v=081db8c7o",
+                    "thumbnail": "PHOTO-2026-004-gallery-11-thumb.jpg?v=081db8c7o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-004-gallery-12.jpeg?v=a28ff07ao",
+                    "thumbnail": "PHOTO-2026-004-gallery-12-thumb.jpg?v=a28ff07ao",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-004-gallery-13.jpeg?v=2f8e697fo",
+                    "thumbnail": "PHOTO-2026-004-gallery-13-thumb.jpg?v=2f8e697fo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-004-gallery-14.jpeg?v=69e0c363o",
+                    "thumbnail": "PHOTO-2026-004-gallery-14-thumb.jpg?v=69e0c363o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-004-gallery-15.jpeg?v=4f76dd2ao",
+                    "thumbnail": "PHOTO-2026-004-gallery-15-thumb.jpg?v=4f76dd2ao",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-004-gallery-16.jpeg?v=ab7adbdbo",
+                    "thumbnail": "PHOTO-2026-004-gallery-16-thumb.jpg?v=ab7adbdbo",
+                    "caption": "",
+                    "alt": ""
+                  }
+                ],
+                "thumbnail": "PHOTO-2026-004-gallery-01-thumb.jpg?v=c3918ab7o"
+              },
+              "place": "Eveux, France",
+              "camera": "Fujifilm X100T"
+            },
+            {
               "id": "PHOTO-2026-003",
               "slug": "edinburgh-2024-10-20",
               "series": "creation",
@@ -16971,6 +17306,110 @@
         }
       ]
     },
+    "2024-study-abroad": {
+      "slug": "2024-study-abroad",
+      "title": "2024-study-abroad",
+      "status": "published",
+      "display_date": "Fall 2024",
+      "date_start": "",
+      "date_end": "",
+      "note": "",
+      "items": [
+        {
+          "id": "PHOTO-2026-005",
+          "slug": "chamonix-2024-11-02",
+          "series": "creation",
+          "subcollection": "photos",
+          "item_type": "photo",
+          "status": "published",
+          "display_date": "November 2, 2024",
+          "sort_date": "2024-11-02",
+          "title": "Chamonix",
+          "place": "Chamonix, France",
+          "camera": "Fujifilm X100T",
+          "constellations": [
+            "2024-study-abroad"
+          ],
+          "assets": {
+            "gallery": [
+              {
+                "file": "PHOTO-2026-005-gallery-05.jpeg?v=78f69b97o",
+                "thumbnail": "PHOTO-2026-005-gallery-05-thumb.jpg?v=78f69b97o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-005-gallery-01.jpeg?v=19443f10o",
+                "thumbnail": "PHOTO-2026-005-gallery-01-thumb.jpg?v=19443f10o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-005-gallery-02.jpeg?v=35a811b2o",
+                "thumbnail": "PHOTO-2026-005-gallery-02-thumb.jpg?v=35a811b2o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-005-gallery-03.jpeg?v=01b94e37o",
+                "thumbnail": "PHOTO-2026-005-gallery-03-thumb.jpg?v=01b94e37o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-005-gallery-04.jpeg?v=e9d7853fo",
+                "thumbnail": "PHOTO-2026-005-gallery-04-thumb.jpg?v=e9d7853fo",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-005-gallery-06.jpeg?v=0253accfo",
+                "thumbnail": "PHOTO-2026-005-gallery-06-thumb.jpg?v=0253accfo",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-005-gallery-07.jpeg?v=5d5503eco",
+                "thumbnail": "PHOTO-2026-005-gallery-07-thumb.jpg?v=5d5503eco",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-005-gallery-08.jpeg?v=84c172d2o",
+                "thumbnail": "PHOTO-2026-005-gallery-08-thumb.jpg?v=84c172d2o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-005-gallery-09.jpeg?v=2c77714fo",
+                "thumbnail": "PHOTO-2026-005-gallery-09-thumb.jpg?v=2c77714fo",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-005-gallery-10.jpeg?v=bab22196o",
+                "thumbnail": "PHOTO-2026-005-gallery-10-thumb.jpg?v=bab22196o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-005-gallery-11.jpeg?v=f2bb1203o",
+                "thumbnail": "PHOTO-2026-005-gallery-11-thumb.jpg?v=f2bb1203o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-005-gallery-12.jpeg?v=7d726c14o",
+                "thumbnail": "PHOTO-2026-005-gallery-12-thumb.jpg?v=7d726c14o",
+                "caption": "",
+                "alt": ""
+              }
+            ],
+            "thumbnail": "PHOTO-2026-005-gallery-05-thumb.jpg?v=78f69b97o"
+          }
+        }
+      ]
+    },
     "2024-spring-break": {
       "slug": "2024-spring-break",
       "title": "Spring Break",
@@ -17016,13 +17455,13 @@
   },
   "_counters": {
     "EPH": 27,
-    "FILM": 552,
-    "BOOK": 356,
+    "FILM": 553,
+    "BOOK": 364,
     "MUSIC": 8,
     "COFFEE": 2,
     "GAME": 4,
     "SKETCH": 2,
-    "PHOTO": 3,
+    "PHOTO": 8,
     "PROTO": 2,
     "VIDEO": 2,
     "NOTE": 2,

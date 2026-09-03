@@ -2,7 +2,7 @@ import { navigate, replace } from "./router.js";
 import { subscribe, getState, deskTarget } from "./state.js";
 import { imageUrl } from "./image-url.js";
 import { setSeriesInfo, pauseSceneRender, resumeSceneRender } from "./scene.js";
-import { resolveCreator, resolveSlots, titleIsGiven } from "../shared/field-schema.js";
+import { resolveCreator, resolveSlots, titleIsGiven, isFolded } from "../shared/field-schema.js";
 import { mdToHtml } from "./markdown.js";
 
 let archive = null;
@@ -1359,10 +1359,21 @@ const PLATE_SMALL_MM = 50;
 // clipped to the field region so it never spills over the scale gutters).
 let plateClipSeq = 0;
 
-function parseDimensions(item) {
-  if (!item?.dimensions) return null;
-  const [w, h] = item.dimensions.split("x").map(s => parseFloat(s.trim()));
+// `key` selects the measurement: `dimensions` is the closed size (canonical —
+// the grid and the default plate), `dimensions_open` the unfolded size of
+// folded matter. docs/brochure-fold-states-plan.md.
+function parseDimensions(item, key = "dimensions") {
+  if (!item?.[key]) return null;
+  const [w, h] = String(item[key]).split("x").map(s => parseFloat(s.trim()));
   return (w > 0 && h > 0) ? { w, h } : null;
+}
+
+// Of two measurements, the one with the larger extent — the plate's field
+// ratio is chosen from it so a folded record keeps one scale across states.
+function largerDims(a, b) {
+  if (!a) return b || null;
+  if (!b) return a;
+  return Math.max(b.w, b.h) > Math.max(a.w, a.h) ? b : a;
 }
 
 // Opening zoom that makes the item's larger dimension fill ~3/4 of the plate
@@ -1399,7 +1410,11 @@ function niceStep(span) {
 // coordinates shown at the visible origin, so the window is [pan, pan+span] on
 // each axis and the scales renumber to match. `img` is reused across redraws so
 // the scan is not re-fetched while dragging the zoom slider or panning.
-function buildPlate(item, dims, sidePx, img, zoom = 1, panX = 0, panY = 0) {
+// `opts.ratioDims` fixes the field ratio from a different measurement than
+// the one being drawn: a folded record passes its larger (open) size for both
+// states, so folding and unfolding changes the object's extent on the plate,
+// never its scale. `opts.noDimsNote` replaces the undimensioned note.
+function buildPlate(item, dims, sidePx, img, zoom = 1, panX = 0, panY = 0, opts = {}) {
   const NS = "http://www.w3.org/2000/svg";
   const INSET = 32; // gutter inside the box for inward ticks + their numbers
 
@@ -1410,8 +1425,9 @@ function buildPlate(item, dims, sidePx, img, zoom = 1, panX = 0, panY = 0) {
   // Base field span: standard 325; integer reduction for oversize; 5:1 field
   // for very small items so a stamp does not become a speck.
   let ratio = 1;
+  const ratioDims = (hasDims && opts.ratioDims) ? opts.ratioDims : dims;
   if (hasDims) {
-    const maxDim = Math.max(dims.w, dims.h);
+    const maxDim = Math.max(ratioDims.w, ratioDims.h);
     if (maxDim > PLATE_MM) ratio = Math.ceil(maxDim / PLATE_MM);
     else if (maxDim < PLATE_SMALL_MM) ratio = 1 / 5;
   }
@@ -1523,7 +1539,7 @@ function buildPlate(item, dims, sidePx, img, zoom = 1, panX = 0, panY = 0) {
   // Undimensioned plates carry no measurement, only the note.
   let scaleNote;
   if (!hasDims) {
-    scaleNote = "dimensions not recorded";
+    scaleNote = opts.noDimsNote || "dimensions not recorded";
   } else {
     scaleNote = `field ${Math.round(spanMM)} mm`;
     if (ratio > 1) scaleNote += ` · reduced 1:${ratio}`;
@@ -1643,6 +1659,16 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
     fieldsCol.appendChild(fields);
 
     const dims = parseDimensions(item);
+    // Folded matter (brochures, fold-out guides): a second, open state with its
+    // own measured size and its own two faces (inside / outside). The plate's
+    // ratio comes from the larger state and is held for both, so unfolding
+    // extends the object at the same scale. docs/brochure-fold-states-plan.md.
+    const dimsOpen = parseDimensions(item, "dimensions_open");
+    const openFaces = [item.assets?.inside || null, item.assets?.outside || null];
+    const folded = isFolded(item) && !!(openFaces[0] || openFaces[1]);
+    const ratioDims = folded ? largerDims(dims, dimsOpen) : dims;
+    let curDims = dims;          // the state being drawn (closed by default)
+    let foldState = "closed";
     // Gallery-backed records (photos, and any record with gallery images):
     // the set steps within the plate column. decisions.md →
     // "Photo entries — display treatment".
@@ -1653,7 +1679,7 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
     let frameCaptionEl = null;     // the fields column's "frame" caption row
     // Each card opens at its own fit zoom (a small item isn't a speck). The
     // level is local to this card so pre-rendered neighbours don't disturb it.
-    let localZoom = fitZoom(dims);
+    let localZoom = fitZoom(ratioDims);
 
     // A label/value pair as a fragment, ready to drop into a 2- or 4-col row.
     const pair = (label, value, mono) => {
@@ -1778,11 +1804,16 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
     // Physical — extent + dimensions (the calibrated plate carries true size).
     // A leading "≈" flags an estimated size (books, sized by format) so the mm
     // plate is not read as a measurement.
-    const dimText = dims ? `${item.dimensions_estimated ? "≈ " : ""}${dims.w} × ${dims.h} mm` : null;
+    let dimText = dims ? `${item.dimensions_estimated ? "≈ " : ""}${dims.w} × ${dims.h} mm` : null;
+    // Folded matter: both measurements, closed first — the typed row stays the
+    // canonical record of size whichever state the plate shows.
+    if (dimsOpen) dimText = `${dims ? `${item.dimensions_estimated ? "≈ " : ""}${dims.w} × ${dims.h}` : "—"} · open ${dimsOpen.w} × ${dimsOpen.h} mm`;
     // Gallery-backed records (photos): extent defaults to the photo count —
     // a recorded extent still wins.
+    // Folded matter: one piece, however many panels — "1 brochure".
     const extentText = item.extent
-      || (gAssets.length ? `${gAssets.length} photo${gAssets.length > 1 ? "s" : ""}` : null);
+      || (gAssets.length ? `${gAssets.length} photo${gAssets.length > 1 ? "s" : ""}` : null)
+      || (folded && item.item_type ? `1 ${item.item_type}` : null);
     splitRow(["extent", extentText, true], ["dimensions", dimText, true]);
 
     // Frame caption — the selected frame's caption; stepping the plate
@@ -1925,7 +1956,9 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
     const renderPlate = (zoom, nextPanX = panX, nextPanY = panY) => {
       localZoom = zoom; // remember the level for this card
       field.innerHTML = "";
-      const plate = buildPlate(item, dims, PLATE_PX, reproImg, zoom, nextPanX, nextPanY);
+      // An open state without a measured open size draws the unlabelled grid.
+      const plate = buildPlate(item, curDims, PLATE_PX, reproImg, curDims ? zoom : 1, nextPanX, nextPanY,
+        { ratioDims, noDimsNote: foldState === "open" ? "open size not recorded" : undefined });
       panX = plate.panX; panY = plate.panY;
       plateState = plate;
       scaleNote.textContent = plate.scaleNote;
@@ -2087,10 +2120,7 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
     } else if (primary) {
       // Dimensions not recorded: draw the same scale grid, unlabelled, and let
       // the reproduction fill the field — the ruler without a measurement claim.
-      field.innerHTML = "";
-      const plate = buildPlate(item, null, PLATE_PX, reproImg);
-      scaleNote.textContent = plate.scaleNote;
-      field.appendChild(plate.svg);
+      renderPlate(1);
     } else {
       showNone();
     }
@@ -2116,22 +2146,71 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
         nextB.setAttribute("aria-label", "Next photo");
         nextB.addEventListener("click", () => showFrame(galleryIdx + 1));
         controls.appendChild(nextB);
-      } else if (back) {
+      } else if (back || folded) {
+        // Faces by state: closed = recto / verso, open = inside / outside.
+        // Overturn flips within the state; unfold / fold switches states.
+        const faces = { closed: [primary, back], open: openFaces };
+        const faceNames = { closed: ["recto", "verso"], open: ["inside", "outside"] };
+        const faceLabel = () => {
+          const name = faceNames[foldState][showingBack ? 1 : 0];
+          return folded ? `${foldState} \u00b7 ${name}` : name;
+        };
         const flip = el("button", "item-card__flip");
         flip.type = "button";
         flip.textContent = "overturn";
         flip.setAttribute("aria-label", "Overturn: show the other side");
-        flip.addEventListener("click", () => {
-          showingBack = !showingBack;
+        const showFace = () => {
           // No thumbnail for the far side: hold the current side until it decodes.
           // The verso is cut out too when the recto is, so pick variants per side.
-          const side = showingBack ? back : primary;
-          if (reproImg) loadReproProgressive(reproImg, side, null, showNone, fullVariants(side));
-          assetLabel.textContent = showingBack ? "verso" : "recto";
+          const side = faces[foldState][showingBack ? 1 : 0];
+          if (reproImg && side) loadReproProgressive(reproImg, side, null, showNone, fullVariants(side));
+          assetLabel.textContent = faceLabel();
+          // Overturn only where the state has both faces (hidden, as for a
+          // flat record with no back).
+          flip.hidden = !(faces[foldState][0] && faces[foldState][1]);
+        };
+        flip.addEventListener("click", () => {
+          showingBack = !showingBack;
+          showFace();
         });
         controls.appendChild(flip);
+
+        if (folded) {
+          const unfold = el("button", "item-card__flip");
+          unfold.type = "button";
+          unfold.textContent = "unfold";
+          unfold.setAttribute("aria-label", "Unfold: show the open state");
+          unfold.addEventListener("click", () => {
+            foldState = foldState === "closed" ? "open" : "closed";
+            // Opening lands on the inside (the reason you unfold); closing
+            // lands on the recto. Zoom is kept; pan returns to the origin.
+            showingBack = foldState === "open" ? !faces.open[0] : false;
+            curDims = foldState === "open" ? dimsOpen : dims;
+            unfold.textContent = foldState === "open" ? "fold" : "unfold";
+            unfold.setAttribute("aria-label", foldState === "open"
+              ? "Fold: show the closed state" : "Unfold: show the open state");
+            if (!gAssets.length) renderPlate(localZoom, 0, 0);
+            showFace();
+          });
+          controls.appendChild(unfold);
+          // Warm the other faces' display derivatives so a first unfold
+          // rarely waits on the network.
+          const warm = () => {
+            for (const f of [back, ...openFaces]) {
+              if (!f) continue;
+              const im = new Image();
+              im.decoding = "async";
+              im.src = imageUrl(f, isCutoutAsset(f) ? "cutout" : "display");
+            }
+          };
+          if ("requestIdleCallback" in window) requestIdleCallback(warm, { timeout: 2000 });
+          else setTimeout(warm, 500);
+        }
+        flip.hidden = !(faces.closed[0] && faces.closed[1]);
+        assetLabel.textContent = faceLabel();
       }
-      assetLabel.textContent = gAssets.length > 1 ? "" : (back ? "recto" : "1/1");
+      if (gAssets.length > 1) assetLabel.textContent = "";
+      else if (!back && !folded) assetLabel.textContent = "1/1";
       controls.appendChild(assetLabel);
       foot.appendChild(controls);
 

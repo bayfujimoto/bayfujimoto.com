@@ -29,6 +29,19 @@ export const FIELDS = {
   display_date: { label: "date",       example: "e.g. March 12, 2025" },
   extent:       { label: "extent",     example: "e.g. 1 ticket · 12 photographs" },
   dimensions:   { label: "dimensions", mono: true, example: "e.g. 89 x 54  (mm, W x H)" },
+  // Folded matter (brochures, fold-out guides, folded maps): the open size is a
+  // second measurement, never derived from the closed one. `fold` names the
+  // family; `panels` the count on one face. docs/brochure-fold-states-plan.md.
+  dimensions_open: { label: "open dimensions", mono: true, example: "e.g. 594 x 89  (mm, W x H, unfolded)" },
+  fold:         { label: "fold",       mono: true, options: ["", "half", "tri", "accordion"],
+                  example: "half / tri / accordion",
+                  // Card value: "tri-fold · 3 panels". Panels default by family.
+                  format: (v, item) => {
+                    const name = v === "half" ? "half-fold" : v === "tri" ? "tri-fold" : v;
+                    const n = parseInt(item.panels, 10) || (v === "half" ? 2 : v === "tri" ? 3 : 0);
+                    return n ? `${name} \u00b7 ${n} panels` : name;
+                  } },
+  panels:       { label: "panels",     mono: true, example: "e.g. 3  (on one face)" },
   context_note: { label: "note",       example: "e.g. Kept from the first ascent; ink smudged at the fold." },
   related_ids:  { label: "see also",   example: "one ID per line, e.g. EPH-2025-001" },
   constellations: { label: "constellations", mono: true, example: "autocomplete, e.g. 2026-atx-sf" },
@@ -112,10 +125,14 @@ const LABOR = {
   creator: { key: null, mode: "none" },
   slots: [["context", "role"], "organization"],
 };
+// Ephemera may be folded (brochure, fold-out guide, folded map): `fold` is an
+// optional third slot, suppressed when blank, and `foldable` unlocks the open
+// size + panels fields in the admin. Keyed on the record's `fold`, not its type.
 const EPHEMERA = {
   creator: { key: "issuer", mode: "optional" },
-  slots: ["place", "source"],
+  slots: ["place", "source", "fold"],
   physical: true,
+  foldable: true,
 };
 
 export const TYPES = {
@@ -165,6 +182,7 @@ export const RECORD_ONLY = new Set([
   "rewatch", "playtime", "tools", "collaborators",
   "isbn13", "isbn",                            // book identifiers; back cover lookup, not a card row
   "dimensions_estimated",                      // flags a format-estimated size (books), not measured
+  "panels",                                    // folded into the fold row's text, never its own row
 ]);
 
 // ── Resolvers (pure; consumers build the DOM) ────────────────────────────────
@@ -181,7 +199,8 @@ function cell(key, item) {
   if (!value) return null;
   // Typographic register (rule b): every discrete catalog token renders mono.
   // Serif is reserved for prose (note) and devised titles, handled in renderCard.
-  return { key, label: def?.label ?? key, value, mono: true };
+  const shown = def?.format ? def.format(value, item) : value;
+  return { key, label: def?.label ?? key, value: shown, mono: true };
 }
 
 /** Creator row for an item, applying the self-default / suppression rule.
@@ -235,16 +254,24 @@ export function adminFields(itemType) {
   }
   return keys
     .filter(k => !FIELDS[k]?.adminSkip)
-    .map(k => ({ id: k, label: FIELDS[k]?.label ?? k, example: FIELDS[k]?.example }));
+    .map(k => ({ id: k, label: FIELDS[k]?.label ?? k, example: FIELDS[k]?.example, options: FIELDS[k]?.options }));
 }
 
 /** Admin: physical fields (extent, dimensions) for types whose records carry a
  *  physical size — creation visual types and ephemera. Empty for the rest. */
 export function physicalFields(itemType) {
-  if (!TYPES[itemType]?.physical) return [];
-  return ["extent", "dimensions"].map(k => ({
+  const cfg = TYPES[itemType];
+  if (!cfg?.physical) return [];
+  const keys = ["extent", "dimensions"];
+  if (cfg.foldable) keys.push("dimensions_open", "panels");
+  return keys.map(k => ({
     id: k, label: FIELDS[k].label, example: FIELDS[k].example,
   }));
+}
+
+/** Whether a record is folded matter with an open state to show. */
+export function isFolded(item) {
+  return !!item?.fold;
 }
 
 /** Typographic register: true when the title is a transcribed work title

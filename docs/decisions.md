@@ -157,6 +157,17 @@ Its purpose is to prevent drift, repetition, and silent contradictions over time
   - Non-published status renders as a faint stamp on the card rather than a field row.
 - date: 2026-06-12
 
+### Folded matter — closed and open states
+- status: confirmed
+- decision: Folded ephemera (brochures, fold-out guides, folded maps) carry a second state on the catalog card. The record keeps one canonical size: `dimensions` remains the closed W x H (grid relative scale, default plate); `dimensions_open` is the measured unfolded size; `fold` (half / tri / accordion) and `panels` describe the family. Two asset roles, `inside` and `outside`, hold the open faces; `front` / `back` stay the closed recto / verso and the thumbnail stays the closed recto. The plate foot gains `unfold` / `fold` beside `overturn`; overturn flips within a state, unfold switches states (landing on the inside; folding lands on the recto), the asset label reads `closed · recto` … `open · outside`. The plate's field ratio is computed from the larger state and held for both, so folding and unfolding changes the object's extent on the plate at one scale — never a shrink on unfolding. Zoom is kept across the switch; pan resets. No fold animation: faces swap as overturn does. The grid is unchanged (objects as filed). Behaviour keys on the presence of `fold`, not on `item_type`.
+- reason: `rendering-strategy.md` prescribes alternate states over physics for folded documents; a per-state ratio would contradict the plate's true-proportion claim; the grid compares objects as they lie in the flat file.
+- notes:
+  - The admin suggests `panels × closed size` only as the open-size placeholder — the stored value must be measured (a tri-fold's tucked panel is cut narrower than 3 × closed).
+  - An open state without `dimensions_open` draws the unlabelled scale grid ("open size not recorded") — the existing honest state for no measurement claim.
+  - The admin-only `contraption` states model was not reused: it is never rendered on the site and has no per-state dimensions.
+  - Plan of record: `docs/brochure-fold-states-plan.md`.
+- date: 2026-09-03
+
 ### Item card field schema: spine + typed slots
 - status: confirmed
 - decision: The catalog card's fields are defined by a single declarative schema keyed by `item_type` (`src/shared/field-schema.js`), imported by both the admin form and `renderCard`, replacing the prior union-list-with-suppression. The card is a fixed spine — accession (`id`, shown as "ID", + `item_type`), `title`, responsibility (creator), `date` — followed by up to three type-specific slots, then physical (`extent` + `dimensions`), note, and riders (`related_ids`, `tags`). Status renders as a stamp, not a row. Scope is the card-using series (Consumption, Creation, Accumulation); Labor and Identity keep their custom views.

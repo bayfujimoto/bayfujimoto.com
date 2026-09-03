@@ -59,13 +59,13 @@ export const INSPECTION_ASSETS_SENTINEL = {
 // Build a type's metadata group from the shared schema: creator + typed slots,
 // plus extent/dimensions for physical types. Each becomes a text input whose
 // placeholder is the schema's example (the grammar reminder shown on focus).
+// A registry entry with `options` (e.g. `fold`) renders as a select.
 function schemaMetaGroup(itemType, id, label) {
-  const fields = [...adminFields(itemType), ...physicalFields(itemType)].map(f => ({
-    id: f.id,
-    label: f.label,
-    type: "text",
-    placeholder: f.example,
-  }));
+  const fields = [...adminFields(itemType), ...physicalFields(itemType)].map(f => (
+    f.options
+      ? { id: f.id, label: f.label, type: "select", options: f.options }
+      : { id: f.id, label: f.label, type: "text", placeholder: f.example }
+  ));
   return { id, label, fields };
 }
 
