@@ -421,16 +421,16 @@ body {
 }
 
 .series-subcollection-wrap {
-  overflow-x: auto;
-  overflow-y: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   /* Enable momentum touch scrolling. Also required on iOS for an overflow
      container nested inside a transformed ancestor (.layer-center) to scroll
-     by touch at all; touch-action keeps the horizontal pan from being
-     intercepted. Matches .browse-strip-wrap. */
+     by touch at all; touch-action keeps the vertical pan from being
+     intercepted. */
   -webkit-overflow-scrolling: touch;
-  touch-action: pan-x;
+  touch-action: pan-y;
   scrollbar-width: none;
-  max-width: 90vw;
+  max-height: 70vh;
   text-align: center;
 }
 .series-subcollection-wrap::-webkit-scrollbar { display: none; }
@@ -438,13 +438,12 @@ body {
 .series-subcollection-list {
   list-style: none;
   padding: 0;
-  padding-left: 2rem;
   margin: 0;
   display: inline-flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
-  gap: 0.75rem;
-  text-align: left;
+  gap: 0.25rem;
+  text-align: center;
 }
 
 .series-subcollection-btn {

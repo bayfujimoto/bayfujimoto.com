@@ -93,7 +93,7 @@ export function getTypeGroups(itemType) {
     case "bag":
       return [schemaMetaGroup("bag", "coffee-meta", "Coffee"), assetGroupWithThumb([
         { role: "front", allowCutout: true },
-        { role: "back", allowCutout: true },
+        { role: "back", allowCutout: true, skipThumbnail: true }, // thumbnail is the front's
       ])];
 
     case "game":

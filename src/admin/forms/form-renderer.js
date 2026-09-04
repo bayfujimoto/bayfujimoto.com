@@ -633,9 +633,12 @@ function makeInspectionAwareAssets(mode, currentData, handleChange, getItemId) {
   }
 
   if (mode === "card") {
-    // front (required) + back (optional)
+    // front (required) + back (optional). The record thumbnail is the front's,
+    // always: `back` is skipThumbnail so uploading or rotating the back first
+    // (or on an existing record, where no field has claimed the thumbnail yet)
+    // never puts the verso in the grid.
     const frontField = { id: "assets.front", label: "front", type: "asset-upload", assetRole: "front", allowCutout: true };
-    const backField  = { id: "assets.back",  label: "back (optional)", type: "asset-upload", assetRole: "back", allowCutout: true };
+    const backField  = { id: "assets.back",  label: "back (optional)", type: "asset-upload", assetRole: "back", allowCutout: true, skipThumbnail: true };
     handleChange._thumbSet = !!currentData.assets?.thumbnail;
     container.appendChild(makeAssetUploadField(frontField, currentData.assets?.front, handleChange, getItemId));
     container.appendChild(makeAssetUploadField(backField,  currentData.assets?.back,  handleChange, getItemId));
