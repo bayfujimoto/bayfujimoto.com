@@ -22,6 +22,9 @@ public/assets/
 *.webp
 *.glb
 *.gltf
+# …except the Guide card's desk-object stills: derived from the code's own
+# models and look (scripts/render-desk-thumbnails.js), so they version with it.
+!public/thumbnails/desk/*.png
 
 # Goodreads export — read by ingest/enrichment, never committed
 Goodreads Library Export.csv

@@ -31,6 +31,10 @@ export function setState(patch, { silent = false } = {}) {
   } else if ("series" in patch && patch.series !== state.series) {
     if (!("subcollection" in patch)) next.subcollection = null;
     if (!("view" in patch)) next.view = null;
+  } else if (patch.layer === "guide" || state.layer === "guide") {
+    // The guide borrows `view` for its frame key; it never carries into or out
+    // of the series layers.
+    if (!("view" in patch)) next.view = null;
   }
 
   Object.assign(state, next);
@@ -48,13 +52,7 @@ export function isValidSeries(s) {
   return VALID_SERIES.has(s);
 }
 
-// Desk-object click remap. The labor and accumulation objects keep their forms,
-// positions, and labels, but clicking each opens the other's browse view.
-// Applied to every desk-entry path (3D click, keyboard skip menu, hidden HTML
-// desk) so all input modes navigate identically. URLs and deep links are
-// unaffected — only the act of clicking a desk object is swapped.
-const DESK_CLICK_REMAP = { labor: "accumulation", accumulation: "labor" };
-
-export function deskTarget(seriesId) {
-  return DESK_CLICK_REMAP[seriesId] || seriesId;
-}
+// Desk-object click remap (labor box ↔ accumulation bundle) lives in the shared
+// desk-object table so the scene, the Guide card, and the build scripts agree;
+// re-exported here for the existing import sites.
+export { deskTarget } from "../shared/desk-objects.js";

@@ -12,9 +12,12 @@ function locationToState() {
 
   const [first, second] = parts;
 
-  // Guide is a top-level meta item
+  // Guide is a top-level meta item. /guide/<key>/ addresses one frame of its
+  // card (identity … accumulation); the bare /guide/ is the key frame. An
+  // unknown segment falls back to the key.
   if (first === "guide") {
-    return { layer: "guide", series: null, subcollection: null, view: null, item: null };
+    const view = second && isValidSeries(second) ? second : null;
+    return { layer: "guide", series: null, subcollection: null, view, item: null };
   }
 
   // Constellations — the lateral cross-series layer. Routes are slug-addressed
@@ -51,7 +54,7 @@ function locationToState() {
 // Derive the URL pathname + search from state
 function stateToURL(s) {
   if (s.layer === "desk") return "/";
-  if (s.layer === "guide") return "/guide/";
+  if (s.layer === "guide") return s.view ? `/guide/${s.view}/` : "/guide/";
 
   // Constellations: slug-addressed, no series sheet, no index route yet
   if (s.series === "constellations") {

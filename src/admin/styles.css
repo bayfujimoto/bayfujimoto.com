@@ -1233,27 +1233,18 @@ body.admin-gutter-dragging.dragging-h {
   background: transparent;
   padding: 0 1px;
 }
-.admin-guide-editor {
-  flex: 1;
-  width: 100%;
-  min-height: 220px;
-  resize: none;
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
+/* Guide form rows: textareas grow with their text (guide.js sizes them on
+   input); the intro gets room to read as a document. */
+.admin-guide-form { overflow-y: auto; flex: 1; min-height: 0; }
+.admin-field--guide textarea {
+  min-height: 2.2em;
+  resize: vertical;
+  overflow: hidden;
   line-height: 1.6;
-  color: var(--fg);
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-faint);
-  border-radius: 2px;
-  padding: 12px 14px;
 }
-.admin-guide-editor:focus {
-  outline: none;
-  border-color: var(--fg);
-  background: var(--bg);
-}
+.admin-guide-form .admin-guide-hint { padding: 8px 8px 0; }
 @media (max-width: 700px) {
-  .admin-guide-editor { font-size: 16px; }  /* ≥16px: suppress iOS zoom-on-focus */
+  .admin-field--guide textarea { font-size: 16px; }  /* ≥16px: suppress iOS zoom-on-focus */
 }
 
 /* Top-level Guide node — a touch of space to set it off from the archive tree. */

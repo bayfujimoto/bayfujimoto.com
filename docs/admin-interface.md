@@ -103,6 +103,7 @@ The state text color reflects the current operation kind: yellow for pending edi
 | `src/admin/views/edit-item.js`        | edit form view                                                                     |
 | `src/admin/views/new-item.js`         | new-item wizard (type → depth → form)                                              |
 | `src/admin/views/log.js`              | Log pane (pending list + commit button + session history)                          |
+| `src/admin/views/guide.js`            | Guide form — a description row per desk object + the intro; writes `src/content/guide.md` (front matter + body) |
 | `src/admin/forms/`                    | form-renderer + base/type field definitions                                        |
 | `src/admin/lib/`                      | api.js (load/commit), serializer.js, id-generator.js, slug-generator.js, upload.js |
 | `src/styles/tokens.css` (admin block) | cool-grey + Solarized palette under `[data-theme="admin"]`                         |

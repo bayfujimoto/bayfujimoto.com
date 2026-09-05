@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Desk-object thumbnails — render harness</title>
+  <style>
+    :root { color-scheme: dark; }
+    body { margin: 0; padding: 2rem; background: #16140f; color: #e8e0d0; font: 14px/1.5 ui-monospace, "Commit Mono", Menlo, monospace; }
+    h1 { font-size: 1rem; font-weight: normal; margin: 0 0 1rem; }
+    p { color: #a89f8d; max-width: 60ch; margin: 0 0 1.5rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.5rem; }
+    figure { margin: 0; border: 1px solid #3a352b; padding: 0.75rem; background: rgba(232,224,208,0.02); }
+    figure canvas, figure img { display: block; width: 100%; aspect-ratio: 1; background:
+      repeating-conic-gradient(#1e1b15 0 25%, #16140f 0 50%) 0 0 / 24px 24px; }
+    figcaption { display: flex; justify-content: space-between; margin-top: 0.5rem; color: #a89f8d; }
+    button { font: inherit; background: none; color: #e8e0d0; border: 1px solid #3a352b; padding: 0.3rem 0.7rem; cursor: pointer; }
+    button:hover { border-color: #e8e0d0; }
+    #status { margin: 1.5rem 0 0; color: #a89f8d; }
+  </style>
+</head>
+<body>
+  <h1>Desk-object thumbnails</h1>
+  <p>Renders each desk object with the Guide plate's exact look and opening
+     view (src/app/model-look.js), at 512 px on a transparent ground.
+     Save each with its button, or run <code>npm run thumbs:desk</code> to write
+     all six to <code>public/thumbnails/desk/&lt;frame&gt;.png</code>.</p>
+  <div class="grid" id="grid"></div>
+  <p id="status">loading…</p>
+  <button id="all" type="button" hidden>download all</button>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

@@ -3,6 +3,7 @@ import matter from "gray-matter";
 import { readFileSync, writeFileSync, mkdirSync } from "fs";
 import { dirname } from "path";
 import { goodreadsKey, readingKey } from "./utils/goodreads-identity.js";
+import { DESK_OBJECTS, objectFor } from "../src/shared/desk-objects.js";
 
 // Series definitions: order, labels, and container metaphors
 const SERIES = {
@@ -31,15 +32,74 @@ const GUIDE = {
   order: 5,
 };
 
-// Read the editable guide markdown (composed in the admin's Guide editor and
+// The Guide's frames, in strip order: the key first, then the five series in
+// desk order. Each frame describes the series its object OPENS (the labor box
+// opens Accumulation, the bundle opens Labor — see DESK_CLICK_REMAP), so the
+// frame keyed "labor" carries the bundle. docs/guide-inspection-card-plan.md.
+const GUIDE_FRAME_KEYS = ["key", "identity", "labor", "consumption", "creation", "accumulation"];
+
+// Read the editable guide file (composed in the admin's Guide editor and
 // committed to src/content/guide.md). Stored outside the records glob so it is
-// never parsed as a record; an absent file just yields empty content.
-function readGuideContent() {
+// never parsed as a record. Front matter carries the per-object notes under
+// `objects`; the body is the intro (the key frame's note). A file with no front
+// matter still builds — gray-matter yields an empty `data`.
+function readGuide() {
+  let raw = "";
   try {
-    return readFileSync("src/content/guide.md", "utf8");
+    raw = readFileSync("src/content/guide.md", "utf8");
   } catch {
-    return "";
+    return { content: "", intro: "", objects: {} };
   }
+  const { data, content } = matter(raw);
+  const objects = {};
+  for (const [key, val] of Object.entries(data.objects || {})) {
+    if (!GUIDE_FRAME_KEYS.includes(key)) {
+      console.warn(`[build-data] guide.md: unknown object key "${key}" ignored`);
+      continue;
+    }
+    objects[key] = {
+      holds: typeof val?.holds === "string" ? val.holds.trim() : "",
+      description: typeof val?.description === "string" ? val.description.trim() : "",
+    };
+  }
+  return { content: raw, intro: content.trim(), objects };
+}
+
+// Resolve the Guide's frames against the series definitions, the shared
+// desk-object table, and the published record counts. `object` is the physical
+// noun of what sits on the desk; `container` is the series' metaphor — for the
+// swapped pair they differ on purpose, and the card shows both.
+function buildGuideFrames(archive, objects) {
+  return GUIDE_FRAME_KEYS.map((key) => {
+    const isKey = key === "key";
+    const objId = isKey ? "guide" : objectFor(key);
+    const obj = DESK_OBJECTS[objId];
+    const def = isKey ? GUIDE : SERIES[key];
+    const s = isKey ? null : archive.series[key];
+    const authored = objects[key] || {};
+    let count = null, subcount = null;
+    if (s) {
+      count = (s.items || []).filter(isPublished).length;
+      const subs = Object.values(s.subcollections || {});
+      for (const sub of subs) count += (sub.items || []).filter(isPublished).length;
+      subcount = subs.length || null;
+    } else {
+      count = countItems(archive, isPublished);
+    }
+    return {
+      key,
+      kind: isKey ? "meta" : "series",
+      label: def.label,
+      container: def.container,
+      holds: authored.holds || def.subtitle,
+      object: obj.noun,
+      model: obj.file,
+      thumbnail: `/thumbnails/desk/${key}.png`,
+      count,
+      subcollections: subcount,
+      description: isKey ? "" : authored.description,
+    };
+  });
 }
 
 function resolveAssetPaths(assets) {
@@ -143,7 +203,8 @@ function buildArchive() {
     ignore: ["src/content/_templates/**", "src/content/guide.md", "src/content/constellations/**"],
   });
 
-  const archive = { series: {}, guide: { ...GUIDE, content: readGuideContent() } };
+  const guideSrc = readGuide();
+  const archive = { series: {}, guide: { ...GUIDE, content: guideSrc.content, intro: guideSrc.intro, objects: guideSrc.objects } };
   archive.constellations = readConstellationRegistry();
 
   // Track every frontmatter id → source file(s) so we can fail loudly on any
@@ -326,6 +387,9 @@ function buildArchive() {
     ].filter(Boolean).join("\n");
     throw new Error(`build-data: ${dupIds.length} duplicate id(s), ${dupViewings.length} duplicate viewing(s), ${dupBooks.length} duplicate book(s) found —\n${detail}`);
   }
+
+  // Guide frames need the finished series (published counts), so they resolve last.
+  archive.guide.frames = buildGuideFrames(archive, guideSrc.objects);
 
   mkdirSync(dirname("public/data/archive.json"), { recursive: true });
 

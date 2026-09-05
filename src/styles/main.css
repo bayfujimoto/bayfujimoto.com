@@ -1319,6 +1319,69 @@ body {
 }
 .item-card__field--photo.item-card__field--zoomed.is-grabbing { cursor: grabbing; }
 
+/* Model plate (Guide card): the desk object itself, turning. The canvas fills
+   the square field; OrbitControls drives it (drag to turn), so touch-action
+   none keeps the browser from scrolling the page mid-turn. When WebGL is
+   unavailable the frame's pre-rendered still stands in, whole and padded. */
+.item-card__field--model {
+  padding: 0.75rem;
+  cursor: grab;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.item-card__field--model.is-grabbing { cursor: grabbing; }
+.item-card__model-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+.item-card__model-fallback {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+/* Guide note — Markdown prose (intro on the key frame, the object's
+   description otherwise) in the note's serif register. */
+.item-card__note--guide .item-card__note-body > :first-child { margin-top: 0; }
+.item-card__note--guide .item-card__note-body > :last-child { margin-bottom: 0; }
+.item-card__note--guide .item-card__note-body p,
+.item-card__note--guide .item-card__note-body li {
+  font-family: var(--font-serif);
+  font-size: var(--text-base);
+  line-height: var(--leading-loose);
+  color: var(--overlay-text);
+  opacity: 0.9;
+  max-width: 46ch;
+}
+.item-card__note--guide .item-card__note-body p { margin: 0 0 0.9rem; }
+.item-card__note--guide .item-card__note-body ul,
+.item-card__note--guide .item-card__note-body ol { margin: 0 0 0.9rem; padding-left: 1.2rem; }
+.item-card__note--guide .item-card__note-body li { margin-bottom: 0.35rem; }
+.item-card__note--guide .item-card__note-body strong { font-weight: var(--weight-normal); opacity: 0.85; }
+.item-card__note--guide .item-card__note-body h1,
+.item-card__note--guide .item-card__note-body h2,
+.item-card__note--guide .item-card__note-body h3 {
+  font-family: var(--font-mono);
+  font-weight: var(--weight-normal);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: lowercase;
+  color: var(--overlay-muted);
+  margin: 1.2rem 0 0.5rem;
+}
+.item-card__note--guide .item-card__note-body a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--border);
+}
+.item-card__note--guide .item-card__note-body a:hover { opacity: 0.75; }
+/* The open → control sits with the counter at the right of the foot. */
+.item-card__open { margin-left: auto; }
+
 /* Contact strip — a multi-exposure record's whole set, ruled off between the
    field and the plate-foot. Each exposure shows in its entirety inside its
    padded square cell; the selected frame reads at full strength. */
@@ -1476,63 +1539,8 @@ body {
 .layer-nav--prev { left: 0.5rem; }
 .layer-nav--next { right: 0.5rem; }
 
-/* ── Guide content ───────────────────────────────────────────────────────────── */
-/* Guide prose matches the biography/CV document body (size, colour, rhythm);
-   the bordered box, scroll, and caret come from the .bio-document* classes. */
-.guide-content {
-  font-size: var(--text-base);
-  line-height: var(--leading-loose);
-  color: var(--overlay-text);
-  text-align: left;
-}
-/* Body copy drops to the secondary colour; headings, the lead line, and rules
-   stay at the primary colour. */
-.guide-content p,
-.guide-content ul,
-.guide-content ol,
-.guide-content blockquote { color: var(--overlay-muted); }
-.guide-content > :first-child { color: var(--overlay-text); margin-top: 0; }
-.guide-content p { margin: 0 0 1rem; }
-.guide-content ul { margin: 0 0 1rem; padding-left: 1.25rem; }
-.guide-content ol { margin: 0 0 1rem; padding-left: 1.35rem; }
-.guide-content li { margin-bottom: 0.4rem; }
-.guide-content strong { font-weight: var(--weight-normal); opacity: 0.85; }
-.guide-content em { font-style: italic; }
-.guide-content h1,
-.guide-content h2,
-.guide-content h3,
-.guide-content h4 {
-  color: var(--overlay-text);
-  font-weight: var(--weight-normal);
-  line-height: 1.25;
-  margin: 1.6rem 0 0.7rem;
-}
-.guide-content h1 { font-size: var(--text-lg); }
-.guide-content h2 { font-size: var(--text-md); }
-.guide-content h3,
-.guide-content h4 { font-size: var(--text-base); letter-spacing: 0.02em; opacity: 0.9; }
-.guide-content a {
-  color: var(--overlay-text);
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-.guide-content a:hover { opacity: 0.75; }
-.guide-content code {
-  font-family: var(--font-mono);
-  font-size: 0.88em;
-  padding: 0 0.3em;
-}
-.guide-content blockquote {
-  margin: 0 0 1rem;
-  padding-left: 0.9rem;
-  border-left: 1px solid var(--overlay-muted);
-}
-.guide-content hr {
-  border: none;
-  border-top: 1px solid var(--overlay-muted);
-  opacity: 0.4;
-  margin: 1.4rem 0;
-}
+/* Guide prose now renders inside the Guide card's note (.item-card__note--guide);
+   the standalone .guide-content box was retired 2026-09-05. */
 
 /* ── Keyboard skip link ──────────────────────────────────────────────────────── */
 .scene-skip-link {
@@ -1624,13 +1632,6 @@ body {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-}
-
-/* Guide: box shrinks to fit its text, capped at 80vh; scrolls only when taller.
-   The .layer-center parent keeps it vertically centered as it grows. */
-.bio-document__box--fit {
-  height: auto;
-  max-height: 80vh;
 }
 
 .bio-document__scroll {

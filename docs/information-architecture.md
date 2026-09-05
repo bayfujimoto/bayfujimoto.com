@@ -39,8 +39,8 @@ Archive metadata and site information. Visually distinct from the five series, s
 
 Interaction type: **contraption**
 - Object: key with paper tag (unattached, not pinned to the desk)
-- Behavior: clicking causes the key to rotate half-turn, revealing the reverse face of the tag
-- Content: finding aid, sitemap, site philosophy, archive metadata
+- Behavior (as built, 2026-09-05): clicking opens the Guide as a catalog card whose contact strip holds the six desk objects — the key first, then the five series in desk order. The plate shows the selected object's model, turning; the fields describe the object and what it holds; the note is the intro on the key frame and the object's description otherwise. `open →` leads to the frame's series. Frames are addressable at `/guide/<key>/`. See decisions.md → "Guide — inspection card of desk objects".
+- Content: finding aid (per-object notes), archive metadata (counts, containers, model files), the intro
 - Metaphorical grounding: Derrida's archon; the archivist's custody and interpretation; specimen tags on archival items
 
 ### Identity — dossier
@@ -164,7 +164,8 @@ Clicking any item opens an inspection modal. The browse view behind dims and blu
 
 ```
 /                              homepage / desk
-/guide/                        archive guide, sitemap, site philosophy
+/guide/                        archive guide — the key frame (intro)
+/guide/<series>/               archive guide — one desk object's frame
 
 /identity/                     identity category interior
 /identity/biography/           biography

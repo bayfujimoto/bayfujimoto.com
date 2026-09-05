@@ -302,6 +302,14 @@ Its purpose is to prevent drift, repetition, and silent contradictions over time
 
 ---
 
+### Guide — inspection card of desk objects
+- status: confirmed
+- decision: The Guide opens as a catalog card in the photo card's grammar (`buildCardWrap`, Guide mode), not as a prose box. Its frames are the six desk objects in strip order — the key first, then identity, labor, consumption, creation, accumulation — each a still in the contact strip and, on the plate, the object's own 3D model (drag to turn; a slow idle rotation that stops for good once the visitor takes hold; none under `prefers-reduced-motion`; the still stands in when WebGL is unavailable). The fields column is rebuilt per frame: `object` (what sits on the desk) and `type` (`meta` / `series`), `title`, `container` (printed only where it differs from the object), `holds`, `extent` (published record and subcollection counts), `model` (the GLB filename), and a `note`. The key frame's note is the intro (the body of `src/content/guide.md`); each object's note is its `description` from the file's front matter (`objects.<key>.description`), edited in the admin's Guide form. Each frame describes the series its object **opens** — the box frame is Accumulation and the bundle frame Labor, following `DESK_CLICK_REMAP` — so the Guide tells the truth about what clicking does. Frames are addressable at `/guide/<key>/` (the bare `/guide/` is the key); stepping replaces rather than pushes history, so Back leaves the Guide in one step. The foot gains `open →` to the frame's series (absent on the key). Thumbnails are pre-rendered by `scripts/render-desk-thumbnails.js` to `public/thumbnails/desk/<key>.png` and committed with the code. The six model filenames and the click remap now live in one shared table, `src/shared/desk-objects.js`, used by the scene, the card, the build, and the scripts.
+- reason: The Guide is the finding aid; it should describe the objects a visitor actually sees on the desk, in the archive's one inspection grammar (see "Labor items — catalog-card inspection"), rather than in a separate prose treatment. The plate carries the object because the object is the thing being described; the plate is presentational, not calibrated, and the scale note says so. Plan: `docs/guide-inspection-card-plan.md`.
+- date: 2026-09-05
+
+---
+
 ## Provisional decisions
 
 ### Tech stack
@@ -442,9 +450,8 @@ Its purpose is to prevent drift, repetition, and silent contradictions over time
 - revisit_in_phase: selective 3D enhancement
 
 ### Public archive guide depth
-- status: deferred
-- decision: Defer whether the archive guide is minimal or essay-like until wireframes and early content volume are clearer.
-- revisit_in_phase: text-first wireframes
+- status: resolved (2026-09-05)
+- decision: Neither minimal nor essay-like: one short intro paragraph plus a note per desk object, read frame by frame on the Guide card. See "Guide — inspection card of desk objects".
 
 ---
 

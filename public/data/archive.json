@@ -318,6 +318,27 @@
           "label": "films",
           "items": [
             {
+              "id": "FILM-2026-554",
+              "slug": "tony-2026-2026-09-03",
+              "title": "Tony",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2026",
+              "director": "",
+              "watch_date": "2026-09-03",
+              "display_date": "September 3, 2026",
+              "sort_date": "2026-09-03",
+              "rating": 4.5,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/tony-2026/",
+              "assets": {
+                "backdrop": "https://a.ltrbxd.com/resized/alternative-backdrop/1/2/0/9/0/0/1/tmdb/5u3907N7TqkY138EO4frFwQ4Q4P-1200-1200-675-675-crop-000000.jpg?v=f818fb4200",
+                "poster": "https://a.ltrbxd.com/resized/film-poster/1/2/0/9/0/0/1/1209001-tony-2026-0-600-0-900-crop.jpg?v=63ce7b9234"
+              }
+            },
+            {
               "id": "FILM-2026-553",
               "slug": "something-very-bad-is-going-to-happen-2026-2026-09-02",
               "title": "Something Very Bad Is Going to Happen",
@@ -16248,6 +16269,66 @@
               }
             },
             {
+              "id": "PHOTO-2026-007",
+              "slug": "wencun-village-2025-03-20",
+              "series": "creation",
+              "subcollection": "photos",
+              "item_type": "photo",
+              "status": "published",
+              "display_date": "March 20, 2025",
+              "sort_date": "2025-03-20",
+              "title": "Wencun Village",
+              "place": "Wencun, China",
+              "camera": "Fujifilm X100T",
+              "assets": {
+                "gallery": [
+                  {
+                    "file": "PHOTO-2026-007-gallery-07.jpeg?v=37a95ba6o",
+                    "thumbnail": "PHOTO-2026-007-gallery-07-thumb.jpg?v=37a95ba6o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-007-gallery-01.jpeg?v=88d135efo",
+                    "thumbnail": "PHOTO-2026-007-gallery-01-thumb.jpg?v=88d135efo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-007-gallery-02.jpeg?v=9d5a54d5o",
+                    "thumbnail": "PHOTO-2026-007-gallery-02-thumb.jpg?v=9d5a54d5o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-007-gallery-03.jpeg?v=ad069b70o",
+                    "thumbnail": "PHOTO-2026-007-gallery-03-thumb.jpg?v=ad069b70o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-007-gallery-04.jpeg?v=0fe65ff7o",
+                    "thumbnail": "PHOTO-2026-007-gallery-04-thumb.jpg?v=0fe65ff7o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-007-gallery-05.jpeg?v=a93cfd11o",
+                    "thumbnail": "PHOTO-2026-007-gallery-05-thumb.jpg?v=a93cfd11o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-007-gallery-06.jpeg?v=bf2a5e6ao",
+                    "thumbnail": "PHOTO-2026-007-gallery-06-thumb.jpg?v=bf2a5e6ao",
+                    "caption": "",
+                    "alt": ""
+                  }
+                ],
+                "thumbnail": "PHOTO-2026-007-gallery-07-thumb.jpg?v=37a95ba6o"
+              }
+            },
+            {
               "id": "PHOTO-2026-006",
               "slug": "sw-road-trip-2024-12-20",
               "series": "creation",
@@ -16781,6 +16862,24 @@
       "subcollections": {},
       "items": [
         {
+          "id": "EPH-2026-028",
+          "slug": "custer-state-park-nd-2026-08-22",
+          "series": "accumulation",
+          "item_type": "ticket",
+          "status": "published",
+          "display_date": "August 22, 2026",
+          "sort_date": "2026-08-22",
+          "title": "Admission Card",
+          "issuer": "South Dakota State Parks",
+          "place": "Custer State Park, ND",
+          "dimensions": "84 x 50",
+          "inspection": "card",
+          "assets": {
+            "front": "EPH-2026-028-front.png?v=1efa666fc5x2",
+            "thumbnail": "EPH-2026-028-front-thumb.webp?v=1efa666fc5x2"
+          }
+        },
+        {
           "id": "EPH-2026-027",
           "slug": "berkeley-ca-usa-2026-07-06",
           "series": "accumulation",
@@ -16834,6 +16933,28 @@
               }
             ],
             "thumbnail": "EPH-2026-022-page-01-thumb.webp?v=72ec3cd6c20x2"
+          }
+        },
+        {
+          "id": "EPH-2026-029",
+          "slug": "avenue-of-the-giants-ca-2026-06-28",
+          "series": "accumulation",
+          "item_type": "brochure",
+          "status": "published",
+          "display_date": "June 28, 2026",
+          "sort_date": "2026-06-28",
+          "title": "Auto Tour Map",
+          "issuer": "Humboldt Redwoods State Park",
+          "place": "Avenue of the Giants, CA",
+          "dimensions": "93 x 210",
+          "dimensions_open": "280 x 210",
+          "inspection": "card",
+          "assets": {
+            "front": "EPH-2026-029-front.png?v=e610c1b7o",
+            "thumbnail": "EPH-2026-029-front-thumb.jpg?v=e610c1b7o",
+            "back": "EPH-2026-029-back.png?v=54c85ed8o",
+            "inside": "EPH-2026-029-inside.png?v=17ed22e6o",
+            "outside": "EPH-2026-029-outside.png?v=fbe73e4bo"
           }
         },
         {
@@ -16935,6 +17056,47 @@
             "back": "EPH-2026-019-back.jpg?v=20260902"
           },
           "dimensions": "200 x 89"
+        },
+        {
+          "id": "EPH-2026-031",
+          "slug": "petrified-forest-national-park-2026-06-03",
+          "series": "accumulation",
+          "item_type": "document",
+          "status": "published",
+          "display_date": "June 3, 2026",
+          "sort_date": "2026-06-03",
+          "title": "Postcard",
+          "issuer": "National Parks Service",
+          "place": "Petrified Forest National Park",
+          "inspection": "card",
+          "dimensions": "108 x 152",
+          "assets": {
+            "back": "EPH-2026-031-back.png?v=f41eb1b0c20x2",
+            "thumbnail": "EPH-2026-031-front-thumb.webp?v=942269ecc20x2",
+            "front": "EPH-2026-031-front.png?v=942269ecc20x2"
+          }
+        },
+        {
+          "id": "EPH-2026-030",
+          "slug": "petrified-forest-national-park-2026-06-03",
+          "series": "accumulation",
+          "item_type": "brochure",
+          "status": "published",
+          "display_date": "June 3, 2026",
+          "sort_date": "2026-06-03",
+          "title": "Trees to Stone",
+          "issuer": "National Parks Service",
+          "place": "Petrified Forest National Park",
+          "dimensions": "177 x 215",
+          "dimensions_open": "354 x 215",
+          "inspection": "card",
+          "assets": {
+            "front": "EPH-2026-030-front.png?v=7a51ac25o",
+            "thumbnail": "EPH-2026-030-front-thumb.jpg?v=7a51ac25o",
+            "back": "EPH-2026-030-back.png?v=86282c27o",
+            "inside": "EPH-2026-030-inside.png?v=ba2561fdo",
+            "outside": "EPH-2026-030-outside.png?v=6fdb8d9co"
+          }
         },
         {
           "id": "EPH-2026-026",
@@ -17105,7 +17267,114 @@
     "container": "metadata",
     "subtitle": "finding aid, sitemap, site notes",
     "order": 5,
-    "content": "# Guide\n\nMemory keeps revising itself: softening, reordering, letting things go on its own schedule. A record holds still. A date stays the date; a ticket keeps what it carried the night I saved it. So these are some of my memories, set down where they'll stay put: records, scans, logs, and the small printed things that survived a pocket or a suitcase or my glovebox.\n\n## Arrangement\n\nThe collection is organized into five series:\n\n- **Identity** — biography, CV, contact.\n- **Labor** — projects, drawings, specifications, reports.\n- **Consumption** — films, books, music, coffee, games.\n- **Creation** — sketches, photos, prototypes, videos, notes.\n- **Accumulation** — tickets, receipts, brochures, printed matter."
+    "content": "---\nobjects:\n  key:\n    holds: finding aid, sitemap, site notes\n  identity:\n    description: >-\n      A dossier. The archivist on paper: the current biography, the CV kept\n      as a dated series of versions, and the ways to reach him. Opened, it\n      reads as a file rather than a profile.\n  labor:\n    description: >-\n      A bundle of paper. Work done for others and for pay: projects,\n      drawings, specifications, reports, filed by project rather than by\n      date, with the thesis of each recorded alongside the sheets.\n  consumption:\n    description: >-\n      A sphere, the one object without an inside. What was taken in: films\n      logged as viewings, books as readings, music, coffee, games. Titles\n      are transcribed as given; the ratings are the archivist's.\n  creation:\n    description: >-\n      A stamp. What was made without a client: sketches, photographs,\n      prototypes, videos, notes. Photographs are kept whole as sets, stepped\n      through on the plate one exposure at a time.\n  accumulation:\n    description: >-\n      A box. The small printed things that survived a pocket, a suitcase, or\n      a glovebox: tickets, receipts, brochures, printed matter. Each is\n      scanned both sides and measured, and shown on the plate at true scale.\n---\nMemory keeps revising itself: softening, reordering, letting things go on its own schedule. A record holds still. A date stays the date; a ticket keeps what it carried the night I saved it. So these are some of my memories, set down where they'll stay put: records, scans, logs, and the small printed things that survived a pocket or a suitcase or my glovebox.\n\n## Arrangement\n\nThe collection is organized into five series:\n\n- **Identity** — biography, CV, contact.\n- **Labor** — projects, drawings, specifications, reports.\n- **Consumption** — films, books, music, coffee, games.\n- **Creation** — sketches, photos, prototypes, videos, notes.\n- **Accumulation** — tickets, receipts, brochures, printed matter.\n",
+    "intro": "Memory keeps revising itself: softening, reordering, letting things go on its own schedule. A record holds still. A date stays the date; a ticket keeps what it carried the night I saved it. So these are some of my memories, set down where they'll stay put: records, scans, logs, and the small printed things that survived a pocket or a suitcase or my glovebox.\n\n## Arrangement\n\nThe collection is organized into five series:\n\n- **Identity** — biography, CV, contact.\n- **Labor** — projects, drawings, specifications, reports.\n- **Consumption** — films, books, music, coffee, games.\n- **Creation** — sketches, photos, prototypes, videos, notes.\n- **Accumulation** — tickets, receipts, brochures, printed matter.",
+    "objects": {
+      "key": {
+        "holds": "finding aid, sitemap, site notes",
+        "description": ""
+      },
+      "identity": {
+        "holds": "",
+        "description": "A dossier. The archivist on paper: the current biography, the CV kept as a dated series of versions, and the ways to reach him. Opened, it reads as a file rather than a profile."
+      },
+      "labor": {
+        "holds": "",
+        "description": "A bundle of paper. Work done for others and for pay: projects, drawings, specifications, reports, filed by project rather than by date, with the thesis of each recorded alongside the sheets."
+      },
+      "consumption": {
+        "holds": "",
+        "description": "A sphere, the one object without an inside. What was taken in: films logged as viewings, books as readings, music, coffee, games. Titles are transcribed as given; the ratings are the archivist's."
+      },
+      "creation": {
+        "holds": "",
+        "description": "A stamp. What was made without a client: sketches, photographs, prototypes, videos, notes. Photographs are kept whole as sets, stepped through on the plate one exposure at a time."
+      },
+      "accumulation": {
+        "holds": "",
+        "description": "A box. The small printed things that survived a pocket, a suitcase, or a glovebox: tickets, receipts, brochures, printed matter. Each is scanned both sides and measured, and shown on the plate at true scale."
+      }
+    },
+    "frames": [
+      {
+        "key": "key",
+        "kind": "meta",
+        "label": "Guide",
+        "container": "metadata",
+        "holds": "finding aid, sitemap, site notes",
+        "object": "key",
+        "model": "desk-guide-key.glb",
+        "thumbnail": "/thumbnails/desk/key.png",
+        "count": 763,
+        "subcollections": null,
+        "description": ""
+      },
+      {
+        "key": "identity",
+        "kind": "series",
+        "label": "Identity",
+        "container": "dossier",
+        "holds": "biography, CV, contact",
+        "object": "dossier",
+        "model": "desk-identity-dossier.glb",
+        "thumbnail": "/thumbnails/desk/identity.png",
+        "count": 11,
+        "subcollections": 3,
+        "description": "A dossier. The archivist on paper: the current biography, the CV kept as a dated series of versions, and the ways to reach him. Opened, it reads as a file rather than a profile."
+      },
+      {
+        "key": "labor",
+        "kind": "series",
+        "label": "Labor",
+        "container": "binder",
+        "holds": "projects, drawings, specifications, reports",
+        "object": "bundle",
+        "model": "desk-accumulation-bundle.glb",
+        "thumbnail": "/thumbnails/desk/labor.png",
+        "count": 1,
+        "subcollections": null,
+        "description": "A bundle of paper. Work done for others and for pay: projects, drawings, specifications, reports, filed by project rather than by date, with the thesis of each recorded alongside the sheets."
+      },
+      {
+        "key": "consumption",
+        "kind": "series",
+        "label": "Consumption",
+        "container": "ledger",
+        "holds": "films, books, music, coffee, games",
+        "object": "sphere",
+        "model": "desk-consumption-sphere.glb",
+        "thumbnail": "/thumbnails/desk/consumption.png",
+        "count": 719,
+        "subcollections": 5,
+        "description": "A sphere, the one object without an inside. What was taken in: films logged as viewings, books as readings, music, coffee, games. Titles are transcribed as given; the ratings are the archivist's."
+      },
+      {
+        "key": "creation",
+        "kind": "series",
+        "label": "Creation",
+        "container": "sketchbook",
+        "holds": "sketches, photos, prototypes, videos, notes",
+        "object": "stamp",
+        "model": "desk-creation-stamp.glb",
+        "thumbnail": "/thumbnails/desk/creation.png",
+        "count": 14,
+        "subcollections": 5,
+        "description": "A stamp. What was made without a client: sketches, photographs, prototypes, videos, notes. Photographs are kept whole as sets, stepped through on the plate one exposure at a time."
+      },
+      {
+        "key": "accumulation",
+        "kind": "series",
+        "label": "Accumulation",
+        "container": "flat-file",
+        "holds": "tickets, receipts, brochures, printed matter",
+        "object": "box",
+        "model": "desk-labor-box.glb",
+        "thumbnail": "/thumbnails/desk/accumulation.png",
+        "count": 18,
+        "subcollections": null,
+        "description": "A box. The small printed things that survived a pocket, a suitcase, or a glovebox: tickets, receipts, brochures, printed matter. Each is scanned both sides and measured, and shown on the plate at true scale."
+      }
+    ]
   },
   "constellations": {
     "2026-lassen-volcanic": {
@@ -17454,9 +17723,9 @@
     }
   },
   "_counters": {
-    "EPH": 27,
-    "FILM": 553,
-    "BOOK": 364,
+    "EPH": 31,
+    "FILM": 554,
+    "BOOK": 384,
     "MUSIC": 8,
     "COFFEE": 2,
     "GAME": 4,

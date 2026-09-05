@@ -13,6 +13,7 @@
     "enrich:books:covers": "node scripts/enrich-book-covers.js",
     "enrich:books:dimensions": "node scripts/enrich-book-dimensions.js",
     "strip:models": "node scripts/strip-model-textures.js",
+    "thumbs:desk": "node scripts/render-desk-thumbnails.js",
     "backfill:display": "node scripts/backfill-display-sizes.js",
     "cutout": "node scripts/cutout-red-background.js",
     "test": "node scripts/cutout-selftest.js",
@@ -39,6 +40,7 @@
     "gray-matter": "^4.0.3",
     "js-yaml": "^4.1.0",
     "meshoptimizer": "^1.1.1",
+    "playwright-core": "^1.63.0",
     "sharp": "^0.34.5",
     "vite": "^6.0.0"
   }

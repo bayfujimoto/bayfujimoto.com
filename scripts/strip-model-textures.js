@@ -30,19 +30,13 @@ import { ALL_EXTENSIONS } from "@gltf-transform/extensions";
 import { prune } from "@gltf-transform/functions";
 import draco3d from "draco3d";
 import { MeshoptDecoder, MeshoptEncoder } from "meshoptimizer";
+import { DESK_OBJECTS } from "../src/shared/desk-objects.js";
 
 const DRY_RUN = process.argv.includes("--dry-run");
 
-// Object models that sit on the desk. Mirrors the modelFile mapping in
-// src/app/scene.js. The desk (desk.glb) is deliberately excluded.
-const OBJECT_MODELS = [
-  "desk-identity-dossier.glb",
-  "desk-labor-box.glb",
-  "desk-consumption-sphere.glb",
-  "desk-creation-stamp.glb",
-  "desk-accumulation-bundle.glb",
-  "desk-guide-key.glb",
-];
+// Object models that sit on the desk, from the shared table
+// (src/shared/desk-objects.js). The desk (desk.glb) is deliberately excluded.
+const OBJECT_MODELS = Object.values(DESK_OBJECTS).map((o) => o.file);
 
 const SRC_PREFIX = "models/";
 const DEST_PREFIX = "models/untextured/";

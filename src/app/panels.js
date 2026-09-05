@@ -4,6 +4,7 @@ import { imageUrl } from "./image-url.js";
 import { setSeriesInfo, pauseSceneRender, resumeSceneRender } from "./scene.js";
 import { resolveCreator, resolveSlots, titleIsGiven, isFolded } from "../shared/field-schema.js";
 import { mdToHtml } from "./markdown.js";
+import { mountModelPlate } from "./model-plate.js";
 
 let archive = null;
 const app = document.getElementById("app");
@@ -180,7 +181,7 @@ function stackDepth(state) {
 
 function restoreFromState(state) {
   if (state.layer === "guide") {
-    pushLayerForState({ layer: "guide" }, true);
+    pushLayerForState({ layer: "guide", view: state.view || null }, true);
     return;
   }
   const skipSeriesSheet = FLAT_URL_SERIES.has(state.series) ||
@@ -200,7 +201,7 @@ function restoreFromState(state) {
 function pushLayerForState(state, silent = false) {
   switch (state.layer) {
     case "guide": {
-      pushSheet(makeGuideSheet());
+      pushSheet(makeGuideSheet(state.view));
       break;
     }
     case "series": {
@@ -433,57 +434,58 @@ function makeSeriesSheet(seriesKey) {
 }
 
 // ── Guide sheet ───────────────────────────────────────────────────────────────
+// The Guide is a catalog card of the photo card's grammar whose frames are the
+// six desk objects: the key first, then the five series in desk order. The
+// plate carries the object itself (turning); the fields column describes the
+// object and what it holds; the note is the intro on the key frame and each
+// object's description otherwise. Frames are addressable at /guide/<key>/.
+// docs/guide-inspection-card-plan.md.
 
-function makeGuideSheet() {
+const GUIDE_DEFAULT_FRAME = "key";
+
+function makeGuideSheet(frameKey) {
   const veil = makeVeil(() => navigate({ layer: "desk" }));
   const content = makeContent();
+  content.classList.add("layer-content--item-card");
 
-  // Same document container as biography / CV: bordered box, scroll, caret.
-  const center = el("div", "layer-center");
+  const frames = archive.guide?.frames || [];
+  const frameFor = (key) => frames.find(f => f.key === (key || GUIDE_DEFAULT_FRAME)) || frames[0] || null;
 
-  const doc = el("div", "bio-document");
-  doc.setAttribute("role", "document");
-  doc.setAttribute("aria-label", "Archive guide");
-
-  const scroll = el("div", "bio-document__scroll");
-  const inner = el("div", "guide-content");
-  // Render the guide composed in the admin (archive.guide.content, Markdown).
-  // Falls back to a short note if nothing has been written yet.
-  const md = (archive.guide && archive.guide.content) || "";
-  inner.innerHTML = md.trim()
-    ? mdToHtml(md)
-    : `<p>This is a personal archive — a collection of records, artifacts, documents, and traces that describe a life through material evidence rather than through a simplified personal brand narrative.</p>`;
-  scroll.appendChild(inner);
-  doc.appendChild(scroll);
-
-  const box = el("div", "bio-document__box");
-  box.appendChild(doc);
-
-  const scrollCaret = el("button", "bio-document__scroll-caret");
-  scrollCaret.type = "button";
-  scrollCaret.setAttribute("aria-label", "Scroll down");
-  box.appendChild(scrollCaret);
-
-  const updateCaret = () => {
-    const atBottom = scroll.scrollHeight - scroll.scrollTop <= scroll.clientHeight + 2;
-    scrollCaret.classList.toggle("is-hidden", atBottom);
-    box.classList.toggle("at-bottom", atBottom);
+  // The card's record: the Guide itself. Everything the card shows comes from
+  // the frames; the record only names the whole.
+  const guideItem = {
+    id: "GUIDE",
+    item_type: "guide",
+    title: archive.guide?.label || "Guide",
+    status: "published",
+    assets: {},
   };
-  scroll.addEventListener("scroll", updateCaret, { passive: true });
-  requestAnimationFrame(updateCaret);
-  scrollCaret.addEventListener("click", () => {
-    scroll.scrollTo({ top: scroll.scrollTop + scroll.clientHeight * 0.6, behavior: "smooth" });
+
+  const wrap = buildCardWrap(guideItem, {
+    onExit: () => navigate({ layer: "desk" }),
+    guide: {
+      frames,
+      intro: archive.guide?.intro || "",
+      initialKey: frameFor(frameKey)?.key || GUIDE_DEFAULT_FRAME,
+      // Stepping is one page's states, not six pages: replace, never push, so
+      // Back leaves the Guide in a single step.
+      onFrame: (frame) => {
+        const view = frame.key === GUIDE_DEFAULT_FRAME ? null : frame.key;
+        const cur = getState();
+        if (cur.layer === "guide" && (cur.view || null) === view) return;
+        replace({ layer: "guide", series: null, subcollection: null, view, item: null });
+      },
+      // Onward: the series this object opens (a real page change, pushed).
+      onOpen: (frame) => navigate({ layer: "series", series: frame.key, subcollection: null, view: null, item: null }),
+    },
   });
+  content.appendChild(wrap);
+  wrap.__prefetchFrames?.();
 
-  box.classList.add("bio-document__box--fit");
-
-  center.appendChild(box);
-  content.appendChild(center);
-
-  // Guide title + subtitle in bottom-right metadata overlay
+  // Guide title + subtitle in the bottom-right metadata overlay (as before).
   const meta = el("div", "layer-meta");
   const h1 = el("h1", "overlay-title");
-  h1.textContent = "Guide";
+  h1.textContent = archive.guide?.label || "Guide";
   const subtitle = el("p", "overlay-subtitle");
   subtitle.textContent = archive.guide?.subtitle || "How to navigate this archive";
   meta.appendChild(h1);
@@ -496,10 +498,33 @@ function makeGuideSheet() {
   ]);
   content.appendChild(bc);
 
-  const closeFn = () => navigate({ layer: "desk" });
-  const cleanup = attachEscapeHandler(content, closeFn);
+  // Keyboard: Escape to the desk; ↑/↓ step the frames (as on the photo card).
+  // ←/→ are reserved for moving between records and mean nothing here.
+  const onKey = (e) => {
+    if (layerStack[layerStack.length - 1]?.content !== content) return;
+    if (e.key === "Escape") navigate({ layer: "desk" });
+    if ((e.key === "ArrowUp" || e.key === "ArrowDown") && wrap.__stepGallery) {
+      e.preventDefault();
+      wrap.__stepGallery(e.key === "ArrowDown" ? 1 : -1);
+    }
+  };
+  document.addEventListener("keydown", onKey);
 
-  return { veil, content, cleanup };
+  // Same-depth state changes: a popstate between /guide/ and /guide/<key>/
+  // steps the card in place. Anything else at this depth is another sheet.
+  const update = (state) => {
+    if (state.layer !== "guide") return false;
+    const target = frameFor(state.view);
+    if (target && wrap.__showGuideFrame) wrap.__showGuideFrame(target.key);
+    return true;
+  };
+
+  const cleanup = () => {
+    document.removeEventListener("keydown", onKey);
+    wrap.__dispose?.();
+  };
+
+  return { veil, content, cleanup, update };
 }
 
 // ── Biography sheet ───────────────────────────────────────────────────────────
@@ -1552,177 +1577,161 @@ function buildPlate(item, dims, sidePx, img, zoom = 1, panX = 0, panY = 0, opts 
   return { svg, scaleNote, spanMM, pxPerMM: extent / spanMM, origin, panX, panY };
 }
 
-function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
-  // Constellation context: the browse context is the constellation's member
-  // list (cross-series, chronological), so prev/next steps through the
-  // constellation rather than a subcollection.
-  const isConstellation = seriesKey === "constellations";
-  const constellation = isConstellation ? constellationFor(viewSlug) : null;
-  const s = isConstellation
-    ? { label: constellation?.title || viewSlug, subcollections: {} }
-    : archive.series[seriesKey];
-  let allItems;
-
-  if (isConstellation) {
-    allItems = constellation?.items || [];
-  } else if (subKey && s.subcollections[subKey]) {
-    allItems = s.subcollections[subKey].items;
-  } else if (Object.keys(s.subcollections || {}).length > 0) {
-    allItems = Object.values(s.subcollections).flatMap(sc => sc.items || []);
-  } else {
-    allItems = s.items || [];
-  }
-  let currentIdx = allItems.findIndex(i => i.id === itemId);
-  if (currentIdx === -1) currentIdx = 0;
-
-  const veil = makeVeil(() => {
-    navigate({ layer: "browse", series: seriesKey, subcollection: subKey, view: viewSlug || null, item: null });
+// ── Catalog-card inspection ─────────────────────────────────────────────────
+// Builds and returns one card's .item-card-wrap for `item`. Used both for the
+// visible card and for the off-screen neighbours pre-rendered during a swipe,
+// so it must not touch the sheet's `content` or shared state. Module-level so
+// the Guide sheet can build its card from the same grammar; `ctx` carries what
+// used to be closed over from makeItemSheet:
+//   onExit()          — clicking the surround (not the card)
+//   allItems, navItem — for the "see also" riders
+//   guide             — Guide mode (docs/guide-inspection-card-plan.md):
+//                       { frames, intro, initialKey, onFrame(frame), onOpen(frame) }
+function buildCardWrap(item, ctx = {}) {
+  const { onExit = () => {}, allItems = [], navItem = () => {}, guide = null } = ctx;
+  const isGuide = !!guide;
+  const wrap = el("div", "item-card-wrap");
+  // Clicking the surround (not the card) exits, like the veil.
+  wrap.addEventListener("click", (e) => {
+    if (e.target === wrap) onExit();
   });
 
-  const content = makeContent();
-  content.classList.add("layer-content--item-card");
+  const card = el("article", "item-card");
+  card.setAttribute("aria-label", `Record ${item.id}: ${item.title}`);
 
-  // Prefetch a neighbour's plate images so arrow/keyboard stepping lands on an
-  // already-cached image instead of reloading (soft thumbnail → sharp display) in
-  // view. Each prefetched Image is RETAINED (kept in the Map, not discarded) so its
-  // decoded bytes stay in the browser's in-memory image cache until we navigate.
-  // This is what makes the preload stick for the R2-hosted derivatives: r2.dev
-  // sends no Cache-Control and is not edge-cached, so a dropped prefetch gets
-  // re-fetched on use and the preload is wasted — unlike the external CDN
-  // posters/covers (films, books), which cache on their own. Deferred to idle time
-  // so it never competes with the active card's own load; bounded to the most
-  // recent handful so memory stays flat while stepping through.
-  const prefetched = new Map(); // url → retained HTMLImageElement
-  const prefetchImg = (url) => {
-    if (!url || prefetched.has(url)) return;
-    const im = new Image();
-    im.decoding = "async";
-    im.src = url;
-    prefetched.set(url, im);
-    if (prefetched.size > 24) prefetched.delete(prefetched.keys().next().value);
-  };
-  const prefetchNeighbors = (idx) => {
-    for (const j of [idx - 1, idx + 1]) {
-      const it = allItems[j];
-      if (!it) continue;
-      const primary = primaryAsset(it);
-      if (primary) prefetchImg(imageUrl(primary, isCutoutAsset(primary) ? "cutout" : "display"));
-      // Gallery neighbours: warm the second frame too, so arriving and
-      // immediately flipping doesn't drop to the thumbnail phase.
-      const g2 = it.assets?.gallery?.[1]?.file;
-      if (g2) prefetchImg(imageUrl(g2, isCutoutAsset(g2) ? "cutout" : "display"));
-      if (it.assets?.thumbnail) prefetchImg(imageUrl(it.assets.thumbnail, "thumbnail"));
-    }
-  };
-  const schedulePrefetch = (idx) => {
-    const run = () => prefetchNeighbors(idx);
-    if ("requestIdleCallback" in window) requestIdleCallback(run, { timeout: 1500 });
-    else setTimeout(run, 300);
-  };
+  // ── Fields column — catalog card: ruled label/value fields, paired
+  //    two-up into split rows where the data is compact (see mockup 01).
+  //    The column is a fixed-height cell whose content scrolls (reusing the
+  //    bio/CV scroll machinery) so the card keeps the plate's square footprint.
+  const fieldsCol = el("div", "item-card__fields");
+  const fields = el("div", "bio-document__scroll item-card__fields-scroll");
+  fieldsCol.appendChild(fields);
 
-  function renderContent(idx) {
-    currentIdx = idx;
-    const item = allItems[idx];
-
-    content.innerHTML = "";
-    const cardWrap = buildCardWrap(item);
-    content.appendChild(cardWrap);
-    // Only the visible card pre-loads its whole set (pre-rendered swipe
-    // neighbours would otherwise fetch entire sets on touchstart).
-    cardWrap.__prefetchFrames?.();
-    renderChrome(item, idx);
-    schedulePrefetch(idx);
+  const dims = parseDimensions(item);
+  // Folded matter (brochures, fold-out guides): a second, open state with its
+  // own measured size and its own two faces (inside / outside). The plate's
+  // ratio comes from the larger state and is held for both, so unfolding
+  // extends the object at the same scale. docs/brochure-fold-states-plan.md.
+  const dimsOpen = parseDimensions(item, "dimensions_open");
+  const openFaces = [item.assets?.inside || null, item.assets?.outside || null];
+  const folded = isFolded(item); // carries an open-state scan
+  const ratioDims = folded ? largerDims(dims, dimsOpen) : dims;
+  let curDims = dims;          // the state being drawn (closed by default)
+  let foldState = "closed";
+  // Gallery-backed records (photos, and any record with gallery images):
+  // the set steps within the plate column. decisions.md →
+  // "Photo entries — display treatment".
+  // Guide mode: the six desk objects are the set — each frame carries a
+  // model instead of a file, and the strip's still is a pre-rendered PNG.
+  const gAssets = isGuide
+    ? guide.frames.map(f => ({ model: f.model, thumbnail: f.thumbnail, caption: f.label, frame: f }))
+    : galleryAssets(item);
+  let galleryIdx = 0;
+  if (isGuide && guide.initialKey) {
+    const at = gAssets.findIndex(g => g.frame.key === guide.initialKey);
+    if (at !== -1) galleryIdx = at;
   }
+  let showFrame = () => {};      // assigned once the strip exists
+  let photoView = null;          // zoom/pan controller for the photo field
+  let frameCaptionEl = null;     // the fields column's "frame" caption row
+  // Each card opens at its own fit zoom (a small item isn't a speck). The
+  // level is local to this card so pre-rendered neighbours don't disturb it.
+  let localZoom = fitZoom(ratioDims);
 
-  // ── Catalog-card inspection ─────────────────────────────────────────────────
-  // Builds and returns one card's .item-card-wrap for `item`. Used both for the
-  // visible card and for the off-screen neighbours pre-rendered during a swipe,
-  // so it must not touch `content` or shared state.
-  function buildCardWrap(item) {
-    const wrap = el("div", "item-card-wrap");
-    // Clicking the surround (not the card) exits, like the veil.
-    wrap.addEventListener("click", (e) => {
-      if (e.target === wrap) {
-        navigate({ layer: "browse", series: seriesKey, subcollection: subKey, view: viewSlug || null, item: null });
-      }
-    });
+  // A label/value pair as a fragment, ready to drop into a 2- or 4-col row.
+  const pair = (label, value, mono) => {
+    const frag = document.createDocumentFragment();
+    const l = el("span", "overlay-label");
+    l.textContent = label;
+    const v = el("span", `overlay-value${mono ? " overlay-value--mono" : ""}`);
+    v.textContent = value;
+    frag.appendChild(l);
+    frag.appendChild(v);
+    return frag;
+  };
+  const singleRow = (label, value, mono, extraClass) => {
+    if (!value) return; // unrecorded fields are suppressed, never faked
+    const row = el("div", "item-card__row" + (extraClass ? " " + extraClass : ""));
+    row.appendChild(pair(label, value, mono));
+    fields.appendChild(row);
+  };
+  // Two pairs side by side; degrades to a single row if one side is absent.
+  const splitRow = (a, b, extraClass) => {
+    const present = [a, b].filter(p => p && p[1]);
+    if (present.length === 0) return;
+    if (present.length === 1) { singleRow(...present[0], extraClass); return; }
+    const row = el("div", "item-card__row item-card__row--split" + (extraClass ? " " + extraClass : ""));
+    present.forEach(p => row.appendChild(pair(...p)));
+    fields.appendChild(row);
+  };
 
-    const card = el("article", "item-card");
-    card.setAttribute("aria-label", `Record ${item.id}: ${item.title}`);
+  // Rating — the score reads serif (your judgment), the " / 5" scale mono (record).
+  const ratingRow = (value) => {
+    const row = el("div", "item-card__row");
+    const l = el("span", "overlay-label");
+    l.textContent = "rating";
+    const v = el("span", "overlay-value");
+    v.appendChild(document.createTextNode(String(value)));
+    const scale = el("span", "overlay-value--mono");
+    scale.textContent = " / 5";
+    v.appendChild(scale);
+    row.appendChild(l);
+    row.appendChild(v);
+    fields.appendChild(row);
+  };
 
-    // ── Fields column — catalog card: ruled label/value fields, paired
-    //    two-up into split rows where the data is compact (see mockup 01).
-    //    The column is a fixed-height cell whose content scrolls (reusing the
-    //    bio/CV scroll machinery) so the card keeps the plate's square footprint.
-    const fieldsCol = el("div", "item-card__fields");
-    const fields = el("div", "bio-document__scroll item-card__fields-scroll");
-    fieldsCol.appendChild(fields);
+  // ── Guide fields — one catalog entry per frame ──────────────────────────────
+  // The Guide is a finding aid describing six things, so the column is rebuilt
+  // on every step and each frame reads as its own record: what sits on the
+  // desk, what it is called, what it holds, how much it holds, and a note.
+  // Register rules as everywhere: mono for given facts and codes, serif for the
+  // archivist's words. Unrecorded fields are suppressed, never faked.
+  const renderGuideFields = (frame) => {
+    fields.innerHTML = "";
+    const isKey = frame.kind === "meta";
+    card.setAttribute("aria-label", `Guide: ${frame.label}`);
+    splitRow(["object", frame.object, true], ["type", frame.kind, true], "item-card__row--accession");
 
-    const dims = parseDimensions(item);
-    // Folded matter (brochures, fold-out guides): a second, open state with its
-    // own measured size and its own two faces (inside / outside). The plate's
-    // ratio comes from the larger state and is held for both, so unfolding
-    // extends the object at the same scale. docs/brochure-fold-states-plan.md.
-    const dimsOpen = parseDimensions(item, "dimensions_open");
-    const openFaces = [item.assets?.inside || null, item.assets?.outside || null];
-    const folded = isFolded(item); // carries an open-state scan
-    const ratioDims = folded ? largerDims(dims, dimsOpen) : dims;
-    let curDims = dims;          // the state being drawn (closed by default)
-    let foldState = "closed";
-    // Gallery-backed records (photos, and any record with gallery images):
-    // the set steps within the plate column. decisions.md →
-    // "Photo entries — display treatment".
-    const gAssets = galleryAssets(item);
-    let galleryIdx = 0;
-    let showFrame = () => {};      // assigned once the strip exists
-    let photoView = null;          // zoom/pan controller for the photo field
-    let frameCaptionEl = null;     // the fields column's "frame" caption row
-    // Each card opens at its own fit zoom (a small item isn't a speck). The
-    // level is local to this card so pre-rendered neighbours don't disturb it.
-    let localZoom = fitZoom(ratioDims);
+    const titleRow = el("div", "item-card__row item-card__row--title");
+    const titleLabel = el("span", "overlay-label");
+    titleLabel.textContent = "title";
+    const titleEl = el("h2", "item-card__title");
+    titleEl.textContent = frame.label;
+    titleRow.appendChild(titleLabel);
+    titleRow.appendChild(titleEl);
+    fields.appendChild(titleRow);
 
-    // A label/value pair as a fragment, ready to drop into a 2- or 4-col row.
-    const pair = (label, value, mono) => {
-      const frag = document.createDocumentFragment();
+    // The container metaphor prints only where it differs from the object —
+    // the swapped pair (box · flat-file, bundle · binder) and the key.
+    if (frame.container && frame.container !== frame.object) singleRow("container", frame.container, true);
+    singleRow("holds", frame.holds, false);
+
+    let extent = null;
+    if (isKey) extent = frame.count != null ? `${frame.count} records · 6 objects` : "6 objects";
+    else if (frame.count != null) {
+      extent = `${frame.count} record${frame.count === 1 ? "" : "s"}`;
+      if (frame.subcollections) extent += ` · ${frame.subcollections} subcollection${frame.subcollections === 1 ? "" : "s"}`;
+    }
+    singleRow("extent", extent, true);
+    singleRow("model", frame.model, true);
+
+    const md = isKey ? (guide.intro || "") : (frame.description || "");
+    if (md.trim()) {
+      const note = el("div", "item-card__note item-card__note--guide");
       const l = el("span", "overlay-label");
-      l.textContent = label;
-      const v = el("span", `overlay-value${mono ? " overlay-value--mono" : ""}`);
-      v.textContent = value;
-      frag.appendChild(l);
-      frag.appendChild(v);
-      return frag;
-    };
-    const singleRow = (label, value, mono, extraClass) => {
-      if (!value) return; // unrecorded fields are suppressed, never faked
-      const row = el("div", "item-card__row" + (extraClass ? " " + extraClass : ""));
-      row.appendChild(pair(label, value, mono));
-      fields.appendChild(row);
-    };
-    // Two pairs side by side; degrades to a single row if one side is absent.
-    const splitRow = (a, b, extraClass) => {
-      const present = [a, b].filter(p => p && p[1]);
-      if (present.length === 0) return;
-      if (present.length === 1) { singleRow(...present[0], extraClass); return; }
-      const row = el("div", "item-card__row item-card__row--split" + (extraClass ? " " + extraClass : ""));
-      present.forEach(p => row.appendChild(pair(...p)));
-      fields.appendChild(row);
-    };
+      l.textContent = "note";
+      const body = el("div", "item-card__note-body");
+      body.innerHTML = mdToHtml(md);
+      note.appendChild(l);
+      note.appendChild(body);
+      fields.appendChild(note);
+    }
+    fields.scrollTop = 0;
+    requestAnimationFrame(() => updateFieldsCaret());
+  };
 
-    // Rating — the score reads serif (your judgment), the " / 5" scale mono (record).
-    const ratingRow = (value) => {
-      const row = el("div", "item-card__row");
-      const l = el("span", "overlay-label");
-      l.textContent = "rating";
-      const v = el("span", "overlay-value");
-      v.appendChild(document.createTextNode(String(value)));
-      const scale = el("span", "overlay-value--mono");
-      scale.textContent = " / 5";
-      v.appendChild(scale);
-      row.appendChild(l);
-      row.appendChild(v);
-      fields.appendChild(row);
-    };
-
+  // ── Record fields — the catalog card proper ─────────────────────────────────
+  const renderRecordFields = () => {
     // Accession — id + type, monospace codes, paired at the top. On mobile this
     // row compacts onto a single subtle line (see .item-card__row--accession).
     splitRow(["ID", item.id, true], ["type", item.item_type, true], "item-card__row--accession");
@@ -1884,628 +1893,771 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
       }
       fields.appendChild(riders);
     }
+  };
+  if (!isGuide) renderRecordFields();
 
-    // Scroll affordance for the left column — caret hides when scrolled to bottom.
-    const fieldsCaret = el("button", "bio-document__scroll-caret item-card__fields-caret");
-    fieldsCaret.type = "button";
-    fieldsCaret.setAttribute("aria-label", "Scroll fields");
-    fieldsCol.appendChild(fieldsCaret);
-    const updateFieldsCaret = () => {
-      const atBottom = fields.scrollHeight - fields.scrollTop <= fields.clientHeight + 2;
-      fieldsCaret.classList.toggle("is-hidden", atBottom);
-      fieldsCol.classList.toggle("at-bottom", atBottom);
-    };
-    fields.addEventListener("scroll", updateFieldsCaret, { passive: true });
-    requestAnimationFrame(updateFieldsCaret);
-    fieldsCaret.addEventListener("click", () => {
-      fields.scrollTo({ top: fields.scrollTop + fields.clientHeight * 0.6, behavior: "smooth" });
-    });
 
-    card.appendChild(fieldsCol);
+  // Scroll affordance for the left column — caret hides when scrolled to bottom.
+  const fieldsCaret = el("button", "bio-document__scroll-caret item-card__fields-caret");
+  fieldsCaret.type = "button";
+  fieldsCaret.setAttribute("aria-label", "Scroll fields");
+  fieldsCol.appendChild(fieldsCaret);
+  function updateFieldsCaret() {
+    const atBottom = fields.scrollHeight - fields.scrollTop <= fields.clientHeight + 2;
+    fieldsCaret.classList.toggle("is-hidden", atBottom);
+    fieldsCol.classList.toggle("at-bottom", atBottom);
+  }
+  fields.addEventListener("scroll", updateFieldsCaret, { passive: true });
+  requestAnimationFrame(updateFieldsCaret);
+  fieldsCaret.addEventListener("click", () => {
+    fields.scrollTo({ top: fields.scrollTop + fields.clientHeight * 0.6, behavior: "smooth" });
+  });
 
-    // ── Plate column
-    const plateCol = el("div", "item-card__plate");
-    const plateHead = el("div", "item-card__plate-head");
-    const plateLabel = el("span", "overlay-label");
-    plateLabel.textContent = "plate";
-    const scaleNote = el("span", "item-card__scale-note");
-    plateHead.appendChild(plateLabel);
-    plateHead.appendChild(scaleNote);
-    plateCol.appendChild(plateHead);
+  card.appendChild(fieldsCol);
 
-    const field = el("div", "item-card__field");
-    plateCol.appendChild(field);
+  // ── Plate column
+  const plateCol = el("div", "item-card__plate");
+  const plateHead = el("div", "item-card__plate-head");
+  const plateLabel = el("span", "overlay-label");
+  plateLabel.textContent = "plate";
+  const scaleNote = el("span", "item-card__scale-note");
+  plateHead.appendChild(plateLabel);
+  plateHead.appendChild(scaleNote);
+  plateCol.appendChild(plateHead);
 
-    const primary = primaryAsset(item);
-    const back = item.assets?.back || null;
+  const field = el("div", "item-card__field");
+  plateCol.appendChild(field);
 
-    const showNone = () => {
-      // No reproduction: still draw the plate's scale grid (image-less) so every
-      // card carries the same plate. Labelled only when dimensions are recorded.
-      field.innerHTML = "";
-      const plate = buildPlate(item, dims, PLATE_PX, null);
-      field.appendChild(plate.svg);
-      scaleNote.textContent = "no reproduction";
-    };
+  const primary = isGuide ? null : primaryAsset(item);
+  const back = item.assets?.back || null;
+  let modelPlate = null; // Guide mode: the turning-object viewer
 
-    const PLATE_PX = 416; // internal viewBox size; scales responsively
+  const showNone = () => {
+    // No reproduction: still draw the plate's scale grid (image-less) so every
+    // card carries the same plate. Labelled only when dimensions are recorded.
+    field.innerHTML = "";
+    const plate = buildPlate(item, dims, PLATE_PX, null);
+    field.appendChild(plate.svg);
+    scaleNote.textContent = "no reproduction";
+  };
 
-    // The reproduction <img> persists across zoom redraws (no re-fetch).
-    let reproImg = null;
-    let showingBack = false;
-    if (primary) {
-      reproImg = el("img");
-      reproImg.alt = item.title;
-      reproImg.draggable = false;
-      reproImg.decoding = "async";
-      // Show the grid's cache-warm thumbnail immediately, then swap in the full
-      // reproduction — the transparent cut-out where the item has one (scanned
-      // ephemera), otherwise the display scan.
-      loadReproProgressive(reproImg, primary, item.assets?.thumbnail, showNone, fullVariants(primary));
-    }
+  const PLATE_PX = 416; // internal viewBox size; scales responsively
 
-    let plateState = null; // { origin, pxPerMM, spanMM, scaleNote, panX, panY }
-    let panX = 0, panY = 0; // current pan offset in field mm
-    let dragging = false;   // a single-pointer pan is in progress
-    let swipeActive = false; // the swipe carousel has taken over — suppress plate pan
+  // The reproduction <img> persists across zoom redraws (no re-fetch).
+  let reproImg = null;
+  let showingBack = false;
+  if (primary) {
+    reproImg = el("img");
+    reproImg.alt = item.title;
+    reproImg.draggable = false;
+    reproImg.decoding = "async";
+    // Show the grid's cache-warm thumbnail immediately, then swap in the full
+    // reproduction — the transparent cut-out where the item has one (scanned
+    // ephemera), otherwise the display scan.
+    loadReproProgressive(reproImg, primary, item.assets?.thumbnail, showNone, fullVariants(primary));
+  }
 
-    // Redraw the calibrated plate at a given zoom and pan (field span shrinks as
-    // zoom grows; pan slides the window across the reproduction). buildPlate
-    // re-clamps the pan to the item's extent and returns the applied values, so
-    // panX/panY stay honest after a zoom-out collapses the pannable range.
-    const renderPlate = (zoom, nextPanX = panX, nextPanY = panY) => {
-      localZoom = zoom; // remember the level for this card
-      field.innerHTML = "";
-      // An open state without a measured open size draws the unlabelled grid.
-      const plate = buildPlate(item, curDims, PLATE_PX, reproImg, curDims ? zoom : 1, nextPanX, nextPanY,
-        { ratioDims, noDimsNote: foldState === "open" ? "open size not recorded" : undefined });
-      panX = plate.panX; panY = plate.panY;
-      plateState = plate;
-      scaleNote.textContent = plate.scaleNote;
-      field.appendChild(plate.svg);
-    };
+  let plateState = null; // { origin, pxPerMM, spanMM, scaleNote, panX, panY }
+  let panX = 0, panY = 0; // current pan offset in field mm
+  let dragging = false;   // a single-pointer pan is in progress
+  let swipeActive = false; // the swipe carousel has taken over — suppress plate pan
 
-    if (primary && gAssets.length) {
-      // Gallery reproduction (photos): shown whole, centered and padded at
-      // its own aspect ratio — no calibrated plate. The rule: the full photo
-      // is always visible, never cropped.
-      field.classList.add("item-card__field--photo");
-      // Flip the card's column split: the plate outweighs the fields column.
-      card.classList.add("item-card--photo");
-      if (reproImg) {
-        // Pin the layout box from the photo's aspect ratio, not the loaded
-        // resolution: the low-res thumbnail shows first, and sizing from its
-        // intrinsic pixels would render it small and then "grow" when the
-        // display derivative swaps in. Thumb and display share the photo's
-        // ratio, so the box computed here holds through the swap. The padded
-        // field is square, so pinning the long axis at 100% fits exactly.
-        const sizePhoto = () => {
-          if (!reproImg.naturalWidth || !reproImg.naturalHeight) return;
-          reproImg.style.aspectRatio = `${reproImg.naturalWidth} / ${reproImg.naturalHeight}`;
-          if (reproImg.naturalWidth >= reproImg.naturalHeight) {
-            reproImg.style.width = "100%";
-            reproImg.style.height = "auto";
-          } else {
-            reproImg.style.height = "100%";
-            reproImg.style.width = "auto";
-          }
-        };
-        reproImg.addEventListener("load", sizePhoto);
-        sizePhoto(); // the thumbnail may already be decoded
-        field.appendChild(reproImg);
+  // Redraw the calibrated plate at a given zoom and pan (field span shrinks as
+  // zoom grows; pan slides the window across the reproduction). buildPlate
+  // re-clamps the pan to the item's extent and returns the applied values, so
+  // panX/panY stay honest after a zoom-out collapses the pannable range.
+  const renderPlate = (zoom, nextPanX = panX, nextPanY = panY) => {
+    localZoom = zoom; // remember the level for this card
+    field.innerHTML = "";
+    // An open state without a measured open size draws the unlabelled grid.
+    const plate = buildPlate(item, curDims, PLATE_PX, reproImg, curDims ? zoom : 1, nextPanX, nextPanY,
+      { ratioDims, noDimsNote: foldState === "open" ? "open size not recorded" : undefined });
+    panX = plate.panX; panY = plate.panY;
+    plateState = plate;
+    scaleNote.textContent = plate.scaleNote;
+    field.appendChild(plate.svg);
+  };
 
-        // Zoom + pan — the accumulation plate's manipulability without the
-        // calibrated scales: a CSS-transform magnifier. The slider, wheel
-        // (pinned to the pointer) and pinch drive the zoom; a single-pointer
-        // drag pans, clamped so the photo's edges never pull inside the
-        // field. Content coords: visible = scale(z) then translate(t), so a
-        // visible drag of d moves t by d/z, and pinning a point c (client px
-        // from the image center) across a zoom change means
-        // t' = t + c·(1/z' − 1/z).
-        let pz = 1, ptx = 0, pty = 0; // zoom; pan in unscaled px
-        const clampPan = () => {
-          const mx = Math.max(0, reproImg.offsetWidth  * (pz - 1) / (2 * pz));
-          const my = Math.max(0, reproImg.offsetHeight * (pz - 1) / (2 * pz));
-          ptx = Math.min(mx, Math.max(-mx, ptx));
-          pty = Math.min(my, Math.max(-my, pty));
-          return { mx, my };
-        };
-        const applyView = () => {
-          clampPan();
-          const zoomed = pz > 1.001;
-          reproImg.style.transform = zoomed ? `scale(${pz}) translate(${ptx}px, ${pty}px)` : "";
-          field.classList.toggle("item-card__field--zoomed", zoomed);
-        };
-        photoView = {
-          get zoom() { return pz; },
-          setZoom(z, cx = 0, cy = 0) {
-            const nz = Math.min(6, Math.max(1, z));
-            ptx += cx * (1 / nz - 1 / pz);
-            pty += cy * (1 / nz - 1 / pz);
-            pz = nz;
-            applyView();
-            photoView.syncSlider?.(pz);
-          },
-          resetPan() { ptx = 0; pty = 0; applyView(); },
-          // Same shape as the plate's pan state, in px instead of mm, so the
-          // swipe carousel yields to a zoomed photo the same way.
-          panState() {
-            const { mx } = clampPan();
-            return { panX: mx - ptx, panMaxX: 2 * mx };
-          },
-        };
+  if (primary && gAssets.length) {
+    // Gallery reproduction (photos): shown whole, centered and padded at
+    // its own aspect ratio — no calibrated plate. The rule: the full photo
+    // is always visible, never cropped.
+    field.classList.add("item-card__field--photo");
+    // Flip the card's column split: the plate outweighs the fields column.
+    card.classList.add("item-card--photo");
+    if (reproImg) {
+      // Pin the layout box from the photo's aspect ratio, not the loaded
+      // resolution: the low-res thumbnail shows first, and sizing from its
+      // intrinsic pixels would render it small and then "grow" when the
+      // display derivative swaps in. Thumb and display share the photo's
+      // ratio, so the box computed here holds through the swap. The padded
+      // field is square, so pinning the long axis at 100% fits exactly.
+      const sizePhoto = () => {
+        if (!reproImg.naturalWidth || !reproImg.naturalHeight) return;
+        reproImg.style.aspectRatio = `${reproImg.naturalWidth} / ${reproImg.naturalHeight}`;
+        if (reproImg.naturalWidth >= reproImg.naturalHeight) {
+          reproImg.style.width = "100%";
+          reproImg.style.height = "auto";
+        } else {
+          reproImg.style.height = "100%";
+          reproImg.style.width = "auto";
+        }
+      };
+      reproImg.addEventListener("load", sizePhoto);
+      sizePhoto(); // the thumbnail may already be decoded
+      field.appendChild(reproImg);
 
-        // Drag pan / pinch zoom (mirrors the plate's pointer machinery).
-        const ptrs = new Map();
-        let lastDist = null;
-        let panStart = null;
-        field.addEventListener("pointerdown", (e) => {
-          field.setPointerCapture?.(e.pointerId);
-          ptrs.set(e.pointerId, e);
-          if (ptrs.size === 1 && pz > 1.001) {
-            panStart = { x: e.clientX, y: e.clientY, ptx, pty };
-            dragging = true;
-            field.classList.add("is-grabbing");
-          } else if (ptrs.size > 1) {
-            panStart = null;
-            dragging = false;
-            field.classList.remove("is-grabbing");
-          }
-        });
-        field.addEventListener("pointermove", (e) => {
-          if (!ptrs.has(e.pointerId)) return;
-          ptrs.set(e.pointerId, e);
-          if (ptrs.size === 2) {
-            const [a, b] = [...ptrs.values()];
-            const dist = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
-            if (lastDist !== null) photoView.setZoom(pz + (dist - lastDist) * 0.01);
-            lastDist = dist;
-          } else if (panStart && !swipeActive) {
-            ptx = panStart.ptx + (e.clientX - panStart.x) / pz;
-            pty = panStart.pty + (e.clientY - panStart.y) / pz;
-            applyView();
-          }
-        });
-        const endPtr = (e) => {
-          ptrs.delete(e.pointerId);
-          if (ptrs.size < 2) lastDist = null;
-          if (ptrs.size === 0) {
-            panStart = null;
-            dragging = false;
-            field.classList.remove("is-grabbing");
-          }
-        };
-        field.addEventListener("pointerup", endPtr);
-        field.addEventListener("pointercancel", endPtr);
+      // Zoom + pan — the accumulation plate's manipulability without the
+      // calibrated scales: a CSS-transform magnifier. The slider, wheel
+      // (pinned to the pointer) and pinch drive the zoom; a single-pointer
+      // drag pans, clamped so the photo's edges never pull inside the
+      // field. Content coords: visible = scale(z) then translate(t), so a
+      // visible drag of d moves t by d/z, and pinning a point c (client px
+      // from the image center) across a zoom change means
+      // t' = t + c·(1/z' − 1/z).
+      let pz = 1, ptx = 0, pty = 0; // zoom; pan in unscaled px
+      const clampPan = () => {
+        const mx = Math.max(0, reproImg.offsetWidth  * (pz - 1) / (2 * pz));
+        const my = Math.max(0, reproImg.offsetHeight * (pz - 1) / (2 * pz));
+        ptx = Math.min(mx, Math.max(-mx, ptx));
+        pty = Math.min(my, Math.max(-my, pty));
+        return { mx, my };
+      };
+      const applyView = () => {
+        clampPan();
+        const zoomed = pz > 1.001;
+        reproImg.style.transform = zoomed ? `scale(${pz}) translate(${ptx}px, ${pty}px)` : "";
+        field.classList.toggle("item-card__field--zoomed", zoomed);
+      };
+      photoView = {
+        get zoom() { return pz; },
+        setZoom(z, cx = 0, cy = 0) {
+          const nz = Math.min(6, Math.max(1, z));
+          ptx += cx * (1 / nz - 1 / pz);
+          pty += cy * (1 / nz - 1 / pz);
+          pz = nz;
+          applyView();
+          photoView.syncSlider?.(pz);
+        },
+        resetPan() { ptx = 0; pty = 0; applyView(); },
+        // Same shape as the plate's pan state, in px instead of mm, so the
+        // swipe carousel yields to a zoomed photo the same way.
+        panState() {
+          const { mx } = clampPan();
+          return { panX: mx - ptx, panMaxX: 2 * mx };
+        },
+      };
 
-        // Wheel / trackpad zoom, pinned to the pointer (scrolling down zooms
-        // in, as on the plate).
-        field.addEventListener("wheel", (e) => {
-          e.preventDefault();
-          let dy = e.deltaY;
-          if (e.deltaMode === 1) dy *= 16;
-          else if (e.deltaMode === 2) dy *= 400;
-          dy = Math.max(-50, Math.min(50, dy));
-          const r = reproImg.getBoundingClientRect();
-          photoView.setZoom(
-            pz * Math.exp(dy * 0.0022),
-            e.clientX - (r.left + r.width / 2),
-            e.clientY - (r.top + r.height / 2)
-          );
-        }, { passive: false });
-      }
-      scaleNote.textContent = "dimensions not recorded";
-    } else if (primary && dims) {
-      renderPlate(localZoom);
-
-      // Crosshair readout — pointer position in field mm, offset by the pan so
-      // the number reflects the panned window. Enhancement only; the typed
-      // dimensions row remains the canonical record of size. Suppressed while a
-      // drag-pan is underway (the scale note then shows the field span instead).
+      // Drag pan / pinch zoom (mirrors the plate's pointer machinery).
+      const ptrs = new Map();
+      let lastDist = null;
+      let panStart = null;
+      field.addEventListener("pointerdown", (e) => {
+        field.setPointerCapture?.(e.pointerId);
+        ptrs.set(e.pointerId, e);
+        if (ptrs.size === 1 && pz > 1.001) {
+          panStart = { x: e.clientX, y: e.clientY, ptx, pty };
+          dragging = true;
+          field.classList.add("is-grabbing");
+        } else if (ptrs.size > 1) {
+          panStart = null;
+          dragging = false;
+          field.classList.remove("is-grabbing");
+        }
+      });
       field.addEventListener("pointermove", (e) => {
-        if (!plateState || dragging) return;
-        const r = field.getBoundingClientRect();
-        const svgSize = Math.min(r.width, r.height);
-        const unit = svgSize / PLATE_PX; // px per viewBox unit
-        const x = plateState.panX + ((e.clientX - r.left) / unit - plateState.origin) / plateState.pxPerMM;
-        const y = plateState.panY + ((e.clientY - r.top) / unit - plateState.origin) / plateState.pxPerMM;
-        const inX = x >= plateState.panX && x <= plateState.panX + plateState.spanMM;
-        const inY = y >= plateState.panY && y <= plateState.panY + plateState.spanMM;
-        scaleNote.textContent =
-          (inX && inY) ? `${Math.round(x)} × ${Math.round(y)} mm` : plateState.scaleNote;
+        if (!ptrs.has(e.pointerId)) return;
+        ptrs.set(e.pointerId, e);
+        if (ptrs.size === 2) {
+          const [a, b] = [...ptrs.values()];
+          const dist = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+          if (lastDist !== null) photoView.setZoom(pz + (dist - lastDist) * 0.01);
+          lastDist = dist;
+        } else if (panStart && !swipeActive) {
+          ptx = panStart.ptx + (e.clientX - panStart.x) / pz;
+          pty = panStart.pty + (e.clientY - panStart.y) / pz;
+          applyView();
+        }
       });
-      field.addEventListener("pointerleave", () => {
-        if (plateState) scaleNote.textContent = plateState.scaleNote;
-      });
-    } else if (primary) {
-      // Dimensions not recorded: draw the same scale grid, unlabelled, and let
-      // the reproduction fill the field — the ruler without a measurement claim.
-      renderPlate(1);
-    } else {
-      showNone();
+      const endPtr = (e) => {
+        ptrs.delete(e.pointerId);
+        if (ptrs.size < 2) lastDist = null;
+        if (ptrs.size === 0) {
+          panStart = null;
+          dragging = false;
+          field.classList.remove("is-grabbing");
+        }
+      };
+      field.addEventListener("pointerup", endPtr);
+      field.addEventListener("pointercancel", endPtr);
+
+      // Wheel / trackpad zoom, pinned to the pointer (scrolling down zooms
+      // in, as on the plate).
+      field.addEventListener("wheel", (e) => {
+        e.preventDefault();
+        let dy = e.deltaY;
+        if (e.deltaMode === 1) dy *= 16;
+        else if (e.deltaMode === 2) dy *= 400;
+        dy = Math.max(-50, Math.min(50, dy));
+        const r = reproImg.getBoundingClientRect();
+        photoView.setZoom(
+          pz * Math.exp(dy * 0.0022),
+          e.clientX - (r.left + r.width / 2),
+          e.clientY - (r.top + r.height / 2)
+        );
+      }, { passive: false });
     }
+    scaleNote.textContent = "dimensions not recorded";
+  } else if (primary && dims) {
+    renderPlate(localZoom);
 
-    if (primary) {
-      const foot = el("div", "item-card__plate-foot");
+    // Crosshair readout — pointer position in field mm, offset by the pan so
+    // the number reflects the panned window. Enhancement only; the typed
+    // dimensions row remains the canonical record of size. Suppressed while a
+    // drag-pan is underway (the scale note then shows the field span instead).
+    field.addEventListener("pointermove", (e) => {
+      if (!plateState || dragging) return;
+      const r = field.getBoundingClientRect();
+      const svgSize = Math.min(r.width, r.height);
+      const unit = svgSize / PLATE_PX; // px per viewBox unit
+      const x = plateState.panX + ((e.clientX - r.left) / unit - plateState.origin) / plateState.pxPerMM;
+      const y = plateState.panY + ((e.clientY - r.top) / unit - plateState.origin) / plateState.pxPerMM;
+      const inX = x >= plateState.panX && x <= plateState.panX + plateState.spanMM;
+      const inY = y >= plateState.panY && y <= plateState.panY + plateState.spanMM;
+      scaleNote.textContent =
+        (inX && inY) ? `${Math.round(x)} × ${Math.round(y)} mm` : plateState.scaleNote;
+    });
+    field.addEventListener("pointerleave", () => {
+      if (plateState) scaleNote.textContent = plateState.scaleNote;
+    });
+  } else if (primary) {
+    // Dimensions not recorded: draw the same scale grid, unlabelled, and let
+    // the reproduction fill the field — the ruler without a measurement claim.
+    renderPlate(1);
+  } else if (isGuide) {
+    // Guide: the desk object itself, turning. Plate-heavy split as for photos.
+    // The scale note reports the viewer's state instead of a ratio — the plate
+    // is presentational, not calibrated. No WebGL → the frame's still image.
+    field.classList.add("item-card__field--model");
+    card.classList.add("item-card--photo", "item-card--guide");
+    const stateNote = {
+      loading: "loading model",
+      ready: "model \u00b7 drag to turn",
+      held: "model",
+      failed: "still image",
+    };
+    modelPlate = mountModelPlate(field, {
+      reducedMotion: window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+      onState: (st) => { scaleNote.textContent = stateNote[st] || ""; },
+      fallbackSrc: (frame) => frame.thumbnail,
+    });
+    wrap.__dispose = () => { modelPlate?.dispose(); modelPlate = null; };
+  } else {
+    showNone();
+  }
 
-      const controls = el("div", "item-card__plate-controls");
-      const assetLabel = el("span", "item-card__asset-label");
-      if (gAssets.length > 1) {
-        // Multi-photo: prev/next step the plate through the set, in the
-        // flip control's register; the asset label becomes the frame
-        // counter (kept current by showFrame, defined with the strip below).
-        const prevB = el("button", "item-card__flip");
-        prevB.type = "button";
-        prevB.textContent = "\u2191 prev";
-        prevB.setAttribute("aria-label", "Previous photo");
-        prevB.addEventListener("click", () => showFrame(galleryIdx - 1));
-        controls.appendChild(prevB);
-        const nextB = el("button", "item-card__flip");
-        nextB.type = "button";
-        nextB.textContent = "next \u2193";
-        nextB.setAttribute("aria-label", "Next photo");
-        nextB.addEventListener("click", () => showFrame(galleryIdx + 1));
-        controls.appendChild(nextB);
-      } else if (back || folded) {
-        // Faces by state: closed = recto / verso, open = inside / outside.
-        // Flip turns the object within the state; unfold / fold switches states.
-        const faces = { closed: [primary, back], open: openFaces };
-        const faceNames = { closed: ["recto", "verso"], open: ["inside", "outside"] };
-        // Folded records carry no text label in the foot — two buttons and
-        // the zoom must fit one line — so the state is spoken by the
-        // buttons' aria-labels instead.
-        const faceLabel = () => folded ? "" : faceNames[foldState][showingBack ? 1 : 0];
-        const flip = el("button", "item-card__flip");
-        flip.type = "button";
-        flip.textContent = "flip";
-        flip.setAttribute("aria-label", "Flip: show the other side");
-        const showFace = () => {
-          // No thumbnail for the far side: hold the current side until it decodes.
-          // The verso is cut out too when the recto is, so pick variants per side.
-          const side = faces[foldState][showingBack ? 1 : 0];
-          if (reproImg && side) loadReproProgressive(reproImg, side, null, showNone, fullVariants(side));
-          assetLabel.textContent = faceLabel();
-          // Flip only where the state has both faces (hidden, as for a
-          // flat record with no back).
-          flip.hidden = !(faces[foldState][0] && faces[foldState][1]);
-          const other = faceNames[foldState][showingBack ? 0 : 1];
-          flip.setAttribute("aria-label", `Flip: show the ${other}`);
-        };
-        flip.addEventListener("click", () => {
-          showingBack = !showingBack;
+  if (primary || isGuide) {
+    const foot = el("div", "item-card__plate-foot");
+
+    const controls = el("div", "item-card__plate-controls");
+    const assetLabel = el("span", "item-card__asset-label");
+    if (gAssets.length > 1) {
+      // Multi-photo: prev/next step the plate through the set, in the
+      // flip control's register; the asset label becomes the frame
+      // counter (kept current by showFrame, defined with the strip below).
+      const prevB = el("button", "item-card__flip");
+      prevB.type = "button";
+      prevB.textContent = "\u2191 prev";
+      prevB.setAttribute("aria-label", "Previous photo");
+      prevB.addEventListener("click", () => showFrame(galleryIdx - 1));
+      controls.appendChild(prevB);
+      const nextB = el("button", "item-card__flip");
+      nextB.type = "button";
+      nextB.textContent = "next \u2193";
+      nextB.setAttribute("aria-label", "Next photo");
+      nextB.addEventListener("click", () => showFrame(galleryIdx + 1));
+      controls.appendChild(nextB);
+    } else if (back || folded) {
+      // Faces by state: closed = recto / verso, open = inside / outside.
+      // Flip turns the object within the state; unfold / fold switches states.
+      const faces = { closed: [primary, back], open: openFaces };
+      const faceNames = { closed: ["recto", "verso"], open: ["inside", "outside"] };
+      // Folded records carry no text label in the foot — two buttons and
+      // the zoom must fit one line — so the state is spoken by the
+      // buttons' aria-labels instead.
+      const faceLabel = () => folded ? "" : faceNames[foldState][showingBack ? 1 : 0];
+      const flip = el("button", "item-card__flip");
+      flip.type = "button";
+      flip.textContent = "flip";
+      flip.setAttribute("aria-label", "Flip: show the other side");
+      const showFace = () => {
+        // No thumbnail for the far side: hold the current side until it decodes.
+        // The verso is cut out too when the recto is, so pick variants per side.
+        const side = faces[foldState][showingBack ? 1 : 0];
+        if (reproImg && side) loadReproProgressive(reproImg, side, null, showNone, fullVariants(side));
+        assetLabel.textContent = faceLabel();
+        // Flip only where the state has both faces (hidden, as for a
+        // flat record with no back).
+        flip.hidden = !(faces[foldState][0] && faces[foldState][1]);
+        const other = faceNames[foldState][showingBack ? 0 : 1];
+        flip.setAttribute("aria-label", `Flip: show the ${other}`);
+      };
+      flip.addEventListener("click", () => {
+        showingBack = !showingBack;
+        showFace();
+      });
+      controls.appendChild(flip);
+
+      if (folded) {
+        const unfold = el("button", "item-card__flip");
+        unfold.type = "button";
+        unfold.textContent = "unfold";
+        unfold.setAttribute("aria-label", "Unfold: show the open state");
+        unfold.addEventListener("click", () => {
+          foldState = foldState === "closed" ? "open" : "closed";
+          // Opening lands on the inside (the reason you unfold); closing
+          // lands on the recto. Zoom is kept; pan returns to the origin.
+          showingBack = foldState === "open" ? !faces.open[0] : false;
+          curDims = foldState === "open" ? dimsOpen : dims;
+          unfold.textContent = foldState === "open" ? "fold" : "unfold";
+          unfold.setAttribute("aria-label", foldState === "open"
+            ? "Fold: show the closed state" : "Unfold: show the open state");
+          if (!gAssets.length) renderPlate(localZoom, 0, 0);
           showFace();
         });
-        controls.appendChild(flip);
-
-        if (folded) {
-          const unfold = el("button", "item-card__flip");
-          unfold.type = "button";
-          unfold.textContent = "unfold";
-          unfold.setAttribute("aria-label", "Unfold: show the open state");
-          unfold.addEventListener("click", () => {
-            foldState = foldState === "closed" ? "open" : "closed";
-            // Opening lands on the inside (the reason you unfold); closing
-            // lands on the recto. Zoom is kept; pan returns to the origin.
-            showingBack = foldState === "open" ? !faces.open[0] : false;
-            curDims = foldState === "open" ? dimsOpen : dims;
-            unfold.textContent = foldState === "open" ? "fold" : "unfold";
-            unfold.setAttribute("aria-label", foldState === "open"
-              ? "Fold: show the closed state" : "Unfold: show the open state");
-            if (!gAssets.length) renderPlate(localZoom, 0, 0);
-            showFace();
-          });
-          controls.appendChild(unfold);
-          // Warm the other faces' display derivatives so a first unfold
-          // rarely waits on the network.
-          const warm = () => {
-            for (const f of [back, ...openFaces]) {
-              if (!f) continue;
-              const im = new Image();
-              im.decoding = "async";
-              im.src = imageUrl(f, isCutoutAsset(f) ? "cutout" : "display");
-            }
-          };
-          if ("requestIdleCallback" in window) requestIdleCallback(warm, { timeout: 2000 });
-          else setTimeout(warm, 500);
-        }
-        flip.hidden = !(faces.closed[0] && faces.closed[1]);
-        flip.setAttribute("aria-label", "Flip: show the verso");
-        assetLabel.textContent = faceLabel();
-        if (folded) assetLabel.hidden = true;
-      }
-      if (gAssets.length > 1) assetLabel.textContent = "";
-      else if (!back && !folded) assetLabel.textContent = "1/1";
-      controls.appendChild(assetLabel);
-      foot.appendChild(controls);
-
-      // Gallery fields: the photo magnifier's slider, in the plate zoom's
-      // exact dress. Wheel/pinch keep it in sync via photoView.syncSlider.
-      if (photoView) {
-        const zoomWrap = el("label", "item-card__zoom-wrap");
-        const zoomLabel = el("span", "item-card__asset-label");
-        zoomLabel.textContent = "zoom";
-        const zoom = el("input", "item-card__zoom-slider");
-        zoom.type = "range";
-        zoom.min = "1"; zoom.max = "6"; zoom.step = "0.05"; zoom.value = "1";
-        zoom.setAttribute("aria-label", "Zoom photo");
-        zoom.addEventListener("input", () => photoView.setZoom(parseFloat(zoom.value)));
-        photoView.syncSlider = (v) => { zoom.value = String(v); };
-        zoomWrap.appendChild(zoomLabel);
-        zoomWrap.appendChild(zoom);
-        foot.appendChild(zoomWrap);
-      }
-
-      // Zoom slider — only meaningful when there is a calibrated field to
-      // rescale. Dragging shrinks the field span and enlarges the item.
-      // Gallery fields (photos) show the whole reproduction instead.
-      if (dims && !gAssets.length) {
-        const zoomWrap = el("label", "item-card__zoom-wrap");
-        const zoomLabel = el("span", "item-card__asset-label");
-        zoomLabel.textContent = "zoom";
-        const zoom = el("input", "item-card__zoom-slider");
-        zoom.type = "range";
-        zoom.min = "1"; zoom.max = "6"; zoom.step = "0.05"; zoom.value = String(localZoom);
-        zoom.setAttribute("aria-label", "Zoom plate");
-        zoom.addEventListener("input", () => renderPlate(parseFloat(zoom.value)));
-        zoomWrap.appendChild(zoomLabel);
-        zoomWrap.appendChild(zoom);
-        foot.appendChild(zoomWrap);
-
-        // The plate is directly manipulable: a single-pointer drag pans the
-        // field, two pointers pinch-zoom. Marking the field interactive gives
-        // it the grab cursor and disables native touch scrolling/zoom over it.
-        field.classList.add("item-card__field--interactive");
-
-        const ptrs = new Map();
-        let lastDist = null;
-        let panStart = null; // { x, y, panX, panY } captured at drag start
-
-        field.addEventListener("pointerdown", (e) => {
-          field.setPointerCapture?.(e.pointerId);
-          ptrs.set(e.pointerId, e);
-          if (ptrs.size === 1) {
-            // Begin a pan: remember where the drag and the field started.
-            panStart = { x: e.clientX, y: e.clientY, panX, panY };
-            dragging = true;
-            field.classList.add("is-grabbing");
-          } else {
-            // A second pointer means pinch, not pan.
-            panStart = null;
-            dragging = false;
-            field.classList.remove("is-grabbing");
-          }
-        });
-
-        field.addEventListener("pointermove", (e) => {
-          if (!ptrs.has(e.pointerId)) return;
-          ptrs.set(e.pointerId, e);
-          if (ptrs.size === 2) {
-            // Pinch → zoom, driving the same slider value.
-            const [a, b] = [...ptrs.values()];
-            const dist = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
-            if (lastDist !== null) {
-              const v = Math.min(6, Math.max(1, parseFloat(zoom.value) + (dist - lastDist) * 0.01));
-              zoom.value = String(v);
-              renderPlate(v);
-            }
-            lastDist = dist;
-          } else if (panStart && plateState && !swipeActive) {
-            // Drag → pan. Convert the client-pixel delta to field mm and move
-            // the window opposite the drag (dragging right reveals content to
-            // the left). Computing from the drag origin keeps clamping stable.
-            const r = field.getBoundingClientRect();
-            const unit = Math.min(r.width, r.height) / PLATE_PX;
-            const mmPerClientPx = 1 / (plateState.pxPerMM * unit);
-            const nx = panStart.panX - (e.clientX - panStart.x) * mmPerClientPx;
-            const ny = panStart.panY - (e.clientY - panStart.y) * mmPerClientPx;
-            renderPlate(parseFloat(zoom.value), nx, ny);
-          }
-        });
-
-        const endPtr = (e) => {
-          ptrs.delete(e.pointerId);
-          if (ptrs.size < 2) lastDist = null;
-          if (ptrs.size === 0) {
-            panStart = null;
-            dragging = false;
-            field.classList.remove("is-grabbing");
+        controls.appendChild(unfold);
+        // Warm the other faces' display derivatives so a first unfold
+        // rarely waits on the network.
+        const warm = () => {
+          for (const f of [back, ...openFaces]) {
+            if (!f) continue;
+            const im = new Image();
+            im.decoding = "async";
+            im.src = imageUrl(f, isCutoutAsset(f) ? "cutout" : "display");
           }
         };
-        field.addEventListener("pointerup", endPtr);
-        field.addEventListener("pointercancel", endPtr);
+        if ("requestIdleCallback" in window) requestIdleCallback(warm, { timeout: 2000 });
+        else setTimeout(warm, 500);
+      }
+      flip.hidden = !(faces.closed[0] && faces.closed[1]);
+      flip.setAttribute("aria-label", "Flip: show the verso");
+      assetLabel.textContent = faceLabel();
+      if (folded) assetLabel.hidden = true;
+    }
+    if (gAssets.length > 1) assetLabel.textContent = "";
+    else if (!back && !folded) assetLabel.textContent = "1/1";
+    controls.appendChild(assetLabel);
+    // Guide: open the series this object leads to. Hidden on the key frame —
+    // the Guide is where you already are. Kept current by showFrame.
+    let openBtn = null;
+    if (isGuide) {
+      openBtn = el("button", "item-card__flip item-card__open");
+      openBtn.type = "button";
+      openBtn.textContent = "open \u2192";
+      openBtn.addEventListener("click", () => {
+        const g = gAssets[galleryIdx];
+        if (g?.frame && g.frame.kind !== "meta") guide.onOpen?.(g.frame);
+      });
+      controls.appendChild(openBtn);
+    }
+    foot.appendChild(controls);
 
-        // Wheel / trackpad scroll zooms the plate exactly like the slider —
-        // a smooth rescale — but centered on the pointer so the field-mm under
-        // the cursor stays pinned. Wheel events fire in bursts (especially on
-        // trackpads), so deltas are capped and accumulated, then applied once
-        // per animation frame: one clean render per frame instead of a jittery
-        // render per event. preventDefault keeps the page from scrolling.
-        let wheelAccum = 0, wheelX = 0, wheelY = 0, wheelRAF = 0;
-        const applyWheel = () => {
-          wheelRAF = 0;
-          if (!plateState || !wheelAccum) { wheelAccum = 0; return; }
-          const oldZoom = parseFloat(zoom.value);
-          // Multiplicative step → even-feeling zoom at any scale. Scrolling down
-          // (positive delta) zooms in; up zooms out.
-          const v = Math.min(6, Math.max(1, oldZoom * Math.exp(wheelAccum * 0.0022)));
-          wheelAccum = 0;
-          if (v === oldZoom) return;
+    // Gallery fields: the photo magnifier's slider, in the plate zoom's
+    // exact dress. Wheel/pinch keep it in sync via photoView.syncSlider.
+    if (photoView) {
+      const zoomWrap = el("label", "item-card__zoom-wrap");
+      const zoomLabel = el("span", "item-card__asset-label");
+      zoomLabel.textContent = "zoom";
+      const zoom = el("input", "item-card__zoom-slider");
+      zoom.type = "range";
+      zoom.min = "1"; zoom.max = "6"; zoom.step = "0.05"; zoom.value = "1";
+      zoom.setAttribute("aria-label", "Zoom photo");
+      zoom.addEventListener("input", () => photoView.setZoom(parseFloat(zoom.value)));
+      photoView.syncSlider = (v) => { zoom.value = String(v); };
+      zoomWrap.appendChild(zoomLabel);
+      zoomWrap.appendChild(zoom);
+      foot.appendChild(zoomWrap);
+    }
 
-          // Pin the point under the cursor: read its field-mm at the old scale,
-          // then choose the pan that re-pins it at the new scale.
+    // Zoom slider — only meaningful when there is a calibrated field to
+    // rescale. Dragging shrinks the field span and enlarges the item.
+    // Gallery fields (photos) show the whole reproduction instead.
+    if (dims && !gAssets.length) {
+      const zoomWrap = el("label", "item-card__zoom-wrap");
+      const zoomLabel = el("span", "item-card__asset-label");
+      zoomLabel.textContent = "zoom";
+      const zoom = el("input", "item-card__zoom-slider");
+      zoom.type = "range";
+      zoom.min = "1"; zoom.max = "6"; zoom.step = "0.05"; zoom.value = String(localZoom);
+      zoom.setAttribute("aria-label", "Zoom plate");
+      zoom.addEventListener("input", () => renderPlate(parseFloat(zoom.value)));
+      zoomWrap.appendChild(zoomLabel);
+      zoomWrap.appendChild(zoom);
+      foot.appendChild(zoomWrap);
+
+      // The plate is directly manipulable: a single-pointer drag pans the
+      // field, two pointers pinch-zoom. Marking the field interactive gives
+      // it the grab cursor and disables native touch scrolling/zoom over it.
+      field.classList.add("item-card__field--interactive");
+
+      const ptrs = new Map();
+      let lastDist = null;
+      let panStart = null; // { x, y, panX, panY } captured at drag start
+
+      field.addEventListener("pointerdown", (e) => {
+        field.setPointerCapture?.(e.pointerId);
+        ptrs.set(e.pointerId, e);
+        if (ptrs.size === 1) {
+          // Begin a pan: remember where the drag and the field started.
+          panStart = { x: e.clientX, y: e.clientY, panX, panY };
+          dragging = true;
+          field.classList.add("is-grabbing");
+        } else {
+          // A second pointer means pinch, not pan.
+          panStart = null;
+          dragging = false;
+          field.classList.remove("is-grabbing");
+        }
+      });
+
+      field.addEventListener("pointermove", (e) => {
+        if (!ptrs.has(e.pointerId)) return;
+        ptrs.set(e.pointerId, e);
+        if (ptrs.size === 2) {
+          // Pinch → zoom, driving the same slider value.
+          const [a, b] = [...ptrs.values()];
+          const dist = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+          if (lastDist !== null) {
+            const v = Math.min(6, Math.max(1, parseFloat(zoom.value) + (dist - lastDist) * 0.01));
+            zoom.value = String(v);
+            renderPlate(v);
+          }
+          lastDist = dist;
+        } else if (panStart && plateState && !swipeActive) {
+          // Drag → pan. Convert the client-pixel delta to field mm and move
+          // the window opposite the drag (dragging right reveals content to
+          // the left). Computing from the drag origin keeps clamping stable.
           const r = field.getBoundingClientRect();
           const unit = Math.min(r.width, r.height) / PLATE_PX;
-          const offX = (wheelX - r.left) / unit - plateState.origin;
-          const offY = (wheelY - r.top) / unit - plateState.origin;
-          const cx = plateState.panX + offX / plateState.pxPerMM;
-          const cy = plateState.panY + offY / plateState.pxPerMM;
-          const extent = plateState.pxPerMM * plateState.spanMM; // px run of field
-          const newPxPerMM = extent / ((plateState.spanMM * oldZoom) / v);
+          const mmPerClientPx = 1 / (plateState.pxPerMM * unit);
+          const nx = panStart.panX - (e.clientX - panStart.x) * mmPerClientPx;
+          const ny = panStart.panY - (e.clientY - panStart.y) * mmPerClientPx;
+          renderPlate(parseFloat(zoom.value), nx, ny);
+        }
+      });
 
-          zoom.value = String(v);
-          renderPlate(v, cx - offX / newPxPerMM, cy - offY / newPxPerMM);
-        };
-        field.addEventListener("wheel", (e) => {
-          if (!plateState) return;
-          e.preventDefault();
-          let dy = e.deltaY;
-          if (e.deltaMode === 1) dy *= 16;        // lines → ~px
-          else if (e.deltaMode === 2) dy *= PLATE_PX; // pages → ~px
-          wheelAccum += Math.max(-50, Math.min(50, dy)); // cap momentum bursts
-          wheelX = e.clientX; wheelY = e.clientY;
-          if (!wheelRAF) wheelRAF = requestAnimationFrame(applyWheel);
-        }, { passive: false });
-      }
+      const endPtr = (e) => {
+        ptrs.delete(e.pointerId);
+        if (ptrs.size < 2) lastDist = null;
+        if (ptrs.size === 0) {
+          panStart = null;
+          dragging = false;
+          field.classList.remove("is-grabbing");
+        }
+      };
+      field.addEventListener("pointerup", endPtr);
+      field.addEventListener("pointercancel", endPtr);
 
-      // Contact strip — a record holding 2+ gallery images shows the whole
-      // set between the field and the foot, each photo in its entirety in
-      // its padded cell. Clicking a frame (or the foot's prev/next) steps the
-      // plate; the fields column's frame caption and the counter follow.
-      if (gAssets.length > 1) {
-        const strip = el("div", "item-card__strip");
-        strip.setAttribute("role", "tablist");
-        strip.setAttribute("aria-label", "photos");
-        const stripBtns = gAssets.map((g, i) => {
-          const b = el("button", "item-card__strip-btn");
-          b.type = "button";
-          b.setAttribute("role", "tab");
-          b.setAttribute("aria-label", `Frame ${i + 1} of ${gAssets.length}${g.caption ? `: ${g.caption}` : ""}`);
-          const t = el("img", "item-card__strip-img");
-          t.alt = "";
-          t.decoding = "async";
-          t.loading = "lazy";
-          t.src = g.thumbnail ? imageUrl(g.thumbnail, "thumbnail") : imageUrl(g.file, "display");
-          b.appendChild(t);
-          b.addEventListener("click", () => showFrame(i));
-          strip.appendChild(b);
-          return b;
-        });
-        // Pre-load the set's display derivatives so flipping rarely shows
-        // the thumbnail phase: the current frame's neighbours immediately on
-        // every step, the whole set during idle time (started by
-        // renderContent via wrap.__prefetchFrames, so pre-rendered swipe
-        // neighbours don't fetch entire sets). Loaded Images are RETAINED so
-        // their decoded bytes stay in the browser cache — same reasoning as
-        // the sheet-level neighbour prefetch above.
-        const frameCache = new Map(); // url → retained HTMLImageElement
-        const prefetchFrame = (j) => {
-          const g = gAssets[((j % gAssets.length) + gAssets.length) % gAssets.length];
-          if (!g?.file) return;
-          const url = imageUrl(g.file, fullVariants(g.file)[0]);
-          if (!url || frameCache.has(url)) return;
-          const im = new Image();
-          im.decoding = "async";
-          im.src = url;
-          frameCache.set(url, im);
-        };
-        wrap.__prefetchFrames = () => {
-          let j = 0;
-          const idle = (fn) => ("requestIdleCallback" in window)
-            ? requestIdleCallback(fn, { timeout: 2000 })
-            : setTimeout(fn, 250);
-          const step = () => {
-            if (!wrap.isConnected) return; // card replaced — stop fetching
-            let budget = 2;
-            while (j < gAssets.length && budget-- > 0) prefetchFrame(j++);
-            if (j < gAssets.length) idle(step);
-          };
-          idle(step);
-        };
+      // Wheel / trackpad scroll zooms the plate exactly like the slider —
+      // a smooth rescale — but centered on the pointer so the field-mm under
+      // the cursor stays pinned. Wheel events fire in bursts (especially on
+      // trackpads), so deltas are capped and accumulated, then applied once
+      // per animation frame: one clean render per frame instead of a jittery
+      // render per event. preventDefault keeps the page from scrolling.
+      let wheelAccum = 0, wheelX = 0, wheelY = 0, wheelRAF = 0;
+      const applyWheel = () => {
+        wheelRAF = 0;
+        if (!plateState || !wheelAccum) { wheelAccum = 0; return; }
+        const oldZoom = parseFloat(zoom.value);
+        // Multiplicative step → even-feeling zoom at any scale. Scrolling down
+        // (positive delta) zooms in; up zooms out.
+        const v = Math.min(6, Math.max(1, oldZoom * Math.exp(wheelAccum * 0.0022)));
+        wheelAccum = 0;
+        if (v === oldZoom) return;
 
-        const pad2 = n => String(n).padStart(2, "0");
-        showFrame = (i) => {
-          const from = galleryIdx;
-          galleryIdx = (i + gAssets.length) % gAssets.length;
-          const g = gAssets[galleryIdx];
-          if (reproImg && galleryIdx !== from) {
-            loadReproProgressive(reproImg, g.file, g.thumbnail, showNone, fullVariants(g.file));
+        // Pin the point under the cursor: read its field-mm at the old scale,
+        // then choose the pan that re-pins it at the new scale.
+        const r = field.getBoundingClientRect();
+        const unit = Math.min(r.width, r.height) / PLATE_PX;
+        const offX = (wheelX - r.left) / unit - plateState.origin;
+        const offY = (wheelY - r.top) / unit - plateState.origin;
+        const cx = plateState.panX + offX / plateState.pxPerMM;
+        const cy = plateState.panY + offY / plateState.pxPerMM;
+        const extent = plateState.pxPerMM * plateState.spanMM; // px run of field
+        const newPxPerMM = extent / ((plateState.spanMM * oldZoom) / v);
+
+        zoom.value = String(v);
+        renderPlate(v, cx - offX / newPxPerMM, cy - offY / newPxPerMM);
+      };
+      field.addEventListener("wheel", (e) => {
+        if (!plateState) return;
+        e.preventDefault();
+        let dy = e.deltaY;
+        if (e.deltaMode === 1) dy *= 16;        // lines → ~px
+        else if (e.deltaMode === 2) dy *= PLATE_PX; // pages → ~px
+        wheelAccum += Math.max(-50, Math.min(50, dy)); // cap momentum bursts
+        wheelX = e.clientX; wheelY = e.clientY;
+        if (!wheelRAF) wheelRAF = requestAnimationFrame(applyWheel);
+      }, { passive: false });
+    }
+
+    // Contact strip — a record holding 2+ gallery images shows the whole
+    // set between the field and the foot, each photo in its entirety in
+    // its padded cell. Clicking a frame (or the foot's prev/next) steps the
+    // plate; the fields column's frame caption and the counter follow.
+    if (gAssets.length > 1) {
+      const strip = el("div", "item-card__strip");
+      strip.setAttribute("role", "tablist");
+      strip.setAttribute("aria-label", isGuide ? "desk objects" : "photos");
+      const stripBtns = gAssets.map((g, i) => {
+        const b = el("button", "item-card__strip-btn");
+        b.type = "button";
+        b.setAttribute("role", "tab");
+        b.setAttribute("aria-label", `Frame ${i + 1} of ${gAssets.length}${g.caption ? `: ${g.caption}` : ""}`);
+        const t = el("img", "item-card__strip-img");
+        t.alt = "";
+        t.decoding = "async";
+        t.loading = "lazy";
+        // Guide stills are site assets (public/thumbnails/desk/), not R2 derivatives.
+        t.src = isGuide ? g.thumbnail : (g.thumbnail ? imageUrl(g.thumbnail, "thumbnail") : imageUrl(g.file, "display"));
+        b.appendChild(t);
+        b.addEventListener("click", () => showFrame(i));
+        strip.appendChild(b);
+        return b;
+      });
+      // Pre-load the set's display derivatives so flipping rarely shows
+      // the thumbnail phase: the current frame's neighbours immediately on
+      // every step, the whole set during idle time (started by
+      // renderContent via wrap.__prefetchFrames, so pre-rendered swipe
+      // neighbours don't fetch entire sets). Loaded Images are RETAINED so
+      // their decoded bytes stay in the browser cache — same reasoning as
+      // the sheet-level neighbour prefetch above.
+      const frameCache = new Map(); // url → retained HTMLImageElement
+      const prefetchFrame = (j) => {
+        const g = gAssets[((j % gAssets.length) + gAssets.length) % gAssets.length];
+        if (isGuide) { modelPlate?.prefetch(g.frame); return; }
+        if (!g?.file) return;
+        const url = imageUrl(g.file, fullVariants(g.file)[0]);
+        if (!url || frameCache.has(url)) return;
+        const im = new Image();
+        im.decoding = "async";
+        im.src = url;
+        frameCache.set(url, im);
+      };
+      wrap.__prefetchFrames = () => {
+        let j = 0;
+        const idle = (fn) => ("requestIdleCallback" in window)
+          ? requestIdleCallback(fn, { timeout: 2000 })
+          : setTimeout(fn, 250);
+        const step = () => {
+          if (!wrap.isConnected) return; // card replaced — stop fetching
+          let budget = 2;
+          while (j < gAssets.length && budget-- > 0) prefetchFrame(j++);
+          if (j < gAssets.length) idle(step);
+        };
+        idle(step);
+      };
+
+      const pad2 = n => String(n).padStart(2, "0");
+      showFrame = (i) => {
+        const from = galleryIdx;
+        galleryIdx = (i + gAssets.length) % gAssets.length;
+        const g = gAssets[galleryIdx];
+        if (reproImg && galleryIdx !== from) {
+          loadReproProgressive(reproImg, g.file, g.thumbnail, showNone, fullVariants(g.file));
+        }
+        if (reproImg) reproImg.alt = g.caption || item.title;
+        if (isGuide) {
+          modelPlate?.show(g.frame);
+          renderGuideFields(g.frame);
+          if (openBtn) {
+            openBtn.hidden = g.frame.kind === "meta";
+            openBtn.setAttribute("aria-label", `Open ${g.frame.label}`);
           }
-          if (reproImg) reproImg.alt = g.caption || item.title;
-          assetLabel.textContent = `${pad2(galleryIdx + 1)}/${pad2(gAssets.length)}`;
-          if (frameCaptionEl) frameCaptionEl.textContent = g.caption || "\u2014";
-          stripBtns.forEach((b, j) => b.setAttribute("aria-current", j === galleryIdx));
-          // Long sets scroll within the strip — keep the active frame in view
-          // when stepping from the foot controls. block: "nearest" so the
-          // page itself never jumps.
-          stripBtns[galleryIdx]?.scrollIntoView?.({ block: "nearest", inline: "nearest" });
-          // A new frame starts centered; the zoom level is kept.
-          photoView?.resetPan();
-          // Stay ahead of rapid flipping in either direction.
-          prefetchFrame(galleryIdx + 1);
-          prefetchFrame(galleryIdx - 1);
+          if (galleryIdx !== from || !wrap.__guideStarted) guide.onFrame?.(g.frame);
+          wrap.__guideStarted = true;
+        }
+        assetLabel.textContent = `${pad2(galleryIdx + 1)}/${pad2(gAssets.length)}`;
+        if (frameCaptionEl) frameCaptionEl.textContent = g.caption || "\u2014";
+        stripBtns.forEach((b, j) => b.setAttribute("aria-current", j === galleryIdx));
+        // Long sets scroll within the strip — keep the active frame in view
+        // when stepping from the foot controls. block: "nearest" so the
+        // page itself never jumps.
+        stripBtns[galleryIdx]?.scrollIntoView?.({ block: "nearest", inline: "nearest" });
+        // A new frame starts centered; the zoom level is kept.
+        photoView?.resetPan();
+        // Stay ahead of rapid flipping in either direction.
+        prefetchFrame(galleryIdx + 1);
+        prefetchFrame(galleryIdx - 1);
+      };
+      showFrame(galleryIdx);
+      plateCol.appendChild(strip);
+      // Keyboard hook: ↑/↓ flip through the set (see onKey) — exposed on
+      // the wrap like the swipe/plate hooks so the sheet-level handler can
+      // reach the current card's stepper.
+      wrap.__stepGallery = (delta) => showFrame(galleryIdx + delta);
+      if (isGuide) {
+        wrap.__showGuideFrame = (key) => {
+          const at = gAssets.findIndex(g => g.frame.key === key);
+          if (at !== -1 && at !== galleryIdx) showFrame(at);
         };
-        showFrame(0);
-        plateCol.appendChild(strip);
-        // Keyboard hook: ↑/↓ flip through the set (see onKey) — exposed on
-        // the wrap like the swipe/plate hooks so the sheet-level handler can
-        // reach the current card's stepper.
-        wrap.__stepGallery = (delta) => showFrame(galleryIdx + delta);
       }
-
-      plateCol.appendChild(foot);
-    } else {
-      // Reserve the foot's height so a card with no reproduction keeps the
-      // same size as a reproduced one.
-      plateCol.appendChild(el("div", "item-card__plate-foot"));
     }
 
-    card.appendChild(plateCol);
-
-    // Status stamp — the card wears its status rather than listing it.
-    if (item.status && item.status !== "published") {
-      const stamp = el("span", "item-card__stamp");
-      stamp.textContent = item.status;
-      card.appendChild(stamp);
-    }
-
-    wrap.appendChild(card);
-
-    // Gesture arbitration hooks for the swipe carousel: report the plate's
-    // horizontal pan state, and let the carousel suppress plate panning once it
-    // takes over the gesture.
-    wrap.__setSwipeActive = (v) => { swipeActive = v; };
-    wrap.__plate = {
-      get interactive() {
-        return !!(primary && dims && !gAssets.length) || (photoView ? photoView.zoom > 1.001 : false);
-      },
-      panState: () => {
-        if (plateState && dims) return { panX: plateState.panX, panMaxX: Math.max(0, dims.w - plateState.spanMM) };
-        if (photoView && photoView.zoom > 1.001) return photoView.panState();
-        return null;
-      },
-    };
-
-    // Scroll-edge fade: on mobile the card is taller than the screen and scrolls
-    // inside this fixed viewport. Fade whichever edges overflow so content
-    // dissolves at the top edge and before the bottom breadcrumb rather than
-    // clashing with them. The bottom reaches full transparency by the
-    // breadcrumb's top; each fade drops away at its extreme so the first/last
-    // row lands crisp. Inert on desktop, where the card fits and never scrolls.
-    // Mirrors the horizontal updateScrollMask used by the labor panels.
-    const TOP_FADE = "2.5rem";   // soft dissolve at the top edge
-    const BOT_START = "7.5rem";  // bottom: opaque until here, then fade
-    const BOT_CLEAR = "4.5rem";  // bottom: fully clear by here (above the breadcrumb)
-    const updateCardMask = () => {
-      const atTop = wrap.scrollTop <= 0;
-      const atBottom = wrap.scrollTop + wrap.clientHeight >= wrap.scrollHeight - 1;
-      let mask;
-      if (atTop && atBottom) {
-        mask = "none";
-      } else if (atTop) {
-        mask = `linear-gradient(to bottom, black calc(100% - ${BOT_START}), transparent calc(100% - ${BOT_CLEAR}))`;
-      } else if (atBottom) {
-        mask = `linear-gradient(to bottom, transparent 0, black ${TOP_FADE})`;
-      } else {
-        mask = `linear-gradient(to bottom, transparent 0, black ${TOP_FADE}, black calc(100% - ${BOT_START}), transparent calc(100% - ${BOT_CLEAR}))`;
-      }
-      wrap.style.maskImage = mask;
-      wrap.style.webkitMaskImage = mask;
-    };
-    wrap.addEventListener("scroll", updateCardMask, { passive: true });
-    requestAnimationFrame(updateCardMask);
-
-    return wrap;
+    plateCol.appendChild(foot);
+  } else {
+    // Reserve the foot's height so a card with no reproduction keeps the
+    // same size as a reproduced one.
+    plateCol.appendChild(el("div", "item-card__plate-foot"));
   }
+
+  card.appendChild(plateCol);
+
+  // Status stamp — the card wears its status rather than listing it.
+  if (item.status && item.status !== "published") {
+    const stamp = el("span", "item-card__stamp");
+    stamp.textContent = item.status;
+    card.appendChild(stamp);
+  }
+
+  wrap.appendChild(card);
+
+  // Gesture arbitration hooks for the swipe carousel: report the plate's
+  // horizontal pan state, and let the carousel suppress plate panning once it
+  // takes over the gesture.
+  wrap.__setSwipeActive = (v) => { swipeActive = v; };
+  wrap.__plate = {
+    get interactive() {
+      return !!(primary && dims && !gAssets.length) || (photoView ? photoView.zoom > 1.001 : false);
+    },
+    panState: () => {
+      if (plateState && dims) return { panX: plateState.panX, panMaxX: Math.max(0, dims.w - plateState.spanMM) };
+      if (photoView && photoView.zoom > 1.001) return photoView.panState();
+      return null;
+    },
+  };
+
+  // Scroll-edge fade: on mobile the card is taller than the screen and scrolls
+  // inside this fixed viewport. Fade whichever edges overflow so content
+  // dissolves at the top edge and before the bottom breadcrumb rather than
+  // clashing with them. The bottom reaches full transparency by the
+  // breadcrumb's top; each fade drops away at its extreme so the first/last
+  // row lands crisp. Inert on desktop, where the card fits and never scrolls.
+  // Mirrors the horizontal updateScrollMask used by the labor panels.
+  const TOP_FADE = "2.5rem";   // soft dissolve at the top edge
+  const BOT_START = "7.5rem";  // bottom: opaque until here, then fade
+  const BOT_CLEAR = "4.5rem";  // bottom: fully clear by here (above the breadcrumb)
+  const updateCardMask = () => {
+    const atTop = wrap.scrollTop <= 0;
+    const atBottom = wrap.scrollTop + wrap.clientHeight >= wrap.scrollHeight - 1;
+    let mask;
+    if (atTop && atBottom) {
+      mask = "none";
+    } else if (atTop) {
+      mask = `linear-gradient(to bottom, black calc(100% - ${BOT_START}), transparent calc(100% - ${BOT_CLEAR}))`;
+    } else if (atBottom) {
+      mask = `linear-gradient(to bottom, transparent 0, black ${TOP_FADE})`;
+    } else {
+      mask = `linear-gradient(to bottom, transparent 0, black ${TOP_FADE}, black calc(100% - ${BOT_START}), transparent calc(100% - ${BOT_CLEAR}))`;
+    }
+    wrap.style.maskImage = mask;
+    wrap.style.webkitMaskImage = mask;
+  };
+  wrap.addEventListener("scroll", updateCardMask, { passive: true });
+  requestAnimationFrame(updateCardMask);
+
+  return wrap;
+}
+
+function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
+  // Constellation context: the browse context is the constellation's member
+  // list (cross-series, chronological), so prev/next steps through the
+  // constellation rather than a subcollection.
+  const isConstellation = seriesKey === "constellations";
+  const constellation = isConstellation ? constellationFor(viewSlug) : null;
+  const s = isConstellation
+    ? { label: constellation?.title || viewSlug, subcollections: {} }
+    : archive.series[seriesKey];
+  let allItems;
+
+  if (isConstellation) {
+    allItems = constellation?.items || [];
+  } else if (subKey && s.subcollections[subKey]) {
+    allItems = s.subcollections[subKey].items;
+  } else if (Object.keys(s.subcollections || {}).length > 0) {
+    allItems = Object.values(s.subcollections).flatMap(sc => sc.items || []);
+  } else {
+    allItems = s.items || [];
+  }
+  let currentIdx = allItems.findIndex(i => i.id === itemId);
+  if (currentIdx === -1) currentIdx = 0;
+
+  const veil = makeVeil(() => {
+    navigate({ layer: "browse", series: seriesKey, subcollection: subKey, view: viewSlug || null, item: null });
+  });
+
+  const content = makeContent();
+  content.classList.add("layer-content--item-card");
+
+  // What buildCardWrap needs from this sheet (see its ctx contract).
+  const cardCtx = {
+    onExit: () => navigate({ layer: "browse", series: seriesKey, subcollection: subKey, view: viewSlug || null, item: null }),
+    get allItems() { return allItems; },
+    navItem: (i) => navItem(i),
+  };
+
+  // Prefetch a neighbour's plate images so arrow/keyboard stepping lands on an
+  // already-cached image instead of reloading (soft thumbnail → sharp display) in
+  // view. Each prefetched Image is RETAINED (kept in the Map, not discarded) so its
+  // decoded bytes stay in the browser's in-memory image cache until we navigate.
+  // This is what makes the preload stick for the R2-hosted derivatives: r2.dev
+  // sends no Cache-Control and is not edge-cached, so a dropped prefetch gets
+  // re-fetched on use and the preload is wasted — unlike the external CDN
+  // posters/covers (films, books), which cache on their own. Deferred to idle time
+  // so it never competes with the active card's own load; bounded to the most
+  // recent handful so memory stays flat while stepping through.
+  const prefetched = new Map(); // url → retained HTMLImageElement
+  const prefetchImg = (url) => {
+    if (!url || prefetched.has(url)) return;
+    const im = new Image();
+    im.decoding = "async";
+    im.src = url;
+    prefetched.set(url, im);
+    if (prefetched.size > 24) prefetched.delete(prefetched.keys().next().value);
+  };
+  const prefetchNeighbors = (idx) => {
+    for (const j of [idx - 1, idx + 1]) {
+      const it = allItems[j];
+      if (!it) continue;
+      const primary = primaryAsset(it);
+      if (primary) prefetchImg(imageUrl(primary, isCutoutAsset(primary) ? "cutout" : "display"));
+      // Gallery neighbours: warm the second frame too, so arriving and
+      // immediately flipping doesn't drop to the thumbnail phase.
+      const g2 = it.assets?.gallery?.[1]?.file;
+      if (g2) prefetchImg(imageUrl(g2, isCutoutAsset(g2) ? "cutout" : "display"));
+      if (it.assets?.thumbnail) prefetchImg(imageUrl(it.assets.thumbnail, "thumbnail"));
+    }
+  };
+  const schedulePrefetch = (idx) => {
+    const run = () => prefetchNeighbors(idx);
+    if ("requestIdleCallback" in window) requestIdleCallback(run, { timeout: 1500 });
+    else setTimeout(run, 300);
+  };
+
+  function renderContent(idx) {
+    currentIdx = idx;
+    const item = allItems[idx];
+
+    content.innerHTML = "";
+    const cardWrap = buildCardWrap(item, cardCtx);
+    content.appendChild(cardWrap);
+    // Only the visible card pre-loads its whole set (pre-rendered swipe
+    // neighbours would otherwise fetch entire sets on touchstart).
+    cardWrap.__prefetchFrames?.();
+    renderChrome(item, idx);
+    schedulePrefetch(idx);
+  }
+
 
   // ── Shared chrome: breadcrumb + prev/next ───────────────────────────────────
   function renderChrome(item, idx) {
@@ -2613,8 +2765,8 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
     curWrap.after(w); // sit alongside the current card, below the chrome
   };
   const buildNeighbors = () => {
-    if (currentIdx > 0) { prevWrap = buildCardWrap(allItems[currentIdx - 1]); placeNeighbor(prevWrap, -vw); }
-    if (currentIdx < allItems.length - 1) { nextWrap = buildCardWrap(allItems[currentIdx + 1]); placeNeighbor(nextWrap, vw); }
+    if (currentIdx > 0) { prevWrap = buildCardWrap(allItems[currentIdx - 1], cardCtx); placeNeighbor(prevWrap, -vw); }
+    if (currentIdx < allItems.length - 1) { nextWrap = buildCardWrap(allItems[currentIdx + 1], cardCtx); placeNeighbor(nextWrap, vw); }
   };
   const dropNeighbors = () => {
     if (prevWrap) prevWrap.remove();

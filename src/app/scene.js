@@ -3,6 +3,8 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { navigate } from "./router.js";
 import { dismissLoadingScreen } from "./loading.js";
 import { deskTarget } from "./state.js";
+import { DESK_OBJECTS, MODEL_BASE, UNTEXTURED_BASE } from "../shared/desk-objects.js";
+import { stripTextures as stripModelTextures } from "./model-look.js";
 
 const seriesInfo = {};
 
@@ -15,40 +17,11 @@ let renderPaused = false;
 export function pauseSceneRender() { renderPaused = true; }
 export function resumeSceneRender() { renderPaused = false; }
 
-// The series objects sitting on the desk are rendered with flat, untextured
-// materials. Their image textures are also stripped from the GLB binaries
-// themselves (see scripts/strip-model-textures.js), which publishes
-// texture-free copies to the models/untextured/ prefix that OBJECT_BASE below
-// points at — so the textures are no longer downloaded or decoded at all.
-// This runtime pass remains as a safety net: it normalizes each material to a
-// flat MeshStandardMaterial built from the surviving baseColorFactor, so the
-// scene looks identical whether it loads a pre-stripped or full-texture file.
-// The desk itself (desk.glb) keeps its real materials and is not stripped.
+// Flat, texture-free materials for the series objects: the rule and its
+// rationale live in model-look.js, shared with the Guide card's model plate.
 const STRIP_MODEL_TEXTURES = true;
-
 function stripTextures(root) {
-  if (!STRIP_MODEL_TEXTURES) return;
-  root.traverse((child) => {
-    if (!child.isMesh || !child.material) return;
-    const materials = Array.isArray(child.material)
-      ? child.material
-      : [child.material];
-    child.material = materials.map((mat) => {
-      const flat = new THREE.MeshStandardMaterial({
-        color: mat.color ? mat.color.clone() : new THREE.Color(0x888888),
-        roughness: mat.roughness ?? 0.8,
-        metalness: mat.metalness ?? 0.0,
-      });
-      // Dispose old textures so the GPU/decoder frees them.
-      for (const key of Object.keys(mat)) {
-        const val = mat[key];
-        if (val && val.isTexture) val.dispose();
-      }
-      return flat;
-    });
-    if (!Array.isArray(child.material)) child.material = child.material[0];
-    if (child.material.length === 1) child.material = child.material[0];
-  });
+  if (STRIP_MODEL_TEXTURES) stripModelTextures(root);
 }
 
 export function setSeriesInfo(data) {
@@ -89,10 +62,11 @@ export function initScene() {
   scene.add(spotLight);
   scene.add(spotLight.target);
 
-  const BASE = "https://pub-0038be3e0b514b5080cb9935976102b8.r2.dev/models/";
-  // Texture-stripped copies of the series objects live under this prefix.
-  // The full-texture originals remain at BASE but are no longer loaded.
-  const OBJECT_BASE = `${BASE}untextured/`;
+  // Model hosting is shared with the Guide card and the Node scripts
+  // (src/shared/desk-objects.js): the desk from MODEL_BASE, the objects from
+  // the texture-stripped copies under UNTEXTURED_BASE.
+  const BASE = MODEL_BASE;
+  const OBJECT_BASE = UNTEXTURED_BASE;
 
   // Route every model load through one manager so we know when the desk and all
   // objects have finished loading, then dismiss the loading screen. render() is
@@ -134,16 +108,20 @@ export function initScene() {
   const deg = Math.PI / 180;
 
   // ── Desk objects ────────────────────────────────────────────────────────────
-  // Intrinsic per-object config: fit box (w,h,d), Y-rotation, vertical offset,
-  // and source model file. Placement per viewport regime comes from LAYOUTS below.
-  const OBJECT_CFG = {
-    identity:     { w: 15,  h: 15, d: 3.5, ry: 0,   offsetY: -2.1, file: "desk-identity-dossier.glb" },
-    labor:        { w: 2.4, h: 2,  d: 2,   ry: -20, offsetY: 0,    file: "desk-labor-box.glb" },
-    consumption:  { w: 1.0, h: 1,  d: 1,   ry: 0,   offsetY: 0,    file: "desk-consumption-sphere.glb" },
-    creation:     { w: 4,   h: 4,  d: 3,   ry: -15, offsetY: 0,    file: "desk-creation-stamp.glb" },
-    accumulation: { w: 3.5, h: 2,  d: 4,   ry: 30,  offsetY: 0,    file: "desk-accumulation-bundle.glb" },
-    guide:        { w: 1,   h: 1,  d: 1,   ry: 210, offsetY: 0,    file: "desk-guide-key.glb" },
+  // Intrinsic per-object config: fit box (w,h,d), Y-rotation, vertical offset.
+  // The source model file comes from the shared DESK_OBJECTS table. Placement
+  // per viewport regime comes from LAYOUTS below.
+  const OBJECT_FIT = {
+    identity:     { w: 15,  h: 15, d: 3.5, ry: 0,   offsetY: -2.1 },
+    labor:        { w: 2.4, h: 2,  d: 2,   ry: -20, offsetY: 0 },
+    consumption:  { w: 1.0, h: 1,  d: 1,   ry: 0,   offsetY: 0 },
+    creation:     { w: 4,   h: 4,  d: 3,   ry: -15, offsetY: 0 },
+    accumulation: { w: 3.5, h: 2,  d: 4,   ry: 30,  offsetY: 0 },
+    guide:        { w: 1,   h: 1,  d: 1,   ry: 210, offsetY: 0 },
   };
+  const OBJECT_CFG = Object.fromEntries(
+    Object.entries(OBJECT_FIT).map(([id, fit]) => [id, { ...fit, file: DESK_OBJECTS[id].file }])
+  );
 
   // Placement on the desk surface per viewport regime. Only x and z change
   // between regimes — these are the two desk-surface axes (left/right and the
