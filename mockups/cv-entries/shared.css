@@ -1,0 +1,629 @@
+/* ── CV entry mockups — shared styles (copied from mockups/photo-entries, extended) ─────────────────────────────────────
+   This file is a faithful extraction of the LIVE system, not an invention:
+   tokens from src/styles/tokens.css ([data-theme="dark"]), the horizontally
+   scrolling column-major browse grid (.item-grid*) and the catalog-card
+   inspection (.item-card*, fields LEFT / plate RIGHT) from src/styles/main.css.
+   EB Garamond loads from Google Fonts (the repo's /fonts paths don't resolve
+   from file://); Commit Mono falls back to ui-monospace.
+   Mockup-only additions are marked "MOCKUP:" — everything else mirrors main.css.
+─────────────────────────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap');
+
+/* ── Tokens (dark / public site) ── */
+:root {
+  --color-ink:        #1a1510;
+  --color-paper:      #f5f3ef;
+  --color-vellum:     #e8e0d0;
+  --color-shadow:     #0a0805;
+  --color-surface-dk: #1e1a14;
+
+  --bg:         #000000;
+  --bg-surface: var(--color-surface-dk);
+  --fg:         var(--color-vellum);
+  --fg-muted:   rgba(232, 224, 208, 0.6);
+  --border:     rgba(232, 224, 208, 0.2);
+  --border-dim: rgba(232, 224, 208, 0.12);
+  --hover-bg:   rgba(232, 224, 208, 0.05);
+  --grid-line:  rgba(232, 224, 208, 0.12);
+
+  --overlay-text:    var(--color-vellum);
+  --overlay-muted:   rgba(232, 224, 208, 0.5);
+  --overlay-padding: 2rem;
+
+  --font-mono:  'Commit Mono', ui-monospace, 'Cascadia Mono', 'Fira Mono', monospace;
+  --font-serif: 'EB Garamond', Georgia, serif;
+  --font:       var(--font-serif);
+
+  --text-xs:   0.8rem;
+  --text-sm:   0.9rem;
+  --text-base: 1.0rem;
+  --text-md:   1.1rem;
+  --text-lg:   1.2rem;
+  --text-xl:   1.4rem;
+
+  --leading-tight: 1.3;
+  --leading-base:  1.5;
+  --leading-loose: 1.6;
+
+  --tracking-base:  0.03em;
+  --tracking-wide:  0.07em;
+  --tracking-wider: 0.1em;
+
+  --weight-normal: 400;
+  --weight-semi:   600;
+
+  --dur-fast: 0.1s;
+  --dur-base: 0.15s;
+  --dur-slow: 0.32s;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-base: ease;
+
+  --item-grid-cell-height: 160px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font);
+  letter-spacing: var(--tracking-base);
+  overflow: hidden;
+}
+
+/* ── Shared overlay typography (main.css) ── */
+.overlay-label {
+  font-size: var(--text-xs);
+  color: var(--overlay-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  display: block;
+}
+.overlay-value {
+  font-size: var(--text-sm);
+  color: var(--overlay-text);
+  display: block;
+  margin-bottom: 0.5rem;
+}
+.overlay-title {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-normal);
+  color: var(--overlay-text);
+  margin: 0;
+}
+.overlay-subtitle {
+  font-size: var(--text-sm);
+  color: var(--overlay-muted);
+  margin: 0.2rem 0 0;
+}
+
+/* ── MOCKUP: banner identifying the variant, never part of the design ── */
+.mock-banner {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0.6rem var(--overlay-padding);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--overlay-muted);
+  border-bottom: 1px dashed var(--border-dim);
+  letter-spacing: var(--tracking-wide);
+  z-index: 50;
+  background: var(--bg);
+}
+.mock-banner a { color: var(--overlay-muted); text-decoration: none; }
+.mock-banner a:hover { color: var(--overlay-text); }
+
+/* ── Site overlays: breadcrumb bottom-left, meta bottom-right ── */
+.layer-breadcrumb {
+  position: fixed;
+  bottom: var(--overlay-padding);
+  left: var(--overlay-padding);
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  font-size: var(--text-xs);
+  color: var(--overlay-muted);
+  z-index: 40;
+}
+.layer-breadcrumb .sep { opacity: 0.4; }
+.layer-breadcrumb .current { color: var(--overlay-text); }
+
+.layer-meta {
+  position: fixed;
+  bottom: var(--overlay-padding);
+  right: var(--overlay-padding);
+  text-align: right;
+  z-index: 40;
+}
+@media (max-width: 600px) { .layer-meta { display: none; } }
+
+/* ── Item grid — column-major, horizontally scrolling (main.css, verbatim) ── */
+.item-grid-wrap {
+  position: fixed;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
+  pointer-events: auto;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.item-grid-wrap::-webkit-scrollbar { display: none; }
+
+.item-grid {
+  display: flex;
+  width: max-content;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 1rem var(--overlay-padding);
+  padding-left: 4rem;
+  gap: 0;
+  pointer-events: auto;
+}
+.item-grid--centered { margin-left: auto; margin-right: auto; }
+
+.item-grid__group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.item-grid__group:first-child .item-grid__cell--first-col { border-left: 1px solid var(--grid-line); }
+
+.item-grid__year {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--overlay-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  padding: 0 0.75rem 0.4rem;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.item-grid__cells {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: var(--item-grid-cell-height, 160px);
+  border-bottom: 1px solid var(--grid-line);
+}
+.item-grid__group:last-child .item-grid__cells { border-right: 1px solid var(--grid-line); }
+.item-grid__group + .item-grid__group .item-grid__cells { border-left: 1px solid var(--grid-line); }
+
+.item-grid__cell {
+  border-top: 1px solid var(--grid-line);
+  border-left: 1px solid var(--grid-line);
+  width: var(--item-grid-cell-height, 160px);
+  height: var(--item-grid-cell-height, 160px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.item-grid__cell--first-col { border-left: none; }
+
+.item-grid__btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-family: inherit;
+  color: var(--overlay-muted);
+  transition: color var(--dur-base), opacity var(--dur-base);
+}
+.item-grid__btn:hover { color: var(--overlay-text); }
+.item-grid__btn:focus-visible { outline: 1px solid var(--overlay-text); outline-offset: -1px; }
+
+.item-grid__thumb {
+  display: block;
+  object-fit: contain;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.item-grid__noimg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  color: var(--overlay-muted);
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent 0 11px,
+    rgba(232, 224, 208, 0.05) 11px 12px
+  );
+}
+
+/* Exposure stand-ins (photos.js). The element carries the photograph's own
+   aspect ratio (inline style), so the photo is always shown whole — the rule
+   for photo entries (docs/decisions.md): full photo, never cropped. */
+.exp {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  clip-path: inset(0);
+}
+.exp svg {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ── Photos subcollection modifier — the decided treatment: a pile of prints
+   per cell, whole photo visible with padding. Scoped like the books/films/
+   music modifiers. The stack is sized from the cover's orientation within
+   the padded square cell; sheets behind it share its bounds. ── */
+.pile-btn { padding: 1rem; }
+.pile__stack {
+  position: relative;
+  display: block;
+  flex: none;
+}
+.pile__stack--l { width: 100%; aspect-ratio: 3 / 2; }
+.pile__stack--p { height: 100%; aspect-ratio: 2 / 3; }
+.pile__stack--s { width: 88%; aspect-ratio: 1 / 1; }
+
+.pile__stack .pile__print {
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--border-dim);
+  background: var(--bg-surface);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.55);
+}
+.pile__sheet {
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--border-dim);
+  background: #26211a;
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+.pile__sheet--u1 { transform: rotate(-2.4deg) translate(-3px, 3px); }
+.pile__sheet--u2 { transform: rotate(1.8deg) translate(4px, -2px); }
+.item-grid__btn:hover .pile__sheet--u1 { transform: rotate(-4.2deg) translate(-6px, 5px); }
+.item-grid__btn:hover .pile__sheet--u2 { transform: rotate(3.4deg) translate(7px, -4px); }
+@media (prefers-reduced-motion: reduce) {
+  .item-grid__btn:hover .pile__sheet--u1 { transform: rotate(-2.4deg) translate(-3px, 3px); }
+  .item-grid__btn:hover .pile__sheet--u2 { transform: rotate(1.8deg) translate(4px, -2px); }
+}
+
+.photo-count {
+  position: absolute;
+  right: 5px;
+  bottom: 4px;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  color: var(--overlay-text);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
+  user-select: none;
+  z-index: 1;
+}
+
+/* ── Item inspection — catalog card (main.css, verbatim): fields LEFT,
+   plate RIGHT ── */
+.item-card-wrap {
+  position: fixed;
+  inset: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem var(--overlay-padding) 6rem;
+  pointer-events: auto;
+}
+
+.item-card {
+  position: relative;
+  width: min(960px, 100%);
+  margin: auto;
+  border: 1px solid var(--border);
+  background: rgba(232, 224, 208, 0.02);
+  display: grid;
+  grid-template-columns: 1fr minmax(300px, 42%);
+  text-align: left;
+}
+
+.item-card__fields {
+  position: relative;
+  overflow: hidden;
+  border-right: 1px solid var(--border-dim);
+}
+.item-card__fields-scroll {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.item-card__fields-scroll::-webkit-scrollbar { display: none; }
+
+.item-card__fields .overlay-label,
+.item-card__plate-head .overlay-label {
+  font-family: var(--font-mono);
+}
+
+.item-card__row {
+  display: grid;
+  grid-template-columns: 7.5rem 1fr;
+  align-items: baseline;
+  gap: 0.4rem 1rem;
+  padding: 0.7rem 1.25rem;
+  border-bottom: 1px solid var(--border-dim);
+}
+.item-card__row--split { grid-template-columns: 7.5rem 1fr 6rem 1fr; }
+.item-card__row--title { align-items: start; }
+
+.item-card__row .overlay-label { display: inline; margin: 0; }
+.item-card__row .overlay-value { display: inline; margin: 0; font-size: var(--text-base); }
+.item-card__row .overlay-value--mono { font-family: var(--font-mono); font-size: var(--text-sm); }
+
+.item-card__title {
+  font-family: var(--font-serif);
+  font-size: var(--text-base);
+  font-weight: var(--weight-semi);
+  line-height: 1.15;
+  color: var(--overlay-text);
+  margin: 0;
+}
+
+.item-card__note {
+  padding: 1.1rem 1.25rem 1.4rem;
+  flex: 1;
+}
+.item-card__note .overlay-label { margin-bottom: 0.6rem; }
+.item-card__note p {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: var(--text-base);
+  line-height: var(--leading-loose);
+  color: var(--overlay-text);
+  opacity: 0.9;
+  max-width: 46ch;
+}
+
+/* Plate column */
+.item-card__plate {
+  display: flex;
+  flex-direction: column;
+}
+.item-card__plate-head {
+  padding: 0.8rem 1.25rem;
+  border-bottom: 1px solid var(--border-dim);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+}
+.item-card__scale-note {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  color: var(--overlay-muted);
+  white-space: nowrap;
+}
+
+.item-card__field {
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.item-card__plate-foot {
+  border-top: 1px solid var(--border-dim);
+  padding: 0.4rem 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  min-height: 44px;
+}
+.item-card__plate-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.item-card__flip {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  color: var(--overlay-muted);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+.item-card__flip:hover { color: var(--overlay-text); }
+.item-card__flip:focus-visible { outline: 1px solid var(--overlay-text); outline-offset: 2px; }
+.item-card__asset-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  color: var(--overlay-muted);
+}
+
+/* ── Landed since the photo mockups (main.css, verbatim): gallery-backed cards
+   flip the split (plate larger), compact accession row, contact strip, and the
+   Guide's per-frame note prose. ── */
+.item-card--photo { grid-template-columns: minmax(280px, 42%) 1fr; }
+.item-card--photo .item-card__row { grid-template-columns: 6rem 1fr; }
+.item-card--photo .item-card__row--split { grid-template-columns: 6rem 1fr; }
+.item-card--photo .item-card__row--accession {
+  display: flex; flex-wrap: nowrap; align-items: baseline; gap: 0.4rem;
+  padding: 0.4rem 1.25rem; font-size: var(--text-xs); opacity: 0.6;
+}
+.item-card--photo .item-card__row--accession > span:nth-child(3) { margin-left: auto; }
+.item-card__plate { min-width: 0; }
+.item-card__strip {
+  display: flex; min-width: 0; max-width: 100%;
+  border-top: 1px solid var(--border-dim);
+  overflow-x: auto; scrollbar-width: none;
+}
+.item-card__strip::-webkit-scrollbar { display: none; }
+.item-card__strip-btn {
+  flex: 0 0 calc(100% / 6); min-width: 3rem; aspect-ratio: 1 / 1; padding: 0.45rem;
+  display: flex; align-items: center; justify-content: center;
+  background: none; border: none; border-left: 1px solid var(--border-dim);
+  cursor: pointer; opacity: 0.45; transition: opacity var(--dur-base) var(--ease-base);
+  color: var(--overlay-text);
+}
+.item-card__strip-btn:first-child { border-left: none; }
+.item-card__strip-btn:last-child { border-right: 1px solid var(--border-dim); }
+.item-card__strip-btn:hover { opacity: 0.8; }
+.item-card__strip-btn[aria-current="true"] { opacity: 1; }
+.item-card__strip-btn:focus-visible { outline: 1px solid var(--overlay-text); outline-offset: -1px; }
+.item-card__plate-svg { display: block; width: 100%; height: auto; }
+.item-card__plate-svg .plate-edge  { stroke: var(--border-dim); fill: none; }
+.item-card__plate-svg .plate-tick  { stroke: rgba(232, 224, 208, 0.28); }
+.item-card__plate-svg .plate-tick--major { stroke: var(--overlay-muted); }
+.item-card__plate-svg text { font-family: var(--font-mono); font-size: 9px; fill: var(--overlay-muted); letter-spacing: 0.05em; }
+.item-card__note-body p { margin: 0 0 0.9rem; font-family: var(--font-serif); font-size: var(--text-base); line-height: var(--leading-loose); color: var(--overlay-text); opacity: 0.9; max-width: 46ch; }
+.item-card__note-body p:last-child { margin-bottom: 0; }
+.item-card__riders { padding: 0.8rem 1.25rem 1rem; border-top: 1px solid var(--border-dim); display: flex; flex-wrap: wrap; gap: 0.4rem 0.6rem; align-items: baseline; }
+.item-card__riders .overlay-label { width: 100%; }
+.item-card__rider { background: none; border: none; padding: 0; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--overlay-muted); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+
+/* ── The current CV page (main.css .bio-document / .cv-*), for the "today" reference ── */
+.layer-center { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; padding: 3rem var(--overlay-padding) 6rem; z-index: 20; }
+.bio-document__box { width: min(640px, 100%); height: 80vh; border: 1px solid var(--border); background: rgba(232,224,208,0.02); display: flex; flex-direction: column; position: relative; }
+.bio-document { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.bio-document__scroll { overflow-y: auto; flex: 1; min-height: 0; padding: 2rem 2.25rem; scrollbar-width: none;
+  mask-image: linear-gradient(to bottom, black calc(100% - 4rem), transparent 100%); }
+.cv-section { margin-bottom: 2rem; }
+.cv-section__category { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--overlay-muted); margin: 0 0 0.9rem; }
+.cv-entry { padding: 0.8rem 0; border-top: 1px solid var(--border-dim); }
+.cv-entry__header { display: flex; justify-content: space-between; gap: 1rem; align-items: baseline; }
+.cv-entry__title { font-size: var(--text-md); color: var(--overlay-text); }
+.cv-entry__date { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--overlay-muted); white-space: nowrap; }
+.cv-entry__sub { margin: 0.2rem 0 0; font-size: var(--text-sm); color: var(--overlay-muted); }
+.cv-entry__note p { margin: 0.6rem 0 0; font-size: var(--text-sm); line-height: var(--leading-loose); color: var(--overlay-muted); max-width: 52ch; }
+
+/* ── MOCKUP: CV-specific stand-ins. Everything below is proposed, not live. ── */
+
+/* Entry tile — a typographic frame for a record with no reproduction: the
+   organization's mark set as a label, dates in mono. Used in strips and grid
+   cells. Sized by its container. */
+.cv-tile {
+  width: 100%; height: 100%;
+  border: 1px solid var(--border-dim);
+  display: flex; flex-direction: column; justify-content: space-between;
+  padding: 8% 10%;
+  font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide);
+  color: var(--overlay-muted); text-align: left; line-height: 1.2;
+  background: var(--bg-surface);
+}
+.cv-tile__mark { font-family: var(--font-serif); font-size: 1.05em; letter-spacing: 0; color: var(--overlay-text); font-weight: var(--weight-semi); }
+.cv-tile__years { font-size: 0.72em; }
+.item-card__strip-btn[aria-current="true"] .cv-tile { border-color: var(--overlay-muted); }
+
+/* Span glyph — the entry's duration as a bar on a tiny year scale (01). */
+.cv-span { display: block; width: 100%; height: 100%; }
+.cv-span .rail { stroke: rgba(232,224,208,0.18); }
+.cv-span .bar  { fill: var(--overlay-text); }
+.cv-span .bar--dim { fill: rgba(232,224,208,0.25); }
+
+/* Specimen plate — the entry set as a printed label: organization large in
+   serif, role and dates in mono, category as a stamp. */
+.cv-specimen {
+  width: 100%; height: 100%; padding: 2rem;
+  display: flex; flex-direction: column; justify-content: center; gap: 0.9rem;
+  text-align: left;
+}
+.cv-specimen__org { font-family: var(--font-serif); font-size: clamp(1.6rem, 4.2vw, 2.6rem); line-height: 1.05; color: var(--overlay-text); font-weight: var(--weight-normal); }
+.cv-specimen__role { font-family: var(--font-mono); font-size: var(--text-sm); letter-spacing: var(--tracking-wide); color: var(--overlay-muted); }
+.cv-specimen__dates { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wider); color: var(--overlay-muted); }
+.cv-specimen__stamp {
+  align-self: flex-start; margin-top: 1rem;
+  font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wider); text-transform: uppercase;
+  color: var(--overlay-muted); border: 1px solid var(--overlay-muted); padding: 0.25rem 0.55rem;
+  transform: rotate(-3deg); opacity: 0.7;
+}
+.cv-specimen__rule { border: 0; border-top: 1px solid var(--border-dim); margin: 0.2rem 0; width: 4rem; }
+
+/* Timeline plate — the calibrated plate with a year scale in place of mm. */
+.cv-timeline .bar { fill: rgba(232,224,208,0.16); stroke: rgba(232,224,208,0.35); }
+.cv-timeline .bar--current { fill: rgba(232,224,208,0.85); stroke: var(--overlay-text); }
+.cv-timeline .bar--open { stroke-dasharray: 3 3; }
+.cv-timeline .col-label { fill: var(--overlay-muted); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; }
+.cv-timeline .now { stroke: var(--overlay-muted); stroke-dasharray: 2 4; }
+
+/* Reproduction stand-in (03): a scanned document, drawn. */
+.cv-doc {
+  width: 62%; aspect-ratio: 8.5 / 11; border: 1px solid var(--border-dim); background: #efe9dc;
+  position: relative; box-shadow: 0 0 0 1px rgba(0,0,0,0.3);
+}
+.cv-doc::before, .cv-doc::after { content: ""; position: absolute; left: 12%; right: 12%; height: 1px; background: rgba(26,21,16,0.25); }
+.cv-doc::before { top: 30%; box-shadow: 0 10px 0 rgba(26,21,16,0.18), 0 20px 0 rgba(26,21,16,0.18), 0 30px 0 rgba(26,21,16,0.12), 0 44px 0 rgba(26,21,16,0.18), 0 54px 0 rgba(26,21,16,0.12); }
+.cv-doc::after { bottom: 18%; left: 55%; right: 12%; background: rgba(26,21,16,0.5); }
+.cv-doc .seal { position: absolute; left: 14%; bottom: 12%; width: 16%; aspect-ratio: 1; border-radius: 50%; border: 2px solid rgba(120,40,30,0.55); }
+.cv-doc .head { position: absolute; top: 12%; left: 12%; right: 12%; font-family: var(--font-serif); color: rgba(26,21,16,0.75); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; text-align: center; }
+
+/* Browse grid cell for a CV entry (02): the live cell with a tile inside. */
+.item-grid--cv .item-grid__btn { padding: 0.9rem; }
+.item-grid--cv .cv-tile { font-size: var(--text-xs); }
+.item-grid--cv .cv-tile__mark { font-size: 1rem; }
+
+/* MOCKUP: page notes */
+.mock-note { position: fixed; left: 0; right: 0; top: 2.3rem; z-index: 45; margin: 0; padding: 0.55rem var(--overlay-padding); font-size: var(--text-xs); color: var(--overlay-muted); line-height: var(--leading-base); text-align: center; background: rgba(10,8,5,0.85); border-bottom: 1px solid var(--border-dim); }
+.mock-note b { color: var(--overlay-text); font-weight: normal; }
+.mock-note code { font-family: var(--font-mono); }
+/* MOCKUP: room for the note strip above the card */
+.item-card-wrap, .layer-center { padding-top: 6.5rem; }
+.mock-note b { color: var(--overlay-text); font-weight: normal; }
+/* MOCKUP: the browse grid dimmed behind the open card, as the live layer
+   system does with the veil. */
+.veil {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 8, 5, 0.78);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  z-index: 10;
+}
+.item-card-wrap { z-index: 20; }
+
+@media (max-width: 700px) {
+  .item-card { grid-template-columns: 1fr; }
+  .item-card__fields { border-right: none; border-bottom: 1px solid var(--border-dim); position: static; max-height: 40vh; }
+  .item-card__fields-scroll { position: static; max-height: 40vh; }
+  .item-card-wrap { padding: 3.5rem 1rem 5rem; }
+}
+
+[hidden] { display: none !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
+
+/* ── Item nav — left/right screen edges (main.css) ── */
+.layer-nav { position: fixed; top: 50%; transform: translateY(-50%); background: none; border: none; font-family: inherit; font-size: var(--text-base); color: var(--overlay-muted); cursor: pointer; padding: 1rem 0.75rem; min-height: 44px; min-width: 44px; display: flex; align-items: center; z-index: 45; }
+.layer-nav:hover { color: var(--overlay-text); }
+.layer-nav--prev { left: 0.5rem; }
+.layer-nav--next { right: 0.5rem; }
+.mock-note a { color: var(--overlay-text); }

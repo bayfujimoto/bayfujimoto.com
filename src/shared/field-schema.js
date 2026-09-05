@@ -276,3 +276,24 @@ export function isFoldableType(itemType) {
 export function titleIsGiven(itemType) {
   return !!TYPES[itemType]?.titleGiven;
 }
+
+
+// ── CV marks ──────────────────────────────────────────────────────────────────
+// The CV card's contact strip shows each entry as a typographic tile: a short
+// mark over the years. Records may author `mark`; when absent it is derived
+// from the organization — the initials of a multi-word name (Low Design Office
+// → LDO), keeping a first word's own internal capitals (SHoP Architects →
+// SHoP), else the first word (Rice University → Rice). Capped at 6 characters
+// so the tile's years line stays legible at strip size. Shared by the build
+// (which writes the resolved marks) and the admin (placeholder text).
+export function deriveMark(organization) {
+  const org = String(organization || "").trim();
+  if (!org) return "";
+  const words = org.split(/\s+/);
+  const first = words[0];
+  let mark;
+  if (/[a-z][A-Z]/.test(first)) mark = first;                       // SHoP
+  else if (words.length >= 2) mark = words.map(w => w[0]).join("").toUpperCase(); // LDO
+  else mark = first;                                                 // Rice
+  return mark.slice(0, 6);
+}

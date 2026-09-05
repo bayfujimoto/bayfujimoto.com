@@ -1083,6 +1083,8 @@ body {
   opacity: 0.9;
   max-width: 46ch;
 }
+/* A note of several paragraphs (CV entries) keeps them apart. */
+.item-card__note p + p { margin-top: 0.7rem; }
 
 .item-card__riders {
   padding: 0.8rem 1.25rem 1rem;
@@ -1379,9 +1381,6 @@ body {
   text-decoration-color: var(--border);
 }
 .item-card__note--guide .item-card__note-body a:hover { opacity: 0.75; }
-/* The open → control sits with the counter at the right of the foot. */
-.item-card__open { margin-left: auto; }
-
 /* Contact strip — a multi-exposure record's whole set, ruled off between the
    field and the plate-foot. Each exposure shows in its entirety inside its
    padded square cell; the selected frame reads at full strength. */
@@ -1788,61 +1787,57 @@ body {
   margin-bottom: 0;
 }
 
-/* ── CV entries ──────────────────────────────────────────────────────────────── */
-.cv-section {
-  margin-bottom: 2rem;
-}
-.cv-section:last-child {
-  margin-bottom: 0;
-}
-.cv-section__category {
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  letter-spacing: var(--tracking-wider);
-  text-transform: uppercase;
-  color: var(--overlay-muted);
-  margin: 0 0 0.75rem;
-}
-.cv-entry {
-  margin-bottom: 1.25rem;
-}
-.cv-entry:last-child {
-  margin-bottom: 0;
-}
-.cv-entry__header {
+/* ── CV card ─────────────────────────────────────────────────────────────────── */
+/* The CV is one catalog card whose strip holds every entry; the document-box
+   rendering (.cv-section / .cv-entry) was retired 2026-09-05. The plate is the
+   timeline (timeline-plate.js) in the mm plate's dress; the strip cells are
+   typographic tiles — these records have nothing to photograph. */
+.cv-tile {
+  width: 100%;
+  height: 100%;
+  border: 1px solid var(--border-dim);
+  background: var(--bg-surface);
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
-  align-items: baseline;
-  gap: 1rem;
-}
-.cv-entry__title {
-  font-size: var(--text-base);
-  color: var(--overlay-text);
-}
-.cv-entry__date {
+  padding: 9% 11%;
+  text-align: left;
   font-family: var(--font-mono);
   font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
   color: var(--overlay-muted);
+  line-height: 1.2;
+  overflow: hidden;
+}
+.cv-tile__mark {
+  font-family: var(--font-serif);
+  font-size: 1.05em;
+  letter-spacing: 0;
+  color: var(--overlay-text);
+  font-weight: var(--weight-semi);
   white-space: nowrap;
-  flex-shrink: 0;
 }
-.cv-entry__sub {
-  font-size: var(--text-xs);
-  color: var(--overlay-muted);
-  margin: 0.2rem 0 0;
+.cv-tile__years { font-size: 0.72em; white-space: nowrap; }
+.item-card__strip-btn[aria-current="true"] .cv-tile { border-color: var(--overlay-muted); }
+
+/* Timeline plate: the mm plate's ticks and labels; bars for the entries. */
+.item-card__field--timeline { cursor: default; }
+.item-card__plate-svg--timeline .timeline-column { font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; }
+.item-card__plate-svg--timeline .timeline-column-line { stroke-dasharray: 1 5; }
+.item-card__plate-svg--timeline .timeline-now { stroke: var(--overlay-muted); stroke-dasharray: 2 4; }
+.item-card__plate-svg--timeline .timeline-now-label { font-size: 8px; letter-spacing: 0.1em; }
+.item-card__plate-svg--timeline .timeline-bar {
+  fill: rgba(232, 224, 208, 0.14);
+  stroke: rgba(232, 224, 208, 0.38);
+  cursor: pointer;
+  transition: fill var(--dur-base) var(--ease-base);
 }
-.cv-entry__note {
-  margin-top: 0.5rem;
-}
-.cv-entry__note p {
-  font-size: var(--text-base);
-  line-height: var(--leading-loose);
-  color: var(--overlay-muted);
-  margin: 0 0 0.5rem;
-}
-.cv-entry__note p:last-child {
-  margin-bottom: 0;
-}
+.item-card__plate-svg--timeline .timeline-bar:hover { fill: rgba(232, 224, 208, 0.3); }
+.item-card__plate-svg--timeline .timeline-bar:focus-visible { outline: none; stroke: var(--overlay-text); }
+.item-card__plate-svg--timeline .timeline-bar--open { stroke-dasharray: 3 3; }
+.item-card__plate-svg--timeline .timeline-bar--current { fill: rgba(232, 224, 208, 0.85); stroke: var(--overlay-text); cursor: default; }
+.item-card__plate-svg--timeline .timeline-bar-label { fill: var(--overlay-text); font-size: 9px; }
+.item-card__plate-svg--timeline .timeline-bar-label[hidden] { display: none; }
 
 .bio-document__scroll-caret {
   position: absolute;

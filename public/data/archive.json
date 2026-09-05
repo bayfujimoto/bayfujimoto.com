@@ -74,6 +74,7 @@
               "sort_date": "2025-08-06",
               "category": "employment",
               "title": "Low Design Office",
+              "mark": "LDO",
               "organization": "Low Design Office",
               "role": "Junior Designer",
               "date_start": "2025-08-06"
@@ -92,6 +93,7 @@
                 "CV-2026-001"
               ],
               "category": "education",
+              "mark": "Rice",
               "organization": "Rice University",
               "date_start": "2024-09-01",
               "date_end": "2025-05-01"
@@ -112,6 +114,7 @@
                 "france"
               ],
               "category": "education",
+              "mark": "RSAP",
               "organization": "Rice University",
               "role": "Student",
               "date_start": "2024-08-31",
@@ -132,10 +135,32 @@
               "tags": [
                 "nyc"
               ],
+              "mark": "SHoP",
               "organization": "SHoP Architects",
               "role": "Junior Designer",
               "date_start": "2023-09-02",
               "date_end": "2024-06-02"
+            },
+            {
+              "id": "CV-2026-004",
+              "slug": "weiss-architecture-design-intern",
+              "series": "identity",
+              "subcollection": "cv",
+              "item_type": "cv-entry",
+              "status": "published",
+              "display_date": "2021 - 2023",
+              "sort_date": "2023-08-01",
+              "title": "Weiss Architecture",
+              "context_note": "Independently translated 2D AutoCAD drawings into a detailed 3D model and produced high-quality renderings to support design visualization and client presentations.\n\nParticipated in site visits and client presentations.",
+              "category": "employment",
+              "tags": [
+                "summer"
+              ],
+              "mark": "Weiss",
+              "organization": "Weiss Architecture",
+              "role": "Design Intern",
+              "date_start": "2021-07-01",
+              "date_end": "2023-08-01"
             },
             {
               "id": "CV-2026-001",
@@ -148,30 +173,24 @@
               "sort_date": "2023-05-01",
               "title": "Bachelor of Arts in Architecture",
               "category": "education",
+              "mark": "Rice",
               "organization": "Rice University",
               "date_start": "2019-09-01",
               "date_end": "2023-05-01"
-            },
-            {
-              "id": "CV-2026-004",
-              "slug": "weiss-architecture-design-intern",
-              "series": "identity",
-              "subcollection": "cv",
-              "item_type": "cv-entry",
-              "status": "published",
-              "display_date": "2021 - 2023",
-              "title": "Weiss Architecture",
-              "context_note": "Independently translated 2D AutoCAD drawings into a detailed 3D model and produced high-quality renderings to support design visualization and client presentations.\n\nParticipated in site visits and client presentations.",
-              "category": "employment",
-              "tags": [
-                "summer"
-              ],
-              "organization": "Weiss Architecture",
-              "role": "Design Intern",
-              "date_start": "2021-07-01",
-              "date_end": "2023-08-01"
             }
-          ]
+          ],
+          "marks": {
+            "CV-2026-006": "LDO",
+            "CV-2026-002": "Rice",
+            "CV-2026-003": "RSAP",
+            "CV-2026-005": "SHoP",
+            "CV-2026-004": "Weiss",
+            "CV-2026-001": "Rice"
+          },
+          "range": {
+            "start": 2019,
+            "end": 2028
+          }
         },
         "contact": {
           "label": "contact",
@@ -317,6 +336,27 @@
         "films": {
           "label": "films",
           "items": [
+            {
+              "id": "FILM-2026-555",
+              "slug": "the-fog-1980-2026-09-04",
+              "title": "The Fog",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "1980",
+              "director": "",
+              "watch_date": "2026-09-04",
+              "display_date": "September 4, 2026",
+              "sort_date": "2026-09-04",
+              "rating": 2,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/the-fog/",
+              "assets": {
+                "backdrop": "https://a.ltrbxd.com/resized/alternative-backdrop/5/1/3/6/2/tmdb/8k05KBlSoC1kIPiUuvihYNpuNwl-1200-1200-675-675-crop-000000.jpg?v=d9e9d24d12",
+                "poster": "https://a.ltrbxd.com/resized/film-poster/5/1/3/6/2/51362-the-fog-0-600-0-900-crop.jpg?v=2f669d4209"
+              }
+            },
             {
               "id": "FILM-2026-554",
               "slug": "tony-2026-2026-09-03",
@@ -17305,7 +17345,7 @@
         "object": "key",
         "model": "desk-guide-key.glb",
         "thumbnail": "/thumbnails/desk/key.png",
-        "count": 763,
+        "count": 764,
         "subcollections": null,
         "description": ""
       },
@@ -17344,7 +17384,7 @@
         "object": "sphere",
         "model": "desk-consumption-sphere.glb",
         "thumbnail": "/thumbnails/desk/consumption.png",
-        "count": 719,
+        "count": 720,
         "subcollections": 5,
         "description": "A sphere, the one object without an inside. What was taken in: films logged as viewings, books as readings, music, coffee, games. Titles are transcribed as given; the ratings are the archivist's."
       },
@@ -17724,7 +17764,7 @@
   },
   "_counters": {
     "EPH": 31,
-    "FILM": 554,
+    "FILM": 555,
     "BOOK": 384,
     "MUSIC": 8,
     "COFFEE": 2,

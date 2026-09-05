@@ -112,6 +112,7 @@ Fields:
 - date range
 - category
 - note
+- mark — short label for the CV card's strip tile (LDO, SHoP); optional, derived from the organization when absent
 
 ### Contact record
 Fields:

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CV — one card, shared strip, timeline plate</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div class="mock-banner">
+  <span>cv · 01 · one card — the six entries share a contact strip; the plate is a year-calibrated timeline</span>
+  <span><a href="00-current.html">← 00</a> · <a href="index.html">index</a> · <a href="02-per-entry-cards.html">02 →</a></span>
+</div>
+<p class="mock-note"><b>Structure A.</b> The CV is one record (like the Guide). Stepping the strip swaps the fields column and re-lights the bar. The plate keeps the calibrated plate's grammar — scales, ticks, an origin — with years in place of millimetres. Strip frames are the entry's span on a tiny year rail.</p>
+<div class="veil"></div>
+<div id="root"></div>
+<script type="module">
+import { ENTRIES, el, fieldsFor, strip, spanGlyph, timelinePlate, cardShell, footControls, chrome } from "./cv.js";
+const shell = cardShell({ plateNote: "2019 – 2027 · 1 yr / division" });
+document.getElementById("root").appendChild(shell.wrap);
+let idx = 0;
+const pad = n => String(n).padStart(2, "0");
+let counter;
+function show(i) {
+  idx = (i + ENTRIES.length) % ENTRIES.length;
+  const e = ENTRIES[idx];
+  shell.fields.innerHTML = ""; shell.fields.appendChild(fieldsFor(e));
+  shell.field.innerHTML = ""; shell.field.appendChild(timelinePlate(e));
+  shell.plateCol.querySelector(".item-card__strip")?.remove();
+  shell.plateCol.insertBefore(strip(ENTRIES, e, x => show(ENTRIES.indexOf(x)), { frame: spanGlyph }), shell.foot);
+  if (counter) counter.textContent = `${pad(idx + 1)}/${pad(ENTRIES.length)}`;
+}
+counter = footControls(shell.foot, { onPrev: () => show(idx - 1), onNext: () => show(idx + 1), counter: "" });
+show(0);
+document.addEventListener("keydown", e => { if (e.key === "ArrowDown") show(idx + 1); if (e.key === "ArrowUp") show(idx - 1); });
+chrome(document.body, ["desk", "Identity", "cv"], "CV", "6 entries · 2019 – present");
+</script>
+</body>
+</html>

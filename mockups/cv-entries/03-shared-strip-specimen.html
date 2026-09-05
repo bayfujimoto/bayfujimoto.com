@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CV — one card, shared strip, specimen plate + reproductions where they exist</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div class="mock-banner">
+  <span>cv · 03 · one card — typographic tiles in the strip; specimen plate; a scanned document takes the plate where one exists</span>
+  <span><a href="02-per-entry-cards.html">← 02</a> · <a href="index.html">index</a></span>
+</div>
+<p class="mock-note"><b>Structure A, plate variant.</b> Same shared strip as 01, but the frames are typographic tiles and the plate is the specimen label. Where an entry has a scan (diploma, offer letter, badge — added over time as <code>assets.front</code>), the real document takes the plate at true scale instead. Step to the last frame (B.A.) to see it.</p>
+<div class="veil"></div>
+<div id="root"></div>
+<script type="module">
+import { ENTRIES, el, fieldsFor, strip, tile, specimenPlate, documentPlate, cardShell, footControls, chrome } from "./cv.js";
+const shell = cardShell({ plateNote: "" });
+document.getElementById("root").appendChild(shell.wrap);
+let idx = 0, counter;
+const pad = n => String(n).padStart(2, "0");
+const HAS_SCAN = new Set(["CV-2026-001"]);
+function show(i) {
+  idx = (i + ENTRIES.length) % ENTRIES.length;
+  const e = ENTRIES[idx];
+  shell.fields.innerHTML = ""; shell.fields.appendChild(fieldsFor(e));
+  shell.field.innerHTML = "";
+  if (HAS_SCAN.has(e.id)) { shell.field.appendChild(documentPlate(e)); shell.note.textContent = "1 : 1.6 · 216 × 279 mm"; }
+  else { shell.field.appendChild(specimenPlate(e)); shell.note.textContent = "no reproduction · specimen"; }
+  shell.plateCol.querySelector(".item-card__strip")?.remove();
+  shell.plateCol.insertBefore(strip(ENTRIES, e, x => show(ENTRIES.indexOf(x))), shell.foot);
+  if (counter) counter.textContent = `${pad(idx + 1)}/${pad(ENTRIES.length)}`;
+}
+counter = footControls(shell.foot, { onPrev: () => show(idx - 1), onNext: () => show(idx + 1), counter: "" });
+show(new URLSearchParams(location.search).get("frame") ? +new URLSearchParams(location.search).get("frame") : 0);
+document.addEventListener("keydown", e => { if (e.key === "ArrowDown") show(idx + 1); if (e.key === "ArrowUp") show(idx - 1); });
+chrome(document.body, ["desk", "Identity", "cv"], "CV", "6 entries · 2019 – present");
+</script>
+</body>
+</html>

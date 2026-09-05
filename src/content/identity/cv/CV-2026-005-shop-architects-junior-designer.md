@@ -19,6 +19,7 @@ context_note: |-
   Assisted the fabrication team with developing physical models.
 tags:
   - nyc
+mark: SHoP
 organization: SHoP Architects
 role: Junior Designer
 date_start: "2023-09-02"

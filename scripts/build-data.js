@@ -4,6 +4,7 @@ import { readFileSync, writeFileSync, mkdirSync } from "fs";
 import { dirname } from "path";
 import { goodreadsKey, readingKey } from "./utils/goodreads-identity.js";
 import { DESK_OBJECTS, objectFor } from "../src/shared/desk-objects.js";
+import { deriveMark } from "../src/shared/field-schema.js";
 
 // Series definitions: order, labels, and container metaphors
 const SERIES = {
@@ -141,6 +142,8 @@ function publishedOnly(archive) {
     const ns = { label: s.label, container: s.container, subtitle: s.subtitle, order: s.order, subcollections: {} };
     for (const [subKey, sub] of Object.entries(s.subcollections || {})) {
       ns.subcollections[subKey] = { label: sub.label, items: (sub.items || []).filter(isPublished) };
+      if (sub.marks) ns.subcollections[subKey].marks = sub.marks;
+      if (sub.range) ns.subcollections[subKey].range = sub.range;
     }
     if (s.items) ns.items = s.items.filter(isPublished);
     out.series[key] = ns;
@@ -347,6 +350,27 @@ function buildArchive() {
         return db - da;
       });
     }
+  }
+
+  // CV: the card's strip needs a mark per entry and the plate a year range
+  // shared by every frame (docs/cv-inspection-card-plan.md). Derived here,
+  // beside the items rather than on them, so the public record stays the file.
+  const cv = archive.series.identity?.subcollections?.cv;
+  if (cv) {
+    cv.marks = {};
+    let minStart = Infinity, maxEnd = -Infinity;
+    const today = new Date();
+    for (const e of cv.items) {
+      cv.marks[e.id] = (typeof e.mark === "string" && e.mark.trim()) ? e.mark.trim().slice(0, 6) : deriveMark(e.organization);
+      if (!isPublished(e)) continue;
+      const a = e.date_start ? new Date(e.date_start) : null;
+      const b = e.date_end ? new Date(e.date_end) : today;
+      if (a && !isNaN(a)) minStart = Math.min(minStart, a.getFullYear());
+      if (b && !isNaN(b)) maxEnd = Math.max(maxEnd, b.getFullYear() + b.getMonth() / 12);
+    }
+    cv.range = isFinite(minStart)
+      ? { start: minStart, end: Math.ceil(maxEnd) + (Math.ceil(maxEnd) - maxEnd < 0.5 ? 1 : 0) }
+      : null;
   }
 
   // Sort constellation members by sort_date descending, matching every other

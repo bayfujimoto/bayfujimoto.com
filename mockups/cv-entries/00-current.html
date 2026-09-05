@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CV — as it is today</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div class="mock-banner">
+  <span>cv · 00 · today — the document box (reference, not a proposal)</span>
+  <span><a href="index.html">index</a> · <a href="01-shared-strip-timeline.html">01 →</a></span>
+</div>
+<div class="veil"></div>
+<div class="layer-center" id="root"></div>
+<script type="module">
+import { ENTRIES, el, chrome } from "./cv.js";
+const box = el("div", "bio-document__box");
+const doc = el("div", "bio-document");
+const scroll = el("div", "bio-document__scroll");
+const groups = {};
+for (const e of ENTRIES) (groups[e.category] ||= []).push(e);
+for (const cat of ["employment", "education"]) {
+  const sec = el("div", "cv-section");
+  sec.appendChild(el("p", "cv-section__category", cat));
+  for (const e of groups[cat]) {
+    const row = el("div", "cv-entry");
+    const h = el("div", "cv-entry__header");
+    h.appendChild(el("span", "cv-entry__title", e.organization));
+    h.appendChild(el("span", "cv-entry__date", e.display_date));
+    row.appendChild(h);
+    row.appendChild(el("p", "cv-entry__sub", e.role ? `${e.title} — ${e.role}` : e.title));
+    if (e.note) { const n = el("div", "cv-entry__note"); e.note.split(/\n\n+/).forEach(p => n.appendChild(el("p", null, p))); row.appendChild(n); }
+    sec.appendChild(row);
+  }
+  scroll.appendChild(sec);
+}
+doc.appendChild(scroll); box.appendChild(doc);
+document.getElementById("root").appendChild(box);
+chrome(document.body, ["desk", "Identity", "cv"], "CV", "6 entries");
+</script>
+</body>
+</html>

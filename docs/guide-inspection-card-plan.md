@@ -9,7 +9,11 @@ model, the build step, the card, the model plate, the thumbnail pipeline, routin
 the admin editor, accessibility, and the order of work.
 
 Status: implemented 2026-09-05 (same day as proposed), as planned with these
-departures: the model plate's camera fit uses precise per-vertex bounds
+departures — two of them Bay's revisions after seeing it: **no `open →`
+control** (the Guide describes the desk; the desk is where you open things)
+and **no auto-rotate, no rotation limits** — the plate uses `TrackballControls`
+rather than `OrbitControls`, so the object turns freely on every axis with no
+pole and no fixed up, and holds still until touched. Also: the model plate's camera fit uses precise per-vertex bounds
 (`Box3.setFromObject(obj, true)`) because the dossier's loose AABB is inflated
 by a rotated node; the thumbnail script drives a headless browser via
 `playwright-core` (devDependency, no browser download — uses an installed

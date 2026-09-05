@@ -39,7 +39,7 @@ Archive metadata and site information. Visually distinct from the five series, s
 
 Interaction type: **contraption**
 - Object: key with paper tag (unattached, not pinned to the desk)
-- Behavior (as built, 2026-09-05): clicking opens the Guide as a catalog card whose contact strip holds the six desk objects — the key first, then the five series in desk order. The plate shows the selected object's model, turning; the fields describe the object and what it holds; the note is the intro on the key frame and the object's description otherwise. `open →` leads to the frame's series. Frames are addressable at `/guide/<key>/`. See decisions.md → "Guide — inspection card of desk objects".
+- Behavior (as built, 2026-09-05): clicking opens the Guide as a catalog card whose contact strip holds the six desk objects — the key first, then the five series in desk order. The plate shows the selected object's model, turning; the fields describe the object and what it holds; the note is the intro on the key frame and the object's description otherwise. Frames are addressable at `/guide/<key>/`. See decisions.md → "Guide — inspection card of desk objects".
 - Content: finding aid (per-object notes), archive metadata (counts, containers, model files), the intro
 - Metaphorical grounding: Derrida's archon; the archivist's custody and interpretation; specimen tags on archival items
 
@@ -169,7 +169,8 @@ Clicking any item opens an inspection modal. The browse view behind dims and blu
 
 /identity/                     identity category interior
 /identity/biography/           biography
-/identity/cv/                  CV / resume
+/identity/cv/                  CV — one card, every entry in its strip (opens on the most recent)
+/identity/cv/?item=<id>        CV — one entry's frame
 /identity/contact/             contact
 
 /labor/                        labor category interior

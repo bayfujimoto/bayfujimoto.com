@@ -13,6 +13,7 @@ tags:
   - paris
   - france
 category: education
+mark: RSAP
 organization: Rice University
 role: Student
 date_start: "2024-08-31"

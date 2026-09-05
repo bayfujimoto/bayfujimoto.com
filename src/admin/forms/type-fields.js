@@ -191,6 +191,8 @@ export function getTypeGroups(itemType) {
               options: ["other", "employment", "education", "exhibition", "publication", "award"] },
             { id: "organization", label: "organization", type: "text" },
             { id: "role",         label: "role / title", type: "text" },
+            { id: "mark",         label: "mark",         type: "text",
+              hint: "Short label for the CV card's strip tile (LDO, SHoP). Derived from the organization when empty." },
           ],
         },
       ];

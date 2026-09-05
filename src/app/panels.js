@@ -5,6 +5,7 @@ import { setSeriesInfo, pauseSceneRender, resumeSceneRender } from "./scene.js";
 import { resolveCreator, resolveSlots, titleIsGiven, isFolded } from "../shared/field-schema.js";
 import { mdToHtml } from "./markdown.js";
 import { mountModelPlate } from "./model-plate.js";
+import { mountTimelinePlate } from "./timeline-plate.js";
 
 let archive = null;
 const app = document.getElementById("app");
@@ -167,6 +168,10 @@ function reconcile(layer, state) {
 
 // Depth: desk=0, guide=1, series=1, browse=2, item=3
 // Flat series (labor/accumulation) skip the series sheet, so browse=1, item=2
+// The CV's entries are frames of one card, so /identity/cv/?item=<id> is the
+// CV sheet itself, not a modal over it.
+const isCVAddress = (state) => state.series === "identity" && state.subcollection === "cv";
+
 function stackDepth(state) {
   const isFlat = state.series && FLAT_URL_SERIES.has(state.series);
   switch (state.layer) {
@@ -174,7 +179,7 @@ function stackDepth(state) {
     case "guide":  return 1;
     case "series": return 1;
     case "browse": return isFlat ? 1 : 2;
-    case "item":   return isFlat ? 2 : 3;
+    case "item":   return isFlat ? 2 : (isCVAddress(state) ? 2 : 3);
     default:       return 0;
   }
 }
@@ -191,9 +196,11 @@ function restoreFromState(state) {
     pushLayerForState({ layer: "series", series: state.series, subcollection: null, view: null, item: null }, true);
   }
   if (state.layer === "browse" || state.layer === "item") {
-    pushLayerForState({ layer: "browse", series: state.series, subcollection: state.subcollection, view: state.view, item: null }, true);
+    // The CV's item address opens the CV sheet on that entry — one layer.
+    const cvItem = isCVAddress(state) ? state.item : null;
+    pushLayerForState({ layer: "browse", series: state.series, subcollection: state.subcollection, view: state.view, item: cvItem }, true);
   }
-  if (state.layer === "item") {
+  if (state.layer === "item" && !isCVAddress(state)) {
     pushLayerForState(state, true);
   }
 }
@@ -220,14 +227,15 @@ function pushLayerForState(state, silent = false) {
     case "browse": {
       if (state.series === "identity" && state.subcollection === "biography") {
         pushSheet(makeBiographySheet());
-      } else if (state.series === "identity" && state.subcollection === "cv") {
-        pushSheet(makeCVSheet());
+      } else if (isCVAddress(state)) {
+        pushSheet(makeCVSheet(state.item || null));
       } else {
         pushSheet(makeBrowseSheet(state.series, state.subcollection, state.view, state.item));
       }
       break;
     }
     case "item":
+      if (isCVAddress(state)) { pushSheet(makeCVSheet(state.item)); break; }
       // Labor items use the standard catalog card too (the bespoke labor
       // inspection view was retired 2026-09 — subitems render as the card's
       // gallery, thesis as the note).
@@ -461,11 +469,67 @@ function makeGuideSheet(frameKey) {
     assets: {},
   };
 
+  // The fields column, per frame: what sits on the desk, what it is called,
+  // what it holds, how much it holds, and a note — the intro on the key frame,
+  // the object's authored description otherwise.
+  const guideFields = (frame, { fields, singleRow, splitRow }) => {
+    const isKey = frame.kind === "meta";
+    splitRow(["object", frame.object, true], ["type", frame.kind, true], "item-card__row--accession");
+
+    const titleRow = el("div", "item-card__row item-card__row--title");
+    const titleLabel = el("span", "overlay-label");
+    titleLabel.textContent = "title";
+    const titleEl = el("h2", "item-card__title");
+    titleEl.textContent = frame.label;
+    titleRow.appendChild(titleLabel);
+    titleRow.appendChild(titleEl);
+    fields.appendChild(titleRow);
+
+    // The container metaphor prints only where it differs from the object —
+    // the swapped pair (box · flat-file, bundle · binder) and the key.
+    if (frame.container && frame.container !== frame.object) singleRow("container", frame.container, true);
+    singleRow("holds", frame.holds, false);
+
+    let extent = null;
+    if (isKey) extent = frame.count != null ? `${frame.count} records · 6 objects` : "6 objects";
+    else if (frame.count != null) {
+      extent = `${frame.count} record${frame.count === 1 ? "" : "s"}`;
+      if (frame.subcollections) extent += ` · ${frame.subcollections} subcollection${frame.subcollections === 1 ? "" : "s"}`;
+    }
+    singleRow("extent", extent, true);
+    singleRow("model", frame.model, true);
+
+    const md = isKey ? (archive.guide?.intro || "") : (frame.description || "");
+    if (md.trim()) {
+      const note = el("div", "item-card__note item-card__note--guide");
+      const l = el("span", "overlay-label");
+      l.textContent = "note";
+      const body = el("div", "item-card__note-body");
+      body.innerHTML = mdToHtml(md);
+      note.appendChild(l);
+      note.appendChild(body);
+      fields.appendChild(note);
+    }
+  };
+
+  // The plate: the desk object itself, in hand. The scale note reports the
+  // viewer's state instead of a ratio — the plate is presentational, not
+  // calibrated. No WebGL → the frame's still image.
+  const guidePlate = {
+    mount(field, { setNote }) {
+      field.classList.add("item-card__field--model");
+      const stateNote = { loading: "loading model", ready: "model \u00b7 drag to turn", failed: "still image" };
+      return mountModelPlate(field, {
+        onState: (st) => setNote(stateNote[st]),
+        fallbackSrc: (frame) => frame.thumbnail,
+      });
+    },
+  };
+
   const wrap = buildCardWrap(guideItem, {
     onExit: () => navigate({ layer: "desk" }),
-    guide: {
+    frames: {
       frames,
-      intro: archive.guide?.intro || "",
       initialKey: frameFor(frameKey)?.key || GUIDE_DEFAULT_FRAME,
       // Stepping is one page's states, not six pages: replace, never push, so
       // Back leaves the Guide in a single step.
@@ -475,8 +539,12 @@ function makeGuideSheet(frameKey) {
         if (cur.layer === "guide" && (cur.view || null) === view) return;
         replace({ layer: "guide", series: null, subcollection: null, view, item: null });
       },
-      // Onward: the series this object opens (a real page change, pushed).
-      onOpen: (frame) => navigate({ layer: "series", series: frame.key, subcollection: null, view: null, item: null }),
+      fields: guideFields,
+      ariaLabel: (frame) => `Guide: ${frame.label}`,
+      plate: guidePlate,
+      tile: null,                 // pre-rendered stills (public/thumbnails/desk/)
+      stripLabel: "desk objects",
+      cardClass: "item-card--guide",
     },
   });
   content.appendChild(wrap);
@@ -515,7 +583,7 @@ function makeGuideSheet(frameKey) {
   const update = (state) => {
     if (state.layer !== "guide") return false;
     const target = frameFor(state.view);
-    if (target && wrap.__showGuideFrame) wrap.__showGuideFrame(target.key);
+    if (target && wrap.__showFrame) wrap.__showFrame(target.key);
     return true;
   };
 
@@ -706,150 +774,194 @@ function makeBiographySheet() {
 }
 
 // ── CV sheet ──────────────────────────────────────────────────────────────────
+// The CV is one catalog card whose contact strip holds every entry, most
+// recent first (the records' sort_date order). The plate is the calibrated
+// plate with a year scale — the entries as bars in category columns, the
+// selected one lit; the fields column is rebuilt per frame. Entries are
+// addressable at /identity/cv/?item=<id> (the archive's item address; the
+// bare /identity/cv/ is the most recent). docs/cv-inspection-card-plan.md.
 
-function makeCVSheet() {
-  const entries = archive.series["identity"]?.subcollections["cv"]?.items || [];
-  // Sorted by sort_date descending — most recent first
+function makeCVSheet(itemId) {
+  const cv = archive.series["identity"]?.subcollections["cv"] || { items: [] };
+  const entries = cv.items || [];
+  const marks = cv.marks || {};
+  // Frames: the entry records themselves, keyed by id, with the strip mark.
+  const frames = entries.map((e) => ({ ...e, key: e.id, label: e.title, mark: marks[e.id] || "" }));
+  const frameFor = (id) => frames.find((f) => f.key === id) || frames[0] || null;
 
-  const veil = makeVeil(() => {
-    navigate({ layer: "series", series: "identity", subcollection: null, item: null });
-  });
-
+  const exit = () => navigate({ layer: "series", series: "identity", subcollection: null, item: null });
+  const veil = makeVeil(exit);
   const content = makeContent();
-  let hoistedMeta = null;
+  content.classList.add("layer-content--item-card");
 
-  function buildMeta(metaEl) {
-    metaEl.innerHTML = "";
+  // Duration of a span, for the date row: "9 mo", "3 yr 8 mo" — abbreviated
+  // so the row holds the recorded range and the duration on one line. Open
+  // spans are measured to today and marked.
+  const spanText = (e) => {
+    const a = e.date_start ? new Date(e.date_start) : null;
+    if (!a || isNaN(a)) return null;
+    const b = e.date_end ? new Date(e.date_end) : new Date();
+    const months = Math.max(0, Math.round((b - a) / (1000 * 60 * 60 * 24 * 30.44)));
+    const yr = Math.floor(months / 12), mo = months % 12;
+    let out = yr ? `${yr} yr${mo ? ` ${mo} mo` : ""}` : `${months} mo`;
+    if (!e.date_end) out += " · ongoing";
+    return out;
+  };
 
-    const h1 = el("h1", "overlay-title");
-    h1.textContent = "CV";
-    metaEl.appendChild(h1);
+  // Fields, per entry. One row carries the date as recorded and the derived
+  // duration together; the organization prints only where it is not already
+  // the title (employment records name the firm as their title).
+  const cvFields = (f, { fields, singleRow, splitRow }) => {
+    splitRow(["ID", f.id, true], ["type", f.item_type, true], "item-card__row--accession");
 
-    const idEl = el("div", "overlay-id");
-    idEl.textContent = `${entries.length} entries`;
-    metaEl.appendChild(idEl);
-  }
+    const titleRow = el("div", "item-card__row item-card__row--title");
+    const titleLabel = el("span", "overlay-label");
+    titleLabel.textContent = "title";
+    const titleEl = el("h2", "item-card__title");
+    titleEl.textContent = f.title;
+    titleRow.appendChild(titleLabel);
+    titleRow.appendChild(titleEl);
+    fields.appendChild(titleRow);
 
-  function renderDocument() {
-    content.innerHTML = "";
+    if (f.organization && f.organization !== f.title) singleRow("organization", f.organization, false);
+    singleRow("role", f.role, false);
+    singleRow("category", f.category, true);
+    const span = spanText(f);
+    singleRow("date", f.display_date ? `${f.display_date}${span ? ` · ${span}` : ""}` : span, true);
 
-    const center = el("div", "layer-center");
-    const doc = el("div", "bio-document");
-    doc.setAttribute("role", "document");
-    doc.setAttribute("aria-label", "CV");
-
-    const scroll = el("div", "bio-document__scroll");
-
-    // Group entries by category
-    const groups = {};
-    entries.forEach(entry => {
-      const cat = entry.category || "other";
-      if (!groups[cat]) groups[cat] = [];
-      groups[cat].push(entry);
-    });
-
-    const categoryOrder = ["employment", "education", "exhibition", "publication", "award"];
-    const sortedCats = [
-      ...categoryOrder.filter(c => groups[c]),
-      ...Object.keys(groups).filter(c => !categoryOrder.includes(c))
-    ];
-
-    sortedCats.forEach(cat => {
-      const section = el("div", "cv-section");
-
-      const catLabel = el("p", "cv-section__category");
-      catLabel.textContent = cat;
-      section.appendChild(catLabel);
-
-      groups[cat].forEach(entry => {
-        const row = el("div", "cv-entry");
-
-        const header = el("div", "cv-entry__header");
-
-        const title = el("span", "cv-entry__title");
-        title.textContent = entry.organization || entry.title;
-        header.appendChild(title);
-
-        const date = el("span", "cv-entry__date");
-        date.textContent = entry.display_date;
-        header.appendChild(date);
-
-        row.appendChild(header);
-
-        if (entry.role || entry.title) {
-          const sub = el("p", "cv-entry__sub");
-          sub.textContent = entry.role ? `${entry.title}${entry.role ? " — " + entry.role : ""}` : entry.title;
-          row.appendChild(sub);
-        }
-
-        if (entry.context_note) {
-          const longWrap = el("div", "cv-entry__note");
-          entry.context_note.split(/\n\n+/).forEach(para => {
-            if (para.trim()) {
-              const p = el("p");
-              p.textContent = para.trim();
-              longWrap.appendChild(p);
-            }
-          });
-          row.appendChild(longWrap);
-        }
-
-        section.appendChild(row);
+    if (f.context_note) {
+      const note = el("div", "item-card__note");
+      const l = el("span", "overlay-label");
+      l.textContent = "note";
+      note.appendChild(l);
+      String(f.context_note).split(/\n\n+/).forEach((para) => {
+        if (!para.trim()) return;
+        const p = el("p");
+        p.textContent = para.trim();
+        note.appendChild(p);
       });
-
-      scroll.appendChild(section);
-    });
-
-    doc.appendChild(scroll);
-
-    const box = el("div", "bio-document__box");
-    box.appendChild(doc);
-
-    const scrollCaret = el("button", "bio-document__scroll-caret");
-    scrollCaret.setAttribute("aria-label", "Scroll down");
-    scrollCaret.type = "button";
-    box.appendChild(scrollCaret);
-
-    const updateCaret = () => {
-      const atBottom = scroll.scrollHeight - scroll.scrollTop <= scroll.clientHeight + 2;
-      scrollCaret.classList.toggle("is-hidden", atBottom);
-      box.classList.toggle("at-bottom", atBottom);
-    };
-    scroll.addEventListener("scroll", updateCaret, { passive: true });
-    requestAnimationFrame(updateCaret);
-
-    scrollCaret.addEventListener("click", () => {
-      scroll.scrollTo({ top: scroll.scrollTop + scroll.clientHeight * 0.6, behavior: "smooth" });
-    });
-
-    center.appendChild(box);
-    content.appendChild(center);
-
-    if (hoistedMeta) {
-      buildMeta(hoistedMeta);
-    } else {
-      const meta = el("div", "layer-meta");
-      buildMeta(meta);
-      content.appendChild(meta);
+      fields.appendChild(note);
     }
 
-    const bc = makeBreadcrumb([
-      { label: "desk", onClick: () => navigate({ layer: "desk" }) },
-      { label: "Identity", onClick: () => navigate({ layer: "series", series: "identity" }) },
-      { label: "cv", current: true }
-    ]);
-    content.appendChild(bc);
-  }
+    if (f.related_ids?.length || f.tags?.length) {
+      const riders = el("div", "item-card__riders");
+      if (f.related_ids?.length) {
+        const l = el("span", "overlay-label");
+        l.textContent = "see also";
+        riders.appendChild(l);
+        f.related_ids.forEach((rid) => {
+          const rel = frames.find((x) => x.key === rid);
+          const btn = el("button", "item-card__rider");
+          btn.type = "button";
+          btn.textContent = rel ? rel.title : rid;
+          // A related CV entry is another frame of this card: step to it.
+          btn.addEventListener("click", () => { if (rel) wrap.__showFrame?.(rid); });
+          riders.appendChild(btn);
+        });
+      }
+      if (f.tags?.length) {
+        const l = el("span", "overlay-label");
+        l.textContent = "tags";
+        if (f.related_ids?.length) l.style.marginTop = "0.5rem";
+        riders.appendChild(l);
+        const v = el("span", "overlay-value overlay-value--mono");
+        v.textContent = f.tags.join(" · ");
+        riders.appendChild(v);
+      }
+      fields.appendChild(riders);
+    }
+  };
 
-  const closeFn = () => navigate({ layer: "series", series: "identity", subcollection: null, item: null });
-  const escCleanup = attachEscapeHandler(content, closeFn);
-  const cleanup = () => { escCleanup(); };
+  // Strip tile: the mark over the years, typographic — these records have
+  // nothing to photograph.
+  const cvTile = (f) => {
+    const t = el("div", "cv-tile");
+    const mark = el("span", "cv-tile__mark");
+    mark.textContent = f.mark || "—";
+    const years = el("span", "cv-tile__years");
+    const a = (f.date_start || "").slice(0, 4);
+    const b = f.date_end ? String(f.date_end).slice(2, 4) : "";
+    years.textContent = !a ? "" : f.date_end ? (a.slice(2) === b ? a : `${a}–${b}`) : `${a}–`;
+    t.appendChild(mark);
+    t.appendChild(years);
+    return t;
+  };
 
-  renderDocument();
+  const cvItem = { id: "CV", item_type: "cv", title: "CV", status: "published", assets: {} };
+  const initial = frameFor(itemId);
 
-  function onHoist(hoisted) { hoistedMeta = hoisted; buildMeta(hoistedMeta); }
+  const wrap = buildCardWrap(cvItem, {
+    onExit: exit,
+    frames: {
+      frames,
+      initialKey: initial?.key || null,
+      // One page's states: replace, never push. The most recent entry is the
+      // bare address; every other entry carries its id.
+      onFrame: (f) => {
+        const isFirst = frames[0] && f.key === frames[0].key;
+        const cur = getState();
+        if (cur.series === "identity" && cur.subcollection === "cv" && (cur.item || null) === (isFirst ? null : f.key)) return;
+        replace(isFirst
+          ? { layer: "browse", series: "identity", subcollection: "cv", view: null, item: null }
+          : { layer: "item", series: "identity", subcollection: "cv", view: null, item: f.key });
+      },
+      fields: cvFields,
+      ariaLabel: (f) => `CV entry: ${f.title}`,
+      plate: {
+        mount: (field, { setNote }) => mountTimelinePlate(field, {
+          frames, range: cv.range || null, setNote,
+          onPick: (f) => wrap.__showFrame?.(f.key),
+        }),
+      },
+      tile: cvTile,
+      stripLabel: "entries",
+      cardClass: "item-card--cv",
+    },
+  });
+  content.appendChild(wrap);
 
-  return { veil, content, cleanup, onHoist };
+  const meta = el("div", "layer-meta");
+  const h1 = el("h1", "overlay-title");
+  h1.textContent = "CV";
+  const idEl = el("div", "overlay-id");
+  idEl.textContent = `${entries.length} entries`;
+  meta.appendChild(h1);
+  meta.appendChild(idEl);
+  content.appendChild(meta);
+
+  content.appendChild(makeBreadcrumb([
+    { label: "desk", onClick: () => navigate({ layer: "desk" }) },
+    { label: "Identity", onClick: () => navigate({ layer: "series", series: "identity" }) },
+    { label: "cv", current: true }
+  ]));
+
+  // Keyboard: Escape to the Identity sheet; ↑/↓ step the entries.
+  const onKey = (e) => {
+    if (layerStack[layerStack.length - 1]?.content !== content) return;
+    if (e.key === "Escape") exit();
+    if ((e.key === "ArrowUp" || e.key === "ArrowDown") && wrap.__stepGallery) {
+      e.preventDefault();
+      wrap.__stepGallery(e.key === "ArrowDown" ? 1 : -1);
+    }
+  };
+  document.addEventListener("keydown", onKey);
+
+  // Same-depth state changes within the CV (popstate between entries) step
+  // the card in place; anything else at this depth is another sheet.
+  const update = (state) => {
+    if (state.series !== "identity" || state.subcollection !== "cv") return false;
+    if (state.layer !== "browse" && state.layer !== "item") return false;
+    const target = frameFor(state.item);
+    if (target && wrap.__showFrame) wrap.__showFrame(target.key);
+    return true;
+  };
+
+  const cleanup = () => {
+    document.removeEventListener("keydown", onKey);
+    wrap.__dispose?.();
+  };
+
+  return { veil, content, cleanup, update };
 }
 
 // ── Browse sheet ──────────────────────────────────────────────────────────────
@@ -1585,11 +1697,25 @@ function buildPlate(item, dims, sidePx, img, zoom = 1, panX = 0, panY = 0, opts 
 // used to be closed over from makeItemSheet:
 //   onExit()          — clicking the surround (not the card)
 //   allItems, navItem — for the "see also" riders
-//   guide             — Guide mode (docs/guide-inspection-card-plan.md):
-//                       { frames, intro, initialKey, onFrame(frame), onOpen(frame) }
+//   frames            — FRAMES MODE: the card is one record whose contact strip
+//                       holds a set of frames that are not images (the Guide's
+//                       desk objects, the CV's entries). The sheet supplies:
+//     frames        — the set, in strip order; each frame carries a unique `key`
+//     initialKey    — the frame to open on
+//     onFrame(f)    — called when the selected frame changes (URL follow-through)
+//     fields(f, h)  — rebuilds the fields column for frame f, using the card's
+//                     row builders h = { fields, pair, singleRow, splitRow }
+//     ariaLabel(f)  — the card's accessible name for frame f
+//     plate.mount(field, { setNote }) → { show(f), prefetch(f), dispose() }
+//                   — what the plate carries (a model, a timeline, …); setNote
+//                     prints in the plate head's scale-note slot
+//     tile(f)       — strip cell content; return null to use <img src=f.thumbnail>
+//     stripLabel    — the strip's aria-label ("desk objects", "entries")
+//     cardClass     — extra class on the card (e.g. "item-card--guide")
+//                     docs/guide-inspection-card-plan.md, docs/cv-inspection-card-plan.md
 function buildCardWrap(item, ctx = {}) {
-  const { onExit = () => {}, allItems = [], navItem = () => {}, guide = null } = ctx;
-  const isGuide = !!guide;
+  const { onExit = () => {}, allItems = [], navItem = () => {}, frames: framesMode = null } = ctx;
+  const isFrames = !!framesMode;
   const wrap = el("div", "item-card-wrap");
   // Clicking the surround (not the card) exits, like the veil.
   wrap.addEventListener("click", (e) => {
@@ -1621,14 +1747,14 @@ function buildCardWrap(item, ctx = {}) {
   // Gallery-backed records (photos, and any record with gallery images):
   // the set steps within the plate column. decisions.md →
   // "Photo entries — display treatment".
-  // Guide mode: the six desk objects are the set — each frame carries a
-  // model instead of a file, and the strip's still is a pre-rendered PNG.
-  const gAssets = isGuide
-    ? guide.frames.map(f => ({ model: f.model, thumbnail: f.thumbnail, caption: f.label, frame: f }))
+  // Frames mode: the sheet's frames are the set — no files; the plate and the
+  // strip cells come from the frames contract.
+  const gAssets = isFrames
+    ? framesMode.frames.map(f => ({ thumbnail: f.thumbnail, caption: f.label, frame: f }))
     : galleryAssets(item);
   let galleryIdx = 0;
-  if (isGuide && guide.initialKey) {
-    const at = gAssets.findIndex(g => g.frame.key === guide.initialKey);
+  if (isFrames && framesMode.initialKey) {
+    const at = gAssets.findIndex(g => g.frame.key === framesMode.initialKey);
     if (at !== -1) galleryIdx = at;
   }
   let showFrame = () => {};      // assigned once the strip exists
@@ -1680,52 +1806,16 @@ function buildCardWrap(item, ctx = {}) {
     fields.appendChild(row);
   };
 
-  // ── Guide fields — one catalog entry per frame ──────────────────────────────
-  // The Guide is a finding aid describing six things, so the column is rebuilt
-  // on every step and each frame reads as its own record: what sits on the
-  // desk, what it is called, what it holds, how much it holds, and a note.
-  // Register rules as everywhere: mono for given facts and codes, serif for the
-  // archivist's words. Unrecorded fields are suppressed, never faked.
-  const renderGuideFields = (frame) => {
+  // ── Frame fields — one catalog entry per frame (frames mode) ────────────────
+  // The column is rebuilt on every step so each frame reads as its own record.
+  // The sheet lays out the rows through the card's own builders, so the
+  // registers (mono for given facts and codes, serif for the archivist's
+  // words) and the rule that unrecorded fields are suppressed, never faked,
+  // hold without the sheet restating them.
+  const renderFrameFields = (frame) => {
     fields.innerHTML = "";
-    const isKey = frame.kind === "meta";
-    card.setAttribute("aria-label", `Guide: ${frame.label}`);
-    splitRow(["object", frame.object, true], ["type", frame.kind, true], "item-card__row--accession");
-
-    const titleRow = el("div", "item-card__row item-card__row--title");
-    const titleLabel = el("span", "overlay-label");
-    titleLabel.textContent = "title";
-    const titleEl = el("h2", "item-card__title");
-    titleEl.textContent = frame.label;
-    titleRow.appendChild(titleLabel);
-    titleRow.appendChild(titleEl);
-    fields.appendChild(titleRow);
-
-    // The container metaphor prints only where it differs from the object —
-    // the swapped pair (box · flat-file, bundle · binder) and the key.
-    if (frame.container && frame.container !== frame.object) singleRow("container", frame.container, true);
-    singleRow("holds", frame.holds, false);
-
-    let extent = null;
-    if (isKey) extent = frame.count != null ? `${frame.count} records · 6 objects` : "6 objects";
-    else if (frame.count != null) {
-      extent = `${frame.count} record${frame.count === 1 ? "" : "s"}`;
-      if (frame.subcollections) extent += ` · ${frame.subcollections} subcollection${frame.subcollections === 1 ? "" : "s"}`;
-    }
-    singleRow("extent", extent, true);
-    singleRow("model", frame.model, true);
-
-    const md = isKey ? (guide.intro || "") : (frame.description || "");
-    if (md.trim()) {
-      const note = el("div", "item-card__note item-card__note--guide");
-      const l = el("span", "overlay-label");
-      l.textContent = "note";
-      const body = el("div", "item-card__note-body");
-      body.innerHTML = mdToHtml(md);
-      note.appendChild(l);
-      note.appendChild(body);
-      fields.appendChild(note);
-    }
+    if (framesMode.ariaLabel) card.setAttribute("aria-label", framesMode.ariaLabel(frame));
+    framesMode.fields(frame, { fields, pair, singleRow, splitRow });
     fields.scrollTop = 0;
     requestAnimationFrame(() => updateFieldsCaret());
   };
@@ -1894,7 +1984,7 @@ function buildCardWrap(item, ctx = {}) {
       fields.appendChild(riders);
     }
   };
-  if (!isGuide) renderRecordFields();
+  if (!isFrames) renderRecordFields();
 
 
   // Scroll affordance for the left column — caret hides when scrolled to bottom.
@@ -1928,9 +2018,9 @@ function buildCardWrap(item, ctx = {}) {
   const field = el("div", "item-card__field");
   plateCol.appendChild(field);
 
-  const primary = isGuide ? null : primaryAsset(item);
+  const primary = isFrames ? null : primaryAsset(item);
   const back = item.assets?.back || null;
-  let modelPlate = null; // Guide mode: the turning-object viewer
+  let framePlate = null; // frames mode: whatever the plate carries
 
   const showNone = () => {
     // No reproduction: still draw the plate's scale grid (image-less) so every
@@ -2134,29 +2224,18 @@ function buildCardWrap(item, ctx = {}) {
     // Dimensions not recorded: draw the same scale grid, unlabelled, and let
     // the reproduction fill the field — the ruler without a measurement claim.
     renderPlate(1);
-  } else if (isGuide) {
-    // Guide: the desk object itself, turning. Plate-heavy split as for photos.
-    // The scale note reports the viewer's state instead of a ratio — the plate
-    // is presentational, not calibrated. No WebGL → the frame's still image.
-    field.classList.add("item-card__field--model");
-    card.classList.add("item-card--photo", "item-card--guide");
-    const stateNote = {
-      loading: "loading model",
-      ready: "model \u00b7 drag to turn",
-      held: "model",
-      failed: "still image",
-    };
-    modelPlate = mountModelPlate(field, {
-      reducedMotion: window.matchMedia("(prefers-reduced-motion: reduce)").matches,
-      onState: (st) => { scaleNote.textContent = stateNote[st] || ""; },
-      fallbackSrc: (frame) => frame.thumbnail,
-    });
-    wrap.__dispose = () => { modelPlate?.dispose(); modelPlate = null; };
+  } else if (isFrames) {
+    // Frames mode: the sheet's plate. Plate-heavy split as for photos — the
+    // plate is the frame's substance whatever it carries.
+    card.classList.add("item-card--photo");
+    if (framesMode.cardClass) card.classList.add(framesMode.cardClass);
+    framePlate = framesMode.plate.mount(field, { setNote: (t) => { scaleNote.textContent = t || ""; } });
+    wrap.__dispose = () => { framePlate?.dispose?.(); framePlate = null; };
   } else {
     showNone();
   }
 
-  if (primary || isGuide) {
+  if (primary || isFrames) {
     const foot = el("div", "item-card__plate-foot");
 
     const controls = el("div", "item-card__plate-controls");
@@ -2247,19 +2326,6 @@ function buildCardWrap(item, ctx = {}) {
     if (gAssets.length > 1) assetLabel.textContent = "";
     else if (!back && !folded) assetLabel.textContent = "1/1";
     controls.appendChild(assetLabel);
-    // Guide: open the series this object leads to. Hidden on the key frame —
-    // the Guide is where you already are. Kept current by showFrame.
-    let openBtn = null;
-    if (isGuide) {
-      openBtn = el("button", "item-card__flip item-card__open");
-      openBtn.type = "button";
-      openBtn.textContent = "open \u2192";
-      openBtn.addEventListener("click", () => {
-        const g = gAssets[galleryIdx];
-        if (g?.frame && g.frame.kind !== "meta") guide.onOpen?.(g.frame);
-      });
-      controls.appendChild(openBtn);
-    }
     foot.appendChild(controls);
 
     // Gallery fields: the photo magnifier's slider, in the plate zoom's
@@ -2408,19 +2474,25 @@ function buildCardWrap(item, ctx = {}) {
     if (gAssets.length > 1) {
       const strip = el("div", "item-card__strip");
       strip.setAttribute("role", "tablist");
-      strip.setAttribute("aria-label", isGuide ? "desk objects" : "photos");
+      strip.setAttribute("aria-label", isFrames ? (framesMode.stripLabel || "frames") : "photos");
       const stripBtns = gAssets.map((g, i) => {
         const b = el("button", "item-card__strip-btn");
         b.type = "button";
         b.setAttribute("role", "tab");
         b.setAttribute("aria-label", `Frame ${i + 1} of ${gAssets.length}${g.caption ? `: ${g.caption}` : ""}`);
-        const t = el("img", "item-card__strip-img");
-        t.alt = "";
-        t.decoding = "async";
-        t.loading = "lazy";
-        // Guide stills are site assets (public/thumbnails/desk/), not R2 derivatives.
-        t.src = isGuide ? g.thumbnail : (g.thumbnail ? imageUrl(g.thumbnail, "thumbnail") : imageUrl(g.file, "display"));
-        b.appendChild(t);
+        // Frames mode: the sheet may draw the cell itself (a typographic tile);
+        // otherwise the frame's thumbnail is a site asset, not an R2 derivative.
+        const tileEl = isFrames ? (framesMode.tile ? framesMode.tile(g.frame) : null) : null;
+        if (tileEl) {
+          b.appendChild(tileEl);
+        } else {
+          const t = el("img", "item-card__strip-img");
+          t.alt = "";
+          t.decoding = "async";
+          t.loading = "lazy";
+          t.src = isFrames ? g.thumbnail : (g.thumbnail ? imageUrl(g.thumbnail, "thumbnail") : imageUrl(g.file, "display"));
+          b.appendChild(t);
+        }
         b.addEventListener("click", () => showFrame(i));
         strip.appendChild(b);
         return b;
@@ -2435,7 +2507,7 @@ function buildCardWrap(item, ctx = {}) {
       const frameCache = new Map(); // url → retained HTMLImageElement
       const prefetchFrame = (j) => {
         const g = gAssets[((j % gAssets.length) + gAssets.length) % gAssets.length];
-        if (isGuide) { modelPlate?.prefetch(g.frame); return; }
+        if (isFrames) { framePlate?.prefetch?.(g.frame); return; }
         if (!g?.file) return;
         const url = imageUrl(g.file, fullVariants(g.file)[0]);
         if (!url || frameCache.has(url)) return;
@@ -2467,15 +2539,11 @@ function buildCardWrap(item, ctx = {}) {
           loadReproProgressive(reproImg, g.file, g.thumbnail, showNone, fullVariants(g.file));
         }
         if (reproImg) reproImg.alt = g.caption || item.title;
-        if (isGuide) {
-          modelPlate?.show(g.frame);
-          renderGuideFields(g.frame);
-          if (openBtn) {
-            openBtn.hidden = g.frame.kind === "meta";
-            openBtn.setAttribute("aria-label", `Open ${g.frame.label}`);
-          }
-          if (galleryIdx !== from || !wrap.__guideStarted) guide.onFrame?.(g.frame);
-          wrap.__guideStarted = true;
+        if (isFrames) {
+          framePlate?.show(g.frame);
+          renderFrameFields(g.frame);
+          if (galleryIdx !== from || !wrap.__frameStarted) framesMode.onFrame?.(g.frame);
+          wrap.__frameStarted = true;
         }
         assetLabel.textContent = `${pad2(galleryIdx + 1)}/${pad2(gAssets.length)}`;
         if (frameCaptionEl) frameCaptionEl.textContent = g.caption || "\u2014";
@@ -2496,8 +2564,8 @@ function buildCardWrap(item, ctx = {}) {
       // the wrap like the swipe/plate hooks so the sheet-level handler can
       // reach the current card's stepper.
       wrap.__stepGallery = (delta) => showFrame(galleryIdx + delta);
-      if (isGuide) {
-        wrap.__showGuideFrame = (key) => {
+      if (isFrames) {
+        wrap.__showFrame = (key) => {
           const at = gAssets.findIndex(g => g.frame.key === key);
           if (at !== -1 && at !== galleryIdx) showFrame(at);
         };

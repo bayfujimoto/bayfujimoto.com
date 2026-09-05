@@ -11,6 +11,7 @@ title: Bachelor of Architecture
 related_ids:
   - CV-2026-001
 category: education
+mark: Rice
 organization: Rice University
 date_start: "2024-09-01"
 date_end: "2025-05-01"

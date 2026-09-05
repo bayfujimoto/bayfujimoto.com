@@ -1,8 +1,10 @@
-// ── Model plate — a desk object, turning, on the catalog card ─────────────────
+// ── Model plate — a desk object, in hand, on the catalog card ─────────────────
 // The Guide card's plate carries the 3D object itself instead of a scan: drag
-// to turn, a slow idle rotation until the visitor takes hold of it. One
-// renderer per card, disposed with it; loaded models are cached at module
-// level so stepping between frames is instant after the first visit.
+// to turn it, freely, in any direction — a trackball, not an orbit, so there
+// is no pole to stop at and no up that must stay up. It holds still until it
+// is touched. One renderer per card, disposed with it; loaded models are
+// cached at module level so stepping between frames is instant after the
+// first visit.
 //
 // Nothing the archive says depends on this: every fact is in the fields column,
 // and when WebGL is unavailable the frame's pre-rendered thumbnail stands in
@@ -34,20 +36,15 @@ export function loadDeskModel(file) {
   return modelCache.get(file);
 }
 
-// Idle turn: revolutions per minute (OrbitControls.autoRotateSpeed = rpm at 60 fps).
-const AUTO_ROTATE_RPM = 0.8;
-
 /**
  * Mount a model viewer into `field` (the card's square plate field).
  *
- * opts.reducedMotion — never auto-rotate.
- * opts.onState(state) — "loading" | "ready" | "held" | "failed"; the card's
- *   scale note prints these. "held" = the visitor has turned it (auto-rotate
- *   is off for good on this card).
+ * opts.onState(state) — "loading" | "ready" | "failed"; the card's scale note
+ *   prints these.
  * opts.fallbackSrc(frame) — image URL to show when WebGL is unavailable.
  */
 export function mountModelPlate(field, opts = {}) {
-  const { reducedMotion = false, onState = () => {}, fallbackSrc = null } = opts;
+  const { onState = () => {}, fallbackSrc = null } = opts;
 
   const canvas = document.createElement("canvas");
   canvas.className = "item-card__model-canvas";
@@ -87,17 +84,15 @@ export function mountModelPlate(field, opts = {}) {
   }
 
   const scene = new THREE.Scene();
-  addPlateLights(scene);
   const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
   camera.position.set(0, 2, 5);
+  addPlateLights(scene, camera);
 
-  let controls = null;         // OrbitControls, once its chunk arrives
+  let controls = null;         // TrackballControls, once its chunk arrives
   let current = null;          // the mounted clone
   let showSeq = 0;             // guards against out-of-order loads
   let paused = false;
   let disposed = false;
-  let autoRotate = !reducedMotion;
-  let held = false;
   let rafId = 0;
   let fit = null;              // { center, radius, distance } of the current object
 
@@ -107,23 +102,24 @@ export function mountModelPlate(field, opts = {}) {
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
+    controls?.handleResize(); // trackball maps the drag to the canvas's size
   };
   const render = () => {
     if (disposed || paused) return;
     renderer.render(scene, camera);
   };
 
-  // On-demand rendering: a frame per controls change, per resize, and per
-  // auto-rotate tick — nothing while the object is still.
+  // On-demand rendering: frames only while the visitor is turning the object
+  // or its release is still damping out — nothing while it is still.
   const tick = () => {
     rafId = 0;
     if (disposed || paused) return;
-    if (controls) controls.update(); // applies damping + autoRotate
+    if (controls) controls.update(); // applies the drag and its damping
     render();
-    if ((controls && controls.autoRotate) || (controls && dampingActive())) schedule();
+    if (controls && dampingActive()) schedule();
   };
   const schedule = () => { if (!rafId) rafId = requestAnimationFrame(tick); };
-  // OrbitControls has no "settled" signal; after a release the damping decays
+  // The controls have no "settled" signal; after a release the damping decays
   // for a few hundred ms. Keep ticking briefly after the last interaction.
   let lastInteraction = 0;
   const dampingActive = () => performance.now() - lastInteraction < 900;
@@ -132,27 +128,22 @@ export function mountModelPlate(field, opts = {}) {
   ro.observe(field);
   size();
 
-  // OrbitControls is the one piece not already in the main bundle; load it
-  // lazily so the desk page never pays for it.
-  const controlsReady = import("three/examples/jsm/controls/OrbitControls.js").then(({ OrbitControls }) => {
+  // TrackballControls is the one piece not already in the main bundle; load
+  // it lazily so the desk page never pays for it. Trackball, not orbit:
+  // rotation is unconstrained on every axis — over the top, under the desk,
+  // end over end — with no gimbal pole and no auto-rotation. Zoom and pan are
+  // off; the drag does one thing.
+  const controlsReady = import("three/examples/jsm/controls/TrackballControls.js").then(({ TrackballControls }) => {
     if (disposed) return;
-    controls = new OrbitControls(camera, canvas);
-    controls.enableZoom = false;
-    controls.enablePan = false;
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.08;
-    controls.rotateSpeed = 0.7;
-    controls.minPolarAngle = Math.PI * 0.15;  // never from directly above…
-    controls.maxPolarAngle = Math.PI * 0.6;   // …nor from below the desk
-    controls.autoRotate = autoRotate;
-    controls.autoRotateSpeed = AUTO_ROTATE_RPM;
+    controls = new TrackballControls(camera, canvas);
+    controls.noZoom = true;
+    controls.noPan = true;
+    controls.rotateSpeed = 2.2;
+    controls.staticMoving = false;
+    controls.dynamicDampingFactor = 0.15;
+    controls.keys = ["", "", ""]; // no keyboard mode switching
     controls.addEventListener("start", () => {
-      // The visitor has taken hold: idle rotation stops and stays stopped.
-      autoRotate = false;
-      controls.autoRotate = false;
-      held = true;
       field.classList.add("is-grabbing");
-      onState("held");
       lastInteraction = performance.now();
       schedule();
     });
@@ -163,22 +154,25 @@ export function mountModelPlate(field, opts = {}) {
     });
     controls.addEventListener("change", () => { lastInteraction = performance.now(); schedule(); });
     if (fit) controls.target.copy(fit.center);
+    controls.handleResize();
     controls.update();
-    schedule();
+    render();
   });
 
   const mount = (template, frame) => {
     if (current) { scene.remove(current); current = null; }
     current = template.clone();
     scene.add(current);
+    // Each frame opens at the plate's standard view, whichever way the last
+    // object was left: camera up is reset along with its position.
+    camera.up.set(0, 1, 0);
     fit = fitCameraToObject(camera, current);
     if (controls) {
       controls.target.copy(fit.center);
       controls.update();
     }
-    canvas.setAttribute("aria-label", `Model of the ${frame.object}${autoRotate ? ", turning" : ""} — drag to turn`);
+    canvas.setAttribute("aria-label", `Model of the ${frame.object} — drag to turn`);
     render();
-    schedule();
   };
 
   return {
@@ -189,7 +183,7 @@ export function mountModelPlate(field, opts = {}) {
       loadDeskModel(frame.model).then((template) => {
         if (disposed || seq !== showSeq) return;
         mount(template, frame);
-        onState(held ? "held" : "ready");
+        onState("ready");
       }).catch(() => {
         if (disposed || seq !== showSeq) return;
         if (current) { scene.remove(current); current = null; render(); }

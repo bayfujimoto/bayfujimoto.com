@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CV — browse grid, one card per entry</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+/* MOCKUP: the grid sits behind the open card as the live layer system does. */
+#grid-root { position: fixed; inset: 0; z-index: 5; }
+.veil { z-index: 10; }
+</style>
+</head>
+<body>
+<div class="mock-banner">
+  <span>cv · 02 · each entry its own record — the live browse grid (item-grid--cv), one catalog card per entry, ←/→ between them</span>
+  <span><a href="01-shared-strip-timeline.html">← 01</a> · <a href="index.html">index</a> · <a href="03-shared-strip-specimen.html">03 →</a></span>
+</div>
+<p class="mock-note"><b>Structure B.</b> <a href="?grid">grid alone</a> · <a href="02-per-entry-cards.html">with a card open</a> — The CV becomes a subcollection like films or books: a year-grouped grid whose cells are typographic tiles (no reproduction), each opening the standard card. No strip — ←/→ step records. The plate here is the <b>specimen</b> treatment: the entry set as a printed label. Press Esc in your head to see the grid.</p>
+<div id="grid-root"></div>
+<div class="veil"></div>
+<div id="root"></div>
+<script type="module">
+import { ENTRIES, el, fieldsFor, tile, specimenPlate, cardShell, chrome } from "./cv.js";
+
+// Grid: column-major year groups, 3 rows of cells (the live item-grid).
+const wrap = el("div", "item-grid-wrap");
+const grid = el("div", "item-grid item-grid--cv item-grid--centered");
+const byYear = {};
+for (const e of ENTRIES) (byYear[(e.date_end || "2026").slice(0, 4)] ||= []).push(e);
+for (const yr of Object.keys(byYear).sort().reverse()) {
+  const g = el("div", "item-grid__group");
+  g.appendChild(el("div", "item-grid__year", yr));
+  const cells = el("div", "item-grid__cells");
+  cells.style.gridTemplateRows = "repeat(3, var(--item-grid-cell-height))";
+  byYear[yr].forEach((e, i) => {
+    const c = el("div", "item-grid__cell" + (i < 3 ? " item-grid__cell--first-col" : ""));
+    const b = el("button", "item-grid__btn"); b.type = "button";
+    b.appendChild(tile(e));
+    c.appendChild(b); cells.appendChild(c);
+  });
+  g.appendChild(cells); grid.appendChild(g);
+}
+wrap.appendChild(grid);
+document.getElementById("grid-root").appendChild(wrap);
+
+// ?grid → the browse layer alone (as after Esc); otherwise one card is open.
+const gridOnly = new URLSearchParams(location.search).has("grid");
+if (gridOnly) { document.querySelector(".veil").remove(); }
+// Card: the SHoP entry open, specimen plate, no strip (single record).
+const e = ENTRIES[3];
+const shell = cardShell({ plateNote: "no reproduction · specimen", photoSplit: false });
+shell.fields.appendChild(fieldsFor(e));
+shell.field.appendChild(specimenPlate(e));
+const controls = el("div", "item-card__plate-controls");
+controls.appendChild(el("span", "item-card__asset-label", "1/1"));
+shell.foot.appendChild(controls);
+if (!gridOnly) {
+  document.getElementById("root").appendChild(shell.wrap);
+  const prev = el("button", "layer-nav layer-nav--prev", "←"); const next = el("button", "layer-nav layer-nav--next", "→");
+  document.body.append(prev, next);
+  chrome(document.body, ["desk", "Identity", "cv", e.title], e.title, "cv-entry · 4 of 6");
+} else {
+  chrome(document.body, ["desk", "Identity", "cv"], "CV", "6 entries · 2019 – present");
+}
+</script>
+</body>
+</html>

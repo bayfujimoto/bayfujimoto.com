@@ -35,9 +35,9 @@ async function renderFrame(key) {
   stripTextures(model);
 
   const scene = new THREE.Scene();
-  addPlateLights(scene);
   scene.add(model);
   const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
+  addPlateLights(scene, camera);
   fitCameraToObject(camera, model);
   renderer.render(scene, camera);
   const url = renderer.domElement.toDataURL("image/png");

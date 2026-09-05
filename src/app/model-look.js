@@ -39,15 +39,24 @@ export function stripTextures(root) {
 // The desk's palette: a warm ambient and an amber key. The desk uses a
 // shadow-casting spot; the plate has nothing to cast onto, so a directional
 // key from the upper left stands in, with a faint cool fill from the other
-// side so the underside of a turned object doesn't fall to black.
-export function addPlateLights(scene) {
+// side. The lights ride with the CAMERA, not the scene: the object can be
+// turned end over end, and a lamp fixed in the world would leave whichever
+// face is turned away in the dark. Held this way, every face is lit as the
+// visitor brings it round — the lamp is over the viewer's shoulder.
+export function addPlateLights(scene, camera) {
   scene.add(new THREE.AmbientLight(0xffe0b0, 0.9));
+  scene.add(camera); // so the camera's children are in the graph
+  const aim = new THREE.Object3D();
+  aim.position.set(0, 0, -5); // a point ahead of the camera
+  camera.add(aim);
   const key = new THREE.DirectionalLight(0xffb347, 2.6);
   key.position.set(-3, 6, 4);
-  scene.add(key);
+  key.target = aim;
+  camera.add(key);
   const fill = new THREE.DirectionalLight(0xc8d8e8, 0.5);
-  fill.position.set(4, 2, -3);
-  scene.add(fill);
+  fill.position.set(4, -2, 3);
+  fill.target = aim;
+  camera.add(fill);
 }
 
 export function configureRenderer(renderer) {

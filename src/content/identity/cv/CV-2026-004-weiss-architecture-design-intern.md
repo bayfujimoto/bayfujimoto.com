@@ -6,6 +6,7 @@ subcollection: cv
 item_type: cv-entry
 status: published
 display_date: 2021 - 2023
+sort_date: "2023-08-01"
 title: Weiss Architecture
 context_note: |-
   Independently translated 2D AutoCAD drawings into a detailed 3D model and produced high-quality renderings to support design visualization and client presentations.
@@ -14,6 +15,7 @@ context_note: |-
 category: employment
 tags:
   - summer
+mark: Weiss
 organization: Weiss Architecture
 role: Design Intern
 date_start: "2021-07-01"
