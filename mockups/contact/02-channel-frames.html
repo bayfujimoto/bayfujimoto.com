@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact — one card, a frame per channel</title><link rel="stylesheet" href="shared.css"></head>
+<body>
+<div class="mock-banner"><span>contact · 02 · one card, shared strip — a frame per channel; each plate a calling card bearing that channel alone</span><span><a href="01-calling-card.html">← 01</a> · <a href="index.html">index</a> · <a href="03-index-cards.html">03 →</a></span></div>
+<p class="mock-note"><b>Idea B.</b> The frames contract, as the Guide and CV use it: the three records stay three; the strip steps them (↑/↓); each frame's plate is a calling card printed for that one channel, at true scale; the fields column is rebuilt per frame with the value as a live link. Typographic tiles in the strip.</p>
+<div class="veil"></div><div id="root"></div>
+<script type="module">
+import { CHANNELS, NOTE, el, rowBuilders, mmPlate, callingCard, cardShell, strip, footControls, chrome } from "./contact.js";
+const shell = cardShell({ plateNote: "", photoSplit: true });
+let idx = 0, counter;
+const pad = n => String(n).padStart(2, "0");
+const tile = (c) => { const t = el("div", "ch-tile"); t.appendChild(el("span", "ch-tile__label", c.label)); t.appendChild(el("span", "ch-tile__value", c.value)); return t; };
+function show(i) {
+  idx = (i + CHANNELS.length) % CHANNELS.length;
+  const c = CHANNELS[idx];
+  shell.fields.innerHTML = "";
+  const r = rowBuilders(shell.fields);
+  r.split(["ID", c.id, true], ["type", "contact", true], "item-card__row--accession");
+  r.title(c.title);
+  r.single(c.label === c.title.toLowerCase() ? "value" : c.label, c.value, true, c.href);
+  r.single("dimensions", "89 × 51 mm", true);
+  r.note("note", NOTE);
+  shell.field.innerHTML = "";
+  const { svg, note } = mmPlate({ spanMM: 120, major: 25, minor: 5, draw: (api) => callingCard(api, { lines: [[c.label, c.value]] }) });
+  shell.field.appendChild(svg); shell.note.textContent = note;
+  shell.plateCol.querySelector(".item-card__strip")?.remove();
+  shell.plateCol.insertBefore(strip(CHANNELS, c, x => show(CHANNELS.indexOf(x)), tile), shell.foot);
+  if (counter) counter.textContent = `${pad(idx + 1)}/${pad(CHANNELS.length)}`;
+}
+counter = footControls(shell.foot, { onPrev: () => show(idx - 1), onNext: () => show(idx + 1), counter: "" });
+show(0);
+document.addEventListener("keydown", e => { if (e.key === "ArrowDown") show(idx + 1); if (e.key === "ArrowUp") show(idx - 1); });
+document.getElementById("root").appendChild(shell.wrap);
+chrome(document.body, ["desk", "Identity", "contact"], "Contact", "3 channels");
+</script>
+</body></html>

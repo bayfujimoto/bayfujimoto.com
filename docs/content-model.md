@@ -115,11 +115,13 @@ Fields:
 - mark — short label for the CV card's strip tile (LDO, SHoP); optional, derived from the organization when absent
 
 ### Contact record
+One record for the archive, reproduced as a calling card (typeset, or a scan when recorded).
 Fields:
 - title
-- channel
-- value
-- availability note
+- name, role_line — as printed on the card
+- channels — list of { label, value, href? }; the link derives from the label when `href` is absent
+- dimensions — the card's size (89 x 51 mm for the typeset card)
+- assets.front / assets.back — a scan of a real card, optional
 
 ### Archive guide entry
 Fields:

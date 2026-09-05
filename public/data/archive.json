@@ -196,49 +196,30 @@
           "label": "contact",
           "items": [
             {
-              "id": "CONTACT-2026-003",
-              "slug": "contact",
-              "series": "identity",
-              "subcollection": "contact",
-              "item_type": "contact",
-              "status": "published",
-              "title": "Letterboxd",
-              "channels": [
-                {
-                  "label": "letterboxd",
-                  "value": "@bayf"
-                }
-              ]
-            },
-            {
-              "id": "CONTACT-2026-002",
-              "slug": "contact",
-              "series": "identity",
-              "subcollection": "contact",
-              "item_type": "contact",
-              "status": "published",
-              "title": "Instagram",
-              "channels": [
-                {
-                  "label": "instagram",
-                  "value": "@bayfujimoto"
-                }
-              ]
-            },
-            {
               "id": "CONTACT-2026-001",
               "slug": "contact",
               "series": "identity",
               "subcollection": "contact",
               "item_type": "contact",
               "status": "published",
+              "title": "Contact",
+              "name": "Bay Fujimoto",
+              "role_line": "architect · austin",
               "channels": [
                 {
                   "label": "email",
                   "value": "hello@bayfujimoto.com"
+                },
+                {
+                  "label": "instagram",
+                  "value": "@bayfujimoto"
+                },
+                {
+                  "label": "letterboxd",
+                  "value": "@bayf"
                 }
               ],
-              "title": "Email"
+              "dimensions": "89 x 51 mm"
             }
           ]
         }
@@ -345,7 +326,7 @@
               "item_type": "film",
               "status": "published",
               "year": "1980",
-              "director": "",
+              "director": "John Carpenter",
               "watch_date": "2026-09-04",
               "display_date": "September 4, 2026",
               "sort_date": "2026-09-04",
@@ -355,7 +336,9 @@
               "assets": {
                 "backdrop": "https://a.ltrbxd.com/resized/alternative-backdrop/5/1/3/6/2/tmdb/8k05KBlSoC1kIPiUuvihYNpuNwl-1200-1200-675-675-crop-000000.jpg?v=d9e9d24d12",
                 "poster": "https://a.ltrbxd.com/resized/film-poster/5/1/3/6/2/51362-the-fog-0-600-0-900-crop.jpg?v=2f669d4209"
-              }
+              },
+              "seen_via": "theatrical",
+              "context_note": "Programmed by Na Hong-jin for his film, Hope."
             },
             {
               "id": "FILM-2026-554",
@@ -17307,8 +17290,8 @@
     "container": "metadata",
     "subtitle": "finding aid, sitemap, site notes",
     "order": 5,
-    "content": "---\nobjects:\n  key:\n    holds: finding aid, sitemap, site notes\n  identity:\n    description: >-\n      A dossier. The archivist on paper: the current biography, the CV kept\n      as a dated series of versions, and the ways to reach him. Opened, it\n      reads as a file rather than a profile.\n  labor:\n    description: >-\n      A bundle of paper. Work done for others and for pay: projects,\n      drawings, specifications, reports, filed by project rather than by\n      date, with the thesis of each recorded alongside the sheets.\n  consumption:\n    description: >-\n      A sphere, the one object without an inside. What was taken in: films\n      logged as viewings, books as readings, music, coffee, games. Titles\n      are transcribed as given; the ratings are the archivist's.\n  creation:\n    description: >-\n      A stamp. What was made without a client: sketches, photographs,\n      prototypes, videos, notes. Photographs are kept whole as sets, stepped\n      through on the plate one exposure at a time.\n  accumulation:\n    description: >-\n      A box. The small printed things that survived a pocket, a suitcase, or\n      a glovebox: tickets, receipts, brochures, printed matter. Each is\n      scanned both sides and measured, and shown on the plate at true scale.\n---\nMemory keeps revising itself: softening, reordering, letting things go on its own schedule. A record holds still. A date stays the date; a ticket keeps what it carried the night I saved it. So these are some of my memories, set down where they'll stay put: records, scans, logs, and the small printed things that survived a pocket or a suitcase or my glovebox.\n\n## Arrangement\n\nThe collection is organized into five series:\n\n- **Identity** — biography, CV, contact.\n- **Labor** — projects, drawings, specifications, reports.\n- **Consumption** — films, books, music, coffee, games.\n- **Creation** — sketches, photos, prototypes, videos, notes.\n- **Accumulation** — tickets, receipts, brochures, printed matter.\n",
-    "intro": "Memory keeps revising itself: softening, reordering, letting things go on its own schedule. A record holds still. A date stays the date; a ticket keeps what it carried the night I saved it. So these are some of my memories, set down where they'll stay put: records, scans, logs, and the small printed things that survived a pocket or a suitcase or my glovebox.\n\n## Arrangement\n\nThe collection is organized into five series:\n\n- **Identity** — biography, CV, contact.\n- **Labor** — projects, drawings, specifications, reports.\n- **Consumption** — films, books, music, coffee, games.\n- **Creation** — sketches, photos, prototypes, videos, notes.\n- **Accumulation** — tickets, receipts, brochures, printed matter.",
+    "content": "---\nobjects:\n  key:\n    holds: finding aid, sitemap, site notes\n  identity:\n    description: >-\n      A dossier. The archivist on paper: the current biography, the CV kept as\n      a dated series of versions, and the ways to reach him. Opened, it reads\n      as a file rather than a profile.\n  labor:\n    description: >-\n      A bundle of paper. Work done for others and for pay: projects, drawings,\n      specifications, reports, filed by project rather than by date, with the\n      thesis of each recorded alongside the sheets.\n  consumption:\n    description: >-\n      A sphere, the one object without an inside. What was taken in: films\n      logged as viewings, books as readings, music, coffee, games. Titles are\n      transcribed as given; the ratings are the archivist's.\n  creation:\n    description: >-\n      A stamp. What was made without a client: sketches, photographs,\n      prototypes, videos, notes. Photographs are kept whole as sets, stepped\n      through on the plate one exposure at a time.\n  accumulation:\n    description: >-\n      A box. The small printed things that survived a pocket, a suitcase, or a\n      glovebox: tickets, receipts, brochures, printed matter. Each is scanned\n      both sides and measured, and shown on the plate at true scale.\n---\nMemory keeps revising itself: softening, reordering, letting things go on its own schedule. A record holds still. A date stays the date; a ticket keeps what it carried the night I saved it. So these are some of my memories, set down where they'll stay put: records, scans, logs, and the small printed things that survived a pocket or a suitcase or my glovebox.\n",
+    "intro": "Memory keeps revising itself: softening, reordering, letting things go on its own schedule. A record holds still. A date stays the date; a ticket keeps what it carried the night I saved it. So these are some of my memories, set down where they'll stay put: records, scans, logs, and the small printed things that survived a pocket or a suitcase or my glovebox.",
     "objects": {
       "key": {
         "holds": "finding aid, sitemap, site notes",
@@ -17345,7 +17328,7 @@
         "object": "key",
         "model": "desk-guide-key.glb",
         "thumbnail": "/thumbnails/desk/key.png",
-        "count": 764,
+        "count": 762,
         "subcollections": null,
         "description": ""
       },
@@ -17358,7 +17341,7 @@
         "object": "dossier",
         "model": "desk-identity-dossier.glb",
         "thumbnail": "/thumbnails/desk/identity.png",
-        "count": 11,
+        "count": 9,
         "subcollections": 3,
         "description": "A dossier. The archivist on paper: the current biography, the CV kept as a dated series of versions, and the ways to reach him. Opened, it reads as a file rather than a profile."
       },
@@ -17765,7 +17748,7 @@
   "_counters": {
     "EPH": 31,
     "FILM": 555,
-    "BOOK": 384,
+    "BOOK": 390,
     "MUSIC": 8,
     "COFFEE": 2,
     "GAME": 4,

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact mockups — index</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+html, body { overflow: auto; }
+.idx { width: min(720px, 92vw); margin: 0 auto; padding: 6rem 0 4rem; }
+.idx h1 { font-size: var(--text-xl); font-weight: 400; margin: 0 0 0.5rem; }
+.idx .sub { font-size: var(--text-sm); color: var(--overlay-muted); margin-bottom: 3rem; max-width: 54ch; line-height: var(--leading-loose); }
+.idx a.entry { display: grid; grid-template-columns: 3.5rem 1fr; gap: 0.35rem 1.25rem; align-items: baseline; padding: 1rem 0.5rem; border-bottom: 1px solid var(--border-dim); text-decoration: none; color: var(--overlay-text); }
+.idx a.entry:hover { background: var(--hover-bg); }
+.idx .num { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--overlay-muted); letter-spacing: var(--tracking-wider); }
+.idx .name { font-size: var(--text-md); }
+.idx .desc { grid-column: 2; font-size: var(--text-sm); color: var(--overlay-muted); line-height: var(--leading-base); max-width: 50ch; }
+.idx .rule { margin: 0 0 2.5rem; padding: 1rem 1.25rem; border: 1px solid var(--border-dim); font-size: var(--text-sm); color: var(--overlay-text); line-height: var(--leading-loose); max-width: 54ch; }
+.idx .rule .overlay-label { font-family: var(--font-mono); margin-bottom: 0.5rem; }
+.idx h2 { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--overlay-muted); font-weight: normal; margin: 2.5rem 0 0.5rem; }
+</style>
+</head>
+<body>
+<div class="mock-banner"><span>contact mockups · rev 1 · 2026-09-05</span><span>studies — nothing decided</span></div>
+<main class="idx">
+  <h1>Contact — inspection card studies</h1>
+  <p class="sub">Three real records (CONTACT-2026-001 … 003: email, Instagram,
+  Letterboxd). Today they open in the generic card with no channel shown at
+  all. The studies agree on one thing — the plate carries a <b>card</b>
+  at true scale on the ordinary mm plate, so the calibrated grammar is
+  honest again (a calling card is 89 × 51 mm) — and differ on the structure
+  and the object.</p>
+  <div class="rule"><span class="overlay-label">rule</span>
+    Built on the live card and plate (fields left, plate right; the mm plate's
+    ticks and ratio note; strip under the plate; flip in the foot). No brand
+    marks or icons anywhere — channels are named in words.</div>
+
+  <h2>reference</h2>
+  <a class="entry" href="00-current.html"><span class="num">00</span><span class="name">Today — the generic card</span>
+    <span class="desc">ID, type, title, an empty plate. The address and handles are never rendered.</span></a>
+
+  <h2>idea A — one record, no strip</h2>
+  <a class="entry" href="01-calling-card.html"><span class="num">01</span><span class="name">A calling card at true scale</span>
+    <span class="desc">The three files fold into one record with a <code>channels</code>
+    list (as the template intends). The plate is the ordinary calibrated plate
+    with an 89 × 51 mm card at the origin, typeset from the record; flip shows
+    the verso. Every channel is a row and a live link. If Bay scans his real
+    card, <a href="01-calling-card.html?scan">the scan takes the plate</a> and
+    the typeset card is the fallback.</span></a>
+
+  <h2>idea B — one card, a frame per channel</h2>
+  <a class="entry" href="02-channel-frames.html"><span class="num">02</span><span class="name">Calling cards, one per channel</span>
+    <span class="desc">The frames contract as the Guide and CV use it: three
+    records, a shared strip, ↑/↓ to step. Each plate is a card printed for that
+    one channel; the fields column rebuilds per frame. Typographic tiles.</span></a>
+
+  <h2>idea C — a card file</h2>
+  <a class="entry" href="03-index-cards.html"><span class="num">03</span><span class="name">Index cards with tabs</span>
+    <span class="desc">Same structure as 02, a different object: each channel
+    typed on a ruled 127 × 76 mm index card with a tab; the strip is the row of
+    tabs. The archivist's own address file, not a card he hands out.</span></a>
+</main>
+<nav class="layer-breadcrumb" aria-label="breadcrumb"><span>mockups</span><span class="sep">/</span><span class="current">contact</span></nav>
+</body>
+</html>

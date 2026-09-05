@@ -2,10 +2,11 @@ import { navigate, replace } from "./router.js";
 import { subscribe, getState, deskTarget } from "./state.js";
 import { imageUrl } from "./image-url.js";
 import { setSeriesInfo, pauseSceneRender, resumeSceneRender } from "./scene.js";
-import { resolveCreator, resolveSlots, titleIsGiven, isFolded } from "../shared/field-schema.js";
+import { resolveCreator, resolveSlots, titleIsGiven, isFolded, channelHref } from "../shared/field-schema.js";
 import { mdToHtml } from "./markdown.js";
 import { mountModelPlate } from "./model-plate.js";
 import { mountTimelinePlate } from "./timeline-plate.js";
+import { makeCallingCard, CALLING_CARD_MM } from "./calling-card.js";
 
 let archive = null;
 const app = document.getElementById("app");
@@ -168,9 +169,10 @@ function reconcile(layer, state) {
 
 // Depth: desk=0, guide=1, series=1, browse=2, item=3
 // Flat series (labor/accumulation) skip the series sheet, so browse=1, item=2
-// The CV's entries are frames of one card, so /identity/cv/?item=<id> is the
-// CV sheet itself, not a modal over it.
-const isCVAddress = (state) => state.series === "identity" && state.subcollection === "cv";
+// The CV's entries are frames of one card, and Contact is one record, so
+// /identity/cv/?item=<id> and /identity/contact/?item=<id> are those sheets
+// themselves, not modals over them.
+const isSingleCardAddress = (state) => state.series === "identity" && (state.subcollection === "cv" || state.subcollection === "contact");
 
 function stackDepth(state) {
   const isFlat = state.series && FLAT_URL_SERIES.has(state.series);
@@ -179,7 +181,7 @@ function stackDepth(state) {
     case "guide":  return 1;
     case "series": return 1;
     case "browse": return isFlat ? 1 : 2;
-    case "item":   return isFlat ? 2 : (isCVAddress(state) ? 2 : 3);
+    case "item":   return isFlat ? 2 : (isSingleCardAddress(state) ? 2 : 3);
     default:       return 0;
   }
 }
@@ -196,11 +198,11 @@ function restoreFromState(state) {
     pushLayerForState({ layer: "series", series: state.series, subcollection: null, view: null, item: null }, true);
   }
   if (state.layer === "browse" || state.layer === "item") {
-    // The CV's item address opens the CV sheet on that entry — one layer.
-    const cvItem = isCVAddress(state) ? state.item : null;
-    pushLayerForState({ layer: "browse", series: state.series, subcollection: state.subcollection, view: state.view, item: cvItem }, true);
+    // The CV's and Contact's item addresses open those sheets — one layer.
+    const cardItem = isSingleCardAddress(state) ? state.item : null;
+    pushLayerForState({ layer: "browse", series: state.series, subcollection: state.subcollection, view: state.view, item: cardItem }, true);
   }
-  if (state.layer === "item" && !isCVAddress(state)) {
+  if (state.layer === "item" && !isSingleCardAddress(state)) {
     pushLayerForState(state, true);
   }
 }
@@ -227,15 +229,20 @@ function pushLayerForState(state, silent = false) {
     case "browse": {
       if (state.series === "identity" && state.subcollection === "biography") {
         pushSheet(makeBiographySheet());
-      } else if (isCVAddress(state)) {
+      } else if (state.series === "identity" && state.subcollection === "cv") {
         pushSheet(makeCVSheet(state.item || null));
+      } else if (state.series === "identity" && state.subcollection === "contact") {
+        pushSheet(makeContactSheet(state.item || null));
       } else {
         pushSheet(makeBrowseSheet(state.series, state.subcollection, state.view, state.item));
       }
       break;
     }
     case "item":
-      if (isCVAddress(state)) { pushSheet(makeCVSheet(state.item)); break; }
+      if (isSingleCardAddress(state)) {
+        pushSheet(state.subcollection === "cv" ? makeCVSheet(state.item) : makeContactSheet(state.item));
+        break;
+      }
       // Labor items use the standard catalog card too (the bespoke labor
       // inspection view was retired 2026-09 — subitems render as the card's
       // gallery, thesis as the note).
@@ -964,6 +971,52 @@ function makeCVSheet(itemId) {
   return { veil, content, cleanup, update };
 }
 
+// ── Contact sheet ─────────────────────────────────────────────────────────────
+// One record, one card: the contact record opens directly from the Identity
+// sheet in the standard catalog card. Its reproduction is the typeset calling
+// card (or a scan, when one is recorded); its channels are rows and links.
+// /identity/contact/ and /identity/contact/?item=<id> are the same sheet.
+// docs/contact-inspection-card-plan.md.
+
+function makeContactSheet(itemId) {
+  const items = archive.series["identity"]?.subcollections["contact"]?.items || [];
+  const item = items.find((i) => i.id === itemId) || items[0] || null;
+
+  const exit = () => navigate({ layer: "series", series: "identity", subcollection: null, item: null });
+  const veil = makeVeil(exit);
+  const content = makeContent();
+  content.classList.add("layer-content--item-card");
+
+  let wrap = null;
+  if (item) {
+    wrap = buildCardWrap(item, { onExit: exit, allItems: items, navItem: () => {} });
+    content.appendChild(wrap);
+  }
+
+  const meta = el("div", "layer-meta");
+  const h1 = el("h1", "overlay-title");
+  h1.textContent = item?.title || "Contact";
+  const sub = el("div", "overlay-id");
+  const n = item?.channels?.length || 0;
+  sub.textContent = n ? `${n} channel${n > 1 ? "s" : ""}` : "";
+  meta.appendChild(h1);
+  meta.appendChild(sub);
+  content.appendChild(meta);
+
+  content.appendChild(makeBreadcrumb([
+    { label: "desk", onClick: () => navigate({ layer: "desk" }) },
+    { label: "Identity", onClick: () => navigate({ layer: "series", series: "identity" }) },
+    { label: "contact", current: true }
+  ]));
+
+  const escCleanup = attachEscapeHandler(content, exit);
+  // Both addresses of the record are this one sheet.
+  const update = (state) => state.series === "identity" && state.subcollection === "contact"
+    && (state.layer === "browse" || state.layer === "item");
+  const cleanup = () => { escCleanup(); wrap?.__dispose?.(); };
+  return { veil, content, cleanup, update };
+}
+
 // ── Browse sheet ──────────────────────────────────────────────────────────────
 
 function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
@@ -1210,12 +1263,10 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
     years.forEach(({ year, items: yearItems }) => {
       const group = el("div", "item-grid__group");
 
-      if (activeSubKey !== "contact") {
-        const yearLabel = el("div", "item-grid__year");
-        yearLabel.textContent = year;
-        yearLabel.setAttribute("aria-hidden", "true");
-        group.appendChild(yearLabel);
-      }
+      const yearLabel = el("div", "item-grid__year");
+      yearLabel.textContent = year;
+      yearLabel.setAttribute("aria-hidden", "true");
+      group.appendChild(yearLabel);
 
       const cells = el("div", "item-grid__cells");
       const colCount = Math.ceil(yearItems.length / GRID_ROWS);
@@ -1733,7 +1784,10 @@ function buildCardWrap(item, ctx = {}) {
   const fields = el("div", "bio-document__scroll item-card__fields-scroll");
   fieldsCol.appendChild(fields);
 
-  const dims = parseDimensions(item);
+  // A contact record with channels but no scan is reproduced as a typeset
+  // calling card (calling-card.js); it measures 89 × 51 mm unless recorded.
+  const typeset = !isFrames && !primaryAsset(item) && Array.isArray(item.channels) && item.channels.length > 0;
+  const dims = parseDimensions(item) || (typeset ? { ...CALLING_CARD_MM } : null);
   // Folded matter (brochures, fold-out guides): a second, open state with its
   // own measured size and its own two faces (inside / outside). The plate's
   // ratio comes from the larger state and is held for both, so unfolding
@@ -1765,20 +1819,25 @@ function buildCardWrap(item, ctx = {}) {
   let localZoom = fitZoom(ratioDims);
 
   // A label/value pair as a fragment, ready to drop into a 2- or 4-col row.
-  const pair = (label, value, mono) => {
+  // `href` makes the value a live link (contact channels) in the same register.
+  const pair = (label, value, mono, href) => {
     const frag = document.createDocumentFragment();
     const l = el("span", "overlay-label");
     l.textContent = label;
-    const v = el("span", `overlay-value${mono ? " overlay-value--mono" : ""}`);
+    const v = el(href ? "a" : "span", `overlay-value${mono ? " overlay-value--mono" : ""}${href ? " overlay-value--link" : ""}`);
     v.textContent = value;
+    if (href) {
+      v.href = href;
+      if (!href.startsWith("mailto:")) { v.target = "_blank"; v.rel = "noopener"; }
+    }
     frag.appendChild(l);
     frag.appendChild(v);
     return frag;
   };
-  const singleRow = (label, value, mono, extraClass) => {
+  const singleRow = (label, value, mono, extraClass, href) => {
     if (!value) return; // unrecorded fields are suppressed, never faked
     const row = el("div", "item-card__row" + (extraClass ? " " + extraClass : ""));
-    row.appendChild(pair(label, value, mono));
+    row.appendChild(pair(label, value, mono, href));
     fields.appendChild(row);
   };
   // Two pairs side by side; degrades to a single row if one side is absent.
@@ -1866,6 +1925,17 @@ function buildCardWrap(item, ctx = {}) {
       singleRow("date", item.display_date, true);
     }
 
+    // Contact channels — one row each, the value a live link (mailto:, the
+    // profile URL) where one can be derived or is authored; shown plain
+    // otherwise. The card on the plate repeats them as a picture repeats
+    // its caption.
+    if (Array.isArray(item.channels)) {
+      item.channels.forEach((c) => {
+        if (!c || !c.value) return;
+        singleRow(c.label || "channel", String(c.value), true, null, channelHref(c));
+      });
+    }
+
     // Typed slots — up to three type-specific rows. resolveSlots handles
     // suppression and the place/event split row for ephemera; cells are mono
     // (catalog data), with rating special-cased to a serif score + mono scale.
@@ -1912,7 +1982,8 @@ function buildCardWrap(item, ctx = {}) {
     // Folded matter: one piece, however many panels — "1 brochure".
     const extentText = item.extent
       || (gAssets.length ? `${gAssets.length} photo${gAssets.length > 1 ? "s" : ""}` : null)
-      || (folded && item.item_type ? `1 ${item.item_type}` : null);
+      || (folded && item.item_type ? `1 ${item.item_type}` : null)
+      || (Array.isArray(item.channels) && item.channels.length ? `${item.channels.length} channel${item.channels.length > 1 ? "s" : ""}` : null);
     splitRow(["extent", extentText, true], ["dimensions", dimText, true]);
 
     // Frame caption — the selected frame's caption; stepping the plate
@@ -2045,6 +2116,10 @@ function buildCardWrap(item, ctx = {}) {
     // reproduction — the transparent cut-out where the item has one (scanned
     // ephemera), otherwise the display scan.
     loadReproProgressive(reproImg, primary, item.assets?.thumbnail, showNone, fullVariants(primary));
+  } else if (typeset) {
+    // No scan: the typeset calling card stands as the reproduction, handed to
+    // buildPlate exactly as an <img> would be.
+    reproImg = makeCallingCard(item, dims);
   }
 
   let plateState = null; // { origin, pxPerMM, spanMM, scaleNote, panX, panY }
@@ -2224,6 +2299,10 @@ function buildCardWrap(item, ctx = {}) {
     // Dimensions not recorded: draw the same scale grid, unlabelled, and let
     // the reproduction fill the field — the ruler without a measurement claim.
     renderPlate(1);
+  } else if (typeset) {
+    // The typeset card on the calibrated plate at fit zoom — the same path a
+    // dimensioned scan takes (zoom, pan, the ratio note).
+    renderPlate(localZoom);
   } else if (isFrames) {
     // Frames mode: the sheet's plate. Plate-heavy split as for photos — the
     // plate is the frame's substance whatever it carries.
@@ -2235,7 +2314,7 @@ function buildCardWrap(item, ctx = {}) {
     showNone();
   }
 
-  if (primary || isFrames) {
+  if (primary || isFrames || typeset) {
     const foot = el("div", "item-card__plate-foot");
 
     const controls = el("div", "item-card__plate-controls");
@@ -2596,7 +2675,7 @@ function buildCardWrap(item, ctx = {}) {
   wrap.__setSwipeActive = (v) => { swipeActive = v; };
   wrap.__plate = {
     get interactive() {
-      return !!(primary && dims && !gAssets.length) || (photoView ? photoView.zoom > 1.001 : false);
+      return !!((primary || typeset) && dims && !gAssets.length) || (photoView ? photoView.zoom > 1.001 : false);
     },
     panState: () => {
       if (plateState && dims) return { panX: plateState.panX, panMaxX: Math.max(0, dims.w - plateState.spanMM) };

@@ -171,7 +171,7 @@ Clicking any item opens an inspection modal. The browse view behind dims and blu
 /identity/biography/           biography
 /identity/cv/                  CV — one card, every entry in its strip (opens on the most recent)
 /identity/cv/?item=<id>        CV — one entry's frame
-/identity/contact/             contact
+/identity/contact/             contact — one record, a calling card at true scale on the plate
 
 /labor/                        labor category interior
 /labor/all/                    labor browse, unfiltered

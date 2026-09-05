@@ -1183,7 +1183,8 @@ body {
   -webkit-mask: radial-gradient(circle closest-side at 50% 50%, transparent 0 7%, #000 7%);
           mask: radial-gradient(circle closest-side at 50% 50%, transparent 0 7%, #000 7%);
 }
-.item-card__repro img {
+.item-card__repro img,
+.item-card__repro .calling-card {
   display: block;
   width: 100%;
   height: 100%;
@@ -1786,6 +1787,33 @@ body {
 .bio-document__long p:last-child {
   margin-bottom: 0;
 }
+
+/* ── Calling card — a contact record's typeset reproduction ──────────────────── */
+/* Drawn in millimetres (calling-card.js) and placed on the plate like a scan:
+   paper on the dark field, the page's own faces. Type sizes are in the card's
+   own mm units so the composition holds at any plate zoom. Values are links.
+   Selectors are nested under .calling-card: the card sits inside the plate's
+   SVG, whose `.item-card__plate-svg text` rule would otherwise win. */
+.calling-card__paper { fill: #ece6d8; stroke: rgba(26, 21, 16, 0.55); stroke-width: 0.25; }
+.calling-card .calling-card__name  { font-family: var(--font-serif); font-size: 3.6px; fill: #1a1510; letter-spacing: 0.02em; }
+.calling-card .calling-card__role  { font-family: var(--font-serif); font-style: italic; font-size: 2.1px; fill: rgba(26, 21, 16, 0.7); }
+.calling-card__rule  { stroke: rgba(120, 60, 50, 0.4); stroke-width: 0.18; }
+.calling-card .calling-card__label { font-family: var(--font-mono); font-size: 1.7px; fill: rgba(26, 21, 16, 0.55); letter-spacing: 0.1em; text-transform: uppercase; }
+.calling-card .calling-card__value { font-family: var(--font-mono); font-size: 2.3px; fill: #1a1510; letter-spacing: 0.03em; }
+.calling-card a { cursor: pointer; }
+.calling-card a:hover .calling-card__value,
+.calling-card a:focus-visible .calling-card__value { text-decoration: underline; }
+
+/* Linked values in the fields column (contact channels): the card's own
+   underline register, in the value's colour. */
+.overlay-value--link {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--border);
+}
+.overlay-value--link:hover,
+.overlay-value--link:focus-visible { text-decoration-color: var(--overlay-text); }
 
 /* ── CV card ─────────────────────────────────────────────────────────────────── */
 /* The CV is one catalog card whose strip holds every entry; the document-box

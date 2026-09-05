@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact — one record, a calling card at true scale</title><link rel="stylesheet" href="shared.css"></head>
+<body>
+<div class="mock-banner"><span>contact · 01 · one record, no strip — a calling card on the mm plate at true scale; the channels are the rows</span><span><a href="00-current.html">← 00</a> · <a href="index.html">index</a> · <a href="02-channel-frames.html">02 →</a></span></div>
+<p class="mock-note"><b>Idea A.</b> Contact is one record (the three files fold into one <code>channels</code> list, as the template intends). The plate is the ordinary calibrated plate: an 89 × 51 mm calling card at the origin, opened at fit zoom, <b>flip</b> for the verso. The card is typeset from the record — or, if Bay scans his real card, the scan takes the plate (<a href="?scan">see</a>). Every channel is a row and a live link.</p>
+<div class="veil"></div><div id="root"></div>
+<script type="module">
+import { CHANNELS, NAME, ROLE, NOTE, el, rowBuilders, mmPlate, callingCard, cardShell, footControls, chrome } from "./contact.js";
+const scan = new URLSearchParams(location.search).has("scan");
+const shell = cardShell({ plateNote: "" });
+const r = rowBuilders(shell.fields);
+r.split(["ID", "CONTACT-2026-001", true], ["type", "contact", true], "item-card__row--accession");
+r.title("Contact");
+for (const c of CHANNELS) r.single(c.label, c.value, true, c.href);
+r.split(["extent", `${CHANNELS.length} channels`, true], ["dimensions", "89 × 51 mm", true]);
+r.note("note", NOTE);
+let verso = false;
+const render = () => {
+  shell.field.innerHTML = "";
+  const { svg, note } = mmPlate({ spanMM: 120, major: 25, minor: 5, draw: (api) => {
+    if (scan && !verso) {
+      // MOCKUP: a scanned card stand-in — the real thing would be assets.front at 1:1.
+      const W = api.px(89), H = api.px(51);
+      const defs = api.mk("defs", {}); const f = api.mk("filter", { id: "grain" }, defs);
+      api.mk("feTurbulence", { type: "fractalNoise", baseFrequency: "0.9", numOctaves: "2", result: "n" }, f);
+      api.mk("feColorMatrix", { type: "saturate", values: "0", in: "n", result: "g" }, f);
+      api.mk("feBlend", { in: "SourceGraphic", in2: "g", mode: "multiply" }, f);
+      api.mk("rect", { x: api.origin + 1, y: api.origin + 1, width: W, height: H, class: "plate-scan" });
+      api.mk("rect", { x: api.origin + 1, y: api.origin + 1, width: W, height: H, class: "plate-scan-grain" });
+      api.text(api.origin + api.px(6), api.origin + api.px(6) + 12, NAME, "plate-card__name", "start", 14);
+      api.text(api.origin + api.px(6), api.origin + api.px(6) + 24, "Low Design Office", "plate-card__role", "start", 8);
+      api.text(api.origin + W - api.px(6), api.origin + H - api.px(6), "hello@bayfujimoto.com", "plate-card__line", "end", 8.5);
+    } else {
+      callingCard(api, { lines: CHANNELS.map(c => [c.label, c.value]), verso });
+    }
+  }});
+  shell.field.appendChild(svg);
+  shell.note.textContent = note;
+};
+render();
+const label = footControls(shell.foot, { counter: "recto", extra: [["flip", () => { verso = !verso; label.textContent = verso ? "verso" : "recto"; render(); }]] });
+document.getElementById("root").appendChild(shell.wrap);
+chrome(document.body, ["desk", "Identity", "contact"], "Contact", `${CHANNELS.length} channels`);
+</script>
+</body></html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact — as it is today</title><link rel="stylesheet" href="shared.css"></head>
+<body>
+<div class="mock-banner"><span>contact · 00 · today — a three-cell grid, then a card with no channel on it (reference, not a proposal)</span><span><a href="index.html">index</a> · <a href="01-calling-card.html">01 →</a></span></div>
+<p class="mock-note"><b>Today.</b> The three contact records open in the generic catalog card: ID, type, title — and nothing else. The channel values (the address, the handles) are never rendered; the plate says "no reproduction". The grid behind is three unlabelled cells.</p>
+<div class="veil"></div><div id="root"></div>
+<script type="module">
+import { CHANNELS, el, rowBuilders, mmPlate, cardShell, chrome } from "./contact.js";
+const shell = cardShell({ plateNote: "no reproduction" });
+const r = rowBuilders(shell.fields);
+r.split(["ID", "CONTACT-2026-001", true], ["type", "contact", true], "item-card__row--accession");
+r.title("Email");
+const { svg } = mmPlate({ spanMM: 325, major: 50, minor: 10, draw: () => {} });
+shell.field.appendChild(svg);
+document.getElementById("root").appendChild(shell.wrap);
+chrome(document.body, ["desk", "Identity", "contact", "Email"], "Email", "contact");
+</script>
+</body></html>

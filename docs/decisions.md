@@ -318,6 +318,14 @@ Its purpose is to prevent drift, repetition, and silent contradictions over time
 
 ---
 
+### Contact — one record, a calling card on the plate
+- status: confirmed
+- decision: Contact is **one record** (`CONTACT-2026-001`, title `Contact`) with a `channels` list — the three one-channel records are folded into it — and opens directly from the Identity sheet in the standard catalog card; `/identity/contact/` and `/identity/contact/?item=<id>` are the same sheet. The plate is the ordinary calibrated mm plate carrying a **calling card at true scale** (89 × 51 mm, `dimensions` on the record): when the record has no scan, the card is typeset from it (`src/app/calling-card.js` — `name`, `role_line`, the channels — an inline SVG drawn in millimetres, handed to `buildPlate` as the reproduction, so fit zoom, pan and the ratio note work unchanged); when a scan is recorded (`assets.front`, optionally `back`), the scan takes the plate and the typeset card is never shown. The verso is blank, so the typeset card has no flip. Every channel is a row in the fields column whose value is a **live link** — `mailto:` for an address, the profile URL for the handles the archive uses (`channelHref`, `field-schema.js`), authored `href` winning — and the values are links on the card itself. `extent` autofills `N channels`. No brand marks or icons: channels are named in words. The three-cell browse grid and its `contact` special case are retired; the admin contact form gains `name`, `role_line`, `dimensions` and the asset group for a scan.
+- reason: The generic card showed a contact's ID, type and title and nothing else — `channels` was outside the field schema, so the address and handles were never rendered. A contact is the one record with a natural physical form, so the plate needs no new machinery: the card the archivist would hand a visitor, at its real size, on the plate that already measures things. One record rather than a frame per channel because three channels are one address-book entry, not three objects, and a strip of three sits half empty (`mockups/contact/02`, `03` kept as studies). Plan: `docs/contact-inspection-card-plan.md`.
+- date: 2026-09-05
+
+---
+
 ## Provisional decisions
 
 ### Tech stack

@@ -297,3 +297,30 @@ export function deriveMark(organization) {
   else mark = first;                                                 // Rice
   return mark.slice(0, 6);
 }
+
+
+// ── Contact channels ──────────────────────────────────────────────────────────
+// A contact record's `channels` ([{ label, value, href? }]) render as rows whose
+// value is a live link. The link is authored (`href`) or derived from the
+// label and value: mailto: for an address, the profile URL for the handles the
+// archive uses; anything else is shown but not linked. Shared by the card and
+// the typeset calling card.
+const HANDLE_HOSTS = {
+  instagram: "https://instagram.com/",
+  letterboxd: "https://letterboxd.com/",
+  github: "https://github.com/",
+  bluesky: "https://bsky.app/profile/",
+  mastodon: null,
+};
+export function channelHref(channel) {
+  if (!channel) return null;
+  if (typeof channel.href === "string" && channel.href.trim()) return channel.href.trim();
+  const label = String(channel.label || "").toLowerCase().trim();
+  const value = String(channel.value || "").trim();
+  if (!value) return null;
+  if (/^https?:\/\//i.test(value)) return value;
+  if (label === "email" || (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value))) return `mailto:${value}`;
+  const host = HANDLE_HOSTS[label];
+  if (host) return `${host}${value.replace(/^@/, "")}`;
+  return null;
+}

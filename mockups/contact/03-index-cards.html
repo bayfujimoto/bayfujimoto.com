@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact — a card file: index cards with tabs</title><link rel="stylesheet" href="shared.css"></head>
+<body>
+<div class="mock-banner"><span>contact · 03 · one card, shared strip — a card file: each channel typed on a 3 × 5 index card, tabs in the strip</span><span><a href="02-channel-frames.html">← 02</a> · <a href="index.html">index</a></span></div>
+<p class="mock-note"><b>Idea C.</b> Same structure as 02, a different object: the channels are cards in a file, each a 127 × 76 mm ruled index card at true scale with a tab naming the channel; the strip is the row of tabs. Reads as the archivist's own address file rather than a card he hands out.</p>
+<div class="veil"></div><div id="root"></div>
+<script type="module">
+import { CHANNELS, NOTE, el, rowBuilders, mmPlate, indexCard, cardShell, strip, footControls, chrome } from "./contact.js";
+const NS = "http://www.w3.org/2000/svg";
+const shell = cardShell({ plateNote: "", photoSplit: true });
+let idx = 0, counter;
+const pad = n => String(n).padStart(2, "0");
+const tabTile = (c, i) => {
+  const t = el("div", "tab-tile");
+  const svg = document.createElementNS(NS, "svg"); svg.setAttribute("viewBox", "0 0 60 44");
+  const tabW = 60 / CHANNELS.length;
+  const tab = document.createElementNS(NS, "rect"); tab.setAttribute("x", 1 + i * tabW); tab.setAttribute("y", 1); tab.setAttribute("width", tabW - 1); tab.setAttribute("height", 9); tab.setAttribute("class", "tab"); svg.appendChild(tab);
+  const card = document.createElementNS(NS, "rect"); card.setAttribute("x", 1); card.setAttribute("y", 9); card.setAttribute("width", 58); card.setAttribute("height", 34); card.setAttribute("class", "card"); svg.appendChild(card);
+  const tx = document.createElementNS(NS, "text"); tx.setAttribute("x", 30); tx.setAttribute("y", 30); tx.setAttribute("text-anchor", "middle"); tx.textContent = c.label; svg.appendChild(tx);
+  t.appendChild(svg); return t;
+};
+function show(i) {
+  idx = (i + CHANNELS.length) % CHANNELS.length;
+  const c = CHANNELS[idx];
+  shell.fields.innerHTML = "";
+  const r = rowBuilders(shell.fields);
+  r.split(["ID", c.id, true], ["type", "contact", true], "item-card__row--accession");
+  r.title(c.title);
+  r.single("value", c.value, true, c.href);
+  r.single("dimensions", "127 × 76 mm", true);
+  r.note("note", NOTE);
+  shell.field.innerHTML = "";
+  const { svg, note } = mmPlate({ spanMM: 170, major: 25, minor: 5, draw: (api) => indexCard(api, { label: c.label, value: c.value, tabIndex: idx, tabCount: CHANNELS.length }) });
+  shell.field.appendChild(svg); shell.note.textContent = note;
+  shell.plateCol.querySelector(".item-card__strip")?.remove();
+  shell.plateCol.insertBefore(strip(CHANNELS, c, x => show(CHANNELS.indexOf(x)), tabTile), shell.foot);
+  if (counter) counter.textContent = `${pad(idx + 1)}/${pad(CHANNELS.length)}`;
+}
+counter = footControls(shell.foot, { onPrev: () => show(idx - 1), onNext: () => show(idx + 1), counter: "" });
+show(0);
+document.addEventListener("keydown", e => { if (e.key === "ArrowDown") show(idx + 1); if (e.key === "ArrowUp") show(idx - 1); });
+document.getElementById("root").appendChild(shell.wrap);
+chrome(document.body, ["desk", "Identity", "contact"], "Contact", "3 channels");
+</script>
+</body></html>

@@ -198,14 +198,21 @@ export function getTypeGroups(itemType) {
       ];
 
     case "contact":
+      // One record, one calling card: what is printed on it, the channels it
+      // carries, and its size. The asset group takes a scan of a real card,
+      // which then replaces the typeset one on the plate.
       return [
         {
           id: "contact-meta", label: "Contact",
           fields: [
+            { id: "name",      label: "name",      type: "text", placeholder: "as printed on the card" },
+            { id: "role_line", label: "role line", type: "text", placeholder: "e.g. architect · austin" },
             { id: "channels", label: "channels", type: "pair-list",
-              hint: "One per line: label: value (e.g. email: name@example.com)" },
+              hint: "One per line: label: value (e.g. email: name@example.com). Links derive from the label." },
+            { id: "dimensions", label: "dimensions", type: "text", placeholder: "89 x 51 mm" },
           ],
         },
+        INSPECTION_ASSETS_SENTINEL,
       ];
 
     // ── Accumulation / ephemera (schema-driven) ──────────────
