@@ -11,6 +11,9 @@
 //
 // --texture N            resize+recompress textures to N² WebP (0 = leave alone)
 // --simplify R           reduce triangles to ratio R (omit = keep all)
+// --target-tris N        reduce to roughly N triangles (friendlier than --simplify).
+//                        The simplifier may stop short: it will not exceed its
+//                        error bound, and it cannot merge separate shells.
 // --keep-morph-normals   keep morph-target normals (default: dropped, ~halves
 //                        the cost of a vertex-cache animation, invisible here)
 // --static               also flatten+join — DESTROYS node animation, static only
@@ -38,6 +41,7 @@ const opt = (name, fallback) => {
   return i > -1 ? Number(argv[i + 1]) : fallback;
 };
 const TEXTURE = opt("texture", 1024);
+const TARGET  = opt("target-tris", null);
 const RATIO   = opt("simplify", null);
 const KEEP_MN = argv.includes("--keep-morph-normals");
 const STATIC  = argv.includes("--static");
@@ -72,6 +76,9 @@ const stat = (doc) => {
 
 const doc = await io.read(IN);
 const before = stat(doc);
+// --target-tris is the friendlier form of --simplify: say what you want to end
+// up with rather than what fraction to keep.
+const ratio = RATIO ?? (TARGET ? TARGET / before.tris : null);
 
 if (!KEEP_MN)
   for (const m of doc.getRoot().listMeshes())
@@ -82,10 +89,21 @@ if (!KEEP_MN)
 const steps = [dedup()];
 if (STATIC) steps.push(flatten(), join());   // bakes node transforms — no animation
 steps.push(weld());
-if (RATIO) steps.push(simplify({ simplifier: MeshoptSimplifier, ratio: RATIO, error: 0.005 }));
-if (TEXTURE) steps.push(textureCompress({
-  encoder: sharp, targetFormat: "webp", resize: [TEXTURE, TEXTURE],
-}));
+if (ratio) steps.push(simplify({ simplifier: MeshoptSimplifier, ratio, error: 0.0005 }));
+// Textures are compressed by SLOT, not all together. Base colour is a picture
+// and takes lossy compression well. Normal, metallic-roughness and occlusion
+// are DATA — each channel is a number the shader reads, not something anyone
+// looks at — and lossy compression on them flattens surface relief. A normal
+// map crushed from 1.2 MB to 215 KB is what makes a model look mushy no matter
+// how many triangles it keeps.
+if (TEXTURE) steps.push(
+  textureCompress({ encoder: sharp, targetFormat: "webp", resize: [TEXTURE, TEXTURE],
+                    slots: /baseColorTexture/, quality: 92 }),
+  textureCompress({ encoder: sharp, targetFormat: "webp", resize: [TEXTURE, TEXTURE],
+                    slots: /normalTexture/, lossless: true }),
+  textureCompress({ encoder: sharp, targetFormat: "webp", resize: [TEXTURE, TEXTURE],
+                    slots: /(metallicRoughnessTexture|occlusionTexture)/, quality: 95 }),
+);
 steps.push(resample(), prune(), quantize(), meshopt({ encoder: MeshoptEncoder, level: "medium" }));
 
 await doc.transform(...steps);
