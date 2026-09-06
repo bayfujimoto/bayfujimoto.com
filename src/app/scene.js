@@ -128,7 +128,7 @@ export function initScene() {
     consumption:  { w: 1.0, h: 1,  d: 1,   ry: 0,   offsetY: 0 },
     creation:     { w: 4,   h: 4,  d: 3,   ry: -15, offsetY: 0 },
     accumulation: { w: 3.5, h: 2,  d: 4,   ry: 30,  offsetY: 0 },
-    guide:        { w: 1,   h: 1,  d: 1,   ry: 210, offsetY: 0 },
+    guide:        { w: 1,   h: 1,  d: 1,   ry: 90,  offsetY: 0 },
   };
   const OBJECT_CFG = Object.fromEntries(
     Object.entries(OBJECT_FIT).map(([id, fit]) => [id, { ...fit, file: DESK_OBJECTS[id].file }])
