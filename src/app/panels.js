@@ -1,7 +1,7 @@
 import { navigate, replace, CONSTELLATION_HOMES, homedConstellationSlug } from "./router.js";
 import { subscribe, getState, deskTarget } from "./state.js";
 import { imageUrl } from "./image-url.js";
-import { setSeriesInfo, pauseSceneRender, resumeSceneRender } from "./scene.js";
+import { setSeriesInfo, pauseSceneRender, resumeSceneRender, notifySheetsClosing } from "./scene.js";
 import { resolveCreator, resolveSlots, titleIsGiven, isFolded, channelHref } from "../shared/field-schema.js";
 import { mdToHtml } from "./markdown.js";
 import { mountModelPlate } from "./model-plate.js";
@@ -293,6 +293,11 @@ function popSheet() {
   top.veil.classList.remove("layer-veil--visible");
   top.content.classList.remove("layer-content--visible");
   top.cleanup();
+
+  // The desk is about to be uncovered. Tell the scene now, while this veil is
+  // still fading, so anything it wants to put back up (an object still in the
+  // hand) crosses with it instead of following it.
+  if (layerStack.length === 0) notifySheetsClosing();
 
   if (top.metaEl) top.metaEl.style.opacity = "0";
 

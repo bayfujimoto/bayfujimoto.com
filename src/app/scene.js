@@ -18,6 +18,11 @@ let renderPaused = false;
 // Set by initScene: the last veil coming down returns the visitor to whatever
 // the desk was doing — including an object still held in the hand.
 let onSceneResume = null;
+// The last sheet has STARTED closing. The desk must not be seen bare between
+// the card's veil going down and the hold's coming back up: panels.js calls
+// this as the fade begins, not when it ends, so the two veils cross.
+let onSheetsClosing = null;
+export function notifySheetsClosing() { onSheetsClosing?.(); }
 export function pauseSceneRender() { renderPaused = true; }
 export function resumeSceneRender() { renderPaused = false; onSceneResume?.(); }
 
@@ -308,8 +313,15 @@ export function initScene() {
       if (entry) positionObject(entry, currentRegime);
     },
   });
-  // Dismissing the card returns the visitor to the object still in the hand.
-  onSceneResume = () => inspector.resume();
+  // Dismissing the card returns the visitor to the object still in the hand —
+  // as the card's veil begins to fall, so the desk is never seen bare between
+  // the two. By the time the fade ends and the render loop is released, the
+  // object is being held again and the desk must stay frozen behind it.
+  onSheetsClosing = () => inspector.resume();
+  onSceneResume = () => {
+    inspector.resume();
+    if (inspector.isHeld()) pauseSceneRender();
+  };
 
   canvas.addEventListener("click", (e) => {
     // While an object is held, the inspector owns the clicks: turning it over,

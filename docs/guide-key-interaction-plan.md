@@ -54,6 +54,13 @@ not tuning):
   camera around it are the same gesture, and the pose handed to the card is
   read straight off that camera.
 
+- **The veils must cross, not queue.** `popSheet` resumes the scene on
+  `transitionend`, so restoring the hold there left the desk bare — lit,
+  sharp, unblurred — for the length of the card's fade. `panels.js` now calls
+  `notifySheetsClosing()` as the last veil *begins* to fall, and the hold's
+  veil comes up against it. The lower does the same in reverse: the desk is
+  uncovered as the object lands, not as it starts down.
+
 Decisions taken in the planning conversation are marked **decided**.
 
 ## Purpose

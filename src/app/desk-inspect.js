@@ -434,7 +434,11 @@ export function createInspector({
       mix: 0,
     });
     startNext();
-    if (veil) veil.classList.remove("layer-veil--visible");
+    // The desk comes back as the object lands, not before it: uncovering a
+    // lit desk while the object is still in the air reads as a flash.
+    const v = veil;
+    setTimeout(() => { if (v === veil) v.classList.remove("layer-veil--visible"); },
+      Math.max(0, LIFT_MS - VEIL_MS));
   }
 
   function flip() {
