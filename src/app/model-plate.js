@@ -42,9 +42,13 @@ export function loadDeskModel(file) {
  * opts.onState(state) — "loading" | "ready" | "failed"; the card's scale note
  *   prints these.
  * opts.fallbackSrc(frame) — image URL to show when WebGL is unavailable.
+ * opts.entry — a pose handed off from the desk (desk-inspect.js): the object
+ *   was just being held there, so the plate opens at the orientation it was
+ *   held at and settles to the standard view instead of cutting to it.
+ *   { file, view: [x,y,z,w] } — `view` is Q_camera⁻¹ · Q_object on the desk.
  */
 export function mountModelPlate(field, opts = {}) {
-  const { onState = () => {}, fallbackSrc = null } = opts;
+  const { onState = () => {}, fallbackSrc = null, entry = null } = opts;
 
   const canvas = document.createElement("canvas");
   canvas.className = "item-card__model-canvas";
@@ -95,6 +99,8 @@ export function mountModelPlate(field, opts = {}) {
   let disposed = false;
   let rafId = 0;
   let fit = null;              // { center, radius, distance } of the current object
+  let settle = null;           // the handoff's camera move, while it runs
+  let pendingEntry = entry;    // consumed by the first frame it belongs to
 
   const size = () => {
     const w = field.clientWidth, h = field.clientHeight;
@@ -114,9 +120,10 @@ export function mountModelPlate(field, opts = {}) {
   const tick = () => {
     rafId = 0;
     if (disposed || paused) return;
-    if (controls) controls.update(); // applies the drag and its damping
+    if (settle) advanceSettle();
+    else if (controls) controls.update(); // applies the drag and its damping
     render();
-    if (controls && dampingActive()) schedule();
+    if (settle || (controls && dampingActive())) schedule();
   };
   const schedule = () => { if (!rafId) rafId = requestAnimationFrame(tick); };
   // The controls have no "settled" signal; after a release the damping decays
@@ -155,9 +162,71 @@ export function mountModelPlate(field, opts = {}) {
     controls.addEventListener("change", () => { lastInteraction = performance.now(); schedule(); });
     if (fit) controls.target.copy(fit.center);
     controls.handleResize();
-    controls.update();
-    render();
+    // A settle in flight owns the camera; TrackballControls.update() ends in
+    // lookAt(target), which would flatten the handed-off pose's roll.
+    controls.enabled = !settle;
+    if (!settle) { controls.update(); render(); }
   });
+
+  // ── The handoff settle ──────────────────────────────────────────────────────
+  // The object was in the hand on the desk a moment ago; it arrives on the
+  // plate facing the same way and turns to the plate's standard view. The move
+  // is camera-side, like everything else here: the object stays where it was
+  // mounted and the camera travels round the fit sphere to meet it.
+  // Held a beat first, so the pose the visitor was holding is still the pose on
+  // screen while the card fades in over the desk; then eased at both ends.
+  const SETTLE_HOLD_MS = 140;
+  const SETTLE_MS = 700;
+  const easeInOut = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+
+  const startSettle = (view) => {
+    if (!fit) return;
+    const to = { pos: camera.position.clone(), quat: camera.quaternion.clone() };
+    // Q_cam · Q_view = Q_object → the camera pose that reproduces the desk's
+    // view of the object, at the plate's own framing distance.
+    const qCam = (current ? current.quaternion.clone() : new THREE.Quaternion())
+      .multiply(new THREE.Quaternion().fromArray(view).invert());
+    const from = {
+      pos: fit.center.clone().add(new THREE.Vector3(0, 0, 1).applyQuaternion(qCam).multiplyScalar(fit.distance)),
+      quat: qCam,
+    };
+    camera.position.copy(from.pos);
+    camera.quaternion.copy(from.quat);
+    // Both poses look at the fit centre, so the move is a turn around it. The
+    // camera keeps its distance: a straight line between two poses half a turn
+    // apart passes through the object.
+    settle = {
+      t0: performance.now() + SETTLE_HOLD_MS,
+      from,
+      to,
+      d0: from.pos.distanceTo(fit.center),
+      d1: to.pos.distanceTo(fit.center),
+    };
+    if (controls) controls.enabled = false;
+    schedule();
+  };
+
+  const advanceSettle = () => {
+    const u = Math.min(1, (performance.now() - settle.t0) / SETTLE_MS);
+    if (u < 0) return;                    // the beat before it turns
+    const e = easeInOut(u);
+    camera.quaternion.slerpQuaternions(settle.from.quat, settle.to.quat, e);
+    camera.position.copy(fit.center).add(
+      new THREE.Vector3(0, 0, 1).applyQuaternion(camera.quaternion)
+        .multiplyScalar(settle.d0 + (settle.d1 - settle.d0) * e)
+    );
+    if (u < 1) return;
+    camera.position.copy(settle.to.pos);
+    camera.quaternion.copy(settle.to.quat);
+    camera.up.set(0, 1, 0);
+    settle = null;
+    if (controls) {
+      controls.enabled = true;
+      if (fit) controls.target.copy(fit.center);
+      controls.handleResize();
+      controls.update();
+    }
+  };
 
   const mount = (template, frame) => {
     if (current) { scene.remove(current); current = null; }
@@ -172,6 +241,12 @@ export function mountModelPlate(field, opts = {}) {
       controls.update();
     }
     canvas.setAttribute("aria-label", `Model of the ${frame.object} — drag to turn`);
+    if (pendingEntry) {
+      const mine = pendingEntry.file === frame.model;
+      const view = pendingEntry.view;
+      pendingEntry = null;      // one handoff, one use, whichever frame opens
+      if (mine && Array.isArray(view)) startSettle(view);
+    }
     render();
   };
 
@@ -197,6 +272,7 @@ export function mountModelPlate(field, opts = {}) {
     resume() { paused = false; render(); schedule(); },
     dispose() {
       disposed = true;
+      settle = null;
       if (rafId) cancelAnimationFrame(rafId);
       ro.disconnect();
       controlsReady.then(() => { if (controls) controls.dispose(); });

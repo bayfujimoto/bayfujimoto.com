@@ -5,6 +5,7 @@ import { dismissLoadingScreen } from "./loading.js";
 import { deskTarget } from "./state.js";
 import { DESK_OBJECTS, MODEL_BASE, UNTEXTURED_BASE } from "../shared/desk-objects.js";
 import { stripTextures as stripModelTextures } from "./model-look.js";
+import { createInspector } from "./desk-inspect.js";
 
 const seriesInfo = {};
 
@@ -14,8 +15,11 @@ const seriesInfo = {};
 // through. Pausing the render loop while any veil is up removes that churn (the
 // blurred desk is static anyway) and eliminates the flicker. Driven by panels.js.
 let renderPaused = false;
+// Set by initScene: the last veil coming down returns the visitor to whatever
+// the desk was doing — including an object still held in the hand.
+let onSceneResume = null;
 export function pauseSceneRender() { renderPaused = true; }
-export function resumeSceneRender() { renderPaused = false; }
+export function resumeSceneRender() { renderPaused = false; onSceneResume?.(); }
 
 // Flat, texture-free materials for the series objects: the rule and its
 // rationale live in model-look.js, shared with the Guide card's model plate.
@@ -31,6 +35,10 @@ export function setSeriesInfo(data) {
 export function initScene() {
   const canvas = document.getElementById("scene");
   if (!canvas) { dismissLoadingScreen(); return; }
+
+  // Read once: the desk's render loop, the object's lift, and the hover
+  // transitions all answer to it.
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   let renderer;
   try {
@@ -178,6 +186,9 @@ export function initScene() {
   function positionObject(entry, regime) {
     const place = (LAYOUTS[regime] || LAYOUTS.wide)[entry.seriesId];
     if (!place) return;
+    // An object being held is not on the desk. It returns to the layout's spot
+    // for the regime in force when it is lowered, not to the one it left.
+    if (entry.seriesId === "guide" && inspector?.isHeld()) return;
     entry.model.position.set(place.x - entry.cx, entry.posY, place.z - entry.cz);
   }
 
@@ -227,6 +238,11 @@ export function initScene() {
       };
       placed.push(entry);
       positionObject(entry, currentRegime);
+
+      // The Guide's key is the one object with an inspection gesture: clicking
+      // it lifts it into the hand rather than opening its card outright.
+      // docs/guide-key-interaction-plan.md.
+      if (seriesId === "guide") inspector.attach(model, cfg.file);
     });
   });
 
@@ -254,13 +270,53 @@ export function initScene() {
 
   let currentHoverId = null;
 
+  // ── The key in the hand ─────────────────────────────────────────────────────
+  // Clicking the Guide's key lifts it toward the camera and turns it over;
+  // clicking its reverse opens the card with the pose it was held at. The
+  // camera never moves. While the object is held the inspector owns the
+  // pointer and the overlay. docs/guide-key-interaction-plan.md.
+  const inspector = createInspector({
+    camera,
+    scene,
+    canvas,
+    regime: () => currentRegime,
+    onEnter: () => navigate({ layer: "guide" }),
+    onHold: (held, facing) => {
+      const info = seriesInfo.guide;
+      if (held) {
+        // The overlay stops following the pointer and holds the Guide's own
+        // line; `open →` is the card's idiom for the way in.
+        currentHoverId = "guide";
+        hoverTitle.textContent = info?.label || "Guide";
+        hoverSubtitle.textContent = facing ? "open \u2192" : (info?.subtitle || info?.container || "");
+        hoverMeta.style.opacity = "1";
+        canvas.style.cursor = facing ? "pointer" : "grab";
+        return;
+      }
+      currentHoverId = null;
+      hoverMeta.style.opacity = "0";
+      canvas.style.cursor = "default";
+      const entry = placed.find((p) => p.seriesId === "guide");
+      if (entry) positionObject(entry, currentRegime);
+    },
+  });
+  // Dismissing the card returns the visitor to the object still in the hand.
+  onSceneResume = () => inspector.resume();
+
   canvas.addEventListener("click", (e) => {
+    // While an object is held, the inspector owns the clicks: turning it over,
+    // entering, and lowering all happen there.
+    if (inspector.isHeld()) return;
     getNDC(e);
     raycaster.setFromCamera(pointer, camera);
     const hits = raycaster.intersectObjects(clickables, true);
     if (!hits.length) return;
     const { seriesId } = hits[0].object.userData;
     if (!seriesId) return;
+    // The key is lifted into the hand rather than opening its card outright.
+    // Under reduced motion there is no lift: the card opens on the click, as
+    // it does for every other object.
+    if (seriesId === "guide" && !reduceMotion) { inspector.lift(); return; }
     currentHoverId = null;
     hoverMeta.style.transition = "none";
     hoverMeta.style.opacity = "0";
@@ -270,7 +326,8 @@ export function initScene() {
       : navigate({ layer: "series", series: deskTarget(seriesId), subcollection: null, item: null });
   });
   canvas.addEventListener("mousemove", (e) => {
-    getNDC(e);
+    getNDC(e);          // the desk lamp keeps following the pointer either way
+    if (inspector.isHeld()) return;
     raycaster.setFromCamera(pointer, camera);
     const hits = raycaster.intersectObjects(clickables, true);
     if (hits.length) {
@@ -298,7 +355,6 @@ export function initScene() {
     }
   });
 
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const lightPos = { x: 0, z: -2 };
   function render() {
     const moveDistance = 1;
@@ -313,6 +369,7 @@ export function initScene() {
     spotLight.target.position.set(0, 0, 0);
     spotLight.target.updateMatrixWorld();
     spotLight.shadow.camera.updateProjectionMatrix();
+    inspector.tick();
     renderer.render(scene, camera);
   }
   if (reduceMotion) {

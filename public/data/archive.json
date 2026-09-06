@@ -896,7 +896,10 @@
               "assets": {
                 "backdrop": "https://a.ltrbxd.com/resized/sm/upload/8x/wj/zt/pp/jurassic-park-1200-1200-675-675-crop-000000.jpg?v=ec7c8120cd",
                 "poster": "https://a.ltrbxd.com/resized/sm/upload/1g/zz/ez/d8/yyCKYaW908ZbpexpnBJ3p8o87HA-0-600-0-900-crop.jpg?v=19a50874d0"
-              }
+              },
+              "constellations": [
+                "biography"
+              ]
             },
             {
               "id": "FILM-2026-525",
@@ -4600,7 +4603,6 @@
               "item_type": "film",
               "status": "published",
               "year": "2015",
-              "director": "",
               "watch_date": "2025-03-15",
               "display_date": "March 15, 2025",
               "sort_date": "2025-03-15",
@@ -4611,8 +4613,12 @@
                 "@ plane"
               ],
               "assets": {
-                "backdrop": "https://a.ltrbxd.com/resized/sm/upload/50/tw/wa/80/mad-max-fury-road-1200-1200-675-675-crop-000000.jpg?v=1a543f4e46"
-              }
+                "backdrop": "https://a.ltrbxd.com/resized/sm/upload/50/tw/wa/80/mad-max-fury-road-1200-1200-675-675-crop-000000.jpg?v=1a543f4e46",
+                "poster": "https://a.ltrbxd.com/resized/film-poster/6/2/7/8/0/62780-mad-max-fury-road-0-600-0-900-crop.jpg?v=37c5424b1f"
+              },
+              "constellations": [
+                "biography"
+              ]
             },
             {
               "id": "FILM-2025-350",
@@ -5330,7 +5336,6 @@
               "item_type": "film",
               "status": "published",
               "year": "2009",
-              "director": "",
               "watch_date": "2024-11-09",
               "display_date": "November 9, 2024",
               "sort_date": "2024-11-09",
@@ -5342,8 +5347,12 @@
                 "3d"
               ],
               "assets": {
-                "backdrop": "https://a.ltrbxd.com/resized/alternative-backdrop/4/2/7/7/9/tmdb/hofnlIyF6bePkgQOpcuRWLvzf15-1200-1200-675-675-crop-000000.jpg?v=5ad6dfb45a"
-              }
+                "backdrop": "https://a.ltrbxd.com/resized/alternative-backdrop/4/2/7/7/9/tmdb/hofnlIyF6bePkgQOpcuRWLvzf15-1200-1200-675-675-crop-000000.jpg?v=5ad6dfb45a",
+                "poster": "https://a.ltrbxd.com/resized/film-poster/4/2/7/7/9/42779-coraline-0-600-0-900-crop.jpg?v=b792483e2a"
+              },
+              "constellations": [
+                "biography"
+              ]
             },
             {
               "id": "FILM-2024-317",
@@ -5487,7 +5496,6 @@
               "item_type": "film",
               "status": "published",
               "year": "2014",
-              "director": "",
               "watch_date": "2024-10-08",
               "display_date": "October 8, 2024",
               "sort_date": "2024-10-08",
@@ -5498,8 +5506,12 @@
                 "@ pathé les fauvettes"
               ],
               "assets": {
-                "backdrop": "https://a.ltrbxd.com/resized/alternative-backdrop/1/1/7/6/2/1/tmdb/dhnlmqSCXcbdD3hABJa2Ccyc7qa-1200-1200-675-675-crop-000000.jpg?v=9f6079898f"
-              }
+                "backdrop": "https://a.ltrbxd.com/resized/alternative-backdrop/1/1/7/6/2/1/tmdb/dhnlmqSCXcbdD3hABJa2Ccyc7qa-1200-1200-675-675-crop-000000.jpg?v=9f6079898f",
+                "poster": "https://a.ltrbxd.com/resized/film-poster/1/1/7/6/2/1/117621-interstellar-0-600-0-900-crop.jpg?v=7ad89e6666"
+              },
+              "constellations": [
+                "biography"
+              ]
             },
             {
               "id": "FILM-2024-310",
@@ -6912,7 +6924,6 @@
               "item_type": "film",
               "status": "published",
               "year": "2024",
-              "director": "",
               "watch_date": "2024-05-14",
               "display_date": "May 14, 2024",
               "sort_date": "2024-05-14",
@@ -6924,8 +6935,12 @@
                 "@ regal battery park"
               ],
               "assets": {
-                "backdrop": "https://a.ltrbxd.com/resized/sm/upload/1v/t5/ny/lk/MV5BYWRmZWM2ZTktMzE1Ny00NmQyLWE3ZDItZTk5MjY5OGQ5NzdhXkEyXkFqcGdeQXVyMTUzMTg2ODkz._V1_-1200-1200-675-675-crop-000000.jpg?v=bc9f57c5b8"
-              }
+                "backdrop": "https://a.ltrbxd.com/resized/sm/upload/1v/t5/ny/lk/MV5BYWRmZWM2ZTktMzE1Ny00NmQyLWE3ZDItZTk5MjY5OGQ5NzdhXkEyXkFqcGdeQXVyMTUzMTg2ODkz._V1_-1200-1200-675-675-crop-000000.jpg?v=bc9f57c5b8",
+                "poster": "https://a.ltrbxd.com/resized/film-poster/8/4/2/3/0/1/842301-challengers-0-600-0-900-crop.jpg?v=a7cd63cbef"
+              },
+              "constellations": [
+                "biography"
+              ]
             },
             {
               "id": "FILM-2024-247",
@@ -7792,7 +7807,6 @@
               "item_type": "film",
               "status": "published",
               "year": "2017",
-              "director": "",
               "watch_date": "2024-03-22",
               "display_date": "March 22, 2024",
               "sort_date": "2024-03-22",
@@ -7803,8 +7817,12 @@
                 "@ home"
               ],
               "assets": {
-                "backdrop": "https://a.ltrbxd.com/resized/sm/upload/7z/nb/kw/h1/first-reformed-1200-1200-675-675-crop-000000.jpg?v=7839d88e99"
-              }
+                "backdrop": "https://a.ltrbxd.com/resized/sm/upload/7z/nb/kw/h1/first-reformed-1200-1200-675-675-crop-000000.jpg?v=7839d88e99",
+                "poster": "https://a.ltrbxd.com/resized/sm/upload/25/z1/3z/xn/8HKA3Hwf8jQWy8TCYWr7C8Wft23-0-600-0-900-crop.jpg?v=79051e4cf2"
+              },
+              "constellations": [
+                "biography"
+              ]
             },
             {
               "id": "FILM-2024-208",
@@ -12796,7 +12814,10 @@
               "dimensions_estimated": true,
               "assets": {
                 "cover": "https://covers.openlibrary.org/b/id/11048597-L.jpg"
-              }
+              },
+              "constellations": [
+                "biography"
+              ]
             },
             {
               "id": "BOOK-2026-210",
@@ -13222,7 +13243,10 @@
               "dimensions_estimated": true,
               "assets": {
                 "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1333349737l/13259261.jpg"
-              }
+              },
+              "constellations": [
+                "biography"
+              ]
             },
             {
               "id": "BOOK-2026-169",
@@ -13243,7 +13267,10 @@
               "dimensions_estimated": true,
               "assets": {
                 "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1529604411l/40604658.jpg"
-              }
+              },
+              "constellations": [
+                "biography"
+              ]
             },
             {
               "id": "BOOK-2026-160",
@@ -13461,7 +13488,10 @@
               "dimensions_estimated": true,
               "assets": {
                 "cover": "https://covers.openlibrary.org/b/id/8665647-L.jpg"
-              }
+              },
+              "constellations": [
+                "biography"
+              ]
             },
             {
               "id": "BOOK-2026-141",
@@ -13572,7 +13602,10 @@
               "dimensions_estimated": true,
               "assets": {
                 "cover": "https://covers.openlibrary.org/b/isbn/9781635575637-L.jpg"
-              }
+              },
+              "constellations": [
+                "biography"
+              ]
             },
             {
               "id": "BOOK-2026-132",
@@ -13595,7 +13628,10 @@
               "dimensions_estimated": true,
               "assets": {
                 "cover": "https://covers.openlibrary.org/b/isbn/9781400031702-L.jpg"
-              }
+              },
+              "constellations": [
+                "biography"
+              ]
             },
             {
               "id": "BOOK-2026-129",
@@ -14309,7 +14345,10 @@
               "dimensions_estimated": true,
               "assets": {
                 "cover": "https://covers.openlibrary.org/b/isbn/9780684833392-L.jpg"
-              }
+              },
+              "constellations": [
+                "biography"
+              ]
             },
             {
               "id": "BOOK-2026-069",
@@ -14441,7 +14480,10 @@
               "dimensions_estimated": true,
               "assets": {
                 "cover": "https://covers.openlibrary.org/b/isbn/9780930289232-L.jpg"
-              }
+              },
+              "constellations": [
+                "biography"
+              ]
             },
             {
               "id": "BOOK-2026-063",
@@ -14487,7 +14529,10 @@
               "dimensions_estimated": true,
               "assets": {
                 "cover": "https://covers.openlibrary.org/b/isbn/9780385521314-L.jpg"
-              }
+              },
+              "constellations": [
+                "biography"
+              ]
             },
             {
               "id": "BOOK-2026-061",
@@ -14826,7 +14871,10 @@
               "dimensions_estimated": true,
               "assets": {
                 "cover": "https://covers.openlibrary.org/b/isbn/9780374104092-L.jpg"
-              }
+              },
+              "constellations": [
+                "biography"
+              ]
             },
             {
               "id": "BOOK-2026-046",
@@ -15600,7 +15648,10 @@
               "dimensions_estimated": true,
               "assets": {
                 "cover": "https://covers.openlibrary.org/b/isbn/9780307387899-L.jpg"
-              }
+              },
+              "constellations": [
+                "biography"
+              ]
             },
             {
               "id": "BOOK-2026-011",
@@ -15936,7 +15987,10 @@
                 "cover": "MUSIC-2026-006-cover.jpeg",
                 "thumbnail": "MUSIC-2026-006-cover-thumb.jpg"
               },
-              "dimensions": "314 x 314"
+              "dimensions": "314 x 314",
+              "constellations": [
+                "biography"
+              ]
             },
             {
               "id": "MUSIC-2026-007",
@@ -16293,7 +16347,10 @@
                   }
                 ],
                 "thumbnail": "PHOTO-2026-022-gallery-14-thumb.jpg?v=90d86078o"
-              }
+              },
+              "constellations": [
+                "biography"
+              ]
             },
             {
               "id": "PHOTO-2026-015",
@@ -16413,7 +16470,10 @@
                   }
                 ],
                 "thumbnail": "PHOTO-2026-015-gallery-14-thumb.jpg?v=6db5b086o"
-              }
+              },
+              "constellations": [
+                "biography"
+              ]
             },
             {
               "id": "PHOTO-2026-011",
@@ -16941,7 +17001,10 @@
                   }
                 ],
                 "thumbnail": "PHOTO-2026-019-gallery-07-thumb.jpg?v=98c0e68fo"
-              }
+              },
+              "constellations": [
+                "biography"
+              ]
             },
             {
               "id": "PHOTO-2026-010",
@@ -18021,7 +18084,10 @@
                   }
                 ],
                 "thumbnail": "PHOTO-2026-003-gallery-01-thumb.jpg?v=285fb61bo"
-              }
+              },
+              "constellations": [
+                "biography"
+              ]
             }
           ]
         },
@@ -18474,7 +18540,8 @@
           "title": "Borderline Drifter",
           "place": "Houston, Texas, USA",
           "constellations": [
-            "2025-grand-national-tour"
+            "2025-grand-national-tour",
+            "biography"
           ],
           "source": "Received as a gift from a friend",
           "inspection": "card",
@@ -18687,7 +18754,1000 @@
       "date_start": "",
       "date_end": "",
       "note": "I am a designer based in Houston, Texas. I studied architecture at Rice University and work at Low Design Office.",
-      "items": []
+      "items": [
+        {
+          "id": "PHOTO-2026-022",
+          "slug": "rocky-mountain-national-park-2026-08-19",
+          "series": "creation",
+          "subcollection": "photos",
+          "item_type": "photo",
+          "status": "published",
+          "display_date": "August 19, 2026",
+          "sort_date": "2026-08-19",
+          "title": "Rocky Mountain National Park",
+          "place": "Estes Park, Colorada, USA",
+          "camera": "Fujifilm X100T",
+          "assets": {
+            "gallery": [
+              {
+                "file": "PHOTO-2026-022-gallery-14.jpeg?v=90d86078o",
+                "thumbnail": "PHOTO-2026-022-gallery-14-thumb.jpg?v=90d86078o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-022-gallery-01.jpeg?v=a62584deo",
+                "thumbnail": "PHOTO-2026-022-gallery-01-thumb.jpg?v=a62584deo",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-022-gallery-02.jpeg?v=47bcb861o",
+                "thumbnail": "PHOTO-2026-022-gallery-02-thumb.jpg?v=47bcb861o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-022-gallery-03.jpeg?v=e71adb0do",
+                "thumbnail": "PHOTO-2026-022-gallery-03-thumb.jpg?v=e71adb0do",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-022-gallery-04.jpeg?v=d952b143o",
+                "thumbnail": "PHOTO-2026-022-gallery-04-thumb.jpg?v=d952b143o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-022-gallery-05.jpeg?v=3660d674o",
+                "thumbnail": "PHOTO-2026-022-gallery-05-thumb.jpg?v=3660d674o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-022-gallery-06.jpeg?v=5a25951do",
+                "thumbnail": "PHOTO-2026-022-gallery-06-thumb.jpg?v=5a25951do",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-022-gallery-07.jpeg?v=931bf932o",
+                "thumbnail": "PHOTO-2026-022-gallery-07-thumb.jpg?v=931bf932o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-022-gallery-08.jpeg?v=e3393375o",
+                "thumbnail": "PHOTO-2026-022-gallery-08-thumb.jpg?v=e3393375o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-022-gallery-09.jpeg?v=6d6ae156o",
+                "thumbnail": "PHOTO-2026-022-gallery-09-thumb.jpg?v=6d6ae156o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-022-gallery-10.jpeg?v=3ca3244bo",
+                "thumbnail": "PHOTO-2026-022-gallery-10-thumb.jpg?v=3ca3244bo",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-022-gallery-11.jpeg?v=25e7db9bo",
+                "thumbnail": "PHOTO-2026-022-gallery-11-thumb.jpg?v=25e7db9bo",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-022-gallery-12.jpeg?v=3a5d9e5co",
+                "thumbnail": "PHOTO-2026-022-gallery-12-thumb.jpg?v=3a5d9e5co",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-022-gallery-13.jpeg?v=fd36663eo",
+                "thumbnail": "PHOTO-2026-022-gallery-13-thumb.jpg?v=fd36663eo",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-022-gallery-15.jpeg?v=8ca2be49o",
+                "thumbnail": "PHOTO-2026-022-gallery-15-thumb.jpg?v=8ca2be49o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-022-gallery-16.jpeg?v=359f1d61o",
+                "thumbnail": "PHOTO-2026-022-gallery-16-thumb.jpg?v=359f1d61o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-022-gallery-17.jpeg?v=04780155o",
+                "thumbnail": "PHOTO-2026-022-gallery-17-thumb.jpg?v=04780155o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-022-gallery-18.jpeg?v=69f46581o",
+                "thumbnail": "PHOTO-2026-022-gallery-18-thumb.jpg?v=69f46581o",
+                "caption": "",
+                "alt": ""
+              }
+            ],
+            "thumbnail": "PHOTO-2026-022-gallery-14-thumb.jpg?v=90d86078o"
+          },
+          "constellations": [
+            "biography"
+          ]
+        },
+        {
+          "id": "PHOTO-2026-015",
+          "slug": "great-sand-dunes-national-park-2026-08-19",
+          "series": "creation",
+          "subcollection": "photos",
+          "item_type": "photo",
+          "status": "published",
+          "display_date": "August 19, 2026",
+          "sort_date": "2026-08-19",
+          "title": "Great Sand Dunes National Park",
+          "place": "Colorado, USA",
+          "camera": "Fujifilm X100T",
+          "assets": {
+            "gallery": [
+              {
+                "file": "PHOTO-2026-015-gallery-14.jpeg?v=6db5b086o",
+                "thumbnail": "PHOTO-2026-015-gallery-14-thumb.jpg?v=6db5b086o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-015-gallery-01.jpeg?v=0afab82co",
+                "thumbnail": "PHOTO-2026-015-gallery-01-thumb.jpg?v=0afab82co",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-015-gallery-02.jpeg?v=c33929c3o",
+                "thumbnail": "PHOTO-2026-015-gallery-02-thumb.jpg?v=c33929c3o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-015-gallery-03.jpeg?v=b0d9ff0co",
+                "thumbnail": "PHOTO-2026-015-gallery-03-thumb.jpg?v=b0d9ff0co",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-015-gallery-04.jpeg?v=5bd94fa9o",
+                "thumbnail": "PHOTO-2026-015-gallery-04-thumb.jpg?v=5bd94fa9o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-015-gallery-05.jpeg?v=ece82513o",
+                "thumbnail": "PHOTO-2026-015-gallery-05-thumb.jpg?v=ece82513o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-015-gallery-06.jpeg?v=8b09ed36o",
+                "thumbnail": "PHOTO-2026-015-gallery-06-thumb.jpg?v=8b09ed36o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-015-gallery-07.jpeg?v=e2f99434o",
+                "thumbnail": "PHOTO-2026-015-gallery-07-thumb.jpg?v=e2f99434o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-015-gallery-08.jpeg?v=0cd2b4d7o",
+                "thumbnail": "PHOTO-2026-015-gallery-08-thumb.jpg?v=0cd2b4d7o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-015-gallery-09.jpeg?v=c1068e9fo",
+                "thumbnail": "PHOTO-2026-015-gallery-09-thumb.jpg?v=c1068e9fo",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-015-gallery-10.jpeg?v=a95ad63do",
+                "thumbnail": "PHOTO-2026-015-gallery-10-thumb.jpg?v=a95ad63do",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-015-gallery-11.jpeg?v=65f8908fo",
+                "thumbnail": "PHOTO-2026-015-gallery-11-thumb.jpg?v=65f8908fo",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-015-gallery-12.jpeg?v=329a41e4o",
+                "thumbnail": "PHOTO-2026-015-gallery-12-thumb.jpg?v=329a41e4o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-015-gallery-13.jpeg?v=4ccbd2a2o",
+                "thumbnail": "PHOTO-2026-015-gallery-13-thumb.jpg?v=4ccbd2a2o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-015-gallery-15.jpeg?v=55a17fe4o",
+                "thumbnail": "PHOTO-2026-015-gallery-15-thumb.jpg?v=55a17fe4o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-015-gallery-16.jpeg?v=02c7d687o",
+                "thumbnail": "PHOTO-2026-015-gallery-16-thumb.jpg?v=02c7d687o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-015-gallery-17.jpeg?v=7cf088f5o",
+                "thumbnail": "PHOTO-2026-015-gallery-17-thumb.jpg?v=7cf088f5o",
+                "caption": "",
+                "alt": ""
+              }
+            ],
+            "thumbnail": "PHOTO-2026-015-gallery-14-thumb.jpg?v=6db5b086o"
+          },
+          "constellations": [
+            "biography"
+          ]
+        },
+        {
+          "id": "PHOTO-2026-019",
+          "slug": "olympic-national-park-2026-08-01",
+          "series": "creation",
+          "subcollection": "photos",
+          "item_type": "photo",
+          "status": "published",
+          "display_date": "August 1-2, 2026",
+          "sort_date": "2026-08-01",
+          "title": "Olympic National Park",
+          "place": "Washington, USA",
+          "camera": "Fujifilm X100T",
+          "assets": {
+            "gallery": [
+              {
+                "file": "PHOTO-2026-019-gallery-07.jpeg?v=98c0e68fo",
+                "thumbnail": "PHOTO-2026-019-gallery-07-thumb.jpg?v=98c0e68fo",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-019-gallery-01.jpeg?v=2edfa386o",
+                "thumbnail": "PHOTO-2026-019-gallery-01-thumb.jpg?v=2edfa386o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-019-gallery-02.jpeg?v=3019b67eo",
+                "thumbnail": "PHOTO-2026-019-gallery-02-thumb.jpg?v=3019b67eo",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-019-gallery-03.jpeg?v=a11c1d09o",
+                "thumbnail": "PHOTO-2026-019-gallery-03-thumb.jpg?v=a11c1d09o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-019-gallery-04.jpeg?v=37c9f35fo",
+                "thumbnail": "PHOTO-2026-019-gallery-04-thumb.jpg?v=37c9f35fo",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-019-gallery-05.jpeg?v=bc5b2df1o",
+                "thumbnail": "PHOTO-2026-019-gallery-05-thumb.jpg?v=bc5b2df1o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-019-gallery-06.jpeg?v=5a4d2d8do",
+                "thumbnail": "PHOTO-2026-019-gallery-06-thumb.jpg?v=5a4d2d8do",
+                "caption": "Queets campground",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-019-gallery-08.jpeg?v=67d9ba64o",
+                "thumbnail": "PHOTO-2026-019-gallery-08-thumb.jpg?v=67d9ba64o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-019-gallery-09.jpeg?v=2853b652o",
+                "thumbnail": "PHOTO-2026-019-gallery-09-thumb.jpg?v=2853b652o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-019-gallery-10.jpeg?v=f25d1558o",
+                "thumbnail": "PHOTO-2026-019-gallery-10-thumb.jpg?v=f25d1558o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-019-gallery-11.jpeg?v=9260dbc3o",
+                "thumbnail": "PHOTO-2026-019-gallery-11-thumb.jpg?v=9260dbc3o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-019-gallery-12.jpeg?v=e4464728o",
+                "thumbnail": "PHOTO-2026-019-gallery-12-thumb.jpg?v=e4464728o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-019-gallery-13.jpeg?v=c7b8ff38o",
+                "thumbnail": "PHOTO-2026-019-gallery-13-thumb.jpg?v=c7b8ff38o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-019-gallery-14.jpeg?v=adef7dbeo",
+                "thumbnail": "PHOTO-2026-019-gallery-14-thumb.jpg?v=adef7dbeo",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-019-gallery-15.jpeg?v=7958bdfdo",
+                "thumbnail": "PHOTO-2026-019-gallery-15-thumb.jpg?v=7958bdfdo",
+                "caption": "",
+                "alt": ""
+              }
+            ],
+            "thumbnail": "PHOTO-2026-019-gallery-07-thumb.jpg?v=98c0e68fo"
+          },
+          "constellations": [
+            "biography"
+          ]
+        },
+        {
+          "id": "FILM-2026-527",
+          "slug": "jurassic-park-1993-2026-07-15",
+          "title": "Jurassic Park",
+          "series": "consumption",
+          "subcollection": "films",
+          "item_type": "film",
+          "status": "published",
+          "year": "1993",
+          "watch_date": "2026-07-15",
+          "display_date": "July 15, 2026",
+          "sort_date": "2026-07-14",
+          "rating": 5,
+          "rewatch": true,
+          "letterboxd_link": "https://letterboxd.com/bayf/film/jurassic-park/",
+          "assets": {
+            "backdrop": "https://a.ltrbxd.com/resized/sm/upload/8x/wj/zt/pp/jurassic-park-1200-1200-675-675-crop-000000.jpg?v=ec7c8120cd",
+            "poster": "https://a.ltrbxd.com/resized/sm/upload/1g/zz/ez/d8/yyCKYaW908ZbpexpnBJ3p8o87HA-0-600-0-900-crop.jpg?v=19a50874d0"
+          },
+          "constellations": [
+            "biography"
+          ]
+        },
+        {
+          "id": "BOOK-2026-213",
+          "slug": "a-certain-hunger-2025-read",
+          "title": "A Certain Hunger",
+          "series": "consumption",
+          "subcollection": "books",
+          "item_type": "book",
+          "status": "published",
+          "author": "Chelsea G. Summers",
+          "year": "2020",
+          "date_read": "2025-06-15",
+          "display_date": "June 15, 2025",
+          "sort_date": "2025-06-15",
+          "rating": 5,
+          "goodreads_link": "https://www.goodreads.com/book/show/53180064",
+          "dimensions": "152 x 235",
+          "dimensions_estimated": true,
+          "assets": {
+            "cover": "https://covers.openlibrary.org/b/id/11048597-L.jpg"
+          },
+          "constellations": [
+            "biography"
+          ]
+        },
+        {
+          "id": "EPH-2026-017",
+          "slug": "houston-texas-usa-2025-04-27",
+          "series": "accumulation",
+          "item_type": "document",
+          "status": "published",
+          "display_date": "April 27, 2025",
+          "sort_date": "2025-04-27",
+          "title": "Borderline Drifter",
+          "place": "Houston, Texas, USA",
+          "constellations": [
+            "2025-grand-national-tour",
+            "biography"
+          ],
+          "source": "Received as a gift from a friend",
+          "inspection": "card",
+          "assets": {
+            "front": "EPH-2026-017-front.jpg",
+            "thumbnail": "EPH-2026-017-front-thumb.jpg"
+          },
+          "dimensions": "62 x 88"
+        },
+        {
+          "id": "FILM-2025-351",
+          "slug": "mad-max-fury-road",
+          "title": "Mad Max: Fury Road",
+          "series": "consumption",
+          "subcollection": "films",
+          "item_type": "film",
+          "status": "published",
+          "year": "2015",
+          "watch_date": "2025-03-15",
+          "display_date": "March 15, 2025",
+          "sort_date": "2025-03-15",
+          "rating": 5,
+          "rewatch": true,
+          "letterboxd_link": "https://boxd.it/99Ft5z",
+          "tags": [
+            "@ plane"
+          ],
+          "assets": {
+            "backdrop": "https://a.ltrbxd.com/resized/sm/upload/50/tw/wa/80/mad-max-fury-road-1200-1200-675-675-crop-000000.jpg?v=1a543f4e46",
+            "poster": "https://a.ltrbxd.com/resized/film-poster/6/2/7/8/0/62780-mad-max-fury-road-0-600-0-900-crop.jpg?v=37c5424b1f"
+          },
+          "constellations": [
+            "biography"
+          ]
+        },
+        {
+          "id": "FILM-2024-318",
+          "slug": "coraline",
+          "title": "Coraline",
+          "series": "consumption",
+          "subcollection": "films",
+          "item_type": "film",
+          "status": "published",
+          "year": "2009",
+          "watch_date": "2024-11-09",
+          "display_date": "November 9, 2024",
+          "sort_date": "2024-11-09",
+          "rating": 0,
+          "rewatch": true,
+          "letterboxd_link": "https://boxd.it/7LwTiH",
+          "tags": [
+            "@ pathé massy",
+            "3d"
+          ],
+          "assets": {
+            "backdrop": "https://a.ltrbxd.com/resized/alternative-backdrop/4/2/7/7/9/tmdb/hofnlIyF6bePkgQOpcuRWLvzf15-1200-1200-675-675-crop-000000.jpg?v=5ad6dfb45a",
+            "poster": "https://a.ltrbxd.com/resized/film-poster/4/2/7/7/9/42779-coraline-0-600-0-900-crop.jpg?v=b792483e2a"
+          },
+          "constellations": [
+            "biography"
+          ]
+        },
+        {
+          "id": "BOOK-2026-170",
+          "slug": "the-illustrated-man-2024-read",
+          "title": "The Illustrated Man",
+          "series": "consumption",
+          "subcollection": "books",
+          "item_type": "book",
+          "status": "published",
+          "author": "Ray Bradbury",
+          "year": "1951",
+          "date_read": "2024-11-04",
+          "display_date": "November 4, 2024",
+          "sort_date": "2024-11-04",
+          "rating": 0,
+          "goodreads_link": "https://www.goodreads.com/book/show/13259261",
+          "dimensions": "129 x 210",
+          "dimensions_estimated": true,
+          "assets": {
+            "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1333349737l/13259261.jpg"
+          },
+          "constellations": [
+            "biography"
+          ]
+        },
+        {
+          "id": "BOOK-2026-169",
+          "slug": "jurassic-park-jurassic-park-1-2024-read",
+          "title": "Jurassic Park (Jurassic Park, #1)",
+          "series": "consumption",
+          "subcollection": "books",
+          "item_type": "book",
+          "status": "published",
+          "author": "Michael Crichton",
+          "year": "1990",
+          "date_read": "2024-11-04",
+          "display_date": "November 4, 2024",
+          "sort_date": "2024-11-04",
+          "rating": 0,
+          "goodreads_link": "https://www.goodreads.com/book/show/40604658",
+          "dimensions": "118 x 210",
+          "dimensions_estimated": true,
+          "assets": {
+            "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1529604411l/40604658.jpg"
+          },
+          "constellations": [
+            "biography"
+          ]
+        },
+        {
+          "id": "PHOTO-2026-003",
+          "slug": "edinburgh-2024-10-20",
+          "series": "creation",
+          "subcollection": "photos",
+          "item_type": "photo",
+          "status": "published",
+          "display_date": "October 2024",
+          "sort_date": "2024-10-20",
+          "title": "Edinburgh",
+          "place": "Edinburgh, Scotland",
+          "camera": "Fujifilm X100T",
+          "assets": {
+            "gallery": [
+              {
+                "file": "PHOTO-2026-003-gallery-01.jpeg?v=285fb61bo",
+                "thumbnail": "PHOTO-2026-003-gallery-01-thumb.jpg?v=285fb61bo",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-003-gallery-02.jpeg?v=cc117fado",
+                "thumbnail": "PHOTO-2026-003-gallery-02-thumb.jpg?v=cc117fado",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-003-gallery-03.jpeg?v=13b59f77o",
+                "thumbnail": "PHOTO-2026-003-gallery-03-thumb.jpg?v=13b59f77o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-003-gallery-04.jpeg?v=107a71d8o",
+                "thumbnail": "PHOTO-2026-003-gallery-04-thumb.jpg?v=107a71d8o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-003-gallery-05.jpeg?v=35505dd2o",
+                "thumbnail": "PHOTO-2026-003-gallery-05-thumb.jpg?v=35505dd2o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-003-gallery-06.jpeg?v=ee87ab7ao",
+                "thumbnail": "PHOTO-2026-003-gallery-06-thumb.jpg?v=ee87ab7ao",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-003-gallery-07.jpeg?v=e891a275o",
+                "thumbnail": "PHOTO-2026-003-gallery-07-thumb.jpg?v=e891a275o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-003-gallery-08.jpeg?v=5c0c5d4ao",
+                "thumbnail": "PHOTO-2026-003-gallery-08-thumb.jpg?v=5c0c5d4ao",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-003-gallery-09.jpeg?v=8aae43a7o",
+                "thumbnail": "PHOTO-2026-003-gallery-09-thumb.jpg?v=8aae43a7o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-003-gallery-10.jpeg?v=8aa38152o",
+                "thumbnail": "PHOTO-2026-003-gallery-10-thumb.jpg?v=8aa38152o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-003-gallery-11.jpeg?v=4d59f20eo",
+                "thumbnail": "PHOTO-2026-003-gallery-11-thumb.jpg?v=4d59f20eo",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-003-gallery-12.jpeg?v=77bc360fo",
+                "thumbnail": "PHOTO-2026-003-gallery-12-thumb.jpg?v=77bc360fo",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-003-gallery-13.jpeg?v=40622f97o",
+                "thumbnail": "PHOTO-2026-003-gallery-13-thumb.jpg?v=40622f97o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-003-gallery-14.jpeg?v=9628bbd8o",
+                "thumbnail": "PHOTO-2026-003-gallery-14-thumb.jpg?v=9628bbd8o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-003-gallery-15.jpeg?v=0986cac9o",
+                "thumbnail": "PHOTO-2026-003-gallery-15-thumb.jpg?v=0986cac9o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-003-gallery-16.jpeg?v=deaaa4d8o",
+                "thumbnail": "PHOTO-2026-003-gallery-16-thumb.jpg?v=deaaa4d8o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-003-gallery-17.jpeg?v=8cb4890eo",
+                "thumbnail": "PHOTO-2026-003-gallery-17-thumb.jpg?v=8cb4890eo",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-003-gallery-18.jpeg?v=53b3487eo",
+                "thumbnail": "PHOTO-2026-003-gallery-18-thumb.jpg?v=53b3487eo",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-003-gallery-19.jpeg?v=d752e177o",
+                "thumbnail": "PHOTO-2026-003-gallery-19-thumb.jpg?v=d752e177o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-003-gallery-20.jpeg?v=98ef158ao",
+                "thumbnail": "PHOTO-2026-003-gallery-20-thumb.jpg?v=98ef158ao",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-003-gallery-21.jpeg?v=d9722e3bo",
+                "thumbnail": "PHOTO-2026-003-gallery-21-thumb.jpg?v=d9722e3bo",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-003-gallery-22.jpeg?v=fdfbaf2fo",
+                "thumbnail": "PHOTO-2026-003-gallery-22-thumb.jpg?v=fdfbaf2fo",
+                "caption": "",
+                "alt": ""
+              }
+            ],
+            "thumbnail": "PHOTO-2026-003-gallery-01-thumb.jpg?v=285fb61bo"
+          },
+          "constellations": [
+            "biography"
+          ]
+        },
+        {
+          "id": "FILM-2024-311",
+          "slug": "interstellar",
+          "title": "Interstellar",
+          "series": "consumption",
+          "subcollection": "films",
+          "item_type": "film",
+          "status": "published",
+          "year": "2014",
+          "watch_date": "2024-10-08",
+          "display_date": "October 8, 2024",
+          "sort_date": "2024-10-08",
+          "rating": 5,
+          "rewatch": true,
+          "letterboxd_link": "https://boxd.it/7vJ5Dn",
+          "tags": [
+            "@ pathé les fauvettes"
+          ],
+          "assets": {
+            "backdrop": "https://a.ltrbxd.com/resized/alternative-backdrop/1/1/7/6/2/1/tmdb/dhnlmqSCXcbdD3hABJa2Ccyc7qa-1200-1200-675-675-crop-000000.jpg?v=9f6079898f",
+            "poster": "https://a.ltrbxd.com/resized/film-poster/1/1/7/6/2/1/117621-interstellar-0-600-0-900-crop.jpg?v=7ad89e6666"
+          },
+          "constellations": [
+            "biography"
+          ]
+        },
+        {
+          "id": "FILM-2024-248",
+          "slug": "challengers",
+          "title": "Challengers",
+          "series": "consumption",
+          "subcollection": "films",
+          "item_type": "film",
+          "status": "published",
+          "year": "2024",
+          "watch_date": "2024-05-14",
+          "display_date": "May 14, 2024",
+          "sort_date": "2024-05-14",
+          "rating": 0,
+          "rewatch": false,
+          "letterboxd_link": "https://boxd.it/6tEFcB",
+          "tags": [
+            "screenplay",
+            "@ regal battery park"
+          ],
+          "assets": {
+            "backdrop": "https://a.ltrbxd.com/resized/sm/upload/1v/t5/ny/lk/MV5BYWRmZWM2ZTktMzE1Ny00NmQyLWE3ZDItZTk5MjY5OGQ5NzdhXkEyXkFqcGdeQXVyMTUzMTg2ODkz._V1_-1200-1200-675-675-crop-000000.jpg?v=bc9f57c5b8",
+            "poster": "https://a.ltrbxd.com/resized/film-poster/8/4/2/3/0/1/842301-challengers-0-600-0-900-crop.jpg?v=a7cd63cbef"
+          },
+          "constellations": [
+            "biography"
+          ]
+        },
+        {
+          "id": "BOOK-2026-143",
+          "slug": "this-is-how-you-lose-the-time-war-2024-read",
+          "title": "This Is How You Lose the Time War",
+          "series": "consumption",
+          "subcollection": "books",
+          "item_type": "book",
+          "status": "published",
+          "author": "Amal El-Mohtar",
+          "year": "2019",
+          "date_read": "2024-05-11",
+          "display_date": "May 11, 2024",
+          "sort_date": "2024-05-11",
+          "rating": 5,
+          "goodreads_link": "https://www.goodreads.com/book/show/43352954",
+          "dimensions": "139 x 210",
+          "dimensions_estimated": true,
+          "assets": {
+            "cover": "https://covers.openlibrary.org/b/id/8665647-L.jpg"
+          },
+          "constellations": [
+            "biography"
+          ]
+        },
+        {
+          "id": "FILM-2024-209",
+          "slug": "first-reformed",
+          "title": "First Reformed",
+          "series": "consumption",
+          "subcollection": "films",
+          "item_type": "film",
+          "status": "published",
+          "year": "2017",
+          "watch_date": "2024-03-22",
+          "display_date": "March 22, 2024",
+          "sort_date": "2024-03-22",
+          "rating": 5,
+          "rewatch": false,
+          "letterboxd_link": "https://boxd.it/66YTOH",
+          "tags": [
+            "@ home"
+          ],
+          "assets": {
+            "backdrop": "https://a.ltrbxd.com/resized/sm/upload/7z/nb/kw/h1/first-reformed-1200-1200-675-675-crop-000000.jpg?v=7839d88e99",
+            "poster": "https://a.ltrbxd.com/resized/sm/upload/25/z1/3z/xn/8HKA3Hwf8jQWy8TCYWr7C8Wft23-0-600-0-900-crop.jpg?v=79051e4cf2"
+          },
+          "constellations": [
+            "biography"
+          ]
+        },
+        {
+          "id": "BOOK-2026-133",
+          "slug": "piranesi-2023-read",
+          "title": "Piranesi",
+          "series": "consumption",
+          "subcollection": "books",
+          "item_type": "book",
+          "status": "published",
+          "author": "Susanna Clarke",
+          "year": "2020",
+          "date_read": "2023-12-29",
+          "display_date": "December 29, 2023",
+          "sort_date": "2023-12-29",
+          "goodreads_link": "https://www.goodreads.com/book/show/50202953",
+          "isbn13": "9781635575637",
+          "isbn": "163557563X",
+          "dimensions": "166 x 235",
+          "dimensions_estimated": true,
+          "assets": {
+            "cover": "https://covers.openlibrary.org/b/isbn/9781635575637-L.jpg"
+          },
+          "constellations": [
+            "biography"
+          ]
+        },
+        {
+          "id": "BOOK-2026-132",
+          "slug": "the-secret-history-2023-read",
+          "title": "The Secret History",
+          "series": "consumption",
+          "subcollection": "books",
+          "item_type": "book",
+          "status": "published",
+          "author": "Donna Tartt",
+          "year": "2004",
+          "date_read": "2023-12-23",
+          "display_date": "December 23, 2023",
+          "sort_date": "2023-12-23",
+          "rating": 5,
+          "goodreads_link": "https://www.goodreads.com/book/show/29044",
+          "isbn13": "9781400031702",
+          "isbn": "1400031702",
+          "dimensions": "136 x 210",
+          "dimensions_estimated": true,
+          "assets": {
+            "cover": "https://covers.openlibrary.org/b/isbn/9781400031702-L.jpg"
+          },
+          "constellations": [
+            "biography"
+          ]
+        },
+        {
+          "id": "MUSIC-2026-006",
+          "slug": "benee-lychee",
+          "series": "consumption",
+          "subcollection": "music",
+          "item_type": "album",
+          "status": "published",
+          "display_date": "June 2022",
+          "sort_date": "2022-03-04",
+          "title": "Lychee",
+          "year": "2022",
+          "artist": "BENEE",
+          "music_label": "Republic Records",
+          "assets": {
+            "cover": "MUSIC-2026-006-cover.jpeg",
+            "thumbnail": "MUSIC-2026-006-cover-thumb.jpg"
+          },
+          "dimensions": "314 x 314",
+          "constellations": [
+            "biography"
+          ]
+        },
+        {
+          "id": "BOOK-2026-070",
+          "slug": "catch-22-2021-read",
+          "title": "Catch-22",
+          "series": "consumption",
+          "subcollection": "books",
+          "item_type": "book",
+          "status": "published",
+          "author": "Joseph Heller",
+          "year": "2004",
+          "date_read": "2021-11-21",
+          "display_date": "November 21, 2021",
+          "sort_date": "2021-11-21",
+          "rating": 3,
+          "goodreads_link": "https://www.goodreads.com/book/show/168668",
+          "isbn13": "9780684833392",
+          "isbn": "0684833395",
+          "dimensions": "138 x 210",
+          "dimensions_estimated": true,
+          "assets": {
+            "cover": "https://covers.openlibrary.org/b/isbn/9780684833392-L.jpg"
+          },
+          "constellations": [
+            "biography"
+          ]
+        },
+        {
+          "id": "BOOK-2026-064",
+          "slug": "watchmen-2021-read",
+          "title": "Watchmen",
+          "series": "consumption",
+          "subcollection": "books",
+          "item_type": "book",
+          "status": "published",
+          "author": "Alan             Moore",
+          "year": "2005",
+          "date_read": "2021-08-08",
+          "display_date": "August 8, 2021",
+          "sort_date": "2021-08-08",
+          "rating": 5,
+          "goodreads_link": "https://www.goodreads.com/book/show/472331",
+          "isbn13": "9780930289232",
+          "isbn": "0930289234",
+          "dimensions": "142 x 210",
+          "dimensions_estimated": true,
+          "assets": {
+            "cover": "https://covers.openlibrary.org/b/isbn/9780930289232-L.jpg"
+          },
+          "constellations": [
+            "biography"
+          ]
+        },
+        {
+          "id": "BOOK-2026-062",
+          "slug": "say-nothing-a-true-story-of-murder-and-memory-in-northern-ireland-2021-read",
+          "title": "Say Nothing: A True Story of Murder and Memory in Northern Ireland",
+          "series": "consumption",
+          "subcollection": "books",
+          "item_type": "book",
+          "status": "published",
+          "author": "Patrick Radden Keefe",
+          "year": "2019",
+          "date_read": "2021-07-18",
+          "display_date": "July 18, 2021",
+          "sort_date": "2021-07-18",
+          "rating": 5,
+          "goodreads_link": "https://www.goodreads.com/book/show/40163119",
+          "isbn13": "9780385521314",
+          "isbn": "0385521316",
+          "dimensions": "157 x 235",
+          "dimensions_estimated": true,
+          "assets": {
+            "cover": "https://covers.openlibrary.org/b/isbn/9780385521314-L.jpg"
+          },
+          "constellations": [
+            "biography"
+          ]
+        },
+        {
+          "id": "BOOK-2026-047",
+          "slug": "annihilation-southern-reach-1-2021-read",
+          "title": "Annihilation (Southern Reach, #1)",
+          "series": "consumption",
+          "subcollection": "books",
+          "item_type": "book",
+          "status": "published",
+          "author": "Jeff Vandermeer",
+          "year": "2014",
+          "date_read": "2021-01-02",
+          "display_date": "January 2, 2021",
+          "sort_date": "2021-01-02",
+          "rating": 5,
+          "goodreads_link": "https://www.goodreads.com/book/show/17934530",
+          "isbn13": "9780374104092",
+          "isbn": "0374104093",
+          "dimensions": "143 x 210",
+          "dimensions_estimated": true,
+          "assets": {
+            "cover": "https://covers.openlibrary.org/b/isbn/9780374104092-L.jpg"
+          },
+          "constellations": [
+            "biography"
+          ]
+        },
+        {
+          "id": "BOOK-2026-012",
+          "slug": "the-road-2020-read",
+          "title": "The Road",
+          "series": "consumption",
+          "subcollection": "books",
+          "item_type": "book",
+          "status": "published",
+          "author": "Cormac McCarthy",
+          "year": "2006",
+          "date_read": "2020-05-17",
+          "display_date": "May 17, 2020",
+          "sort_date": "2020-05-17",
+          "rating": 5,
+          "goodreads_link": "https://www.goodreads.com/book/show/350540",
+          "isbn13": "9780307387899",
+          "isbn": "0307387895",
+          "dimensions": "136 x 210",
+          "dimensions_estimated": true,
+          "assets": {
+            "cover": "https://covers.openlibrary.org/b/isbn/9780307387899-L.jpg"
+          },
+          "constellations": [
+            "biography"
+          ]
+        }
+      ]
     },
     "2026-lassen-volcanic": {
       "slug": "2026-lassen-volcanic",
@@ -18932,7 +19992,8 @@
           "title": "Borderline Drifter",
           "place": "Houston, Texas, USA",
           "constellations": [
-            "2025-grand-national-tour"
+            "2025-grand-national-tour",
+            "biography"
           ],
           "source": "Received as a gift from a friend",
           "inspection": "card",
@@ -19094,7 +20155,7 @@
   "_counters": {
     "EPH": 31,
     "FILM": 555,
-    "BOOK": 402,
+    "BOOK": 408,
     "MUSIC": 8,
     "COFFEE": 2,
     "GAME": 4,

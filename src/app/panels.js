@@ -5,6 +5,7 @@ import { setSeriesInfo, pauseSceneRender, resumeSceneRender } from "./scene.js";
 import { resolveCreator, resolveSlots, titleIsGiven, isFolded, channelHref } from "../shared/field-schema.js";
 import { mdToHtml } from "./markdown.js";
 import { mountModelPlate } from "./model-plate.js";
+import { takeDeskHandoff } from "./desk-inspect.js";
 import { mountTimelinePlate } from "./timeline-plate.js";
 import { makeCallingCard, CALLING_CARD_MM } from "./calling-card.js";
 
@@ -533,6 +534,10 @@ function makeGuideSheet(frameKey) {
       return mountModelPlate(field, {
         onState: (st) => setNote(stateNote[st]),
         fallbackSrc: (frame) => frame.thumbnail,
+        // The key was just being turned over on the desk: the plate opens at
+        // the pose it was held at and settles from there. Null on every other
+        // way in. docs/guide-key-interaction-plan.md.
+        entry: takeDeskHandoff(),
       });
     },
   };
@@ -1194,13 +1199,15 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
           }
         } else {
           // A film met outside its own ribbon (a constellation's cross-series
-          // grid): its reproduction is the backdrop — most film records carry
-          // no poster, and the films grid is backdrops by decision — shown as a
-          // letterboxed still with the ribbon's hover title. Poster is the
-          // fallback for the few records that have one and no backdrop.
+          // grid) shows its poster — the object among objects, like a book's
+          // cover (Bay, 2026-09-06; the ribbon itself stays backdrops). Records
+          // from the CSV ingest carry no poster (scripts/enrich-film-posters.js
+          // fills it); until then the backdrop stands in as a letterboxed
+          // still with the ribbon's hover title.
           const isFilmItem = item.item_type === "film";
-          const backdrop = isFilmItem ? imageUrl(item.assets?.backdrop, "original") : null;
-          const thumbSrc = backdrop
+          const poster = isFilmItem ? imageUrl(item.assets?.poster, "original") : null;
+          const backdrop = isFilmItem && !poster ? imageUrl(item.assets?.backdrop, "original") : null;
+          const thumbSrc = poster || backdrop
             || imageUrl(item.assets?.thumbnail, "thumbnail")
             || imageUrl(primaryAsset(item), "display");
           if (thumbSrc) {
@@ -1227,7 +1234,7 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
             // the cell edge-to-edge. Inset them with padding (see CSS) for a calmer grid.
             if (!scaled) cell.classList.add("item-grid__cell--undimensioned");
 
-            if (isFilmItem) {
+            if (backdrop) {
               // The still frames the image alone (not the padded cell), so the
               // title gradient sits on the backdrop as it does in the ribbon.
               const still = el("span", "item-grid__still");

@@ -17,6 +17,7 @@ tags:
   - "@ plane"
 assets:
   backdrop: https://a.ltrbxd.com/resized/sm/upload/50/tw/wa/80/mad-max-fury-road-1200-1200-675-675-crop-000000.jpg?v=1a543f4e46
+  poster: "https://a.ltrbxd.com/resized/film-poster/6/2/7/8/0/62780-mad-max-fury-road-0-600-0-900-crop.jpg?v=37c5424b1f"
 constellations:
   - biography
 ---
