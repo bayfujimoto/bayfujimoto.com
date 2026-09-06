@@ -181,6 +181,27 @@ body {
   -webkit-backdrop-filter: blur(15px);
 }
 
+/* ── The object in hand — the desk's inspection overlay ──────────────────────── */
+/*
+  A desk object lifted for inspection is drawn in its own canvas ABOVE the veil,
+  not in the desk's canvas below it: a backdrop-filter blurs everything beneath
+  it, the object included. Same depth as a first sheet (veil at 10), the canvas
+  just over it. src/app/desk-inspect.js.
+*/
+.desk-hold-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 11;
+  display: block;
+  cursor: grab;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.desk-hold-canvas.is-grabbing { cursor: grabbing; }
+/* Turned to its reverse: the click that opens the card. */
+.desk-hold-canvas.is-openable { cursor: pointer; }
+
 /* ── Layer content host — transparent full-screen container ──────────────────── */
 /*
   Replaces .layer-sheet. No background, no border. Just a z-indexed host.

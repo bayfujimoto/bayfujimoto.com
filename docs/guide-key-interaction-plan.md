@@ -27,6 +27,33 @@ both found by measuring the result rather than by argument:
   beat (140ms) so the pose the visitor was holding is still on screen while the
   card fades in.
 
+Revised the same day, after Bay saw it (the changes that matter are structural,
+not tuning):
+
+- **The held object is drawn above the veil, in its own canvas.** The desk has
+  to blur and dim behind the object as it does under any other layer, and a
+  backdrop-filter blurs everything beneath it — the object included. So the
+  lift now moves the model out of the desk scene into an **overlay scene** with
+  its own renderer and canvas at `z-index: 11`, over a `.layer-veil` at 10; the
+  desk repaints without the object and freezes. The desk's own lamp is cloned
+  into that scene and crossfaded to the plate's camera-riding rig across the
+  lift, so the first frame in hand is the frame the desk was showing and every
+  face is lit once it is being turned.
+- **No shadow**, which follows: nothing in the overlay scene casts one.
+- **The desk holds no key while the card is open**, which also follows: the
+  object left the desk scene at the lift, so the blurred desk behind the card
+  shows an empty spot. It returns to the hand — in the pose it was left — when
+  the card is dismissed.
+- **Centred**, not aimed at the plate. The size still comes from the plate's
+  framing, so the object is the same size in the hand as on the card; only the
+  position now differs across the swap.
+- **The same trackball as the card.** `TrackballControls` on the overlay camera
+  with the plate's own settings (`rotateSpeed` 2.2, damping 0.15, no zoom, no
+  pan), rather than the small hand-rolled arcball of the first pass. Because
+  the overlay has a camera of its own, turning the object and turning the
+  camera around it are the same gesture, and the pose handed to the card is
+  read straight off that camera.
+
 Decisions taken in the planning conversation are marked **decided**.
 
 ## Purpose
@@ -86,7 +113,7 @@ Five states, held in the inspector, not in `state.js`:
 | `lifting` | tweening to the hand pose; pointer input ignored |
 | `inHand` | held; drag turns it, Escape or a click off it lowers it, a click on it enters or turns it over |
 | `lowering` | tweening back to the desk; pointer input ignored |
-| `handedOff` | the card is open; the key is left where it was held, frozen behind the veil |
+| `handedOff` | the card is open; the overlay is torn down and the pose kept, to be restored if the visitor comes back |
 
 Click behavior in `inHand` follows the face that is toward the camera:
 
@@ -100,15 +127,9 @@ label, and nothing depends on hover.
 
 ## Geometry
 
-**The hand point.** The camera does not move — that is the desk's premise and
-it is not being spent here. The key moves instead, to a point in front of the
-camera chosen so that it lands where the card's plate will be. The card is
-`width: min(960px, 100%)` with the plate in the right-hand column, so on a wide
-screen the plate's center sits right of screen center; at the mobile breakpoint
-the plate takes `order: -1` and moves to the top. The hand point is therefore a
-screen anchor in NDC per viewport regime — the same three regimes and the same
-tuned-by-eye idiom as `LAYOUTS` in `scene.js` — unprojected into the world at
-the hand distance.
+**The hand point.** The desk camera does not move — that is the desk's premise
+and it is not being spent here. The object moves instead, to a point straight
+out along the camera's own axis: dead centre of the screen.
 
 **The hand distance** comes from the plate's own framing rule: the object's
 bounding sphere fills a fixed fraction of the frame. `fitCameraToObject()`
@@ -136,10 +157,12 @@ positioned at its world center (`model.position -= center`), and the tweens and
 the drag rotate the pivot. Lowering restores the model to the scene with its
 original transform, so `positionObject()` and the regime layouts are unaffected.
 
-**The drag** is a small arcball on the object, not `TrackballControls` (which
-moves a camera). Pointer delta in NDC becomes a rotation about the camera's
-right and up axes, premultiplied onto the pivot's quaternion, with the same
-damping feel as the plate. Zoom and pan are off; the drag does one thing.
+**The drag** is `TrackballControls` on the overlay camera, with the card's own
+settings — the same controller, the same feel, so an object turns identically
+in the hand and on the card. It orbits the camera around the object's centre
+rather than turning the object, which keeps the object centred (the controls
+end each update looking at their target) and means the pose handed to the card
+is read straight off that camera. Zoom and pan are off; the drag does one thing.
 
 ## Which face is the reverse
 
@@ -177,8 +200,12 @@ plate's whole model of interaction is camera-side: the object is mounted
 unrotated and the camera moves around it. Rotating the clone instead would
 fight the trackball's target and the fit.
 
-The reverse trip needs nothing: the desk was frozen mid-hold, so dismissing the
-card exposes the key exactly as it was left.
+The reverse trip restores the overlay and the pose recorded at the click, so
+dismissing the card puts the object back in the hand exactly as it was left.
+
+Because the object left the desk scene at the lift, the frozen desk behind the
+card has an empty spot where the key lay: there is one key, and the card has
+it.
 
 ## Routing and history
 
@@ -211,10 +238,16 @@ desk, with the key still in hand.
 
 ## Files
 
-- `src/app/desk-inspect.js` — **new**. The in-hand controller: states, tweens,
-  pivot, arcball, facing test, and the handoff box (`takeDeskHandoff()`).
+- `src/app/desk-inspect.js` — **new**. The in-hand controller: the overlay
+  (veil, canvas, renderer, scene, lights), states, tweens, pivot, the facing
+  test, and the handoff box (`takeDeskHandoff()`).
 - `src/app/scene.js` — routes the key's click into the inspector; the other five
-  objects unchanged. Suppresses the hover meta while held; drives the cursor.
+  objects unchanged. Lends the inspector its lamp, freezes and repaints the desk
+  around the hold, and holds the Guide's line in the overlay meta while held.
+- `src/app/model-look.js` — `addPlateLights()` returns its lights, so the hold
+  can fade the rig in without restating its numbers.
+- `src/styles/main.css` — `.desk-hold-canvas`, the overlay's canvas above the
+  veil.
 - `src/app/model-plate.js` — `mountModelPlate(field, { entry })`: mount at a
   handed-off pose and settle to `PLATE_VIEW`.
 - `src/app/panels.js` — `makeGuideSheet` passes the pending handoff to the plate.

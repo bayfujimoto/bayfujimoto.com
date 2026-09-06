@@ -43,8 +43,12 @@ export function stripTextures(root) {
 // turned end over end, and a lamp fixed in the world would leave whichever
 // face is turned away in the dark. Held this way, every face is lit as the
 // visitor brings it round — the lamp is over the viewer's shoulder.
+// Returns the three lights it added, with their full intensities recorded, so a
+// caller that fades this rig in or out (the desk-side hold, which starts under
+// the desk's own lamp) can drive them without restating the numbers.
 export function addPlateLights(scene, camera) {
-  scene.add(new THREE.AmbientLight(0xffe0b0, 0.9));
+  const ambient = new THREE.AmbientLight(0xffe0b0, 0.9);
+  scene.add(ambient);
   scene.add(camera); // so the camera's children are in the graph
   const aim = new THREE.Object3D();
   aim.position.set(0, 0, -5); // a point ahead of the camera
@@ -57,6 +61,7 @@ export function addPlateLights(scene, camera) {
   fill.position.set(4, -2, 3);
   fill.target = aim;
   camera.add(fill);
+  return { ambient, key, fill, full: { ambient: 0.9, key: 2.6, fill: 0.5 } };
 }
 
 export function configureRenderer(renderer) {

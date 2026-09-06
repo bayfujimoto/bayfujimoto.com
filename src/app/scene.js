@@ -58,7 +58,8 @@ export function initScene() {
   camera.position.set(0, 5, 0.5);
   camera.lookAt(0, 0, 0);
 
-  scene.add(new THREE.AmbientLight(0xffe0b0, 0.5));
+  const ambientLight = new THREE.AmbientLight(0xffe0b0, 0.5);
+  scene.add(ambientLight);
   const spotLight = new THREE.SpotLight(0xffb347, 120, 20, Math.PI / 5, 0.4, 1.5);
   spotLight.position.set(0, 8, -2);
   spotLight.target.position.set(0, 0, 0);
@@ -278,23 +279,30 @@ export function initScene() {
   const inspector = createInspector({
     camera,
     scene,
-    canvas,
-    regime: () => currentRegime,
+    // Cloned into the overlay scene so the object's first frame in hand is the
+    // frame the desk was showing, before the plate's rig takes over.
+    deskLights: { ambient: ambientLight, spot: spotLight },
     onEnter: () => navigate({ layer: "guide" }),
+    pauseDesk: pauseSceneRender,
+    resumeDesk: resumeSceneRender,
+    renderDesk: () => render(),
     onHold: (held, facing) => {
       const info = seriesInfo.guide;
       if (held) {
         // The overlay stops following the pointer and holds the Guide's own
-        // line; `open →` is the card's idiom for the way in.
+        // line; `open →` is the card's idiom for the way in. It has to rise
+        // above the veil, as a sheet's own metadata does.
         currentHoverId = "guide";
         hoverTitle.textContent = info?.label || "Guide";
         hoverSubtitle.textContent = facing ? "open \u2192" : (info?.subtitle || info?.container || "");
         hoverMeta.style.opacity = "1";
-        canvas.style.cursor = facing ? "pointer" : "grab";
+        hoverMeta.style.zIndex = "12";
+        canvas.style.cursor = "default";
         return;
       }
       currentHoverId = null;
       hoverMeta.style.opacity = "0";
+      hoverMeta.style.zIndex = "";
       canvas.style.cursor = "default";
       const entry = placed.find((p) => p.seriesId === "guide");
       if (entry) positionObject(entry, currentRegime);
@@ -369,7 +377,6 @@ export function initScene() {
     spotLight.target.position.set(0, 0, 0);
     spotLight.target.updateMatrixWorld();
     spotLight.shadow.camera.updateProjectionMatrix();
-    inspector.tick();
     renderer.render(scene, camera);
   }
   if (reduceMotion) {
