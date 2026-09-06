@@ -4,12 +4,17 @@
 // Tree shape:
 //   * archive
 //     ▼ Identity
-//       ▶ biography (empty)
+//       · biography (3)        ← a homed constellation: opens its editor
 //       ▶ cv (6)
 //       ...
 //     ▼ Consumption
 //       ▶ films (487)
 //       ...
+//   * constellations
+//     · Austin → SF (5)        ← one row per registry record
+//     · Biography (3)
+//     + new constellation        ← opens the blank registry form
+//   * guide
 //
 // Expansion state is persisted to localStorage under 'admin.explorer.expanded'
 // (the value is a JSON array of opened-node paths). On first run with no saved
@@ -20,6 +25,7 @@
 // opening the record in the [r] Record pane.
 
 import { registerPaneNav, refreshHighlight, setHighlightedRow } from "../nav.js";
+import { homedConstellationSlug } from "../../shared/constellation-homes.js";
 
 const EXPANDED_KEY = 'admin.explorer.expanded';
 
@@ -27,6 +33,7 @@ let expanded         = null;
 let itemsByPath      = new Map();
 let onItemSelectFn   = null;
 let onGuideSelectFn  = null;
+let onConstellationSelectFn = null; // (slug | null) — null opens the new-constellation form
 let navRegistered    = false;
 
 // Filter state (Phase 6.5):
@@ -90,9 +97,15 @@ export function renderExplorer(archive, callbacks = {}) {
 
   onItemSelectFn  = callbacks.onItemSelect  || null;
   onGuideSelectFn = callbacks.onGuideSelect || null;
+  onConstellationSelectFn = callbacks.onConstellationSelect || null;
   itemsByPath = new Map();
 
   const model = buildModel(archive);
+
+  // Constellations — the registry as a group beside the archive tree. Members
+  // are assigned from either end: an item's chip field, or the constellation's
+  // own editor (search the archive, add). The last row creates a new one.
+  const constellationsNode = buildConstellationsModel(archive);
 
   // A 'guide' node sits at the same level as 'archive' — a top-level, editable
   // meta page (composed in Markdown), not part of the series tree.
@@ -101,13 +114,14 @@ export function renderExplorer(archive, callbacks = {}) {
     label: archive?.guide?.label || 'Guide',
     path:  'guide',
   };
-  const forest = [model, guideNode];
+  const forest = [model, constellationsNode, guideNode];
 
   // First-time defaults: open the root and every series so the user lands on
   // a meaningful skeleton instead of a single collapsed line.
   if (expanded.size === 0) {
     expanded.add(model.path);
     for (const s of model.children) expanded.add(s.path);
+    expanded.add(constellationsNode.path);
   }
 
   wrap.innerHTML = renderForest(forest);
@@ -416,6 +430,10 @@ function registerExplorerNav() {
         wrap.querySelectorAll('.admin-tree-row.is-selected').forEach(r => r.classList.remove('is-selected'));
         row.classList.add('is-selected');
         if (onGuideSelectFn) onGuideSelectFn();
+      } else if (type === 'constellation' || type === 'constellation-new') {
+        wrap.querySelectorAll('.admin-tree-row.is-selected').forEach(r => r.classList.remove('is-selected'));
+        row.classList.add('is-selected');
+        if (onConstellationSelectFn) onConstellationSelectFn(type === 'constellation' ? row.dataset.slug : null);
       } else {
         // Toggle expansion (same as click on a group row)
         if (expanded.has(path)) expanded.delete(path);
@@ -430,7 +448,7 @@ function registerExplorerNav() {
       const type = row.dataset.type;
 
       // Expanded group → collapse in place
-      if (type !== 'item' && expanded.has(path)) {
+      if (!isLeafType(type) && expanded.has(path)) {
         expanded.delete(path);
         saveExpanded(expanded);
         renderCurrent();
@@ -447,7 +465,7 @@ function registerExplorerNav() {
     onRight: (row) => {
       const path = row.dataset.path;
       const type = row.dataset.type;
-      if (type === 'item') return;
+      if (isLeafType(type)) return;
 
       // Collapsed group → expand in place
       if (!expanded.has(path)) {
@@ -541,6 +559,21 @@ export function selectInTree(itemId) {
 }
 
 /**
+ * Select a constellation's row(s) from outside the tree — the registry row
+ * under `constellations`, and the homed subcollection row if it has one.
+ */
+export function selectConstellationInTree(slug) {
+  const wrap = document.getElementById('explorer-tree-wrap');
+  if (!wrap || !wrap.__forest) return;
+  expanded.add('constellations');
+  saveExpanded(expanded);
+  renderCurrent();
+  wrap.querySelectorAll('.admin-tree-row.is-selected').forEach(r => r.classList.remove('is-selected'));
+  const rows = wrap.querySelectorAll(`.admin-tree-row[data-type="constellation"][data-slug="${cssEscape(slug)}"]`);
+  rows.forEach((row, i) => { row.classList.add('is-selected'); if (i === 0) row.scrollIntoView({ block: 'nearest' }); });
+}
+
+/**
  * Replace the tree wrap with an error message — used when archive.json fails
  * to load.
  */
@@ -580,6 +613,14 @@ function onTreeClick(e) {
       .forEach(r => r.classList.remove('is-selected'));
     row.classList.add('is-selected');
     if (onGuideSelectFn) onGuideSelectFn();
+    return;
+  }
+
+  if (type === 'constellation' || type === 'constellation-new') {
+    wrap.querySelectorAll('.admin-tree-row.is-selected')
+      .forEach(r => r.classList.remove('is-selected'));
+    row.classList.add('is-selected');
+    if (onConstellationSelectFn) onConstellationSelectFn(type === 'constellation' ? row.dataset.slug : null);
     return;
   }
 
@@ -629,6 +670,21 @@ function buildModel(archive) {
 
     // Subcollections (e.g., consumption → films)
     for (const [subKey, sub] of Object.entries(series.subcollections || {})) {
+      // A homed constellation (identity → biography) is addressed through this
+      // subcollection but holds no records of its own: its row opens the
+      // constellation editor and counts the registry's members.
+      const homedSlug = homedConstellationSlug(seriesKey, subKey);
+      if (homedSlug) {
+        const c = archive.constellations?.[homedSlug];
+        seriesNode.children.push({
+          type:  'constellation',
+          slug:  homedSlug,
+          label: sub.label || subKey,
+          path:  seriesNode.path + '/' + subKey,
+          count: c?.items?.length || 0,
+        });
+        continue;
+      }
       const subNode = {
         type:     'subcollection',
         label:    sub.label || subKey,
@@ -649,6 +705,31 @@ function buildModel(archive) {
 
   root.count = totalItems;
   return root;
+}
+
+function buildConstellationsModel(archive) {
+  const registry = Object.values(archive?.constellations || {})
+    .sort((a, b) => String(a.title || a.slug).localeCompare(String(b.title || b.slug)));
+  const node = {
+    type:     'constellations',
+    label:    'constellations',
+    path:     'constellations',
+    children: registry.map(c => ({
+      type:   'constellation',
+      slug:   c.slug,
+      label:  c.title || c.slug,
+      path:   'constellations/' + c.slug,
+      count:  c.items?.length || 0,
+      status: c.status,
+    })),
+  };
+  node.children.push({ type: 'constellation-new', label: 'new constellation', path: 'constellations/+new' });
+  node.count = registry.length;
+  return node;
+}
+
+function isLeafType(type) {
+  return type === 'item' || type === 'constellation' || type === 'constellation-new' || type === 'guide';
 }
 
 function itemNode(item, parentPath) {
@@ -700,17 +781,20 @@ function renderNode(node, depth) {
       + `</div>`;
   }
 
-  const isLeaf  = node.type === 'item';
+  const isLeaf  = isLeafType(node.type);
+  const isConst = node.type === 'constellation';
+  const isNew   = node.type === 'constellation-new';
   const hasKids = !isLeaf && node.children && node.children.length > 0;
   // While an active filter is shrinking the tree, force-expand every visible
   // group. An empty status term ("//" with nothing typed) has no ancestorSet, so
   // it doesn't shrink or force-expand — the tree stays as the user left it.
   const isOpen  = (filter && filter.query && filter.ancestorSet) ? true : expanded.has(node.path);
   const isEmpty = !isLeaf && !hasKids;
-  const isRoot  = node.type === 'root';
+  const isRoot  = node.type === 'root' || node.type === 'constellations';
 
   let marker;
-  if (isLeaf)        marker = '·';
+  if (isNew)         marker = '+';
+  else if (isLeaf)   marker = '·';
   else if (isEmpty)  marker = ' ';
   else               marker = isOpen ? '▼' : '▶';
 
@@ -718,6 +802,9 @@ function renderNode(node, depth) {
   if (isLeaf)      rowClass += ' admin-tree-leaf';
   else if (isRoot) rowClass += ' admin-tree-root';
   else             rowClass += ' admin-tree-group';
+  if (node.type === 'constellations') rowClass += ' admin-tree-constellations';
+  if (isConst)     rowClass += ' admin-tree-constellation';
+  if (isNew)       rowClass += ' admin-tree-constellation-new';
   // Color non-published leaves by status (draft/partial/complete). Published
   // leaves keep the default text color.
   if (isLeaf && node.status && node.status !== 'published') {
@@ -730,7 +817,7 @@ function renderNode(node, depth) {
   const indent = depth * INDENT_PX;
 
   const star      = isRoot ? '<span class="admin-tree-star">*</span> ' : '';
-  const countHTML = (!isLeaf && node.count != null)
+  const countHTML = (node.count != null && !isNew)
     ? `<span class="admin-tree-count">${node.count}</span>`
     : '';
   const emptyHint = isEmpty
@@ -745,7 +832,8 @@ function renderNode(node, depth) {
     labelHTML = escapeHTML(node.label);
   }
 
-  let html  = `<div class="${rowClass}" data-path="${escapeAttr(node.path)}" data-type="${node.type}" style="padding-left: ${indent + ROW_PAD_LEFT_PX}px">`;
+  const slugAttr = isConst ? ` data-slug="${escapeAttr(node.slug)}"` : '';
+  let html  = `<div class="${rowClass}" data-path="${escapeAttr(node.path)}" data-type="${node.type}"${slugAttr} style="padding-left: ${indent + ROW_PAD_LEFT_PX}px">`;
       html += `<span class="admin-tree-marker">${marker}</span>`;
       html += star;
       html += `<span class="admin-tree-label">${labelHTML}</span>`;

@@ -8,12 +8,14 @@ import {
   setExplorerProgress,
   showExplorerError,
   selectInTree,
+  selectConstellationInTree,
   clearMatched as clearExplorerMatched,
 } from "./views/explorer.js";
 import { renderEmptyState } from "./views/dashboard.js";
 import { renderEditItem }   from "./views/edit-item.js";
 import { renderNewItem }    from "./views/new-item.js";
 import { renderGuide }      from "./views/guide.js";
+import { renderConstellation } from "./views/constellation.js";
 import { renderImportLetterboxd } from "./views/import-letterboxd.js";
 import { initLog, setLogCallbacks, triggerCommit } from "./views/log.js";
 import { initStatusline, setBaseState, setHelpExpanded, getHelpExpanded, setFocusedPane } from "./statusline.js";
@@ -314,6 +316,37 @@ function openItem(item, allItems, archive) {
   setFocusedPane('r');
 }
 
+// The Explorer's click targets, built once per (archive, allItems) so every
+// re-render wires the same three doors: item → editor, guide → guide editor,
+// constellation → constellation editor (null slug = new).
+function explorerCallbacks(archive, allItems) {
+  return {
+    onItemSelect: (it) => openItem(it, allItems, archive),
+    onGuideSelect: () => openGuide(archive, allItems),
+    onConstellationSelect: (slug) => openConstellation(slug, archive, allItems),
+  };
+}
+
+// Open a constellation's editor (registry fields + members) in the Record
+// pane. Member changes stage item edits, so the Explorer re-renders after each
+// to keep its counts honest; the editor itself stays open.
+function openConstellation(slug, archive, allItems) {
+  openRecord((body) => {
+    renderConstellation(body, slug, {
+      onClose: () => openEmpty(getState().archive || archive, getState().allItems || allItems),
+      onItemSelect: (it) => openItem(it, getState().allItems || allItems, getState().archive || archive),
+      onChanged: (s) => {
+        const a = getState().archive || archive;
+        renderExplorer(a, explorerCallbacks(a, getState().allItems || allItems));
+        selectConstellationInTree(s);
+      },
+    });
+  });
+  if (slug) selectConstellationInTree(slug);
+  setMobileActivePane('r');
+  setFocusedPane('r');
+}
+
 // A record was staged for deletion in the editor. Drop it from the in-memory
 // archive + allItems, re-render the Explorer without it, and return to the
 // empty state. The staged "D" change in the Log pane is committed via :w.
@@ -322,10 +355,7 @@ function deleteItemFromViews(id, series, subcollection, archive) {
   const allItems = getState().allItems.filter(i => i.id !== id);
   setState({ archive, allItems });
 
-  renderExplorer(archive, {
-    onItemSelect: (it) => openItem(it, allItems, archive),
-    onGuideSelect: () => openGuide(archive, allItems),
-  });
+  renderExplorer(archive, explorerCallbacks(archive, allItems));
   setLogCallbacks({
     onItemSelect: (it) => openItem(it, allItems, archive),
   });
@@ -395,10 +425,7 @@ async function init() {
 
     setState({ archive, allItems });
 
-    renderExplorer(archive, {
-      onItemSelect: (item) => openItem(item, allItems, archive),
-      onGuideSelect: () => openGuide(archive, allItems),
-    });
+    renderExplorer(archive, explorerCallbacks(archive, allItems));
     setLogCallbacks({
       onItemSelect: (item) => openItem(item, allItems, archive),
     });
@@ -417,6 +444,8 @@ async function init() {
       },
       on_new:  (type) => {
         if (!type) return;
+        // `:new constellation` opens the registry form, not an item wizard.
+        if (type === 'constellation') { openConstellation(null, archive, allItems); return; }
         const series = findSeriesForType(type);
         if (!series) {
           setBaseState(`! unknown type: ${type}`, 'error');

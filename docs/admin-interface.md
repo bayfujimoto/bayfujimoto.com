@@ -368,6 +368,36 @@ free text never lands in an item's `constellations` array except through the
 create path. This keeps the field a controlled vocabulary rather than a second
 tag field, which is what separates constellations from tags in the first place.
 
+### Constellations in the Explorer (the other door)
+
+The chip field answers "which constellations is this item in". The Explorer
+answers the converse — "which items are in this constellation" — with a
+top-level **`* constellations`** group beside `* archive` and `* guide`: one row
+per registry record (title, member count, draft rows tinted by status) and a
+closing **`+ new constellation`** row. A homed constellation is also reachable
+where it lives: the `identity › biography` row opens the Biography constellation
+rather than an empty subcollection, and counts its members. `:new constellation`
+opens the same new-record form from the command bar.
+
+Selecting a row opens the **constellation editor** in the Record pane
+(`views/constellation.js`), in the record form's row grammar:
+
+- **registry** — title, slug (fixed once created: it names the file and every
+  member's reference), date as it prints, status, note (for the biography, the
+  paragraph shown in the layer-meta). `[save]` stages
+  `src/content/constellations/<slug>.md` (`A` for a new one, `M` otherwise).
+- **members** — the records that list the slug, newest first, each row `id ·
+  title · series › subcollection · date · ×`; the title opens the record. Below,
+  a search input finds any record in the archive by title or id (substring,
+  `~` fuzzy, ArrowUp/Down + Enter, or click). Adding or removing a member edits
+  **that item's** record — the registry never lists members; membership is
+  derived at build time — so each change stages the item file at once (an `M`
+  in the Log) and replaces any earlier staged edit of the same record. There is
+  no separate save for membership; `:w` commits everything.
+
+Deleting a constellation is not offered here — remove the registry file by hand
+and the build warns on every record still referencing the slug.
+
 ## Field behavior
 
 The admin interface should use the schemas defined in `content-model.md`.

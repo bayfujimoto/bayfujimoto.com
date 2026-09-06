@@ -76,6 +76,7 @@ const NEW_TYPES = [
   ['creation',     ['sketch', 'photo', 'prototype', 'video', 'note']],
   ['labor',        ['project', 'artifact', 'commission', 'contribution']],
   ['identity',     ['cv-entry', 'contact']],
+  ['registry',     ['constellation']],
 ].flatMap(([series, types]) => types.map(type => ({
   name:    type,
   display: type,          // shown without the `:` prefix — it's an argument value

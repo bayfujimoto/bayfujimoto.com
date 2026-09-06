@@ -1,22 +1,8 @@
 import { setState, getState, isValidSeries } from "./state.js";
+import { CONSTELLATION_HOMES, homedConstellationSlug } from "../shared/constellation-homes.js";
 
-// Constellations that live inside a series instead of at /constellations/<slug>/.
-// The biography is one: a constellation of memorable items whose home address
-// is the identity dossier's biography subcollection. Membership and note still
-// come from the registry (src/content/constellations/biography.md); only the
-// address, breadcrumb, and reach differ — /constellations/biography/ redirects
-// here, and member cards do not print it in their constellations rider row.
-export const CONSTELLATION_HOMES = {
-  biography: { series: "identity", subcollection: "biography" },
-};
-
-// The registry slug a series/subcollection address stands for, or null.
-export function homedConstellationSlug(series, subcollection) {
-  for (const [slug, home] of Object.entries(CONSTELLATION_HOMES)) {
-    if (home.series === series && home.subcollection === subcollection) return slug;
-  }
-  return null;
-}
+// Homed constellations (the biography) — see src/shared/constellation-homes.js.
+export { CONSTELLATION_HOMES, homedConstellationSlug };
 
 // Parse the current window.location into a state patch
 function locationToState() {
