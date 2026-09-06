@@ -1117,6 +1117,15 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
         cell.style.gridColumn = col;
         cell.style.gridRow = row;
 
+        // In a cross-series grid (a constellation) each record keeps the
+        // treatment of its own subcollection — a photo is a pile of prints, a
+        // book a padded cover, a single a disc, a film a still — so the
+        // per-cell kind stands in for the grid-wide modifier. The CSS pairs
+        // every `.item-grid--<kind>` rule with `.item-grid__cell--<kind>`.
+        const kind = isConstellation ? (item.subcollection || item.series || "") : activeSubKey;
+        if (isConstellation && kind) cell.classList.add(`item-grid__cell--${kind}`);
+        const cellIsPhoto = isPhotos || kind === "photos";
+
         const btn = el("button", "item-grid__btn");
         btn.type = "button";
         btn.dataset.itemId = item.id;
@@ -1141,7 +1150,7 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
           const title = el("span", "item-grid__title");
           title.textContent = item.title;
           btn.appendChild(title);
-        } else if (isPhotos) {
+        } else if (cellIsPhoto) {
           // A pile of prints: cover on top, sheet edges rotated behind when
           // the record holds several photos; a single photo is a pile of
           // one, slightly tilted. The stack takes the cover's true aspect
@@ -1184,11 +1193,21 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
             btn.appendChild(ph);
           }
         } else {
-          const thumbSrc = imageUrl(item.assets?.thumbnail, "thumbnail") || imageUrl(primaryAsset(item), "display");
+          // A film met outside its own ribbon (a constellation's cross-series
+          // grid): its reproduction is the backdrop — most film records carry
+          // no poster, and the films grid is backdrops by decision — shown as a
+          // letterboxed still with the ribbon's hover title. Poster is the
+          // fallback for the few records that have one and no backdrop.
+          const isFilmItem = item.item_type === "film";
+          const backdrop = isFilmItem ? imageUrl(item.assets?.backdrop, "original") : null;
+          const thumbSrc = backdrop
+            || imageUrl(item.assets?.thumbnail, "thumbnail")
+            || imageUrl(primaryAsset(item), "display");
           if (thumbSrc) {
             const img = el("img", "item-grid__thumb");
             img.alt = "";
-            lazyRegister(btn, () => { fadeInOnLoad(img); img.src = thumbSrc; });
+            if (backdrop) lazyRegister(btn, () => setGridBackdrop(img, backdrop));
+            else lazyRegister(btn, () => { fadeInOnLoad(img); img.src = thumbSrc; });
 
             // Singles read as a record: crop the square cover to a disc.
             if (item.item_type === "single") cell.classList.add("item-grid__cell--disc");
@@ -1208,7 +1227,18 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
             // the cell edge-to-edge. Inset them with padding (see CSS) for a calmer grid.
             if (!scaled) cell.classList.add("item-grid__cell--undimensioned");
 
-            btn.appendChild(img);
+            if (isFilmItem) {
+              // The still frames the image alone (not the padded cell), so the
+              // title gradient sits on the backdrop as it does in the ribbon.
+              const still = el("span", "item-grid__still");
+              still.appendChild(img);
+              const title = el("span", "item-grid__title");
+              title.textContent = item.title;
+              still.appendChild(title);
+              btn.appendChild(still);
+            } else {
+              btn.appendChild(img);
+            }
           } else {
             const txt = el("span", "item-grid__text");
             txt.textContent = item.title;

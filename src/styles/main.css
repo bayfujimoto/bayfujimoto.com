@@ -663,12 +663,17 @@ body {
    padding and centered within each cell. Scoped to books so the film/music/ephemera
    grids are untouched. The per-item size comes from the shared dimension scaling in
    panels.js (renderContent). */
-.item-grid--books .item-grid__cell {
+.item-grid--books .item-grid__cell,
+.item-grid__cell--books {
   padding: 0.6rem;
 }
-.item-grid--books .item-grid__thumb {
+.item-grid--books .item-grid__thumb,
+.item-grid__cell--books .item-grid__thumb {
   object-position: center;
 }
+/* `.item-grid__cell--<kind>` is the per-cell form of each grid modifier: a
+   constellation's cross-series grid gives every record its own subcollection's
+   treatment (panels.js → renderContent, `kind`). */
 
 /* Accumulation grid: thumbnails for items with no recorded dimensions can't be
    scaled to true physical size, so they otherwise fill the cell edge-to-edge.
@@ -696,7 +701,8 @@ body {
    the cover's aspect ratio from JS once the thumbnail decodes, so the sheet
    edges behind match the print's true bounds. A single-photo record is a
    pile of one, slightly tilted (deterministic per id, applied in JS). */
-.item-grid--photos .item-grid__btn--photo {
+.item-grid--photos .item-grid__btn--photo,
+.item-grid__cell--photos .item-grid__btn--photo {
   padding: 0.9rem;
 }
 .photo-pile {
@@ -734,7 +740,9 @@ body {
 /* Title overlay on the cover print, films-style: hidden until hover/focus
    (the shared hover:none rule keeps it always visible on touch). */
 .item-grid--photos .item-grid__btn:hover .item-grid__title,
-.item-grid--photos .item-grid__btn:focus-visible .item-grid__title {
+.item-grid--photos .item-grid__btn:focus-visible .item-grid__title,
+.item-grid__cell--photos .item-grid__btn:hover .item-grid__title,
+.item-grid__cell--photos .item-grid__btn:focus-visible .item-grid__title {
   opacity: 1;
   transform: translateY(0);
 }
@@ -814,6 +822,23 @@ body {
 .item-grid--films .item-grid__btn:focus-visible .item-grid__title {
   opacity: 1;
   transform: translateY(0);
+}
+/* A film in a cross-series grid (constellations): the backdrop as a
+   letterboxed still inside the square cell, the title overlay anchored to the
+   image rather than the padded cell. Same reveal rules as the ribbon. */
+.item-grid__still {
+  position: relative;
+  display: flex;
+  max-width: 100%;
+  max-height: 100%;
+}
+.item-grid__btn:hover .item-grid__still .item-grid__title,
+.item-grid__btn:focus-visible .item-grid__still .item-grid__title {
+  opacity: 1;
+  transform: translateY(0);
+}
+@media (max-width: 600px) {
+  .item-grid__still .item-grid__title { display: none; }
 }
 /* Touch / no-hover devices: never hide the title behind a hover affordance */
 @media (hover: none) {

@@ -16170,6 +16170,1335 @@
           "label": "photos",
           "items": [
             {
+              "id": "PHOTO-2026-022",
+              "slug": "rocky-mountain-national-park-2026-08-19",
+              "series": "creation",
+              "subcollection": "photos",
+              "item_type": "photo",
+              "status": "published",
+              "display_date": "August 19, 2026",
+              "sort_date": "2026-08-19",
+              "title": "Rocky Mountain National Park",
+              "place": "Estes Park, Colorada, USA",
+              "camera": "Fujifilm X100T",
+              "assets": {
+                "gallery": [
+                  {
+                    "file": "PHOTO-2026-022-gallery-14.jpeg?v=90d86078o",
+                    "thumbnail": "PHOTO-2026-022-gallery-14-thumb.jpg?v=90d86078o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-022-gallery-01.jpeg?v=a62584deo",
+                    "thumbnail": "PHOTO-2026-022-gallery-01-thumb.jpg?v=a62584deo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-022-gallery-02.jpeg?v=47bcb861o",
+                    "thumbnail": "PHOTO-2026-022-gallery-02-thumb.jpg?v=47bcb861o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-022-gallery-03.jpeg?v=e71adb0do",
+                    "thumbnail": "PHOTO-2026-022-gallery-03-thumb.jpg?v=e71adb0do",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-022-gallery-04.jpeg?v=d952b143o",
+                    "thumbnail": "PHOTO-2026-022-gallery-04-thumb.jpg?v=d952b143o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-022-gallery-05.jpeg?v=3660d674o",
+                    "thumbnail": "PHOTO-2026-022-gallery-05-thumb.jpg?v=3660d674o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-022-gallery-06.jpeg?v=5a25951do",
+                    "thumbnail": "PHOTO-2026-022-gallery-06-thumb.jpg?v=5a25951do",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-022-gallery-07.jpeg?v=931bf932o",
+                    "thumbnail": "PHOTO-2026-022-gallery-07-thumb.jpg?v=931bf932o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-022-gallery-08.jpeg?v=e3393375o",
+                    "thumbnail": "PHOTO-2026-022-gallery-08-thumb.jpg?v=e3393375o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-022-gallery-09.jpeg?v=6d6ae156o",
+                    "thumbnail": "PHOTO-2026-022-gallery-09-thumb.jpg?v=6d6ae156o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-022-gallery-10.jpeg?v=3ca3244bo",
+                    "thumbnail": "PHOTO-2026-022-gallery-10-thumb.jpg?v=3ca3244bo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-022-gallery-11.jpeg?v=25e7db9bo",
+                    "thumbnail": "PHOTO-2026-022-gallery-11-thumb.jpg?v=25e7db9bo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-022-gallery-12.jpeg?v=3a5d9e5co",
+                    "thumbnail": "PHOTO-2026-022-gallery-12-thumb.jpg?v=3a5d9e5co",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-022-gallery-13.jpeg?v=fd36663eo",
+                    "thumbnail": "PHOTO-2026-022-gallery-13-thumb.jpg?v=fd36663eo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-022-gallery-15.jpeg?v=8ca2be49o",
+                    "thumbnail": "PHOTO-2026-022-gallery-15-thumb.jpg?v=8ca2be49o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-022-gallery-16.jpeg?v=359f1d61o",
+                    "thumbnail": "PHOTO-2026-022-gallery-16-thumb.jpg?v=359f1d61o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-022-gallery-17.jpeg?v=04780155o",
+                    "thumbnail": "PHOTO-2026-022-gallery-17-thumb.jpg?v=04780155o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-022-gallery-18.jpeg?v=69f46581o",
+                    "thumbnail": "PHOTO-2026-022-gallery-18-thumb.jpg?v=69f46581o",
+                    "caption": "",
+                    "alt": ""
+                  }
+                ],
+                "thumbnail": "PHOTO-2026-022-gallery-14-thumb.jpg?v=90d86078o"
+              }
+            },
+            {
+              "id": "PHOTO-2026-015",
+              "slug": "great-sand-dunes-national-park-2026-08-19",
+              "series": "creation",
+              "subcollection": "photos",
+              "item_type": "photo",
+              "status": "published",
+              "display_date": "August 19, 2026",
+              "sort_date": "2026-08-19",
+              "title": "Great Sand Dunes National Park",
+              "place": "Colorado, USA",
+              "camera": "Fujifilm X100T",
+              "assets": {
+                "gallery": [
+                  {
+                    "file": "PHOTO-2026-015-gallery-14.jpeg?v=6db5b086o",
+                    "thumbnail": "PHOTO-2026-015-gallery-14-thumb.jpg?v=6db5b086o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-015-gallery-01.jpeg?v=0afab82co",
+                    "thumbnail": "PHOTO-2026-015-gallery-01-thumb.jpg?v=0afab82co",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-015-gallery-02.jpeg?v=c33929c3o",
+                    "thumbnail": "PHOTO-2026-015-gallery-02-thumb.jpg?v=c33929c3o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-015-gallery-03.jpeg?v=b0d9ff0co",
+                    "thumbnail": "PHOTO-2026-015-gallery-03-thumb.jpg?v=b0d9ff0co",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-015-gallery-04.jpeg?v=5bd94fa9o",
+                    "thumbnail": "PHOTO-2026-015-gallery-04-thumb.jpg?v=5bd94fa9o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-015-gallery-05.jpeg?v=ece82513o",
+                    "thumbnail": "PHOTO-2026-015-gallery-05-thumb.jpg?v=ece82513o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-015-gallery-06.jpeg?v=8b09ed36o",
+                    "thumbnail": "PHOTO-2026-015-gallery-06-thumb.jpg?v=8b09ed36o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-015-gallery-07.jpeg?v=e2f99434o",
+                    "thumbnail": "PHOTO-2026-015-gallery-07-thumb.jpg?v=e2f99434o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-015-gallery-08.jpeg?v=0cd2b4d7o",
+                    "thumbnail": "PHOTO-2026-015-gallery-08-thumb.jpg?v=0cd2b4d7o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-015-gallery-09.jpeg?v=c1068e9fo",
+                    "thumbnail": "PHOTO-2026-015-gallery-09-thumb.jpg?v=c1068e9fo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-015-gallery-10.jpeg?v=a95ad63do",
+                    "thumbnail": "PHOTO-2026-015-gallery-10-thumb.jpg?v=a95ad63do",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-015-gallery-11.jpeg?v=65f8908fo",
+                    "thumbnail": "PHOTO-2026-015-gallery-11-thumb.jpg?v=65f8908fo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-015-gallery-12.jpeg?v=329a41e4o",
+                    "thumbnail": "PHOTO-2026-015-gallery-12-thumb.jpg?v=329a41e4o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-015-gallery-13.jpeg?v=4ccbd2a2o",
+                    "thumbnail": "PHOTO-2026-015-gallery-13-thumb.jpg?v=4ccbd2a2o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-015-gallery-15.jpeg?v=55a17fe4o",
+                    "thumbnail": "PHOTO-2026-015-gallery-15-thumb.jpg?v=55a17fe4o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-015-gallery-16.jpeg?v=02c7d687o",
+                    "thumbnail": "PHOTO-2026-015-gallery-16-thumb.jpg?v=02c7d687o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-015-gallery-17.jpeg?v=7cf088f5o",
+                    "thumbnail": "PHOTO-2026-015-gallery-17-thumb.jpg?v=7cf088f5o",
+                    "caption": "",
+                    "alt": ""
+                  }
+                ],
+                "thumbnail": "PHOTO-2026-015-gallery-14-thumb.jpg?v=6db5b086o"
+              }
+            },
+            {
+              "id": "PHOTO-2026-011",
+              "slug": "badlands-national-park-2026-08-17",
+              "series": "creation",
+              "subcollection": "photos",
+              "item_type": "photo",
+              "status": "published",
+              "display_date": "August 17, 2026",
+              "sort_date": "2026-08-17",
+              "title": "Badlands National Park",
+              "place": "South Dakota, USA",
+              "camera": "Fujifilm X100T",
+              "assets": {
+                "gallery": [
+                  {
+                    "file": "PHOTO-2026-011-gallery-01.jpeg?v=cac67bfbo",
+                    "thumbnail": "PHOTO-2026-011-gallery-01-thumb.jpg?v=cac67bfbo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-011-gallery-02.jpeg?v=195b540fo",
+                    "thumbnail": "PHOTO-2026-011-gallery-02-thumb.jpg?v=195b540fo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-011-gallery-03.jpeg?v=dc784478o",
+                    "thumbnail": "PHOTO-2026-011-gallery-03-thumb.jpg?v=dc784478o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-011-gallery-04.jpeg?v=43e9850co",
+                    "thumbnail": "PHOTO-2026-011-gallery-04-thumb.jpg?v=43e9850co",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-011-gallery-05.jpeg?v=896bc3ffo",
+                    "thumbnail": "PHOTO-2026-011-gallery-05-thumb.jpg?v=896bc3ffo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-011-gallery-06.jpeg?v=dcac22bfo",
+                    "thumbnail": "PHOTO-2026-011-gallery-06-thumb.jpg?v=dcac22bfo",
+                    "caption": "",
+                    "alt": ""
+                  }
+                ],
+                "thumbnail": "PHOTO-2026-011-gallery-01-thumb.jpg?v=cac67bfbo"
+              }
+            },
+            {
+              "id": "PHOTO-2026-024",
+              "slug": "south-dakota-2026-08-15",
+              "series": "creation",
+              "subcollection": "photos",
+              "item_type": "photo",
+              "status": "published",
+              "display_date": "August 15-18, 2026",
+              "sort_date": "2026-08-15",
+              "title": "South Dakota",
+              "place": "South Dakota, USA",
+              "camera": "Fujifilm X100T",
+              "assets": {
+                "gallery": [
+                  {
+                    "file": "PHOTO-2026-024-gallery-02.jpeg?v=15581a06o",
+                    "thumbnail": "PHOTO-2026-024-gallery-02-thumb.jpg?v=15581a06o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-024-gallery-03.jpeg?v=ecb84509o",
+                    "thumbnail": "PHOTO-2026-024-gallery-03-thumb.jpg?v=ecb84509o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-024-gallery-04.jpeg?v=d6648936o",
+                    "thumbnail": "PHOTO-2026-024-gallery-04-thumb.jpg?v=d6648936o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-024-gallery-05.jpeg?v=51a3910do",
+                    "thumbnail": "PHOTO-2026-024-gallery-05-thumb.jpg?v=51a3910do",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-024-gallery-06.jpeg?v=fdff4669o",
+                    "thumbnail": "PHOTO-2026-024-gallery-06-thumb.jpg?v=fdff4669o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-024-gallery-07.jpeg?v=98d20b71o",
+                    "thumbnail": "PHOTO-2026-024-gallery-07-thumb.jpg?v=98d20b71o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-024-gallery-08.jpeg?v=38481444o",
+                    "thumbnail": "PHOTO-2026-024-gallery-08-thumb.jpg?v=38481444o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-024-gallery-09.jpeg?v=9b06ac3fo",
+                    "thumbnail": "PHOTO-2026-024-gallery-09-thumb.jpg?v=9b06ac3fo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-024-gallery-10.jpeg?v=7e284140o",
+                    "thumbnail": "PHOTO-2026-024-gallery-10-thumb.jpg?v=7e284140o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-024-gallery-11.jpeg?v=6078bd3co",
+                    "thumbnail": "PHOTO-2026-024-gallery-11-thumb.jpg?v=6078bd3co",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-024-gallery-12.jpeg?v=768a97c1o",
+                    "thumbnail": "PHOTO-2026-024-gallery-12-thumb.jpg?v=768a97c1o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-024-gallery-13.jpeg?v=2aac7c67o",
+                    "thumbnail": "PHOTO-2026-024-gallery-13-thumb.jpg?v=2aac7c67o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-024-gallery-14.jpeg?v=e25ec2cdo",
+                    "thumbnail": "PHOTO-2026-024-gallery-14-thumb.jpg?v=e25ec2cdo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-024-gallery-15.jpeg?v=a4b23633o",
+                    "thumbnail": "PHOTO-2026-024-gallery-15-thumb.jpg?v=a4b23633o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-024-gallery-16.jpeg?v=83e096fbo",
+                    "thumbnail": "PHOTO-2026-024-gallery-16-thumb.jpg?v=83e096fbo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-024-gallery-17.jpeg?v=ccdb7268o",
+                    "thumbnail": "PHOTO-2026-024-gallery-17-thumb.jpg?v=ccdb7268o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-024-gallery-19.jpeg?v=ba362b06o",
+                    "thumbnail": "PHOTO-2026-024-gallery-19-thumb.jpg?v=ba362b06o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-024-gallery-01.jpeg?v=47d1aa1bo",
+                    "thumbnail": "PHOTO-2026-024-gallery-01-thumb.jpg?v=47d1aa1bo",
+                    "caption": "",
+                    "alt": ""
+                  }
+                ],
+                "thumbnail": "PHOTO-2026-024-gallery-02-thumb.jpg?v=15581a06o"
+              }
+            },
+            {
+              "id": "PHOTO-2026-013",
+              "slug": "bear-lodge-and-theodore-roosevelt-national-park-2026-08-14",
+              "series": "creation",
+              "subcollection": "photos",
+              "item_type": "photo",
+              "status": "published",
+              "display_date": "August 14, 2026",
+              "sort_date": "2026-08-14",
+              "title": "Bear Lodge and Theodore Roosevelt National Park",
+              "place": "Wyoming, USA",
+              "camera": "Fujifilm X100T",
+              "assets": {
+                "gallery": [
+                  {
+                    "file": "PHOTO-2026-013-gallery-07.jpeg?v=7c93390eo",
+                    "thumbnail": "PHOTO-2026-013-gallery-07-thumb.jpg?v=7c93390eo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-013-gallery-08.jpeg?v=e7391a59o",
+                    "thumbnail": "PHOTO-2026-013-gallery-08-thumb.jpg?v=e7391a59o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-013-gallery-01.jpeg?v=ce9d89cco",
+                    "thumbnail": "PHOTO-2026-013-gallery-01-thumb.jpg?v=ce9d89cco",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-013-gallery-02.jpeg?v=0a5d1bdeo",
+                    "thumbnail": "PHOTO-2026-013-gallery-02-thumb.jpg?v=0a5d1bdeo",
+                    "caption": "My offline maps",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-013-gallery-03.jpeg?v=9fca20aeo",
+                    "thumbnail": "PHOTO-2026-013-gallery-03-thumb.jpg?v=9fca20aeo",
+                    "caption": "Cannonball formations at Theodore Roosevelt National Park",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-013-gallery-04.jpeg?v=47e3db1ao",
+                    "thumbnail": "PHOTO-2026-013-gallery-04-thumb.jpg?v=47e3db1ao",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-013-gallery-05.jpeg?v=5c0cca05o",
+                    "thumbnail": "PHOTO-2026-013-gallery-05-thumb.jpg?v=5c0cca05o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-013-gallery-06.jpeg?v=aa431fd9o",
+                    "thumbnail": "PHOTO-2026-013-gallery-06-thumb.jpg?v=aa431fd9o",
+                    "caption": "",
+                    "alt": ""
+                  }
+                ],
+                "thumbnail": "PHOTO-2026-013-gallery-07-thumb.jpg?v=7c93390eo"
+              }
+            },
+            {
+              "id": "PHOTO-2026-014",
+              "slug": "glacier-national-park-2026-08-12",
+              "series": "creation",
+              "subcollection": "photos",
+              "item_type": "photo",
+              "status": "published",
+              "display_date": "August 12-13, 2026",
+              "sort_date": "2026-08-12",
+              "title": "Glacier National Park",
+              "place": "Montana, USA",
+              "camera": "Fujifilm X100T",
+              "assets": {
+                "gallery": [
+                  {
+                    "file": "PHOTO-2026-014-gallery-07.jpeg?v=f87ce6ebo",
+                    "thumbnail": "PHOTO-2026-014-gallery-07-thumb.jpg?v=f87ce6ebo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-014-gallery-02.jpeg?v=1007edbao",
+                    "thumbnail": "PHOTO-2026-014-gallery-02-thumb.jpg?v=1007edbao",
+                    "caption": "Highline trail",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-014-gallery-03.jpeg?v=fbc79d13o",
+                    "thumbnail": "PHOTO-2026-014-gallery-03-thumb.jpg?v=fbc79d13o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-014-gallery-04.jpeg?v=4f07556co",
+                    "thumbnail": "PHOTO-2026-014-gallery-04-thumb.jpg?v=4f07556co",
+                    "caption": "Bighorn sheep on the Highline Trail",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-014-gallery-05.jpeg?v=2d85bc9fo",
+                    "thumbnail": "PHOTO-2026-014-gallery-05-thumb.jpg?v=2d85bc9fo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-014-gallery-06.jpeg?v=c9ed53d6o",
+                    "thumbnail": "PHOTO-2026-014-gallery-06-thumb.jpg?v=c9ed53d6o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-014-gallery-01.jpeg?v=2b209ff7o",
+                    "thumbnail": "PHOTO-2026-014-gallery-01-thumb.jpg?v=2b209ff7o",
+                    "caption": "5:00am entrance",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-014-gallery-08.jpeg?v=58d932a5o",
+                    "thumbnail": "PHOTO-2026-014-gallery-08-thumb.jpg?v=58d932a5o",
+                    "caption": "Sun Point lookout",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-014-gallery-09.jpeg?v=359c7ad1o",
+                    "thumbnail": "PHOTO-2026-014-gallery-09-thumb.jpg?v=359c7ad1o",
+                    "caption": "Wild Goose Island",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-014-gallery-10.jpeg?v=e40c3115o",
+                    "thumbnail": "PHOTO-2026-014-gallery-10-thumb.jpg?v=e40c3115o",
+                    "caption": "St. Mary campground",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-014-gallery-11.jpeg?v=9b08f1abo",
+                    "thumbnail": "PHOTO-2026-014-gallery-11-thumb.jpg?v=9b08f1abo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-014-gallery-12.jpeg?v=7aa2319bo",
+                    "thumbnail": "PHOTO-2026-014-gallery-12-thumb.jpg?v=7aa2319bo",
+                    "caption": "St. Mary Falls",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-014-gallery-13.jpeg?v=f515f00bo",
+                    "thumbnail": "PHOTO-2026-014-gallery-13-thumb.jpg?v=f515f00bo",
+                    "caption": "Virginia Falls",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-014-gallery-14.jpeg?v=f7894c46o",
+                    "thumbnail": "PHOTO-2026-014-gallery-14-thumb.jpg?v=f7894c46o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-014-gallery-15.jpeg?v=8f56cba9o",
+                    "thumbnail": "PHOTO-2026-014-gallery-15-thumb.jpg?v=8f56cba9o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-014-gallery-16.jpeg?v=e6e2d58eo",
+                    "thumbnail": "PHOTO-2026-014-gallery-16-thumb.jpg?v=e6e2d58eo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-014-gallery-17.jpeg?v=4fa04ee4o",
+                    "thumbnail": "PHOTO-2026-014-gallery-17-thumb.jpg?v=4fa04ee4o",
+                    "caption": "",
+                    "alt": ""
+                  }
+                ],
+                "thumbnail": "PHOTO-2026-014-gallery-07-thumb.jpg?v=f87ce6ebo"
+              }
+            },
+            {
+              "id": "PHOTO-2026-025",
+              "slug": "north-cascades-2026-08-10",
+              "series": "creation",
+              "subcollection": "photos",
+              "item_type": "photo",
+              "status": "published",
+              "display_date": "August 10-11, 2026",
+              "sort_date": "2026-08-10",
+              "title": "North Cascades",
+              "assets": {
+                "gallery": [
+                  {
+                    "file": "PHOTO-2026-025-gallery-01.jpeg?v=82b111cdo",
+                    "thumbnail": "PHOTO-2026-025-gallery-01-thumb.jpg?v=82b111cdo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-025-gallery-02.jpeg?v=521050fao",
+                    "thumbnail": "PHOTO-2026-025-gallery-02-thumb.jpg?v=521050fao",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-025-gallery-03.jpeg?v=7928c431o",
+                    "thumbnail": "PHOTO-2026-025-gallery-03-thumb.jpg?v=7928c431o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-025-gallery-04.jpeg?v=a574d09co",
+                    "thumbnail": "PHOTO-2026-025-gallery-04-thumb.jpg?v=a574d09co",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-025-gallery-05.jpeg?v=2217319fo",
+                    "thumbnail": "PHOTO-2026-025-gallery-05-thumb.jpg?v=2217319fo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-025-gallery-06.jpeg?v=919806d5o",
+                    "thumbnail": "PHOTO-2026-025-gallery-06-thumb.jpg?v=919806d5o",
+                    "caption": "Kootenai National Forest",
+                    "alt": ""
+                  }
+                ],
+                "thumbnail": "PHOTO-2026-025-gallery-01-thumb.jpg?v=82b111cdo"
+              },
+              "place": "Washington, USA",
+              "camera": "Fujifilm X100T"
+            },
+            {
+              "id": "PHOTO-2026-019",
+              "slug": "olympic-national-park-2026-08-01",
+              "series": "creation",
+              "subcollection": "photos",
+              "item_type": "photo",
+              "status": "published",
+              "display_date": "August 1-2, 2026",
+              "sort_date": "2026-08-01",
+              "title": "Olympic National Park",
+              "place": "Washington, USA",
+              "camera": "Fujifilm X100T",
+              "assets": {
+                "gallery": [
+                  {
+                    "file": "PHOTO-2026-019-gallery-07.jpeg?v=98c0e68fo",
+                    "thumbnail": "PHOTO-2026-019-gallery-07-thumb.jpg?v=98c0e68fo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-019-gallery-01.jpeg?v=2edfa386o",
+                    "thumbnail": "PHOTO-2026-019-gallery-01-thumb.jpg?v=2edfa386o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-019-gallery-02.jpeg?v=3019b67eo",
+                    "thumbnail": "PHOTO-2026-019-gallery-02-thumb.jpg?v=3019b67eo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-019-gallery-03.jpeg?v=a11c1d09o",
+                    "thumbnail": "PHOTO-2026-019-gallery-03-thumb.jpg?v=a11c1d09o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-019-gallery-04.jpeg?v=37c9f35fo",
+                    "thumbnail": "PHOTO-2026-019-gallery-04-thumb.jpg?v=37c9f35fo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-019-gallery-05.jpeg?v=bc5b2df1o",
+                    "thumbnail": "PHOTO-2026-019-gallery-05-thumb.jpg?v=bc5b2df1o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-019-gallery-06.jpeg?v=5a4d2d8do",
+                    "thumbnail": "PHOTO-2026-019-gallery-06-thumb.jpg?v=5a4d2d8do",
+                    "caption": "Queets campground",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-019-gallery-08.jpeg?v=67d9ba64o",
+                    "thumbnail": "PHOTO-2026-019-gallery-08-thumb.jpg?v=67d9ba64o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-019-gallery-09.jpeg?v=2853b652o",
+                    "thumbnail": "PHOTO-2026-019-gallery-09-thumb.jpg?v=2853b652o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-019-gallery-10.jpeg?v=f25d1558o",
+                    "thumbnail": "PHOTO-2026-019-gallery-10-thumb.jpg?v=f25d1558o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-019-gallery-11.jpeg?v=9260dbc3o",
+                    "thumbnail": "PHOTO-2026-019-gallery-11-thumb.jpg?v=9260dbc3o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-019-gallery-12.jpeg?v=e4464728o",
+                    "thumbnail": "PHOTO-2026-019-gallery-12-thumb.jpg?v=e4464728o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-019-gallery-13.jpeg?v=c7b8ff38o",
+                    "thumbnail": "PHOTO-2026-019-gallery-13-thumb.jpg?v=c7b8ff38o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-019-gallery-14.jpeg?v=adef7dbeo",
+                    "thumbnail": "PHOTO-2026-019-gallery-14-thumb.jpg?v=adef7dbeo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-019-gallery-15.jpeg?v=7958bdfdo",
+                    "thumbnail": "PHOTO-2026-019-gallery-15-thumb.jpg?v=7958bdfdo",
+                    "caption": "",
+                    "alt": ""
+                  }
+                ],
+                "thumbnail": "PHOTO-2026-019-gallery-07-thumb.jpg?v=98c0e68fo"
+              }
+            },
+            {
+              "id": "PHOTO-2026-010",
+              "slug": "annette-lake-trail-2026-07-26",
+              "series": "creation",
+              "subcollection": "photos",
+              "item_type": "photo",
+              "status": "published",
+              "display_date": "July 26, 2026",
+              "sort_date": "2026-07-26",
+              "title": "Annette Lake Trail",
+              "place": "Washington, USA",
+              "camera": "Fujifilm X100T",
+              "assets": {
+                "gallery": [
+                  {
+                    "file": "PHOTO-2026-010-gallery-06.jpeg?v=db4f842co",
+                    "thumbnail": "PHOTO-2026-010-gallery-06-thumb.jpg?v=db4f842co",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-010-gallery-01.jpeg?v=ea187f3co",
+                    "thumbnail": "PHOTO-2026-010-gallery-01-thumb.jpg?v=ea187f3co",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-010-gallery-02.jpeg?v=76be8f3eo",
+                    "thumbnail": "PHOTO-2026-010-gallery-02-thumb.jpg?v=76be8f3eo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-010-gallery-03.jpeg?v=440cba2ao",
+                    "thumbnail": "PHOTO-2026-010-gallery-03-thumb.jpg?v=440cba2ao",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-010-gallery-04.jpeg?v=7a401dd8o",
+                    "thumbnail": "PHOTO-2026-010-gallery-04-thumb.jpg?v=7a401dd8o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-010-gallery-05.jpeg?v=40217799o",
+                    "thumbnail": "PHOTO-2026-010-gallery-05-thumb.jpg?v=40217799o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-010-gallery-07.jpeg?v=da268c14o",
+                    "thumbnail": "PHOTO-2026-010-gallery-07-thumb.jpg?v=da268c14o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-010-gallery-08.jpeg?v=cfcfcaa5o",
+                    "thumbnail": "PHOTO-2026-010-gallery-08-thumb.jpg?v=cfcfcaa5o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-010-gallery-09.jpeg?v=fe686f39o",
+                    "thumbnail": "PHOTO-2026-010-gallery-09-thumb.jpg?v=fe686f39o",
+                    "caption": "",
+                    "alt": ""
+                  }
+                ],
+                "thumbnail": "PHOTO-2026-010-gallery-06-thumb.jpg?v=db4f842co"
+              }
+            },
+            {
+              "id": "PHOTO-2026-018",
+              "slug": "mount-st-helens-2026-07-25",
+              "series": "creation",
+              "subcollection": "photos",
+              "item_type": "photo",
+              "status": "published",
+              "display_date": "July 25, 2026",
+              "sort_date": "2026-07-25",
+              "title": "Mount St. Helens",
+              "place": "Skamania County, Washington, USA",
+              "camera": "Fujifilm X100T",
+              "assets": {
+                "gallery": [
+                  {
+                    "file": "PHOTO-2026-018-gallery-06.jpeg?v=cdc5dff0o",
+                    "thumbnail": "PHOTO-2026-018-gallery-06-thumb.jpg?v=cdc5dff0o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-018-gallery-04.jpeg?v=6c505550o",
+                    "thumbnail": "PHOTO-2026-018-gallery-04-thumb.jpg?v=6c505550o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-018-gallery-01.jpeg?v=325048c2o",
+                    "thumbnail": "PHOTO-2026-018-gallery-01-thumb.jpg?v=325048c2o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-018-gallery-02.jpeg?v=5a053f68o",
+                    "thumbnail": "PHOTO-2026-018-gallery-02-thumb.jpg?v=5a053f68o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-018-gallery-03.jpeg?v=fcc123cdo",
+                    "thumbnail": "PHOTO-2026-018-gallery-03-thumb.jpg?v=fcc123cdo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-018-gallery-05.jpeg?v=065bb6a6o",
+                    "thumbnail": "PHOTO-2026-018-gallery-05-thumb.jpg?v=065bb6a6o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-018-gallery-07.jpeg?v=d14cc39fo",
+                    "thumbnail": "PHOTO-2026-018-gallery-07-thumb.jpg?v=d14cc39fo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-018-gallery-08.jpeg?v=623a426eo",
+                    "thumbnail": "PHOTO-2026-018-gallery-08-thumb.jpg?v=623a426eo",
+                    "caption": "",
+                    "alt": ""
+                  }
+                ],
+                "thumbnail": "PHOTO-2026-018-gallery-06-thumb.jpg?v=cdc5dff0o"
+              }
+            },
+            {
+              "id": "PHOTO-2026-012",
+              "slug": "crater-lake-national-park-2026-07-24",
+              "series": "creation",
+              "subcollection": "photos",
+              "item_type": "photo",
+              "status": "published",
+              "display_date": "July 24, 2026",
+              "sort_date": "2026-07-24",
+              "title": "Crater Lake National Park",
+              "place": "Oregon, USA",
+              "camera": "Fujifilm X100T",
+              "assets": {
+                "gallery": [
+                  {
+                    "file": "PHOTO-2026-012-gallery-10.jpeg?v=7760fae6o",
+                    "thumbnail": "PHOTO-2026-012-gallery-10-thumb.jpg?v=7760fae6o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-012-gallery-04.jpeg?v=67193d6bo",
+                    "thumbnail": "PHOTO-2026-012-gallery-04-thumb.jpg?v=67193d6bo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-012-gallery-07.jpeg?v=e378285eo",
+                    "thumbnail": "PHOTO-2026-012-gallery-07-thumb.jpg?v=e378285eo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-012-gallery-09.jpeg?v=48e5a654o",
+                    "thumbnail": "PHOTO-2026-012-gallery-09-thumb.jpg?v=48e5a654o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-012-gallery-01.jpeg?v=379c73a0o",
+                    "thumbnail": "PHOTO-2026-012-gallery-01-thumb.jpg?v=379c73a0o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-012-gallery-02.jpeg?v=e414fc30o",
+                    "thumbnail": "PHOTO-2026-012-gallery-02-thumb.jpg?v=e414fc30o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-012-gallery-03.jpeg?v=a13b6a9co",
+                    "thumbnail": "PHOTO-2026-012-gallery-03-thumb.jpg?v=a13b6a9co",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-012-gallery-05.jpeg?v=1b1c4b0fo",
+                    "thumbnail": "PHOTO-2026-012-gallery-05-thumb.jpg?v=1b1c4b0fo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-012-gallery-06.jpeg?v=b9fa3b2do",
+                    "thumbnail": "PHOTO-2026-012-gallery-06-thumb.jpg?v=b9fa3b2do",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-012-gallery-08.jpeg?v=a328aefbo",
+                    "thumbnail": "PHOTO-2026-012-gallery-08-thumb.jpg?v=a328aefbo",
+                    "caption": "",
+                    "alt": ""
+                  }
+                ],
+                "thumbnail": "PHOTO-2026-012-gallery-10-thumb.jpg?v=7760fae6o"
+              }
+            },
+            {
+              "id": "PHOTO-2026-017",
+              "slug": "lassen-volcanic-national-park-2026-06-27",
+              "series": "creation",
+              "subcollection": "photos",
+              "item_type": "photo",
+              "status": "published",
+              "display_date": "June 27-28, 2026",
+              "sort_date": "2026-06-27",
+              "title": "Lassen Volcanic National Park",
+              "place": "Northern California, USA",
+              "assets": {
+                "gallery": [
+                  {
+                    "file": "PHOTO-2026-017-gallery-03.jpeg?v=0d2490d2o",
+                    "thumbnail": "PHOTO-2026-017-gallery-03-thumb.jpg?v=0d2490d2o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-017-gallery-01.jpeg?v=61ceb959o",
+                    "thumbnail": "PHOTO-2026-017-gallery-01-thumb.jpg?v=61ceb959o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-017-gallery-02.jpeg?v=06673d2eo",
+                    "thumbnail": "PHOTO-2026-017-gallery-02-thumb.jpg?v=06673d2eo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-017-gallery-04.jpeg?v=b6111178o",
+                    "thumbnail": "PHOTO-2026-017-gallery-04-thumb.jpg?v=b6111178o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-017-gallery-05.jpeg?v=b566420ao",
+                    "thumbnail": "PHOTO-2026-017-gallery-05-thumb.jpg?v=b566420ao",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-017-gallery-06.jpeg?v=0ae6fdc3o",
+                    "thumbnail": "PHOTO-2026-017-gallery-06-thumb.jpg?v=0ae6fdc3o",
+                    "caption": "Leggett Drive-Thru Tree",
+                    "alt": ""
+                  }
+                ],
+                "thumbnail": "PHOTO-2026-017-gallery-03-thumb.jpg?v=0d2490d2o"
+              },
+              "camera": "Fujifilm X100T"
+            },
+            {
+              "id": "PHOTO-2026-021",
+              "slug": "point-reyes-national-seashore-2026-06-21",
+              "series": "creation",
+              "subcollection": "photos",
+              "item_type": "photo",
+              "status": "published",
+              "display_date": "June 21, 2026",
+              "sort_date": "2026-06-21",
+              "title": "Point Reyes National Seashore",
+              "place": "Point Reyes, CA, USA",
+              "assets": {
+                "gallery": [
+                  {
+                    "file": "PHOTO-2026-021-gallery-03.jpeg?v=b6f80b5ao",
+                    "thumbnail": "PHOTO-2026-021-gallery-03-thumb.jpg?v=b6f80b5ao",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-021-gallery-02.jpeg?v=b7b34f5do",
+                    "thumbnail": "PHOTO-2026-021-gallery-02-thumb.jpg?v=b7b34f5do",
+                    "caption": "John Carpenter's The Fog",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-021-gallery-01.jpeg?v=c2478e96o",
+                    "thumbnail": "PHOTO-2026-021-gallery-01-thumb.jpg?v=c2478e96o",
+                    "caption": "",
+                    "alt": ""
+                  }
+                ],
+                "thumbnail": "PHOTO-2026-021-gallery-03-thumb.jpg?v=b6f80b5ao"
+              },
+              "camera": "Fujifilm X100T"
+            },
+            {
+              "id": "PHOTO-2026-016",
+              "slug": "highway-1-2026-06-06",
+              "series": "creation",
+              "subcollection": "photos",
+              "item_type": "photo",
+              "status": "published",
+              "display_date": "June 6-7, 2026",
+              "sort_date": "2026-06-06",
+              "title": "Highway 1",
+              "place": "California Coast, USA",
+              "camera": "Fujifilm X100T",
+              "assets": {
+                "gallery": [
+                  {
+                    "file": "PHOTO-2026-016-gallery-07.jpeg?v=f9215e90o",
+                    "thumbnail": "PHOTO-2026-016-gallery-07-thumb.jpg?v=f9215e90o",
+                    "caption": "Monterey Bay Aquarium",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-016-gallery-06.jpeg?v=cc7680fao",
+                    "thumbnail": "PHOTO-2026-016-gallery-06-thumb.jpg?v=cc7680fao",
+                    "caption": "Monterey Bay Aquarium",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-016-gallery-01.jpeg?v=8c34e82do",
+                    "thumbnail": "PHOTO-2026-016-gallery-01-thumb.jpg?v=8c34e82do",
+                    "caption": "Morro Rock in Morro Bay",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-016-gallery-02.jpeg?v=658d489fo",
+                    "thumbnail": "PHOTO-2026-016-gallery-02-thumb.jpg?v=658d489fo",
+                    "caption": "Otters!",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-016-gallery-03.jpeg?v=cda1ce6do",
+                    "thumbnail": "PHOTO-2026-016-gallery-03-thumb.jpg?v=cda1ce6do",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-016-gallery-04.jpeg?v=2c922d07o",
+                    "thumbnail": "PHOTO-2026-016-gallery-04-thumb.jpg?v=2c922d07o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-016-gallery-05.jpeg?v=644f74aao",
+                    "thumbnail": "PHOTO-2026-016-gallery-05-thumb.jpg?v=644f74aao",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-016-gallery-08.jpeg?v=e0e7ef93o",
+                    "thumbnail": "PHOTO-2026-016-gallery-08-thumb.jpg?v=e0e7ef93o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-016-gallery-09.jpeg?v=aeb50b1eo",
+                    "thumbnail": "PHOTO-2026-016-gallery-09-thumb.jpg?v=aeb50b1eo",
+                    "caption": "",
+                    "alt": ""
+                  }
+                ],
+                "thumbnail": "PHOTO-2026-016-gallery-07-thumb.jpg?v=f9215e90o"
+              }
+            },
+            {
+              "id": "PHOTO-2026-009",
+              "slug": "angels-dodgers-2026-06-05",
+              "series": "creation",
+              "subcollection": "photos",
+              "item_type": "photo",
+              "status": "published",
+              "display_date": "June 5, 2026",
+              "sort_date": "2026-06-05",
+              "title": "Angels @ Dodgers",
+              "place": "Los Angeles, CA, USA",
+              "camera": "Fujifilm X100T",
+              "constellations": [
+                "2026-atx-sf"
+              ],
+              "assets": {
+                "gallery": [
+                  {
+                    "file": "PHOTO-2026-009-gallery-01.jpeg?v=ea591655o",
+                    "thumbnail": "PHOTO-2026-009-gallery-01-thumb.jpg?v=ea591655o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-009-gallery-02.jpeg?v=928cf454o",
+                    "thumbnail": "PHOTO-2026-009-gallery-02-thumb.jpg?v=928cf454o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-009-gallery-03.jpeg?v=82d379fao",
+                    "thumbnail": "PHOTO-2026-009-gallery-03-thumb.jpg?v=82d379fao",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-009-gallery-04.jpeg?v=9d27d25bo",
+                    "thumbnail": "PHOTO-2026-009-gallery-04-thumb.jpg?v=9d27d25bo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-009-gallery-05.jpeg?v=79824db8o",
+                    "thumbnail": "PHOTO-2026-009-gallery-05-thumb.jpg?v=79824db8o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-009-gallery-06.jpeg?v=5551c246o",
+                    "thumbnail": "PHOTO-2026-009-gallery-06-thumb.jpg?v=5551c246o",
+                    "caption": "",
+                    "alt": ""
+                  }
+                ],
+                "thumbnail": "PHOTO-2026-009-gallery-01-thumb.jpg?v=ea591655o"
+              }
+            },
+            {
+              "id": "PHOTO-2026-020",
+              "slug": "petrified-forest-national-park-2026-06-03",
+              "series": "creation",
+              "subcollection": "photos",
+              "item_type": "photo",
+              "status": "published",
+              "display_date": "June 3, 2026",
+              "sort_date": "2026-06-03",
+              "title": "Petrified Forest National Park",
+              "place": "Arizona, USA",
+              "camera": "Fujifilm X100T",
+              "assets": {
+                "gallery": [
+                  {
+                    "file": "PHOTO-2026-020-gallery-01.jpeg?v=c920ce9fo",
+                    "thumbnail": "PHOTO-2026-020-gallery-01-thumb.jpg?v=c920ce9fo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-020-gallery-02.jpeg?v=bf4282b9o",
+                    "thumbnail": "PHOTO-2026-020-gallery-02-thumb.jpg?v=bf4282b9o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-020-gallery-03.jpeg?v=fb5c5bc2o",
+                    "thumbnail": "PHOTO-2026-020-gallery-03-thumb.jpg?v=fb5c5bc2o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-020-gallery-04.jpeg?v=96e5240fo",
+                    "thumbnail": "PHOTO-2026-020-gallery-04-thumb.jpg?v=96e5240fo",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-020-gallery-05.jpeg?v=63865f21o",
+                    "thumbnail": "PHOTO-2026-020-gallery-05-thumb.jpg?v=63865f21o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-020-gallery-06.jpeg?v=e73fcf81o",
+                    "thumbnail": "PHOTO-2026-020-gallery-06-thumb.jpg?v=e73fcf81o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-020-gallery-07.jpeg?v=27e9c2ffo",
+                    "thumbnail": "PHOTO-2026-020-gallery-07-thumb.jpg?v=27e9c2ffo",
+                    "caption": "",
+                    "alt": ""
+                  }
+                ],
+                "thumbnail": "PHOTO-2026-020-gallery-01-thumb.jpg?v=c920ce9fo"
+              }
+            },
+            {
+              "id": "PHOTO-2026-023",
+              "slug": "santa-fe-2026-06-01",
+              "series": "creation",
+              "subcollection": "photos",
+              "item_type": "photo",
+              "status": "published",
+              "display_date": "June 1-3, 2026",
+              "sort_date": "2026-06-01",
+              "title": "Santa Fe",
+              "place": "Santa Fe, NM, USA",
+              "assets": {
+                "gallery": [
+                  {
+                    "file": "PHOTO-2026-023-gallery-06.jpeg?v=cfd452fco",
+                    "thumbnail": "PHOTO-2026-023-gallery-06-thumb.jpg?v=cfd452fco",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-023-gallery-01.jpeg?v=6020ce54o",
+                    "thumbnail": "PHOTO-2026-023-gallery-01-thumb.jpg?v=6020ce54o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-023-gallery-02.jpeg?v=9878a401o",
+                    "thumbnail": "PHOTO-2026-023-gallery-02-thumb.jpg?v=9878a401o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-023-gallery-03.jpeg?v=8280be69o",
+                    "thumbnail": "PHOTO-2026-023-gallery-03-thumb.jpg?v=8280be69o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-023-gallery-04.jpeg?v=46277eb1o",
+                    "thumbnail": "PHOTO-2026-023-gallery-04-thumb.jpg?v=46277eb1o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-023-gallery-05.jpeg?v=f5ea1c10o",
+                    "thumbnail": "PHOTO-2026-023-gallery-05-thumb.jpg?v=f5ea1c10o",
+                    "caption": "",
+                    "alt": ""
+                  },
+                  {
+                    "file": "PHOTO-2026-023-gallery-07.jpeg?v=55a8ab03o",
+                    "thumbnail": "PHOTO-2026-023-gallery-07-thumb.jpg?v=55a8ab03o",
+                    "caption": "",
+                    "alt": ""
+                  }
+                ],
+                "thumbnail": "PHOTO-2026-023-gallery-06-thumb.jpg?v=cfd452fco"
+              },
+              "camera": "Fujifilm X100T"
+            },
+            {
               "id": "PHOTO-2026-008",
               "slug": "alaska-2025-06-09",
               "series": "creation",
@@ -17278,7 +18607,7 @@
         "object": "key",
         "model": "desk-guide-key.glb",
         "thumbnail": "/thumbnails/desk/key.png",
-        "count": 760,
+        "count": 777,
         "subcollections": null,
         "description": ""
       },
@@ -17330,7 +18659,7 @@
         "object": "stamp",
         "model": "desk-creation-stamp.glb",
         "thumbnail": "/thumbnails/desk/creation.png",
-        "count": 14,
+        "count": 31,
         "subcollections": 5,
         "description": "A stamp. What was made without a client: sketches, photographs, prototypes, videos, notes. Photographs are kept whole as sets, stepped through on the plate one exposure at a time."
       },
@@ -17479,6 +18808,63 @@
             "back": "EPH-2026-019-back.jpg?v=20260902"
           },
           "dimensions": "200 x 89"
+        },
+        {
+          "id": "PHOTO-2026-009",
+          "slug": "angels-dodgers-2026-06-05",
+          "series": "creation",
+          "subcollection": "photos",
+          "item_type": "photo",
+          "status": "published",
+          "display_date": "June 5, 2026",
+          "sort_date": "2026-06-05",
+          "title": "Angels @ Dodgers",
+          "place": "Los Angeles, CA, USA",
+          "camera": "Fujifilm X100T",
+          "constellations": [
+            "2026-atx-sf"
+          ],
+          "assets": {
+            "gallery": [
+              {
+                "file": "PHOTO-2026-009-gallery-01.jpeg?v=ea591655o",
+                "thumbnail": "PHOTO-2026-009-gallery-01-thumb.jpg?v=ea591655o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-009-gallery-02.jpeg?v=928cf454o",
+                "thumbnail": "PHOTO-2026-009-gallery-02-thumb.jpg?v=928cf454o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-009-gallery-03.jpeg?v=82d379fao",
+                "thumbnail": "PHOTO-2026-009-gallery-03-thumb.jpg?v=82d379fao",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-009-gallery-04.jpeg?v=9d27d25bo",
+                "thumbnail": "PHOTO-2026-009-gallery-04-thumb.jpg?v=9d27d25bo",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-009-gallery-05.jpeg?v=79824db8o",
+                "thumbnail": "PHOTO-2026-009-gallery-05-thumb.jpg?v=79824db8o",
+                "caption": "",
+                "alt": ""
+              },
+              {
+                "file": "PHOTO-2026-009-gallery-06.jpeg?v=5551c246o",
+                "thumbnail": "PHOTO-2026-009-gallery-06-thumb.jpg?v=5551c246o",
+                "caption": "",
+                "alt": ""
+              }
+            ],
+            "thumbnail": "PHOTO-2026-009-gallery-01-thumb.jpg?v=ea591655o"
+          }
         },
         {
           "id": "EPH-2026-026",
@@ -17708,12 +19094,12 @@
   "_counters": {
     "EPH": 31,
     "FILM": 555,
-    "BOOK": 390,
+    "BOOK": 402,
     "MUSIC": 8,
     "COFFEE": 2,
     "GAME": 4,
     "SKETCH": 2,
-    "PHOTO": 8,
+    "PHOTO": 25,
     "PROTO": 2,
     "VIDEO": 2,
     "NOTE": 2,
