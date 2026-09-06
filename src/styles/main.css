@@ -191,6 +191,13 @@ body {
 .desk-hold-canvas {
   position: fixed;
   inset: 0;
+  /* An absolutely positioned canvas is a replaced element: with width auto it
+     takes its INTRINSIC size — the drawing buffer, which is the viewport times
+     the device pixel ratio — and the insets are ignored. On a 2× screen that
+     put a double-size canvas in the corner and the object off toward the
+     bottom right. The renderer sizes the buffer; the box is sized here. */
+  width: 100%;
+  height: 100%;
   z-index: 11;
   display: block;
   cursor: grab;
