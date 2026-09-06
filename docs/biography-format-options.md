@@ -1,8 +1,11 @@
 # Biography — format options
 
-A working note comparing four renderings of the biography-as-curation, for
-decision before implementation. It is exploratory, not yet a decision; when one
-is chosen it should be recorded in `docs/decisions.md`.
+A working note comparing four renderings of the biography-as-curation, written
+before the decision. **Decided 2026-09-05** (decisions.md → "Biography — a homed
+constellation of memorable items"): membership via the constellation registry
+rather than an ordered `path`, rendered by the existing constellation grid
+(closest to Option C, newest first) with the note in the layer-meta. Options A,
+B and D remain available as later readings of the same membership.
 
 ## Premise
 

@@ -46,7 +46,7 @@ const SERIES_TYPES = {
   consumption:  ['film', 'book', 'album', 'ep', 'single', 'bag', 'game'],
   creation:     ['sketch', 'photo', 'prototype', 'video', 'note'],
   labor:        ['project', 'artifact', 'commission', 'contribution'],
-  identity:     ['biography', 'cv-entry', 'contact'],
+  identity:     ['cv-entry', 'contact'],
 };
 function findSeriesForType(type) {
   for (const [series, types] of Object.entries(SERIES_TYPES)) {

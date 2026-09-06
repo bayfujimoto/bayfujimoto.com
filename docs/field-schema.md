@@ -23,7 +23,8 @@ This schema governs the **catalog-card inspection** only (`makeItemSheet` /
 - **Accumulation** — ephemera (ticket, brochure, receipt, handout, document)
 
 Out of scope: **Labor** (custom horizontal-scroll view, `makeLaborItemSheet`) and
-**Identity** (custom biography / CV / contact views). These keep their own layouts;
+**Identity** (custom CV / contact views; the biography is a homed constellation
+rendered by the ordinary browse grid). These keep their own layouts;
 the `inspection:` field remains the per-record override hook.
 
 ---
@@ -100,7 +101,9 @@ own: the fold family, when worth recording, is written into `extent`.
 `constellations` as **its own rider row** near tags (spine row 10) — never in a
 split row, never sharing a line with another field. Each value is a
 **clickable token** navigating to `/constellations/<slug>/`. The rule is
-uniform: ephemera included, one rendering everywhere.
+uniform: ephemera included, one rendering everywhere. The one exception is a
+**homed** constellation (`CONSTELLATION_HOMES` in `router.js` — today the
+biography): reached through its series address, never printed on the card.
 
 ---
 

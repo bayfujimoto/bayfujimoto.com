@@ -10,7 +10,6 @@ export const TYPE_FAMILIES = {
 };
 
 export const TYPE_SUBCOLLECTION = {
-  biography:    "biography",
   "cv-entry":   "cv",
   contact:      "contact",
   film:         "films",
@@ -37,7 +36,7 @@ export const TYPE_SUBCOLLECTION = {
 };
 
 const CONTENT_DIR = {
-  identity:    { biography: "identity/biography", cv: "identity/cv", contact: "identity/contact" },
+  identity:    { cv: "identity/cv", contact: "identity/contact" },
   labor:       "labor",
   consumption: { films: "consumption/films", books: "consumption/books",
                  music: "consumption/music", coffee: "consumption/coffee", games: "consumption/games" },
@@ -81,8 +80,6 @@ export function generateSlug(itemType, data) {
     case "video":
     case "note":
       return [s(data.title), date].filter(Boolean).join("-");
-    case "biography":
-      return `biography-${year}`;
     case "cv-entry":
       return [s(data.organization), s(data.role)].filter(Boolean).join("-");
     case "contact":

@@ -4,7 +4,7 @@
 // Tree shape:
 //   * archive
 //     ▼ Identity
-//       ▶ biography (2)
+//       ▶ biography (empty)
 //       ▶ cv (6)
 //       ...
 //     ▼ Consumption

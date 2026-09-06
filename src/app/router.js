@@ -1,5 +1,23 @@
 import { setState, getState, isValidSeries } from "./state.js";
 
+// Constellations that live inside a series instead of at /constellations/<slug>/.
+// The biography is one: a constellation of memorable items whose home address
+// is the identity dossier's biography subcollection. Membership and note still
+// come from the registry (src/content/constellations/biography.md); only the
+// address, breadcrumb, and reach differ — /constellations/biography/ redirects
+// here, and member cards do not print it in their constellations rider row.
+export const CONSTELLATION_HOMES = {
+  biography: { series: "identity", subcollection: "biography" },
+};
+
+// The registry slug a series/subcollection address stands for, or null.
+export function homedConstellationSlug(series, subcollection) {
+  for (const [slug, home] of Object.entries(CONSTELLATION_HOMES)) {
+    if (home.series === series && home.subcollection === subcollection) return slug;
+  }
+  return null;
+}
+
 // Parse the current window.location into a state patch
 function locationToState() {
   const parts = window.location.pathname.replace(/^\/|\/$/g, "").split("/").filter(Boolean);
@@ -24,6 +42,10 @@ function locationToState() {
   // (/constellations/<slug>/); a bare /constellations/ index is deferred to the
   // meta-object phase, so without a slug we fall back to the desk.
   if (first === "constellations") {
+    const home = second && CONSTELLATION_HOMES[second];
+    if (home) {
+      return { layer: item ? "item" : "browse", series: home.series, subcollection: home.subcollection, view: null, item };
+    }
     if (second) {
       return { layer: item ? "item" : "browse", series: "constellations", subcollection: null, view: second, item };
     }
@@ -94,6 +116,12 @@ export function initRouter() {
   // Restore state from current URL on first load
   const initial = locationToState();
   setState(initial, { silent: true });
+  // A homed constellation's /constellations/<slug>/ address resolves to its
+  // series address; rewrite the bar so the canonical URL is what gets shared.
+  const canonical = stateToURL(getState());
+  if (initial.layer !== "desk" && canonical !== window.location.pathname + window.location.search) {
+    history.replaceState(null, "", canonical);
+  }
   console.log("[router] init →", window.location.pathname + window.location.search, initial);
 
   // Handle browser back/forward

@@ -1,4 +1,4 @@
-import { navigate, replace } from "./router.js";
+import { navigate, replace, CONSTELLATION_HOMES, homedConstellationSlug } from "./router.js";
 import { subscribe, getState, deskTarget } from "./state.js";
 import { imageUrl } from "./image-url.js";
 import { setSeriesInfo, pauseSceneRender, resumeSceneRender } from "./scene.js";
@@ -227,9 +227,9 @@ function pushLayerForState(state, silent = false) {
       break;
     }
     case "browse": {
-      if (state.series === "identity" && state.subcollection === "biography") {
-        pushSheet(makeBiographySheet());
-      } else if (state.series === "identity" && state.subcollection === "cv") {
+      // The biography is a homed constellation (router.js CONSTELLATION_HOMES):
+      // the generic browse sheet reads its members from the registry.
+      if (state.series === "identity" && state.subcollection === "cv") {
         pushSheet(makeCVSheet(state.item || null));
       } else if (state.series === "identity" && state.subcollection === "contact") {
         pushSheet(makeContactSheet(state.item || null));
@@ -412,7 +412,11 @@ function makeSeriesSheet(seriesKey) {
     btn.type = "button";
     btn.dataset.series = seriesKey;
     btn.dataset.sub = key;
-    btn.innerHTML = `${sc.label} <span class="series-subcollection-count">${sc.items.length}</span>`;
+    // A homed constellation's count is its registry membership, not the
+    // (empty) subcollection it is addressed through.
+    const homedSlug = homedConstellationSlug(seriesKey, key);
+    const count = homedSlug ? (constellationFor(homedSlug)?.items.length || 0) : sc.items.length;
+    btn.innerHTML = `${sc.label} <span class="series-subcollection-count">${count}</span>`;
     btn.addEventListener("click", () => {
       navigate({ layer: "browse", series: seriesKey, subcollection: key, item: null });
     });
@@ -600,184 +604,6 @@ function makeGuideSheet(frameKey) {
   };
 
   return { veil, content, cleanup, update };
-}
-
-// ── Biography sheet ───────────────────────────────────────────────────────────
-
-function makeBiographySheet() {
-  const allVersions = archive.series["identity"]?.subcollections["biography"]?.items || [];
-  // Items are sorted by sort_date descending — index 0 is the most recent version
-
-  const veil = makeVeil(() => {
-    navigate({ layer: "series", series: "identity", subcollection: null, item: null });
-  });
-
-  const content = makeContent();
-  let hoistedMeta = null;
-  let activeOutsideClickHandler = null;
-  let hoistedVersionList = null;
-
-  function buildMeta(metaEl, bio) {
-    metaEl.innerHTML = "";
-
-    const h1 = el("h1", "overlay-title");
-    h1.textContent = "Biography";
-    metaEl.appendChild(h1);
-
-    const subtitle = el("p", "overlay-subtitle");
-    subtitle.textContent = bio.display_date;
-    metaEl.appendChild(subtitle);
-
-    if (bio.roles?.length) {
-      const field = el("div", "overlay-field");
-      const label = el("span", "overlay-label");
-      label.textContent = "roles";
-      const value = el("span", "overlay-value");
-      value.textContent = bio.roles.join(", ");
-      field.appendChild(label);
-      field.appendChild(value);
-      metaEl.appendChild(field);
-    }
-
-    if (bio.location) {
-      const field = el("div", "overlay-field");
-      const label = el("span", "overlay-label");
-      label.textContent = "location";
-      const value = el("span", "overlay-value");
-      value.textContent = bio.location;
-      field.appendChild(label);
-      field.appendChild(value);
-      metaEl.appendChild(field);
-    }
-
-    if (bio.links?.length) {
-      const linkLabel = el("span", "overlay-label");
-      linkLabel.textContent = "links";
-      linkLabel.style.marginTop = "0.5rem";
-      metaEl.appendChild(linkLabel);
-      bio.links.forEach(link => {
-        const a = el("a", "overlay-value overlay-link");
-        a.href = link.url;
-        a.textContent = link.label;
-        a.target = "_blank";
-        a.rel = "noopener noreferrer";
-        metaEl.appendChild(a);
-      });
-    }
-
-    const idEl = el("div", "overlay-id");
-    idEl.textContent = bio.id;
-    metaEl.appendChild(idEl);
-  }
-
-  function renderDocument(idx) {
-    const bio = allVersions[idx];
-    if (!bio) return;
-
-    // Remove previous outside-click listener if any
-    if (activeOutsideClickHandler) {
-      document.removeEventListener("click", activeOutsideClickHandler);
-      activeOutsideClickHandler = null;
-    }
-
-    content.innerHTML = "";
-
-    // Centered document panel
-    const center = el("div", "layer-center");
-    const doc = el("div", "bio-document");
-    doc.setAttribute("role", "document");
-    doc.setAttribute("aria-label", "Biography");
-
-    // Version indicator and history selector intentionally omitted: the
-    // biography view shows only the most recent version (index 0).
-    // renderDocument is always called with 0, so no date/version selector
-    // is rendered.
-
-    // Scrollable prose region
-    const scroll = el("div", "bio-document__scroll");
-
-    // Short bio — lead paragraph
-    if (bio.short_bio) {
-      const shortP = el("p", "bio-document__short");
-      shortP.textContent = bio.short_bio;
-      scroll.appendChild(shortP);
-    }
-
-    // Long bio — split on \n\n for paragraphs
-    if (bio.long_bio) {
-      const longWrap = el("div", "bio-document__long");
-      bio.long_bio.split(/\n\n+/).forEach(para => {
-        if (para.trim()) {
-          const p = el("p");
-          p.textContent = para.trim();
-          longWrap.appendChild(p);
-        }
-      });
-      scroll.appendChild(longWrap);
-    }
-
-    doc.appendChild(scroll);
-
-    const box = el("div", "bio-document__box");
-    box.appendChild(doc);
-
-    const scrollCaret = el("button", "bio-document__scroll-caret");
-    scrollCaret.setAttribute("aria-label", "Scroll down");
-    scrollCaret.type = "button";
-    box.appendChild(scrollCaret);
-
-    const updateCaret = () => {
-      const atBottom = scroll.scrollHeight - scroll.scrollTop <= scroll.clientHeight + 2;
-      scrollCaret.classList.toggle("is-hidden", atBottom);
-      box.classList.toggle("at-bottom", atBottom);
-    };
-    scroll.addEventListener("scroll", updateCaret, { passive: true });
-    requestAnimationFrame(updateCaret);
-
-    scrollCaret.addEventListener("click", () => {
-      scroll.scrollTo({ top: scroll.scrollTop + scroll.clientHeight * 0.6, behavior: "smooth" });
-    });
-    center.appendChild(box);
-    content.appendChild(center);
-
-    // Layer-meta — bottom right
-    if (hoistedMeta) {
-      buildMeta(hoistedMeta, bio);
-    } else {
-      const meta = el("div", "layer-meta");
-      buildMeta(meta, bio);
-      content.appendChild(meta);
-    }
-
-    // Breadcrumb — bottom left
-    const bc = makeBreadcrumb([
-      { label: "desk", onClick: () => navigate({ layer: "desk" }) },
-      { label: "Identity", onClick: () => navigate({ layer: "series", series: "identity" }) },
-      { label: "biography", current: true }
-    ]);
-    content.appendChild(bc);
-  }
-
-  const closeFn = () => navigate({ layer: "series", series: "identity", subcollection: null, item: null });
-  const escCleanup = attachEscapeHandler(content, closeFn);
-
-  const cleanup = () => {
-    escCleanup();
-    if (activeOutsideClickHandler) {
-      document.removeEventListener("click", activeOutsideClickHandler);
-      activeOutsideClickHandler = null;
-    }
-    if (hoistedVersionList && hoistedVersionList.parentNode) {
-      hoistedVersionList.parentNode.removeChild(hoistedVersionList);
-      hoistedVersionList = null;
-    }
-  };
-
-  renderDocument(0);
-
-  function onHoist(hoisted) { hoistedMeta = hoisted; }
-
-  return { veil, content, cleanup, onHoist };
 }
 
 // ── CV sheet ──────────────────────────────────────────────────────────────────
@@ -1024,9 +850,13 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
   // Members were gathered at build time; the sheet reuses the flat-series
   // machinery (accumulation grid, year groups) with the constellation's title
   // and note as the sheet's identity.
-  const isConstellation = seriesKey === "constellations";
-  const constellation = isConstellation ? constellationFor(viewSlug) : null;
-  const s = isConstellation
+  // A homed constellation (the biography) is addressed through a series
+  // subcollection instead: same registry members and note, but the sheet keeps
+  // the series' breadcrumb, dropdown, and addresses.
+  const homedSlug = homedConstellationSlug(seriesKey, subKey);
+  const isConstellation = seriesKey === "constellations" || !!homedSlug;
+  const constellation = isConstellation ? constellationFor(homedSlug || viewSlug) : null;
+  const s = seriesKey === "constellations"
     ? {
         label: constellation?.title || viewSlug,
         subtitle: constellation?.display_date || "",
@@ -1079,6 +909,11 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
       }
       activeSub = { label: isConstellation ? s.label : (activeView || "all"), items };
       years = groupByYear(items);
+    } else if (homedSlug) {
+      // Members come from the registry; the subcollection record only lends
+      // its label and place in the series.
+      activeSub = { label: s.subcollections[activeSubKey]?.label || constellation?.title || activeSubKey, items: constellation?.items || [] };
+      years = groupByYear(activeSub.items);
     } else {
       activeSub = s.subcollections[activeSubKey];
       years = groupByYear(activeSub?.items || []);
@@ -1477,7 +1312,9 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
     // rather than appending a new one inside content — otherwise the stale hoisted element
     // persists and overlaps the new title when switching subcollections via the dropdown.
     const titleText = isFlatSeries ? s.label : (activeSub?.label || activeSubKey);
-    const subtitleText = isFlatSeries ? (s.subtitle || s.container || "") : activeSub?.container || "";
+    const subtitleText = isFlatSeries
+      ? (s.subtitle || s.container || "")
+      : (homedSlug ? (constellation?.display_date || "") : (activeSub?.container || ""));
     if (hoistedMeta) {
       hoistedMeta.querySelector(".overlay-title").textContent = titleText;
       hoistedMeta.querySelector(".overlay-subtitle").textContent = subtitleText;
@@ -1521,6 +1358,9 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
     // screen under the new URL.
     if (state.series !== seriesKey) return false;
     if (state.subcollection && state.subcollection !== subKey) {
+      // Leaving a homed constellation (biography → cv) or entering one from a
+      // sibling: the sheet's identity changes, so the caller replaces it.
+      if (homedSlug || homedConstellationSlug(seriesKey, state.subcollection)) return false;
       subKey = state.subcollection;
       renderContent(subKey, viewSlug);
     }
@@ -2000,7 +1840,10 @@ function buildCardWrap(item, ctx = {}) {
 
     if (!hasFrameRow && noteText) appendNote(false);
 
-    if (item.related_ids?.length || item.constellations?.length || item.tags?.length) {
+    // Homed constellations (the biography) are reached through their series,
+    // not from the card — the rider row stays quiet about them.
+    const riderConstellations = (item.constellations || []).filter(slug => !CONSTELLATION_HOMES[slug]);
+    if (item.related_ids?.length || riderConstellations.length || item.tags?.length) {
       const riders = el("div", "item-card__riders");
       let firstRiderRow = true;
       const riderLabel = (text) => {
@@ -2027,9 +1870,9 @@ function buildCardWrap(item, ctx = {}) {
       // Constellations — their own rider row of clickable tokens, each opening
       // the constellation's cross-series browse (/constellations/<slug>/).
       // Mono register: an index/navigation token, like tags and see-also.
-      if (item.constellations?.length) {
+      if (riderConstellations.length) {
         riders.appendChild(riderLabel("constellations"));
-        item.constellations.forEach(slug => {
+        riderConstellations.forEach(slug => {
           const c = constellationFor(slug);
           const btn = el("button", "item-card__rider");
           btn.type = "button";
@@ -2720,14 +2563,17 @@ function makeItemSheet(seriesKey, subKey, itemId, viewSlug) {
   // Constellation context: the browse context is the constellation's member
   // list (cross-series, chronological), so prev/next steps through the
   // constellation rather than a subcollection.
+  // A homed constellation (the biography) keeps its series' breadcrumb and
+  // addresses but steps through the registry's members.
+  const homedSlug = homedConstellationSlug(seriesKey, subKey);
   const isConstellation = seriesKey === "constellations";
-  const constellation = isConstellation ? constellationFor(viewSlug) : null;
+  const constellation = (isConstellation || homedSlug) ? constellationFor(homedSlug || viewSlug) : null;
   const s = isConstellation
     ? { label: constellation?.title || viewSlug, subcollections: {} }
     : archive.series[seriesKey];
   let allItems;
 
-  if (isConstellation) {
+  if (isConstellation || homedSlug) {
     allItems = constellation?.items || [];
   } else if (subKey && s.subcollections[subKey]) {
     allItems = s.subcollections[subKey].items;

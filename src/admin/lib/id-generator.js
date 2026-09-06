@@ -1,5 +1,4 @@
 export const PREFIX_MAP = {
-  biography:    "BIO",
   "cv-entry":   "CV",
   contact:      "CONTACT",
   project:      "PROJ",

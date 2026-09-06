@@ -95,14 +95,13 @@ several objects (that breaks the scale logic). See `docs/field-schema.md`.
 
 ## Identity records
 
-### Biography / profile
-Fields:
-- title
-- short description
-- longer text
-- roles
-- location
-- links
+### Biography
+Not a record type. The biography is a **homed constellation**: the registry
+record `src/content/constellations/biography.md` (title, display_date, and the
+one-paragraph note as its body), whose members are items from any series that
+list `biography` in their `constellations` array. It renders at
+`/identity/biography/` as the constellation grid with the note in the
+layer-meta. See decisions.md → "Biography — a homed constellation".
 
 ### CV entry
 Fields:

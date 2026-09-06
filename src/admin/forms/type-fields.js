@@ -155,32 +155,9 @@ export function getTypeGroups(itemType) {
 
     // ── Identity (custom views) ──────────────────────────────
 
-    case "biography":
-      return [
-        {
-          id: "bio-meta", label: "Biography",
-          fields: [
-            { id: "location", label: "location", type: "text" },
-            { id: "roles",    label: "roles",    type: "id-list",
-              hint: "One role per line" },
-            { id: "links",    label: "links",    type: "pair-list",
-              hint: "One per line: label: url" },
-          ],
-        },
-        // The biography's text lives in front matter (short_bio / long_bio),
-        // rendered by makeBiographySheet — one-paragraph introduction, then
-        // the long form split on blank lines.
-        {
-          id: "bio-text", label: "Text",
-          depth: "full",
-          fields: [
-            { id: "short_bio", label: "short bio", type: "textarea",
-              hint: "One-paragraph introduction, shown first." },
-            { id: "long_bio",  label: "long bio",  type: "textarea",
-              hint: "Separate paragraphs with a blank line." },
-          ],
-        },
-      ];
+    // Biography: no record type. It is a homed constellation (registry record
+    // src/content/constellations/biography.md; items join via the constellation
+    // chip field), so there is nothing to intake here.
 
     case "cv-entry":
       return [

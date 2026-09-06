@@ -50,7 +50,7 @@ Interaction type: **expansion**
 - Object: bound document packet, clasp closed, label present, worn from repeated handling
 - Behavior: clicking loosens the binding; three documents slide out and arrange themselves on the surface
 - Subcollections (three documents):
-  - `biography` — short and long-form profile text
+  - `biography` — a constellation of memorable items from across the archive (homed here; note in the layer-meta)
   - `cv` — CV / resume entries
   - `contact` — contact channels and availability
 - Metaphorical grounding: material particularity of the dossier itself (wear, label, weight); legibility as a principle; the transferable account of a person
@@ -168,7 +168,7 @@ Clicking any item opens an inspection modal. The browse view behind dims and blu
 /guide/<series>/               archive guide — one desk object's frame
 
 /identity/                     identity category interior
-/identity/biography/           biography
+/identity/biography/           biography — the homed constellation (grid of members; /constellations/biography/ redirects here)
 /identity/cv/                  CV — one card, every entry in its strip (opens on the most recent)
 /identity/cv/?item=<id>        CV — one entry's frame
 /identity/contact/             contact — one record, a calling card at true scale on the plate
@@ -319,7 +319,7 @@ src/
 │  └─ doc-list.js                    document list
 ├─ content/
 │  ├─ identity/
-│  │  ├─ biography/
+│  │  ├─ biography/  (empty — the biography is src/content/constellations/biography.md)
 │  │  ├─ cv/
 │  │  └─ contact/
 │  ├─ labor/
