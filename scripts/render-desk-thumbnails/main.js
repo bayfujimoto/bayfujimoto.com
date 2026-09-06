@@ -5,15 +5,15 @@
 // still and the plate's first frame agree.
 
 import * as THREE from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { DESK_OBJECTS, UNTEXTURED_BASE, objectFor } from "../../src/shared/desk-objects.js";
-import { stripTextures, addPlateLights, configureRenderer, fitCameraToObject } from "../../src/app/model-look.js";
+
+import { DESK_OBJECTS, WEB_BASE, objectFor } from "../../src/shared/desk-objects.js";
+import { stripTextures, addPlateLights, configureRenderer, fitCameraToObject, createModelLoader } from "../../src/app/model-look.js";
 
 // Frame keys in strip order; each names the object that OPENS that series.
 const FRAMES = ["key", "identity", "labor", "consumption", "creation", "accumulation"];
 const SIZE = 512;
 // ?base=/some/path/ serves the GLBs from elsewhere (e.g. a local copy) instead of R2.
-const MODEL_SRC = new URLSearchParams(location.search).get("base") || UNTEXTURED_BASE;
+const MODEL_SRC = new URLSearchParams(location.search).get("base") || WEB_BASE;
 
 const grid = document.getElementById("grid");
 const status = document.getElementById("status");
@@ -24,7 +24,7 @@ configureRenderer(renderer);
 renderer.setPixelRatio(1);
 renderer.setSize(SIZE, SIZE, false);
 
-const loader = new GLTFLoader();
+const loader = createModelLoader();
 const results = {}; // frameKey → dataURL
 
 async function renderFrame(key) {

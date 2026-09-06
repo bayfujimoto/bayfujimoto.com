@@ -5,6 +5,24 @@
 // plate is recognisably the one on the desk.
 
 import * as THREE from "three";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.js";
+
+// The one switch for how desk objects are surfaced, site-wide. The objects now
+// ship from WEB_BASE with their own WebP textures, so the flat-material pass
+// below is off. Set true to fall back to the untextured look (and point
+// OBJECT_BASE / the plate at UNTEXTURED_BASE to match).
+export const STRIP_MODEL_TEXTURES = false;
+
+// Every desk-object GLB is loaded through here. The web-optimised models carry
+// EXT_meshopt_compression, which GLTFLoader cannot read without this decoder —
+// without it they fail outright rather than degrading. KHR_mesh_quantization
+// and EXT_texture_webp need no registration; three.js handles both natively.
+export function createModelLoader(manager) {
+  const loader = new GLTFLoader(manager);
+  loader.setMeshoptDecoder(MeshoptDecoder);
+  return loader;
+}
 
 // The series objects sitting on the desk are rendered with flat, untextured
 // materials. Their image textures are also stripped from the GLB binaries
@@ -16,6 +34,7 @@ import * as THREE from "three";
 // loads a pre-stripped or full-texture file. The desk itself (desk.glb) keeps
 // its real materials and is not stripped.
 export function stripTextures(root) {
+  if (!STRIP_MODEL_TEXTURES) return;
   root.traverse((child) => {
     if (!child.isMesh || !child.material) return;
     const materials = Array.isArray(child.material) ? child.material : [child.material];

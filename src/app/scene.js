@@ -1,10 +1,9 @@
 import * as THREE from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { navigate } from "./router.js";
 import { dismissLoadingScreen } from "./loading.js";
 import { deskTarget } from "./state.js";
-import { DESK_OBJECTS, MODEL_BASE, UNTEXTURED_BASE } from "../shared/desk-objects.js";
-import { stripTextures as stripModelTextures } from "./model-look.js";
+import { DESK_OBJECTS, MODEL_BASE, WEB_BASE } from "../shared/desk-objects.js";
+import { stripTextures, createModelLoader } from "./model-look.js";
 import { createInspector } from "./desk-inspect.js";
 
 const seriesInfo = {};
@@ -26,12 +25,10 @@ export function notifySheetsClosing() { onSheetsClosing?.(); }
 export function pauseSceneRender() { renderPaused = true; }
 export function resumeSceneRender() { renderPaused = false; onSceneResume?.(); }
 
-// Flat, texture-free materials for the series objects: the rule and its
-// rationale live in model-look.js, shared with the Guide card's model plate.
-const STRIP_MODEL_TEXTURES = true;
-function stripTextures(root) {
-  if (STRIP_MODEL_TEXTURES) stripModelTextures(root);
-}
+// How a desk object is surfaced — flat materials or its own textures — is one
+// switch in model-look.js (STRIP_MODEL_TEXTURES), shared with the Guide card's
+// model plate and the thumbnail harness. stripTextures() is a no-op while the
+// objects carry their own maps.
 
 export function setSeriesInfo(data) {
   Object.assign(seriesInfo, data);
@@ -78,9 +75,9 @@ export function initScene() {
 
   // Model hosting is shared with the Guide card and the Node scripts
   // (src/shared/desk-objects.js): the desk from MODEL_BASE, the objects from
-  // the texture-stripped copies under UNTEXTURED_BASE.
+  // the web-optimised textured copies under WEB_BASE.
   const BASE = MODEL_BASE;
-  const OBJECT_BASE = UNTEXTURED_BASE;
+  const OBJECT_BASE = WEB_BASE;
 
   // Route every model load through one manager so we know when the desk and all
   // objects have finished loading, then dismiss the loading screen. render() is
@@ -92,7 +89,7 @@ export function initScene() {
     dismissLoadingScreen();
   };
 
-  const deskLoader = new GLTFLoader(manager);
+  const deskLoader = createModelLoader(manager);
   deskLoader.load(`${BASE}desk.glb`, (gltf) => {
     const desk = gltf.scene;
     const box = new THREE.Box3().setFromObject(desk);
@@ -202,7 +199,7 @@ export function initScene() {
     placed.forEach((entry) => positionObject(entry, regime));
   }
 
-  const loader = new GLTFLoader(manager);
+  const loader = createModelLoader(manager);
   Object.entries(OBJECT_CFG).forEach(([seriesId, cfg]) => {
     loader.load(`${OBJECT_BASE}${cfg.file}`, (gltf) => {
       const model = gltf.scene;

@@ -11,9 +11,8 @@
 // (the same PNG the contact strip shows, at plate size). docs/guide-inspection-card-plan.md.
 
 import * as THREE from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { UNTEXTURED_BASE } from "../shared/desk-objects.js";
-import { stripTextures, addPlateLights, configureRenderer, fitCameraToObject } from "./model-look.js";
+import { WEB_BASE } from "../shared/desk-objects.js";
+import { stripTextures, addPlateLights, configureRenderer, fitCameraToObject, createModelLoader } from "./model-look.js";
 
 // file → Promise<THREE.Group>. Shared across cards and with the prefetcher; the
 // loaded group is a template that each card clones (materials shared).
@@ -23,8 +22,8 @@ let loader = null;
 export function loadDeskModel(file) {
   if (!file) return Promise.reject(new Error("no model file"));
   if (!modelCache.has(file)) {
-    loader ||= new GLTFLoader();
-    const p = loader.loadAsync(`${UNTEXTURED_BASE}${file}`).then((gltf) => {
+    loader ||= createModelLoader();
+    const p = loader.loadAsync(`${WEB_BASE}${file}`).then((gltf) => {
       const group = gltf.scene;
       stripTextures(group);
       return group;

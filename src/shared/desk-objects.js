@@ -36,8 +36,19 @@ export function objectFor(target) {
   return Object.keys(DESK_OBJECTS).find((id) => deskTarget(id) === target) || null;
 }
 
-// Model hosting. Texture-stripped copies of the series objects live under the
-// untextured/ prefix (see scripts/strip-model-textures.js); the full-texture
-// originals remain at MODEL_BASE and are not loaded by the site.
+// Model hosting. Three prefixes, all derived from MODEL_BASE:
+//
+//   MODEL_BASE       the full-texture originals as authored — 120 MB across the
+//                    six objects, far too heavy to serve. Only desk.glb is
+//                    loaded from here.
+//   WEB_BASE         what the site actually loads: the same objects WITH their
+//                    textures, web-optimised by scripts/finish-desk-model.js
+//                    (WebP maps, quantized + meshopt geometry) and published by
+//                    scripts/publish-web-models.js. 2.5 MB for all six.
+//   UNTEXTURED_BASE  the earlier flat-material copies (scripts/strip-model-textures.js).
+//                    Kept as a fallback: point OBJECT_BASE back at it and set
+//                    STRIP_MODEL_TEXTURES true in model-look.js to restore the
+//                    untextured look.
 export const MODEL_BASE = "https://pub-0038be3e0b514b5080cb9935976102b8.r2.dev/models/";
+export const WEB_BASE = `${MODEL_BASE}web/`;
 export const UNTEXTURED_BASE = `${MODEL_BASE}untextured/`;
