@@ -73,4 +73,6 @@ assets:
       caption: ""
       alt: ""
   thumbnail: PHOTO-2026-019-gallery-07-thumb.jpg?v=98c0e68fo
+constellations:
+  - biography
 ---

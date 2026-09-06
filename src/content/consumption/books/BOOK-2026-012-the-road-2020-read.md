@@ -1,22 +1,24 @@
 ---
 id: BOOK-2026-012
 slug: the-road-2020-read
-title: "The Road"
+title: The Road
 series: consumption
 subcollection: books
 item_type: book
 status: published
-author: "Cormac McCarthy"
+author: Cormac McCarthy
 year: "2006"
 date_read: "2020-05-17"
-display_date: "May 17, 2020"
+display_date: May 17, 2020
 sort_date: "2020-05-17"
 rating: 5
-goodreads_link: "https://www.goodreads.com/book/show/350540"
+goodreads_link: https://www.goodreads.com/book/show/350540
 isbn13: "9780307387899"
 isbn: "0307387895"
 dimensions: 136 x 210
 dimensions_estimated: true
 assets:
-  cover: "https://covers.openlibrary.org/b/isbn/9780307387899-L.jpg"
+  cover: https://covers.openlibrary.org/b/isbn/9780307387899-L.jpg
+constellations:
+  - biography
 ---

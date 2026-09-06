@@ -81,4 +81,6 @@ assets:
       caption: ""
       alt: ""
   thumbnail: PHOTO-2026-015-gallery-14-thumb.jpg?v=6db5b086o
+constellations:
+  - biography
 ---
