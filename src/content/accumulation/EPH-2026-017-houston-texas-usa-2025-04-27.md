@@ -10,6 +10,7 @@ title: Borderline Drifter
 place: Houston, Texas, USA
 constellations:
   - 2025-grand-national-tour
+  - biography
 source: Received as a gift from a friend
 inspection: card
 assets:

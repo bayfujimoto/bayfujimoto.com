@@ -1,22 +1,24 @@
 ---
 id: BOOK-2026-132
 slug: the-secret-history-2023-read
-title: "The Secret History"
+title: The Secret History
 series: consumption
 subcollection: books
 item_type: book
 status: published
-author: "Donna Tartt"
+author: Donna Tartt
 year: "2004"
 date_read: "2023-12-23"
-display_date: "December 23, 2023"
+display_date: December 23, 2023
 sort_date: "2023-12-23"
 rating: 5
-goodreads_link: "https://www.goodreads.com/book/show/29044"
+goodreads_link: https://www.goodreads.com/book/show/29044
 isbn13: "9781400031702"
 isbn: "1400031702"
 dimensions: 136 x 210
 dimensions_estimated: true
 assets:
-  cover: "https://covers.openlibrary.org/b/isbn/9781400031702-L.jpg"
+  cover: https://covers.openlibrary.org/b/isbn/9781400031702-L.jpg
+constellations:
+  - biography
 ---

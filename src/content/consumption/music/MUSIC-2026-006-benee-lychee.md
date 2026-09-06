@@ -14,4 +14,7 @@ music_label: Republic Records
 assets:
   cover: MUSIC-2026-006-cover.jpeg
   thumbnail: MUSIC-2026-006-cover-thumb.jpg
+dimensions: 314 x 314
+constellations:
+  - biography
 ---
