@@ -26,7 +26,17 @@ answers that fixed these (2026-09-07): every subcollection gets a document;
 the fan takes the series URL as the site does now; the flat bundle should
 visibly rise; vertical stack on mobile; mobile gets its own composition,
 objects keep their size relative to the papers, the folder may change shape.
-Nothing below is decided until it is recorded in `docs/decisions.md`.
+Revised after Bay's first look at the built page (2026-09-07): paper shadows
+are hairlines, not drops, and a light overlay on the DOM stage follows the
+desk's lamp so folder and wood are lit together; creases on a few sheets;
+Accumulation's scans are true to size (`dimensions` in mm at 1.5 px/mm,
+the business card's scale) and each record is used once; no lift for flat
+bundles; the return lowers the papers with an ease-in-out and reveals the
+originals as they land; the fan shows the desk's sheets as literal clones;
+the under-folder is deep green; clips are objects in a clip canvas above the
+papers (real models when published as `desk-clip-<kind>.glb`, primitive
+stand-ins until then). Nothing below is decided until it is recorded in
+`docs/decisions.md`.
 
 ## Purpose
 

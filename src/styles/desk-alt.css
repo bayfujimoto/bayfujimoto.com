@@ -38,14 +38,14 @@
 
 /* ── The folder ──────────────────────────────────────────────────────────── */
 .da-under {
-  position: absolute; border-radius: 10px; background: #2a3f66;
+  position: absolute; border-radius: 10px; background: #1f4a3a;
   background-image: radial-gradient(ellipse at 10% 0%, rgba(255,255,255,0.10), transparent 50%);
-  box-shadow: 0 14px 30px -8px rgba(10,8,5,0.9), 0 1px 0 rgba(255,255,255,0.12) inset;
+  box-shadow: 0 2px 3px rgba(10,8,5,0.35), 0 6px 10px -4px rgba(10,8,5,0.35), 0 1px 0 rgba(255,255,255,0.12) inset;
 }
-.da-under__tab { position: absolute; right: -26px; top: 46%; width: 26px; height: 40px; background: #2a3f66; border-radius: 0 6px 6px 0; }
+.da-under__tab { position: absolute; right: -26px; top: 46%; width: 26px; height: 40px; background: #1f4a3a; border-radius: 0 6px 6px 0; }
 .da-folder {
   position: absolute; border-radius: 4px; background: var(--stock-manila);
-  box-shadow: 0 14px 30px -8px rgba(10,8,5,0.9), 0 1px 0 rgba(255,255,255,0.3) inset;
+  box-shadow: 0 2px 3px rgba(10,8,5,0.35), 0 6px 10px -4px rgba(10,8,5,0.3), 0 1px 0 rgba(255,255,255,0.3) inset;
   background-image:
     radial-gradient(ellipse at 20% 10%, rgba(255,255,255,0.10), transparent 50%),
     radial-gradient(ellipse at 90% 100%, rgba(10,8,5,0.10), transparent 50%);
@@ -66,14 +66,14 @@
 .da-bundle:focus-visible { outline: 2px solid var(--color-vellum); outline-offset: 10px; }
 .da-bundle:hover, .da-bundle:focus-visible { filter: brightness(1.05); }
 .da-bundle:hover .da-sheet, .da-bundle:hover .da-scan, .da-bundle:focus-visible .da-sheet, .da-bundle:focus-visible .da-scan {
-  box-shadow: 0 10px 22px -6px rgba(10,8,5,0.85), 0 1px 0 rgba(255,255,255,0.35) inset;
+  box-shadow: 0 2px 2px rgba(10,8,5,0.32), 0 5px 8px -2px rgba(10,8,5,0.28), 0 1px 0 rgba(255,255,255,0.35) inset;
 }
 
 .da-sheet {
   position: absolute; left: 0; top: 0; overflow: hidden;
   background: var(--stock-cream);
   background-image: linear-gradient(160deg, rgba(255,255,255,.35), transparent 40%, rgba(10,8,5,.06));
-  box-shadow: 0 6px 14px -5px rgba(10,8,5,0.8), 0 1px 0 rgba(255,255,255,0.35) inset;
+  box-shadow: 0 1px 1px rgba(10,8,5,0.32), 0 2px 3px -1px rgba(10,8,5,0.22), 0 1px 0 rgba(255,255,255,0.35) inset;
   transition: box-shadow var(--dur-base) var(--ease-base);
 }
 .da-sheet--white   { background-color: var(--stock-white); background-image: linear-gradient(160deg, rgba(255,255,255,.4), transparent 45%, rgba(10,8,5,.05)); }
@@ -111,9 +111,9 @@
 .da-seal::before, .da-seal::after { content: ""; position: absolute; background: var(--seal-red); }
 .da-seal::before { left: 5px; top: 5px; width: 6px; height: 12px; }
 .da-seal::after  { right: 5px; top: 8px; width: 7px; height: 9px; }
-.da-photo { position: absolute; border: 4px solid var(--stock-white); box-shadow: 0 6px 14px -5px rgba(10,8,5,.8); overflow: hidden; }
+.da-photo { position: absolute; border: 4px solid var(--stock-white); box-shadow: 0 1px 1px rgba(10,8,5,.32), 0 2px 3px -1px rgba(10,8,5,.22); overflow: hidden; }
 .da-photo__img { position: absolute; inset: 0; background: linear-gradient(160deg, #7a6a52, #2f261c 70%); background-size: cover; background-position: center; }
-.da-scan { position: absolute; display: block; height: auto; box-shadow: 0 6px 14px -5px rgba(10,8,5,.8), 0 1px 0 rgba(255,255,255,.35) inset; background: var(--stock-white); }
+.da-scan { position: absolute; display: block; box-shadow: 0 1px 1px rgba(10,8,5,.32), 0 2px 3px -1px rgba(10,8,5,.22), 0 1px 0 rgba(255,255,255,.35) inset; background: var(--stock-white); object-fit: fill; }
 
 /* materials */
 .da-tape { position: absolute; pointer-events: none; z-index: 3;
@@ -135,7 +135,9 @@
   radial-gradient(circle at 0 0, rgba(255,255,255,.25), transparent 12%),
   radial-gradient(circle at 100% 100%, rgba(255,255,255,.2), transparent 10%),
   radial-gradient(circle at 100% 0, rgba(10,8,5,.18), transparent 9%); }
-.da-clip { position: absolute; pointer-events: none; filter: drop-shadow(0 3px 3px rgba(10,8,5,.7)); }
+/* the shadow a clip casts on the paper; the clip itself is in the clip canvas */
+.da-clip-shadow { position: absolute; pointer-events: none; border-radius: 40%; background: rgba(10,8,5,.45); filter: blur(4px); opacity: .8; }
+.da-crease { position: absolute; inset: 0; pointer-events: none; mix-blend-mode: soft-light; }
 
 /* the hover title — the live desk's, at the bottom right */
 .desk-alt-hover { opacity: 0; transition: opacity var(--dur-base); pointer-events: none; }
@@ -158,10 +160,6 @@
   repeating-linear-gradient(180deg, transparent 0 6px, rgba(255,255,255,.75) 6px 9px, transparent 9px 14px) right 3px top 0 / 4px 100% no-repeat,
   repeating-linear-gradient(180deg, #3a3128 0 24px, #1c1a17 24px 27px) 10px 0 / calc(100% - 20px) 100% no-repeat; }
 
-/* ── A flat bundle rising a beat before its grid opens ───────────────────── */
-.da-bundle { transition: translate .28s var(--ease-out), scale .28s var(--ease-out), filter var(--dur-base) var(--ease-base); }
-.da-bundle.is-rising { translate: 0 -14px; scale: 1.035; filter: brightness(1.06); }
-.da-bundle.is-rising .da-sheet, .da-bundle.is-rising .da-scan { box-shadow: 0 22px 34px -10px rgba(10,8,5,.9), 0 1px 0 rgba(255,255,255,.35) inset; }
 
 /* ── The fan — the series layer ──────────────────────────────────────────── */
 .da-fan-content { pointer-events: none; }
@@ -172,10 +170,26 @@
   pointer-events: auto; display: block; will-change: transform;
 }
 .da-fan__paper > * { position: absolute; left: 0; top: 0; }
-.da-fan__paper .da-sheet, .da-fan__paper .da-scan, .da-fan__paper .da-photo { box-shadow: 0 30px 50px -18px rgba(10,8,5,.95), 0 1px 0 rgba(255,255,255,.35) inset; }
+.da-fan__paper .da-sheet, .da-fan__paper .da-scan, .da-fan__paper .da-photo { box-shadow: 0 6px 14px -4px rgba(10,8,5,.45), 0 1px 0 rgba(255,255,255,.35) inset; }
 .da-fan__paper:hover .da-sheet, .da-fan__paper:hover .da-scan, .da-fan__paper:hover .da-photo,
-.da-fan__paper:focus-visible .da-sheet, .da-fan__paper:focus-visible .da-scan, .da-fan__paper:focus-visible .da-photo { box-shadow: 0 40px 60px -18px rgba(10,8,5,1), 0 0 0 1px rgba(232,224,208,.35), 0 1px 0 rgba(255,255,255,.35) inset; }
+.da-fan__paper:focus-visible .da-sheet, .da-fan__paper:focus-visible .da-scan, .da-fan__paper:focus-visible .da-photo { box-shadow: 0 8px 18px -4px rgba(10,8,5,.5), 0 0 0 1px rgba(232,224,208,.35), 0 1px 0 rgba(255,255,255,.35) inset; }
+/* Opening: the content fades in at once (the clones already cover the
+   originals). Closing: the fade is held until the papers have landed, so
+   they descend in full and the originals take over in the same frame. */
+.da-fan-content.layer-content--visible { transition: opacity .12s var(--ease-base); }
+.da-fan-content:not(.layer-content--visible) { transition: opacity .04s linear .35s; }
 .da-fan__paper:focus-visible { outline: 2px solid var(--color-vellum); outline-offset: 6px; }
 @media (max-width: 600px) {
   .da-fan { overflow-y: auto; -webkit-overflow-scrolling: touch; pointer-events: auto; }
 }
+
+/* ── The lamp on the paper ───────────────────────────────────────────────────
+   Two gradients centred where the spot falls (--lx/--ly, set per frame): a
+   warm pool, and a darkening toward the edges the wood also darkens toward. */
+.desk-alt__light { position: absolute; inset: 0; pointer-events: none; --lx: 50%; --ly: 30%;
+  background:
+    radial-gradient(ellipse 46vmax 40vmax at var(--lx) var(--ly), rgba(255, 214, 150, .16), rgba(255, 214, 150, 0) 60%),
+    radial-gradient(ellipse 70vmax 62vmax at var(--lx) var(--ly), rgba(0,0,0,0) 30%, rgba(20, 12, 6, .42) 100%);
+}
+/* ── The clip canvas — above the papers, below every veil ────────────────── */
+.desk-alt-clips { position: fixed; inset: 0; z-index: 2; pointer-events: none; display: block; }
