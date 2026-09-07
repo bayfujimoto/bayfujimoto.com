@@ -35,8 +35,27 @@ bundles; the return lowers the papers with an ease-in-out and reveals the
 originals as they land; the fan shows the desk's sheets as literal clones;
 the under-folder is deep green; clips are objects in a clip canvas above the
 papers (real models when published as `desk-clip-<kind>.glb`, primitive
-stand-ins until then). Nothing below is decided until it is recorded in
-`docs/decisions.md`.
+stand-ins until then). Second look (2026-09-07): everything with height —
+key, amber, stamp, clips — now draws in an objects canvas ABOVE the paper,
+with a shadow-catcher plane so the objects shadow the sheets they lie
+across; scans still on the red scanning ground never reach the desk (the
+cut-out is used where one exists; `RED_BACKGROUND` lists the uncut records
+to skip); the Accumulation pile is tighter and stays on the folder.
+
+**Clip models — published 2026-09-07** to `models/web/` (bulldog 289 KB,
+paperclip 196 KB, pin 23 KB). Bay downloaded them from Sketchfab; they were
+prepared with `scripts/prep-clip-model.js` (drops cameras/lights, bakes the
+flat-lying rotation: paper clip and pin `--rotx 90`, binder clip none) and
+finished with `finish-desk-model.js --static` (binder clip textures at 512).
+Sources and names: binder clip → "binder clips" by blacksheeptal
+(sketchfab.com/3d-models/binder-clips-5e55c38b24dc4c239448efa1c6b7f49f, CC BY,
+9.7k faces) as `desk-clip-bulldog.glb`; paper clip → "Metal Paper Clip" by
+risteralline (…/metal-paper-clip-76ad9d26872349bb942dff376270036e, CC BY,
+15.9k) as `desk-clip-paperclip.glb`; safety pin → "safety pins" by rxf10240
+(…/safety-pins-515f811d9796446eae2269ee676137f7, CC BY, 3.3k) as
+`desk-clip-pin.glb`. All CC Attribution: the site needs a credit line (the
+Guide's colophon is the natural place). Nothing below is decided until it is
+recorded in `docs/decisions.md`.
 
 ## Purpose
 

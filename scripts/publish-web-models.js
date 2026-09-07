@@ -18,7 +18,7 @@
 
 import { readFileSync, existsSync, statSync } from "fs";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-import { DESK_OBJECTS } from "../src/shared/desk-objects.js";
+import { DESK_OBJECTS, DESK_CLIPS } from "../src/shared/desk-objects.js";
 
 const DRY_RUN = process.argv.includes("--dry-run");
 const srcArg = process.argv.indexOf("--src");
@@ -51,7 +51,7 @@ const client = new S3Client({
 });
 
 let total = 0;
-for (const { file } of Object.values(DESK_OBJECTS)) {
+for (const { file } of [...Object.values(DESK_OBJECTS), ...Object.values(DESK_CLIPS)]) {
   const path = new URL(file, SRC);
   if (!existsSync(path)) { console.log(`MISSING  ${file} — not in ${SRC.pathname}`); continue; }
   const body = readFileSync(path);

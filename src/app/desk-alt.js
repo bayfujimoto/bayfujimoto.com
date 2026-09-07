@@ -6,12 +6,13 @@
 // and the clips are the scene. Ported from mockups/desk-papers/ (rev 3); the
 // plan of record is docs/desk-papers-plan.md.
 //
-// Three layers, bottom to top: the desk canvas (wood, key, amber, stamp); the
-// DOM stage (folder, papers), lit by an overlay that follows the desk's lamp
-// so paper and wood are lit by the same light; and a clip canvas (binder and
-// paper clips, real objects sitting on the paper), which shares the desk
-// camera and is drawn above the DOM because the clips are on top of the
-// sheets. Veils and sheets stack above all three as everywhere else.
+// Three layers, bottom to top: the desk canvas (the wood alone); the DOM
+// stage (folder, papers), lit by an overlay that follows the desk's lamp so
+// paper and wood are lit by the same light; and the objects canvas — the key,
+// the amber, the stamp, the clips — which shares the desk camera and is drawn
+// above the DOM because everything with height stands on the paper, never
+// under it. A shadow-catcher plane in that canvas lays the objects' shadows
+// onto the paper. Veils and sheets stack above all three as everywhere else.
 //
 // Two compositions: wide (the reference collage's landscape folder) and
 // vertical (a portrait folder for phones, the same papers re-piled). Papers
@@ -30,7 +31,7 @@ import * as THREE from "three";
 import { navigate } from "./router.js";
 import { getState } from "./state.js";
 import { dismissLoadingScreen } from "./loading.js";
-import { DESK_OBJECTS, MODEL_BASE, WEB_BASE } from "../shared/desk-objects.js";
+import { DESK_OBJECTS, DESK_CLIPS, MODEL_BASE, WEB_BASE } from "../shared/desk-objects.js";
 import { createModelLoader } from "./model-look.js";
 import { isSceneRenderPaused } from "./scene.js";
 import { configureAltDesk } from "./panels.js";
@@ -54,14 +55,14 @@ const REGIMES = {
     folder: { x: 200, y: 90, w: S(445), h: S(315), tab: { x: S(80), w: S(95) } },
     bundles: { identity: [S(8), S(10)], consumption: [S(78), S(-8)], creation: [S(80), S(108)], labor: [S(232), S(36)], accumulation: [S(308), S(-2)] },
     zorder: ["identity", "labor", "consumption", "creation", "accumulation"],
-    objects: { guide: { x: 110, y: 700 }, amber: { x: 1110, y: 650 }, stamp: { x: 200 + S(196), y: 90 + S(315) + 64 } },
+    objects: { guide: { x: 130, y: 690 }, amber: { x: 1090, y: 620 }, stamp: { x: 200 + S(196), y: 90 + S(315) + 6 } },
   },
   vertical: {
     stage: { w: 600, h: 1240 },
     folder: { x: 40, y: 30, w: 520, h: 1060, tab: { x: 60, w: 150 } },
     bundles: { identity: [20, 20], consumption: [200, 10], accumulation: [215, 300], creation: [20, 580], labor: [300, 610] },
     zorder: ["identity", "consumption", "accumulation", "creation", "labor"],
-    objects: { guide: { x: 130, y: 1185 }, amber: { x: 500, y: 1175 }, stamp: { x: 300, y: 1160 } },
+    objects: { guide: { x: 130, y: 1150 }, amber: { x: 500, y: 1140 }, stamp: { x: 300, y: 1096 } },
   },
 };
 const regimeName = () => (window.innerWidth < 600 ? "vertical" : "wide");
@@ -107,9 +108,6 @@ function stampCircle(x, y, d, text, date, r = -14) {
     <text filter="url(#da-ink)" fill="var(--ink-green)" font-family="ui-monospace, monospace" font-size="9.5" letter-spacing="1.5"><textPath href="#${id}" startOffset="2%">${esc(text)}</textPath></text>
     <text filter="url(#da-ink)" fill="var(--ink-green)" x="50" y="54" text-anchor="middle" font-family="ui-monospace, monospace" font-size="10" font-weight="700">${esc(date)}</text></svg>`;
 }
-// The clips are objects in the clip overlay, not drawings; the DOM keeps only
-// a soft shadow under each, inside the bundle so it moves with it.
-const clipShadow = (x, y, w, h, r = 0) => `<div class="da-clip-shadow" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px;transform:rotate(${r}deg)"></div>`;
 
 // ── Documents, typeset from the archive where the record is at hand ─────────
 // Each bundle is a series; its box is the button's footprint. Sheet boxes are
@@ -127,10 +125,16 @@ function mm(dim) { const m = /(\d+(?:\.\d+)?)\s*[x×]\s*(\d+(?:\.\d+)?)/.exec(St
 // The Accumulation column is the reference's column of real ephemera, at true
 // size: seven slots, each with the shape it wants, filled from the newest
 // records that have a scan and recorded dimensions — each record once.
+// Records whose published display derivative is the raw scan on the red
+// scanning ground (no cut-out yet). Kept off the desk until they are cut.
+const RED_BACKGROUND = new Set(["EPH-2026-023", "EPH-2026-026"]);
 function accumulationSlots(items) {
-  const pool = byDateDesc(items).filter((i) => i.assets?.front && mm(i.dimensions)).map((i) => {
+  // A scan still on its red scanning background never reaches the desk:
+  // the cut-out is preferred, and a record with neither is skipped.
+  const usable = (i) => i.assets?.front && mm(i.dimensions) && (i.assets?.cutout || !RED_BACKGROUND.has(i.id));
+  const pool = byDateDesc(items).filter(usable).map((i) => {
     const [w, h] = mm(i.dimensions);
-    return { id: i.id, src: imageUrl(i.assets.front, "display"), w, h, aspect: h / w, area: w * h };
+    return { id: i.id, src: i.assets.cutout ? imageUrl(i.assets.cutout, "cutout") : imageUrl(i.assets.front, "display"), w, h, aspect: h / w, area: w * h };
   });
   const take = (pred) => { let best = null, bs = Infinity; pool.forEach((c) => { const sc = pred(c); if (sc < bs) { bs = sc; best = c; } }); if (best) pool.splice(pool.indexOf(best), 1); return best; };
   // Each slot wants a shape and has room for a size; a record that would
@@ -138,12 +142,12 @@ function accumulationSlots(items) {
   const fits = (c, maxW, maxH) => (c.w <= maxW && c.h <= maxH ? 0 : 1e6);
   const nearAspect = (t, maxW = 999, maxH = 999) => (c) => Math.abs(Math.log(c.aspect) - Math.log(t)) + fits(c, maxW, maxH);
   const backing  = take((c) => (c.aspect >= 1 && c.w <= 190 ? -c.area : 1e9));  // the largest portrait piece
-  const receipt  = take(nearAspect(0.55, 130, 90));   // wide, small — pinned at the top
+  const receipt  = take(nearAspect(0.55, 125, 80));   // wide, small — pinned at the top
   const brochure = take(nearAspect(1.4, 120, 220));   // portrait, mid
   const longTkt  = take((c) => (c.aspect < 0.5 && c.w >= 120 ? nearAspect(0.33)(c) : 1e9)); // a strip, turned upright
-  const postcard = take(nearAspect(1.4, 120, 160));   // portrait, overhanging the right edge
+  const postcard = take(nearAspect(1.4, 110, 155));   // portrait, overhanging the right edge
   const small    = take(nearAspect(1.3, 90, 110));    // small, square-ish
-  const bill     = take(nearAspect(0.5, 145, 90));    // wide, bottom
+  const bill     = take(nearAspect(0.5, 125, 80));    // wide, bottom
   return { backing, receipt, brochure, longTkt, postcard, small, bill };
 }
 
@@ -180,14 +184,13 @@ function buildBundles(archive) {
   const A = accumulationSlots(series.accumulation?.items || []);
   const box = [297, 540];
   const accHtml = [
-    A.backing  && scanTrue(A.backing.src,  [18, 40], A.backing.w, A.backing.h, 0.5),
-    A.brochure && scanTrue(A.brochure.src, [26, 118], A.brochure.w, A.brochure.h, 0.6),
-    A.receipt  && scanTrue(A.receipt.src,  [8, -6], A.receipt.w, A.receipt.h, -1),
-    A.small    && scanTrue(A.small.src,    [30, 372], A.small.w, A.small.h, -1),
-    A.longTkt  && scanTrue(A.longTkt.src,  [150 + Math.round(A.longTkt.h * PX_PER_MM), 286], A.longTkt.w, A.longTkt.h, 90, `transform-origin:0 0;transform:rotate(90deg)`),
-    A.postcard && scanTrue(A.postcard.src, [box[0] - 60, 316], A.postcard.w, A.postcard.h, 1),
-    A.bill     && scanTrue(A.bill.src,     [148, 466], A.bill.w, A.bill.h, -1),
-    clipShadow(4, 548, 40, 20, 0), clipShadow(30, 540, 14, 30, 0), clipShadow(156, 2, 46, 10, -20),
+    A.backing  && scanTrue(A.backing.src,  [22, 44], A.backing.w, A.backing.h, 0.5),
+    A.brochure && scanTrue(A.brochure.src, [34, 96], A.brochure.w, A.brochure.h, 0.6),
+    A.receipt  && scanTrue(A.receipt.src,  [12, -4], A.receipt.w, A.receipt.h, -1),
+    A.small    && scanTrue(A.small.src,    [40, 330], A.small.w, A.small.h, -1),
+    A.longTkt  && scanTrue(A.longTkt.src,  [118 + Math.round(A.longTkt.h * PX_PER_MM), 262], A.longTkt.w, A.longTkt.h, 90, `transform-origin:0 0;transform:rotate(90deg)`),
+    A.postcard && scanTrue(A.postcard.src, [box[0] - 96, 296], A.postcard.w, A.postcard.h, 1),
+    A.bill     && scanTrue(A.bill.src,     [126, 442], A.bill.w, A.bill.h, -1),
   ].filter(Boolean).join("");
 
   return [
@@ -203,7 +206,6 @@ function buildBundles(archive) {
       sheet("da-sheet--rough", [7 - 8, 8 - 10, 82, 16], `<div class="da-note" style="left:8px;top:5px;font-size:11px;letter-spacing:.08em">${esc(timetable)}</div>${tape(2, -3, 16, 9, -8)}${tape(70, -2, 16, 9, 6)}`, { sub: "biography" }),
       sheet("da-sheet--white", [18 - 8, 258 - 10, 64, 36], `<div class="da-head da-head--serif" style="top:6px;font-style:normal">${esc(cardName)}</div><div class="da-mono" style="top:20px">${esc(cardLine)}</div><div class="da-stain" style="left:-10px;top:-14px;width:46px;height:40px;opacity:.5"></div>`, { sub: "contact" }),
       sheet("", [12 - 8, 292 - 10, 100, 11], `<div class="da-rules" style="opacity:.3"></div>`, { torn: "top", seed: 3 }),
-      clipShadow(-30, S(38), 44, 40, 0),
     ].join("") },
 
     { id: "consumption", title: labelOf("consumption"), sub: "log · receipts · sleeve · card", box: [S(170), S(160)], clips: [{ kind: "paperclip", x: S(222 - 78) + 10, y: S(12 + 8) + 24, r: 0 }], html: [
@@ -219,7 +221,6 @@ function buildBundles(archive) {
         <div class="da-note" style="left:8px;top:200px;font-size:16px;color:var(--ink-pencil)">again in sept.</div>
         ${crease(90, 50, 0.9)}`, { sub: "films" }),
       `<div class="da-photo" style="left:200px;top:96px;width:40px;height:40px;transform:rotate(-1deg)"><div class="da-photo__img"${still ? ` style="background-image:url('${esc(still)}')"` : ""}></div>${tape(-8, -5, 20, 7, -30)}</div>`,
-      clipShadow(S(222 - 78) + 2, S(12 + 8), 18, 50, 0),
     ].join("") },
 
     { id: "creation", title: labelOf("creation"), sub: "sketch · note · print · pattern · strip", box: [S(170), S(190)], clips: [], html: [
@@ -477,7 +478,6 @@ function makeFanFactory(ctx) {
 // binder clip sits on top of the sheet it holds. Each kind loads a model from
 // WEB_BASE if one is published (desk-clip-<kind>.glb) and otherwise builds a
 // stand-in from primitives, flagged so the stand-in can be told apart.
-const CLIP_MM = { bulldog: 32, paperclip: 50, pin: 44 };   // real lengths, mm
 function makeClipStandIn(kind) {
   const g = new THREE.Group();
   const steel = new THREE.MeshStandardMaterial({ color: 0xb9b2a4, metalness: 0.9, roughness: 0.35 });
@@ -572,16 +572,27 @@ export async function initDeskAlt() {
   spot.shadow.camera.near = 4; spot.shadow.camera.far = 20; spot.shadow.bias = -0.001;
   scene.add(spot, spot.target);
 
-  // ── WebGL: the clips, above the papers ──
-  const clipCanvas = document.createElement("canvas");
-  clipCanvas.className = "desk-alt-clips"; clipCanvas.setAttribute("aria-hidden", "true");
-  document.body.appendChild(clipCanvas);
-  let clipRenderer = null;
-  try { clipRenderer = new THREE.WebGLRenderer({ canvas: clipCanvas, antialias: true, alpha: true }); setupRenderer(clipRenderer); } catch (e) { clipRenderer = null; }
-  const clipScene = new THREE.Scene();
-  clipScene.add(new THREE.AmbientLight(0xffe0b0, 0.6));
-  const clipSpot = new THREE.SpotLight(0xffb347, 120, 20, Math.PI / 5, 0.4, 1.5);
-  clipSpot.position.copy(spot.position); clipScene.add(clipSpot, clipSpot.target);
+  // ── WebGL: the objects, above the papers ──
+  // Everything with height — key, amber, stamp, clips — stands on the paper,
+  // so it is drawn in a second canvas over the DOM stage with the same camera
+  // and lamp. A shadow-catcher plane at desk level renders only the shadows
+  // they cast, so the key darkens the sheet it lies across.
+  const objCanvas = document.createElement("canvas");
+  objCanvas.className = "desk-alt-objects"; objCanvas.setAttribute("aria-hidden", "true");
+  document.body.appendChild(objCanvas);
+  let objRenderer = null;
+  try { objRenderer = new THREE.WebGLRenderer({ canvas: objCanvas, antialias: true, alpha: true }); setupRenderer(objRenderer); } catch (e) { objRenderer = null; }
+  const objScene = new THREE.Scene();
+  objScene.add(new THREE.AmbientLight(0xffe0b0, 0.5));
+  const objSpot = new THREE.SpotLight(0xffb347, 120, 20, Math.PI / 5, 0.4, 1.5);
+  objSpot.position.copy(spot.position);
+  objSpot.castShadow = true; objSpot.shadow.mapSize.set(2048, 2048);
+  objSpot.shadow.camera.near = 4; objSpot.shadow.camera.far = 20; objSpot.shadow.bias = -0.001;
+  objScene.add(objSpot, objSpot.target);
+  const catcher = new THREE.Mesh(new THREE.PlaneGeometry(40, 40), new THREE.ShadowMaterial({ opacity: 0.42 }));
+  catcher.rotation.x = -Math.PI / 2; catcher.receiveShadow = true;
+  objScene.add(catcher);
+  const clipScene = objScene;   // the clips share it
 
   const manager = new THREE.LoadingManager();
   manager.onLoad = () => { render(); dismissLoadingScreen(); };
@@ -645,12 +656,12 @@ export async function initDeskAlt() {
     const f = fitModel(model, cfg);
     target.add(model);
     objects.push({ id, model, ...f, anchor });
-    if (target === scene) model.traverse((ch) => { if (ch.isMesh) { ch.userData.altId = id; clickables.push(ch); } });
+    if (!id.startsWith("clip:")) model.traverse((ch) => { if (ch.isMesh) { ch.userData.altId = id; clickables.push(ch); } });
     placeObjects();
   }
   const objectAnchor = (id) => () => REGIMES[fit.regime].objects[id];
 
-  loader.load(`${WEB_BASE}${DESK_OBJECTS.guide.file}`, (gltf) => addObject("guide", gltf.scene, { w: 1, h: 1, d: 1, ry: 90 }, scene, objectAnchor("guide")));
+  loader.load(`${WEB_BASE}${DESK_OBJECTS.guide.file}`, (gltf) => addObject("guide", gltf.scene, { w: 1, h: 1, d: 1, ry: 90 }, objScene, objectAnchor("guide")));
   {
     const geo = new THREE.IcosahedronGeometry(0.5, 2);
     const pos = geo.attributes.position; const r = rng(42); const v = new THREE.Vector3();
@@ -660,8 +671,10 @@ export async function initDeskAlt() {
       pos.setXYZ(i, v.x, v.y, v.z);
     }
     geo.computeVertexNormals();
-    const mat = new THREE.MeshPhysicalMaterial({ color: 0xd9902a, emissive: 0x5a2e05, emissiveIntensity: 0.35, roughness: 0.32, metalness: 0, transmission: 0.4, thickness: 0.8, ior: 1.54, attenuationColor: new THREE.Color(0x8a4a10), attenuationDistance: 0.9, clearcoat: 0.4 });
-    addObject("amber", new THREE.Mesh(geo, mat), { w: 0.9, h: 0.6, d: 0.9, ry: -20 }, scene, objectAnchor("amber"));
+    // Drawn over the papers on a transparent canvas, so no transmission (it
+    // would refract an empty scene); a clearcoated, faintly translucent lump.
+    const mat = new THREE.MeshPhysicalMaterial({ color: 0xd9902a, emissive: 0x5a2e05, emissiveIntensity: 0.35, roughness: 0.3, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.25, transparent: true, opacity: 0.94 });
+    addObject("amber", new THREE.Mesh(geo, mat), { w: 0.9, h: 0.6, d: 0.9, ry: -20 }, objScene, objectAnchor("amber"));
   }
   {
     const stamp = new THREE.Group();
@@ -669,7 +682,7 @@ export async function initDeskAlt() {
     const face = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.26, 0.26), new THREE.MeshStandardMaterial({ color: 0x5f584d, roughness: 0.8 }));
     face.position.x = -0.47;
     stamp.add(body, face);
-    addObject("stamp", stamp, { w: 0.9, h: 0.3, d: 0.3, ry: 0 }, scene, objectAnchor("stamp"));
+    addObject("stamp", stamp, { w: 0.9, h: 0.3, d: 0.3, ry: 0 }, objScene, objectAnchor("stamp"));
   }
 
   // The clips: one object per clip in each bundle, anchored to the bundle's
@@ -677,12 +690,12 @@ export async function initDeskAlt() {
   const clipLoader = createModelLoader();   // outside the loading screen's manager
   bundles.forEach((b) => (b.clips || []).forEach((c, i) => {
     const id = `clip:${b.id}:${i}`;
-    const lenUnits = (CLIP_MM[c.kind] || 40) * PX_PER_MM * unitsPerStagePx * (c.small ? 0.7 : 1);
+    const lenUnits = (DESK_CLIPS[c.kind]?.mm || 40) * PX_PER_MM * unitsPerStagePx * (c.small ? 0.7 : 1);
     const cfg = { w: lenUnits, h: lenUnits, d: lenUnits, ry: c.r };
     const anchor = () => { const R = REGIMES[fit.regime]; const p = R.bundles[b.id]; return p ? { x: R.folder.x + p[0] + c.x, y: R.folder.y + p[1] + c.y } : null; };
     const standIn = makeClipStandIn(c.kind);
     addObject(id, standIn, cfg, clipScene, anchor);
-    clipLoader.load(`${WEB_BASE}desk-clip-${c.kind}.glb`, (gltf) => {
+    clipLoader.load(`${WEB_BASE}${DESK_CLIPS[c.kind]?.file || `desk-clip-${c.kind}.glb`}`, (gltf) => {
       const o = objects.find((x) => x.id === id); if (!o) return;
       clipScene.remove(o.model);
       const f = fitModel(gltf.scene, cfg);
@@ -736,9 +749,9 @@ export async function initDeskAlt() {
     lightPos.z += ((-2 + -mouse.y * 0.5) - lightPos.z) * 0.08;
     spot.position.x = lightPos.x; spot.position.z = lightPos.z;
     spot.target.updateMatrixWorld();
-    clipSpot.position.copy(spot.position); clipSpot.target.updateMatrixWorld();
+    objSpot.position.copy(spot.position); objSpot.target.updateMatrixWorld();
     renderer.render(scene, camera);
-    if (clipRenderer) clipRenderer.render(clipScene, camera);
+    if (objRenderer) objRenderer.render(objScene, camera);
     updateLightOverlay();
   }
   if (reduceMotion) render();
@@ -748,7 +761,7 @@ export async function initDeskAlt() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
-    if (clipRenderer) clipRenderer.setSize(window.innerWidth, window.innerHeight);
+    if (objRenderer) objRenderer.setSize(window.innerWidth, window.innerHeight);
     fit = layout(layer, regimeName());
     placeObjects();
     lastLx = -1;

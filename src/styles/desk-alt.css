@@ -135,8 +135,6 @@
   radial-gradient(circle at 0 0, rgba(255,255,255,.25), transparent 12%),
   radial-gradient(circle at 100% 100%, rgba(255,255,255,.2), transparent 10%),
   radial-gradient(circle at 100% 0, rgba(10,8,5,.18), transparent 9%); }
-/* the shadow a clip casts on the paper; the clip itself is in the clip canvas */
-.da-clip-shadow { position: absolute; pointer-events: none; border-radius: 40%; background: rgba(10,8,5,.45); filter: blur(4px); opacity: .8; }
 .da-crease { position: absolute; inset: 0; pointer-events: none; mix-blend-mode: soft-light; }
 
 /* the hover title — the live desk's, at the bottom right */
@@ -191,5 +189,5 @@
     radial-gradient(ellipse 46vmax 40vmax at var(--lx) var(--ly), rgba(255, 214, 150, .16), rgba(255, 214, 150, 0) 60%),
     radial-gradient(ellipse 70vmax 62vmax at var(--lx) var(--ly), rgba(0,0,0,0) 30%, rgba(20, 12, 6, .42) 100%);
 }
-/* ── The clip canvas — above the papers, below every veil ────────────────── */
-.desk-alt-clips { position: fixed; inset: 0; z-index: 2; pointer-events: none; display: block; }
+/* ── The objects canvas — above the papers, below every veil ─────────────── */
+.desk-alt-objects { position: fixed; inset: 0; z-index: 2; pointer-events: none; display: block; }

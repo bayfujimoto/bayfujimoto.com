@@ -19,6 +19,18 @@ export const DESK_OBJECTS = {
   guide:        { noun: "key",     file: "desk-guide-key.glb" },
 };
 
+// The clips on the papers desk (/home-alt, src/app/desk-alt.js): binder
+// clip, paper clip, safety pin. Published beside the desk objects under
+// WEB_BASE by scripts/publish-web-models.js; until a file is there the desk
+// draws a primitive stand-in. Sources (all CC Attribution, Sketchfab — see
+// docs/desk-papers-plan.md for the credit line): "binder clips" by
+// blacksheeptal, "Metal Paper Clip" by risteralline, "safety pins" by rxf10240.
+export const DESK_CLIPS = {
+  bulldog:   { file: "desk-clip-bulldog.glb",   mm: 32 },
+  paperclip: { file: "desk-clip-paperclip.glb", mm: 50 },
+  pin:       { file: "desk-clip-pin.glb",       mm: 44 },
+};
+
 // Desk-object click remap. The labor and accumulation objects keep their forms,
 // positions, and labels, but clicking each opens the other's browse view.
 // Applied to every desk-entry path (3D click, keyboard skip menu, hidden HTML
