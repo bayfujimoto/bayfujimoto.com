@@ -3,9 +3,10 @@
 // Poly Haven's rust_coarse_01, CC0), the folder, every document as a textured
 // plane (paper.js draws them from desk-docs.js), the key, the amber, the
 // stamp and the clips — one scene, one light, real shadows. The light is a
-// handheld flashlight: it slides along an arc at the near edge under the
-// cursor and always points at the centre of the desk, so the beam rakes
-// across the surface and every edge throws a long shadow. Industry
+// handheld flashlight: it slides along an arc at the near edge with the
+// cursor's x and is aimed at the point under the cursor, so the beam lands
+// where the pointer is and rakes across the surface on its way, every edge
+// throwing a long shadow. Industry
 // mechanics: a light cookie on the spot, a shadow map, physically based
 // materials under a dark environment, a volumetric cone, room-filling dust
 // lit per particle by the cone, bloom on the hotspot, ACES.
@@ -43,7 +44,7 @@ const TUNE = {
     radius: 5.4,       // the arc's radius around the desk centre
     height: 2.1,       // how high the hand is above the table
     sweep: 58,         // degrees the source swings each way as the cursor crosses the screen
-    aimAt: [0, 0, 0.25],
+    aimAt: [0, 0, 0.25],   // where the beam rests when nothing is pointing
     cookie: true,
   },
   ambient: { hemi: [0x6f86a6, 0x05070b, 0.32] },
@@ -282,17 +283,30 @@ export async function initDeskMetal() {
   // ── The flashlight on its arc ──
   const pointerNdc = new THREE.Vector2(0, 0);
   let havePointer = false;
-  window.addEventListener("pointermove", (e) => { pointerNdc.set((e.clientX / window.innerWidth) * 2 - 1, -(e.clientY / window.innerHeight) * 2 + 1); havePointer = true; }, { passive: true });
+  const aimRay = new THREE.Raycaster(), deskPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0), aimHit = new THREE.Vector3();
+  const aimPoint = new THREE.Vector3(...F.aimAt);
+  window.addEventListener("pointermove", (e) => {
+    pointerNdc.set((e.clientX / window.innerWidth) * 2 - 1, -(e.clientY / window.innerHeight) * 2 + 1);
+    aimRay.setFromCamera(pointerNdc, camera);
+    if (aimRay.ray.intersectPlane(deskPlane, aimHit)) { aimPoint.copy(aimHit); havePointer = true; }
+  }, { passive: true });
   document.addEventListener("mouseleave", () => { havePointer = false; });
   const t0 = performance.now();
   function aim(now) {
+    // The hand: on the arc at the near edge, on the cursor's side. The beam:
+    // at the point under the cursor. Both move at once, without lag.
     const x = havePointer ? pointerNdc.x : 0;
+    const target = havePointer ? aimPoint : aimAt;
     const t = (now - t0) / 1000;
     const sway = reduceMotion ? 0 : 1;
     const theta = (x * F.sweep + sway * (Math.sin(t * 0.6) * 1.2 + Math.sin(t * 1.7) * 0.4)) * Math.PI / 180;
     spot.position.set(aimAt.x + Math.sin(theta) * F.radius, F.height + sway * Math.sin(t * 0.8) * 0.02, aimAt.z + Math.cos(theta) * F.radius);
-    spot.target.position.set(aimAt.x + sway * Math.sin(t * 0.5) * 0.05, aimAt.y, aimAt.z + sway * Math.cos(t * 0.43) * 0.04);
+    spot.target.position.set(target.x + sway * Math.sin(t * 0.5) * 0.04, 0, target.z + sway * Math.cos(t * 0.43) * 0.03);
     spot.target.updateMatrixWorld();
+    // A beam aimed near the hand would blow out; hold the pool's exposure
+    // roughly level as the throw shortens (the eye does the same).
+    const d = spot.position.distanceTo(spot.target.position);
+    spot.intensity = F.intensity * Math.max(0.3, Math.pow(d / F.radius, 1.25));
   }
 
   // ── Volumetric cone ──
@@ -303,15 +317,15 @@ export async function initDeskMetal() {
     fragmentShader: `uniform vec3 uColor; uniform float uOpacity; uniform float uTime; varying vec3 vLocal;
       float hash(vec3 p){ return fract(sin(dot(p, vec3(12.9898,78.233,37.719)))*43758.5453); }
       void main(){
-        float t = clamp(vLocal.y + 0.5, 0.0, 1.0);          // 0 at the lamp (top), 1 at the desk
-        float r = length(vLocal.xz) / (0.02 + t * 1.0);      // radial, normalised to the cone
+        float t = clamp(0.5 - vLocal.y, 0.0, 1.0);          // 0 at the lamp (the apex, +y), 1 at the desk (the base, −y)
+        float r = length(vLocal.xz) / (0.02 + t * 1.0);      // radial, normalised to the cone's width here
         float radial = pow(clamp(1.0 - r * r, 0.0, 1.0), 1.6);
-        float along = pow(1.0 - t, 1.2) * smoothstep(0.0, 0.08, t);
+        float along = (1.0 - 0.6 * t) * smoothstep(0.0, 0.06, t);   // densest near the lamp, thinning toward the desk
         float n = 0.85 + 0.15 * hash(floor(vLocal * 40.0 + uTime * 0.2));
         gl_FragColor = vec4(uColor, radial * along * uOpacity * n);
       }`,
   });
-  // unit cone: radius 1 at the base (y=+0.5), apex at y=-0.5 — scaled per frame
+  // unit cone: apex (radius 0.02) at y=+0.5, base (radius 1) at y=−0.5 — scaled per frame
   const coneGeo = new THREE.CylinderGeometry(0.02, 1.0, 1.0, 40, 1, true);
   const cone = new THREE.Mesh(coneGeo, coneMat); cone.renderOrder = 20; scene.add(cone);
   const coneUp = new THREE.Vector3(0, -1, 0), coneDir = new THREE.Vector3(), coneQ = new THREE.Quaternion();
@@ -319,7 +333,7 @@ export async function initDeskMetal() {
     coneDir.subVectors(spot.target.position, spot.position); const L = coneDir.length(); coneDir.normalize();
     const rad = Math.tan(F.angle) * L * 0.92;
     cone.scale.set(rad, L, rad);
-    coneQ.setFromUnitVectors(new THREE.Vector3(0, 1, 0), coneDir);   // local +y (base) toward the target
+    coneQ.setFromUnitVectors(new THREE.Vector3(0, -1, 0), coneDir);  // local −y (the base) toward the target; the apex stays at the lamp
     cone.quaternion.copy(coneQ);
     cone.position.copy(spot.position).addScaledVector(coneDir, L / 2);
   }
