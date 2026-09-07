@@ -13,7 +13,9 @@ constellations:
   - 2024-spring-break
 inspection: card
 assets:
-  front: EPH-2026-006-front.jpg
-  thumbnail: EPH-2026-006-front-thumb.jpg
+  front: EPH-2026-006-front.png?v=f87026bfc20x2
+  thumbnail: EPH-2026-006-front-thumb.webp?v=f87026bfc20x2
+  back: EPH-2026-006-back.png?v=06a6c4fcc20x2
 dimensions: 54 x 85
+context_note: Edges are worn because I kept it in my wallet for several months.
 ---
