@@ -220,3 +220,23 @@ overlapping, which keeps the hit areas adjacent rectangles.
   A count is a label; a stack of ticket stubs is a count in kind.
 - Does Labor's bundle keep three sheets when they open nothing severally, or
   is one folded drawing the more honest object?
+
+## The steel look (branch `look-steel`, 2026-09-07)
+
+A second look for the desk, tried on its own branch: a brushed stainless
+table under a handheld flashlight — colder and darker, after Resident Evil.
+Both looks are complete and switchable in `src/app/look.js` (`DEFAULT_LOOK`;
+`?look=wood` / `?look=steel` on the URL to compare), so rolling back is one
+constant on the branch, or simply staying on `main`, which has only the wood.
+Bay's choices: a dim cold ambient outside the beam (the bundles stay
+findable); the beam aimed at the cursor with a lag and a slow handheld sway
+(the finger, on touch; centre at rest); the current desk.glb re-skinned
+rather than a new table; the palette above the desk shifted blue-black
+(`src/styles/look-steel.css`, scoped to `[data-look="steel"]`); dust in the
+beam, a faint flicker, grain over the frame (all off under reduced motion).
+Mechanics: the table is a MeshPhysicalMaterial with canvas-drawn brushing
+(roughness + normal maps) and anisotropy along the brush, reflecting a black
+room with one cold panel overhead (PMREM — one per renderer, since a PMREM
+texture belongs to the context that made it); the DOM stage's light overlay
+becomes a beam whose radius is computed from the cone; the flashlight's aim is
+frame-rate independent.

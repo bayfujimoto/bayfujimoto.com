@@ -37,7 +37,10 @@ import { createModelLoader } from "./model-look.js";
 import { isSceneRenderPaused } from "./scene.js";
 import { configureAltDesk } from "./panels.js";
 import { imageUrl } from "./image-url.js";
+import { LOOK, look } from "./look.js";
+import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 import "../styles/desk-alt.css";
+import "../styles/look-steel.css";
 
 // ── Geometry ─────────────────────────────────────────────────────────────────
 // Design units. The reference collage's folder is 445 × 315 px; everything is
@@ -286,7 +289,8 @@ function buildLayer(bundles) {
     </div>
     ${bundles.map((b) => `<button class="placed da-bundle" type="button" data-id="${b.id}" data-title="${esc(b.title)}" data-sub="${esc(b.sub)}" style="width:${b.box[0]}px;height:${b.box[1]}px" aria-label="${esc(b.title)} — ${esc(b.sub)}">${b.html}</button>`).join("")}
   </div>
-  <div class="desk-alt__light" aria-hidden="true"></div>`;
+  <div class="desk-alt__light" aria-hidden="true"></div>
+  <div class="desk-alt__glow" aria-hidden="true"></div>`;
   document.body.appendChild(layer);
   return layer;
 }
@@ -525,9 +529,46 @@ function makeClipStandIn(kind) {
   return g;
 }
 
+// ── Brushed steel ────────────────────────────────────────────────────────────
+// The table's material for the steel look: a cool grey metal with the
+// brushing drawn as long horizontal streaks into a roughness map and a faint
+// normal map, and anisotropy along the brush so highlights stretch with it.
+function makeBrushedSteel() {
+  const W = 1024, H = 1024, r = rng(11);
+  const rough = document.createElement("canvas"); rough.width = W; rough.height = H;
+  const g = rough.getContext("2d");
+  g.fillStyle = "#6a6a6a"; g.fillRect(0, 0, W, H);
+  for (let i = 0; i < 9000; i++) {
+    const y = r() * H, len = 60 + r() * 500, x = r() * W, v = 40 + Math.floor(r() * 150);
+    g.strokeStyle = `rgba(${v},${v},${v},${0.35 + r() * 0.5})`; g.lineWidth = 0.8 + r() * 2.2;
+    g.beginPath(); g.moveTo(x, y); g.lineTo(x + len, y + (r() - 0.5) * 0.6); g.stroke();
+  }
+  for (let i = 0; i < 40; i++) {   // the odd scuff and fingerprint
+    const x = r() * W, y = r() * H, rad = 20 + r() * 90;
+    const grd = g.createRadialGradient(x, y, 0, x, y, rad); grd.addColorStop(0, `rgba(150,150,150,${0.12 + r() * 0.2})`); grd.addColorStop(1, "rgba(150,150,150,0)");
+    g.fillStyle = grd; g.fillRect(x - rad, y - rad, rad * 2, rad * 2);
+  }
+  const roughTex = new THREE.CanvasTexture(rough); roughTex.wrapS = roughTex.wrapT = THREE.RepeatWrapping; roughTex.repeat.set(2, 2); roughTex.anisotropy = 8;
+  // A normal map from the same streaks: horizontal grooves tilt the normal in Y (green).
+  const nrm = document.createElement("canvas"); nrm.width = W; nrm.height = H;
+  const n = nrm.getContext("2d"); n.fillStyle = "#8080ff"; n.fillRect(0, 0, W, H);
+  for (let i = 0; i < 6000; i++) {
+    const y = r() * H, len = 80 + r() * 600, x = r() * W, up = r() > 0.5;
+    n.strokeStyle = up ? `rgba(128,${150 + Math.floor(r() * 40)},255,0.35)` : `rgba(128,${80 + Math.floor(r() * 40)},255,0.35)`; n.lineWidth = 0.6 + r();
+    n.beginPath(); n.moveTo(x, y); n.lineTo(x + len, y); n.stroke();
+  }
+  const nrmTex = new THREE.CanvasTexture(nrm); nrmTex.wrapS = nrmTex.wrapT = THREE.RepeatWrapping; nrmTex.repeat.set(2, 2); nrmTex.anisotropy = 8;
+  return new THREE.MeshPhysicalMaterial({
+    color: 0x3e454d, metalness: 0.78, roughness: 0.55, roughnessMap: roughTex,
+    normalMap: nrmTex, normalScale: new THREE.Vector2(0.6, 0.6),
+    anisotropy: 0.85, anisotropyRotation: 0, envMapIntensity: 1.0,
+  });
+}
+
 // ── Init ─────────────────────────────────────────────────────────────────────
 export async function initDeskAlt() {
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  document.documentElement.dataset.look = LOOK;
   let readyResolve; const whenReady = new Promise((r) => { readyResolve = r; });
   let fit = { s: 1, tx: 0, ty: 0, regime: regimeName() };
   const ctx = { archive: null, layer: null, reduceMotion, ready: false, whenReady, fit: () => fit };
@@ -541,6 +582,7 @@ export async function initDeskAlt() {
   fit = layout(layer, regimeName());
   ctx.ready = true; readyResolve();
   const lightEl = layer.querySelector(".desk-alt__light");
+  const glowEl = layer.querySelector(".desk-alt__glow");
 
   const hover = document.createElement("div");
   hover.className = "layer-meta scene-hover-meta desk-alt-hover";
@@ -579,9 +621,10 @@ export async function initDeskAlt() {
   const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
   camera.position.set(0, 5, 0.5);
   camera.lookAt(0, 0, 0);
-  scene.add(new THREE.AmbientLight(0xffe0b0, 0.5));
-  const spot = new THREE.SpotLight(0xffb347, 120, 20, Math.PI / 5, 0.4, 1.5);
-  spot.position.set(0, 8, -2); spot.target.position.set(0, 0, 0);
+  scene.add(new THREE.AmbientLight(look.ambient.color, look.ambient.intensity));
+  const L = look.spot;
+  const spot = new THREE.SpotLight(L.color, L.intensity, L.distance, L.angle, L.penumbra, L.decay);
+  spot.position.set(0, L.height, -2); spot.target.position.set(0, 0, 0);
   spot.castShadow = true; spot.shadow.mapSize.set(2048, 2048);
   spot.shadow.camera.near = 4; spot.shadow.camera.far = 20; spot.shadow.bias = -0.001;
   scene.add(spot, spot.target);
@@ -597,16 +640,38 @@ export async function initDeskAlt() {
   let objRenderer = null;
   try { objRenderer = new THREE.WebGLRenderer({ canvas: objCanvas, antialias: true, alpha: true }); setupRenderer(objRenderer); } catch (e) { objRenderer = null; }
   const objScene = new THREE.Scene();
-  objScene.add(new THREE.AmbientLight(0xffe0b0, 0.5));
-  const objSpot = new THREE.SpotLight(0xffb347, 120, 20, Math.PI / 5, 0.4, 1.5);
+  objScene.add(new THREE.AmbientLight(look.ambient.color, look.ambient.intensity));
+  const objSpot = new THREE.SpotLight(L.color, L.intensity, L.distance, L.angle, L.penumbra, L.decay);
   objSpot.position.copy(spot.position);
   objSpot.castShadow = true; objSpot.shadow.mapSize.set(2048, 2048);
   objSpot.shadow.camera.near = 4; objSpot.shadow.camera.far = 20; objSpot.shadow.bias = -0.001;
   objScene.add(objSpot, objSpot.target);
-  const catcher = new THREE.Mesh(new THREE.PlaneGeometry(40, 40), new THREE.ShadowMaterial({ opacity: 0.42 }));
+  const catcher = new THREE.Mesh(new THREE.PlaneGeometry(40, 40), new THREE.ShadowMaterial({ opacity: look.catcherOpacity }));
   catcher.rotation.x = -Math.PI / 2; catcher.receiveShadow = true;
   objScene.add(catcher);
   const clipScene = objScene;   // the clips share it
+
+  // A dark room for the steel to reflect: black, with one cold soft panel
+  // overhead and two dimmer ones to the sides, so the brushing catches a long
+  // highlight without the table going bright. Each renderer needs its own
+  // copy — a PMREM texture belongs to the context that made it.
+  if (look.environment === "darkroom") {
+    const room = () => {
+      const sc = new THREE.Scene(); sc.background = new THREE.Color(0x000000);
+      const panel = (w, h, color, pos, rot) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color, side: THREE.DoubleSide })); m.position.set(...pos); m.rotation.set(...rot); sc.add(m); };
+      panel(6, 2.2, 0x9fb4d6, [0, 6, -1], [Math.PI / 2, 0, 0]);
+      panel(3, 1.2, 0x2c3949, [-7, 2, 0], [0, Math.PI / 2, 0]);
+      panel(3, 1.2, 0x1d2634, [7, 2, 0], [0, -Math.PI / 2, 0]);
+      return sc;
+    };
+    const p1 = new THREE.PMREMGenerator(renderer);
+    scene.environment = p1.fromScene(room(), 0.03).texture; scene.environmentIntensity = 0.32; p1.dispose();
+    if (objRenderer) { const p2 = new THREE.PMREMGenerator(objRenderer); objScene.environment = p2.fromScene(room(), 0.03).texture; objScene.environmentIntensity = 1.2; p2.dispose(); }
+    // A cold fill from above, dark from below, so the objects outside the
+    // beam read as shapes rather than holes.
+    scene.add(new THREE.HemisphereLight(0x8fa3c2, 0x05070b, 0.12));
+    objScene.add(new THREE.HemisphereLight(0x8fa3c2, 0x05070b, 0.5));
+  }
 
   const manager = new THREE.LoadingManager();
   manager.onLoad = () => { render(); dismissLoadingScreen(); };
@@ -619,7 +684,8 @@ export async function initDeskAlt() {
     desk.scale.setScalar(20 / size.x);
     box.setFromObject(desk);
     desk.position.set(0, -box.max.y, 1);
-    desk.traverse((c) => { if (c.isMesh) { c.receiveShadow = true; c.castShadow = true; } });
+    const steel = look.deskMaterial === "brushed-steel" ? makeBrushedSteel() : null;
+    desk.traverse((c) => { if (c.isMesh) { c.receiveShadow = true; c.castShadow = true; if (steel) c.material = steel; } });
     scene.add(desk);
   });
 
@@ -744,32 +810,140 @@ export async function initDeskAlt() {
   });
   canvas.addEventListener("click", (e) => { if (getState().layer === "desk" && pick(e) === "guide") navigate({ layer: "guide" }); });
 
-  // ── Render ──
-  // The lamp lights the paper too: the DOM stage carries an overlay whose
-  // pool of light sits where the spot falls on the desk, so the folder sits
-  // in the same light as the wood — and darkens toward the same edges.
+  // ── Aim ──
+  // wood: the lamp leans toward the pointer and stays over the desk's middle.
+  // steel: a flashlight held near the camera, aimed at the point under the
+  // cursor (the finger, on touch), with a lag and a slow handheld sway.
+  const aimTarget = new THREE.Vector3(0, 0, 0.4);     // where the beam is going
+  const aimPoint = new THREE.Vector3(0, 0, 0.4);      // where it is
   const lightPos = { x: 0, z: -2 };
-  const lightOnDesk = new THREE.Vector3();
-  let lastLx = -1, lastLy = -1;
-  function updateLightOverlay() {
-    lightOnDesk.set(lightPos.x * 0.6, 0, lightPos.z * 0.45 + 0.6).project(camera);
-    const lx = Math.round((lightOnDesk.x + 1) / 2 * window.innerWidth), ly = Math.round((1 - lightOnDesk.y) / 2 * window.innerHeight);
-    if (lx === lastLx && ly === lastLy) return;
-    lastLx = lx; lastLy = ly;
-    lightEl.style.setProperty("--lx", `${lx}px`); lightEl.style.setProperty("--ly", `${ly}px`);
+  let pointerOnDesk = false;
+  const flashlight = look.aim === "flashlight";
+  window.addEventListener("pointermove", (e) => {
+    if (!flashlight) return;
+    pointer.set((e.clientX / window.innerWidth) * 2 - 1, -(e.clientY / window.innerHeight) * 2 + 1);
+    ray.setFromCamera(pointer, camera);
+    if (ray.ray.intersectPlane(plane, hit)) { aimTarget.copy(hit); pointerOnDesk = true; }
+  }, { passive: true });
+  window.addEventListener("pointerleave", () => { pointerOnDesk = false; });
+  document.addEventListener("mouseleave", () => { pointerOnDesk = false; });
+  const t0 = performance.now();
+  let lastAim = t0;
+  function aim(now) {
+    const dt = Math.min(0.1, (now - lastAim) / 1000); lastAim = now;
+    if (!flashlight) {
+      lightPos.x += (mouse.x - lightPos.x) * 0.08;
+      lightPos.z += ((-2 + -mouse.y * 0.5) - lightPos.z) * 0.08;
+      spot.position.x = lightPos.x; spot.position.z = lightPos.z;
+      spot.target.position.set(0, 0, 0);
+      return;
+    }
+    const t = (now - t0) / 1000;
+    if (!pointerOnDesk) aimTarget.set(0, 0, 0.4);
+    aimPoint.lerp(aimTarget, 1 - Math.exp(-dt * 4.5));   // frame-rate independent lag
+    const sway = reduceMotion ? 0 : 1;
+    const tx = aimPoint.x + sway * (Math.sin(t * 0.7) * 0.10 + Math.sin(t * 1.9) * 0.025);
+    const tz = aimPoint.z + sway * (Math.cos(t * 0.53) * 0.08 + Math.cos(t * 2.3) * 0.02);
+    // Held at the viewer's shoulder: above and a little in front of the
+    // camera, drifting with the aim so the beam stays steep.
+    spot.position.set(0.6 + tx * 0.25, L.height, 1.6 + tz * 0.2);
+    spot.target.position.set(tx, 0, tz);
   }
-  function render() {
-    lightPos.x += (mouse.x - lightPos.x) * 0.08;
-    lightPos.z += ((-2 + -mouse.y * 0.5) - lightPos.z) * 0.08;
-    spot.position.x = lightPos.x; spot.position.z = lightPos.z;
+
+  // ── Atmosphere ──
+  // Dust in the beam: a few hundred motes drifting in a column around the
+  // beam's axis, so they are only ever where the light is.
+  let dust = null;
+  if (look.atmosphere.dust) {
+    const N = 220, r = rng(7);
+    const pos = new Float32Array(N * 3); const seed = new Float32Array(N * 3);
+    for (let i = 0; i < N; i++) { seed[i * 3] = r(); seed[i * 3 + 1] = r(); seed[i * 3 + 2] = r(); }
+    const geo = new THREE.BufferGeometry(); geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+    const sp = document.createElement("canvas"); sp.width = sp.height = 32;
+    const sg = sp.getContext("2d"); const grd = sg.createRadialGradient(16, 16, 0, 16, 16, 16);
+    grd.addColorStop(0, "rgba(255,255,255,1)"); grd.addColorStop(0.35, "rgba(255,255,255,.55)"); grd.addColorStop(1, "rgba(255,255,255,0)");
+    sg.fillStyle = grd; sg.fillRect(0, 0, 32, 32);
+    const mat = new THREE.PointsMaterial({ color: 0xdfe9ff, size: 0.05, map: new THREE.CanvasTexture(sp), transparent: true, opacity: 0.38, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true });
+    dust = new THREE.Points(geo, mat); dust.userData.seed = seed; dust.frustumCulled = false;
+    objScene.add(dust);
+  }
+  function driftDust(now) {
+    if (!dust) return;
+    const t = (now - t0) / 1000, pos = dust.geometry.attributes.position.array, seed = dust.userData.seed;
+    const axis = spot.target.position, top = spot.position;
+    for (let i = 0; i < pos.length; i += 3) {
+      const a = seed[i], b = seed[i + 1], c = seed[i + 2];
+      const h = 0.02 + 0.5 * ((b + t * 0.012 * (0.5 + c)) % 1); // the lower half of the cone only — the lamp is above the camera
+      const radius = 0.04 + 0.9 * h * (0.4 + 0.6 * a);        // the cone widens upward
+      const ang = a * Math.PI * 2 + t * 0.15 * (c - 0.5);
+      pos[i]     = axis.x + (top.x - axis.x) * h + Math.cos(ang) * radius + Math.sin(t * 0.4 + a * 9) * 0.03;
+      pos[i + 1] = 0.05 + (top.y - 0.05) * h * 0.9;
+      pos[i + 2] = axis.z + (top.z - axis.z) * h + Math.sin(ang) * radius;
+    }
+    dust.geometry.attributes.position.needsUpdate = true;
+  }
+  // Flicker: a slow breath with the odd dip, on the lamp and on the glow.
+  let flicker = 1;
+  function breathe(now) {
+    if (!look.atmosphere.flicker || reduceMotion) return;
+    const t = (now - t0) / 1000;
+    const dip = Math.sin(t * 13.7) * Math.sin(t * 3.1) > 0.985 ? 0.82 : 1;
+    const target = (0.955 + 0.045 * Math.sin(t * 5.3) * Math.sin(t * 0.9)) * dip;
+    flicker += (target - flicker) * 0.35;
+    spot.intensity = L.intensity * flicker; objSpot.intensity = L.intensity * flicker;
+    glowEl.style.setProperty("--flicker", flicker.toFixed(3));
+  }
+  // Grain over the frame: one noise tile, re-offset every few frames.
+  if (look.atmosphere.grain) {
+    const c = document.createElement("canvas"); c.width = c.height = 256;
+    const g = c.getContext("2d"); const img = g.createImageData(256, 256); const r = rng(3);
+    for (let i = 0; i < img.data.length; i += 4) { const v = 96 + Math.floor(r() * 96); img.data[i] = img.data[i + 1] = img.data[i + 2] = v; img.data[i + 3] = 255; }
+    g.putImageData(img, 0, 0);
+    const grain = document.createElement("div"); grain.className = "look-grain"; grain.setAttribute("aria-hidden", "true");
+    grain.style.backgroundImage = `url(${c.toDataURL()})`;
+    document.body.appendChild(grain);
+    if (!reduceMotion) { let f = 0; (function jitter() { requestAnimationFrame(jitter); if (++f % 3) return; grain.style.backgroundPosition = `${Math.floor(Math.random() * 256)}px ${Math.floor(Math.random() * 256)}px`; })(); }
+  }
+
+  // ── Render ──
+  // The lamp on the paper: the DOM stage carries an overlay whose light sits
+  // where the lamp falls on the desk (wood: a warm pool; steel: the beam,
+  // its radius from the cone's geometry) so the folder is lit as the wood is.
+  const lightOnDesk = new THREE.Vector3();
+  const edgeOnDesk = new THREE.Vector3();
+  let lastLx = -1, lastLy = -1, lastLr = -1;
+  function updateLightOverlay() {
+    let lx, ly, lr = null;
+    if (flashlight) {
+      const tp = spot.target.position;
+      lightOnDesk.set(tp.x, 0, tp.z).project(camera);
+      const d = spot.position.distanceTo(tp);
+      const R = Math.tan(L.angle) * d;
+      edgeOnDesk.set(tp.x + R, 0, tp.z).project(camera);
+      lx = Math.round((lightOnDesk.x + 1) / 2 * window.innerWidth); ly = Math.round((1 - lightOnDesk.y) / 2 * window.innerHeight);
+      lr = Math.round(Math.abs(edgeOnDesk.x - lightOnDesk.x) / 2 * window.innerWidth);
+    } else {
+      lightOnDesk.set(lightPos.x * 0.6, 0, lightPos.z * 0.45 + 0.6).project(camera);
+      lx = Math.round((lightOnDesk.x + 1) / 2 * window.innerWidth); ly = Math.round((1 - lightOnDesk.y) / 2 * window.innerHeight);
+    }
+    if (lx === lastLx && ly === lastLy && lr === lastLr) return;
+    lastLx = lx; lastLy = ly; lastLr = lr;
+    for (const el of [lightEl, glowEl]) {
+      el.style.setProperty("--lx", `${lx}px`); el.style.setProperty("--ly", `${ly}px`);
+      if (lr != null) el.style.setProperty("--lr", `${lr}px`);
+    }
+  }
+  function render(now = performance.now()) {
+    aim(now);
     spot.target.updateMatrixWorld();
-    objSpot.position.copy(spot.position); objSpot.target.updateMatrixWorld();
+    objSpot.position.copy(spot.position); objSpot.target.position.copy(spot.target.position); objSpot.target.updateMatrixWorld();
+    breathe(now); driftDust(now);
     renderer.render(scene, camera);
     if (objRenderer) objRenderer.render(objScene, camera);
     updateLightOverlay();
   }
   if (reduceMotion) render();
-  else (function animate() { requestAnimationFrame(animate); if (isSceneRenderPaused()) return; render(); })();
+  else (function animate(now) { requestAnimationFrame(animate); if (isSceneRenderPaused()) return; render(now); })(performance.now());
 
   window.addEventListener("resize", () => {
     camera.aspect = window.innerWidth / window.innerHeight;
