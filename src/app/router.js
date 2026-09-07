@@ -4,13 +4,20 @@ import { CONSTELLATION_HOMES, homedConstellationSlug } from "../shared/constella
 // Homed constellations (the biography) — see src/shared/constellation-homes.js.
 export { CONSTELLATION_HOMES, homedConstellationSlug };
 
+// The desk's address. "/" on the live site; "/home-alt" while the papers desk
+// (src/app/desk-alt.js) is a temporary landing page beside it. main.js sets it
+// before initRouter so the desk layer round-trips through the same path.
+let deskPath = "/";
+export function setDeskPath(p) { deskPath = p; }
+export function getDeskPath() { return deskPath; }
+
 // Parse the current window.location into a state patch
 function locationToState() {
   const parts = window.location.pathname.replace(/^\/|\/$/g, "").split("/").filter(Boolean);
   const params = new URLSearchParams(window.location.search);
   const item = params.get("item") || null;
 
-  if (parts.length === 0) {
+  if (parts.length === 0 || parts[0] === "home-alt") {
     return { layer: "desk", series: null, subcollection: null, view: null, item: null };
   }
 
@@ -61,12 +68,12 @@ function locationToState() {
 
 // Derive the URL pathname + search from state
 function stateToURL(s) {
-  if (s.layer === "desk") return "/";
+  if (s.layer === "desk") return deskPath;
   if (s.layer === "guide") return s.view ? `/guide/${s.view}/` : "/guide/";
 
   // Constellations: slug-addressed, no series sheet, no index route yet
   if (s.series === "constellations") {
-    if (!s.view) return "/";
+    if (!s.view) return deskPath;
     const search = s.item ? `?item=${encodeURIComponent(s.item)}` : "";
     return `/constellations/${s.view}/${search}`;
   }

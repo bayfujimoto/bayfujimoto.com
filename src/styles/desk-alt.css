@@ -1,0 +1,181 @@
+/* ── The papers desk (/home-alt) ─────────────────────────────────────────────
+   One open folder of clipped documents lies over the WebGL desk; the key, the
+   amber block and the stamp stay in the scene beneath. The folder and its
+   papers are a DOM layer, scaled as one composition: the stage is authored in
+   design pixels (1200 × 780; the folder 800 × 567 at 200, 90) and fitted to
+   the viewport, so every sheet keeps its proportions everywhere. Ported from
+   mockups/desk-papers/ (rev 3). docs/desk-papers-plan.md.
+
+   Materials: grain on every sheet and the folder (an SVG noise overlay,
+   multiplied); ragged edges by SVG displacement (.sheet--rough); tears as
+   clip-path polygons set inline; tape as translucent strips; ink from an SVG
+   dropout filter; handwriting from Homemade Apple and Caveat. */
+
+.desk-alt {
+  position: fixed; inset: 0; z-index: 1; overflow: hidden;
+  pointer-events: none;
+}
+/* The paper stocks and inks — on the desk layer and on the fan, which lives
+   in the layer stack outside it. */
+.desk-alt, .da-fan-content {
+  --stock-cream:   #ece4d1;
+  --stock-white:   #f3efe6;
+  --stock-manila:  #d3bb85;
+  --stock-thermal: #f7f3ea;
+  --stock-diazo:   #33507c;
+  --stock-diazo-line: rgba(200, 214, 236, 0.75);
+  --ink-on-paper:  #2a2218;
+  --ink-faint:     rgba(42, 34, 24, 0.35);
+  --ink-blue:      #25407a;
+  --ink-pencil:    rgba(50, 44, 38, 0.7);
+  --ink-green:     #2d8a5a;
+  --seal-red:      #b2372c;
+  --font-hand: 'Homemade Apple', cursive;
+  --font-note: 'Caveat', cursive;
+}
+.desk-alt__stage { position: absolute; left: 50%; top: 50%; transform-origin: 0 0; will-change: transform; }
+.desk-alt .placed { position: absolute; left: 0; top: 0; transform-origin: 50% 50%; }
+
+/* ── The folder ──────────────────────────────────────────────────────────── */
+.da-under {
+  position: absolute; border-radius: 10px; background: #2a3f66;
+  background-image: radial-gradient(ellipse at 10% 0%, rgba(255,255,255,0.10), transparent 50%);
+  box-shadow: 0 14px 30px -8px rgba(10,8,5,0.9), 0 1px 0 rgba(255,255,255,0.12) inset;
+}
+.da-under__tab { position: absolute; right: -26px; top: 46%; width: 26px; height: 40px; background: #2a3f66; border-radius: 0 6px 6px 0; }
+.da-folder {
+  position: absolute; border-radius: 4px; background: var(--stock-manila);
+  box-shadow: 0 14px 30px -8px rgba(10,8,5,0.9), 0 1px 0 rgba(255,255,255,0.3) inset;
+  background-image:
+    radial-gradient(ellipse at 20% 10%, rgba(255,255,255,0.10), transparent 50%),
+    radial-gradient(ellipse at 90% 100%, rgba(10,8,5,0.10), transparent 50%);
+}
+.da-folder__tab { position: absolute; top: -22px; height: 22px; background: var(--stock-manila); box-shadow: 0 -2px 4px -2px rgba(10,8,5,0.5); border-radius: 3px 3px 0 0; }
+.da-folder__tab::after { content: ""; position: absolute; left: 10px; right: 10px; top: 7px; height: 8px; border-top: 1px solid rgba(10,8,5,0.15); border-bottom: 1px solid rgba(10,8,5,0.15); }
+.da-folder__wear { position: absolute; inset: 0; background:
+    linear-gradient(135deg, rgba(10,8,5,0.12), transparent 4%),
+    linear-gradient(-45deg, rgba(10,8,5,0.10), transparent 3%); }
+
+/* ── Bundles — one series each; the button is the hit area ───────────────── */
+.da-bundle {
+  appearance: none; border: 0; padding: 0; margin: 0; background: none;
+  font: inherit; color: var(--ink-on-paper); text-align: left; cursor: pointer;
+  display: block; pointer-events: auto;
+  transition: transform var(--dur-slow) var(--ease-out), filter var(--dur-base) var(--ease-base);
+}
+.da-bundle:focus-visible { outline: 2px solid var(--color-vellum); outline-offset: 10px; }
+.da-bundle:hover, .da-bundle:focus-visible { filter: brightness(1.05); }
+.da-bundle:hover .da-sheet, .da-bundle:hover .da-scan, .da-bundle:focus-visible .da-sheet, .da-bundle:focus-visible .da-scan {
+  box-shadow: 0 10px 22px -6px rgba(10,8,5,0.85), 0 1px 0 rgba(255,255,255,0.35) inset;
+}
+
+.da-sheet {
+  position: absolute; left: 0; top: 0; overflow: hidden;
+  background: var(--stock-cream);
+  background-image: linear-gradient(160deg, rgba(255,255,255,.35), transparent 40%, rgba(10,8,5,.06));
+  box-shadow: 0 6px 14px -5px rgba(10,8,5,0.8), 0 1px 0 rgba(255,255,255,0.35) inset;
+  transition: box-shadow var(--dur-base) var(--ease-base);
+}
+.da-sheet--white   { background-color: var(--stock-white); background-image: linear-gradient(160deg, rgba(255,255,255,.4), transparent 45%, rgba(10,8,5,.05)); }
+.da-sheet--thermal { background-color: var(--stock-thermal); background-image: linear-gradient(180deg, rgba(10,8,5,.04), transparent 20%, transparent 80%, rgba(10,8,5,.05)); }
+.da-sheet--diazo   { background-color: var(--stock-diazo); background-image: none; color: var(--stock-diazo-line); }
+.da-sheet--rough   { filter: url(#da-rough); }
+
+/* grain */
+.da-sheet::after, .da-folder::after, .da-tape::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .32 0 0 0 0 .27 0 0 0 0 .2 0 0 0 .5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: .55; mix-blend-mode: multiply;
+}
+.da-folder::after { opacity: .7; }
+.da-sheet--diazo::after { mix-blend-mode: screen; opacity: .25; }
+.da-tape::after { opacity: .35; }
+
+/* printed matter */
+.da-rules { position: absolute; inset: 0; background: repeating-linear-gradient(180deg, transparent 0 9px, var(--ink-faint) 9px 10px); opacity: .55; }
+.da-rules--dense { background: repeating-linear-gradient(180deg, transparent 0 5px, var(--ink-faint) 5px 6px); opacity: .4; }
+.da-head { position: absolute; left: 10px; top: 8px; font-family: var(--font-mono); font-size: 7px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-on-paper); opacity: .8; white-space: nowrap; }
+.da-head--serif { font-family: var(--font-serif); text-transform: none; letter-spacing: .02em; font-size: 10px; font-style: italic; }
+.da-mono { position: absolute; left: 8px; right: 8px; font-family: var(--font-mono); font-size: 5.5px; line-height: 1.45; color: var(--ink-on-paper); opacity: .6; white-space: pre; }
+.da-big { position: absolute; left: 44px; top: 24px; font-family: var(--font-serif); font-size: 44px; line-height: 1; color: #2a3f66; letter-spacing: -.02em; }
+.da-hand { position: absolute; font-family: var(--font-hand); color: var(--ink-blue); white-space: pre-line; }
+.da-note { position: absolute; font-family: var(--font-note); font-weight: 600; color: var(--ink-blue); line-height: 1; white-space: nowrap; }
+.da-title-block { position: absolute; right: 6px; bottom: 6px; border: 1px solid currentColor; font-family: var(--font-mono); font-size: 6px; line-height: 1.3; padding: 3px; letter-spacing: .05em; text-transform: uppercase; opacity: .9; }
+.da-title-block b { display: block; font-size: 7px; font-weight: 400; }
+.da-diazo-lines { position: absolute; inset: 0; opacity: .35;
+  background:
+    linear-gradient(90deg, transparent 49.5%, var(--stock-diazo-line) 49.5% 50.5%, transparent 50.5%),
+    linear-gradient(180deg, transparent 49.5%, var(--stock-diazo-line) 49.5% 50.5%, transparent 50.5%); }
+.da-sketch { position: absolute; inset: 0; width: 100%; height: 100%; }
+.da-seal { position: absolute; width: 26px; height: 26px; border: 2px solid var(--seal-red); border-radius: 2px; opacity: .85; mix-blend-mode: multiply; filter: url(#da-ink); }
+.da-seal::before, .da-seal::after { content: ""; position: absolute; background: var(--seal-red); }
+.da-seal::before { left: 5px; top: 5px; width: 6px; height: 12px; }
+.da-seal::after  { right: 5px; top: 8px; width: 7px; height: 9px; }
+.da-photo { position: absolute; border: 4px solid var(--stock-white); box-shadow: 0 6px 14px -5px rgba(10,8,5,.8); overflow: hidden; }
+.da-photo__img { position: absolute; inset: 0; background: linear-gradient(160deg, #7a6a52, #2f261c 70%); background-size: cover; background-position: center; }
+.da-scan { position: absolute; display: block; height: auto; box-shadow: 0 6px 14px -5px rgba(10,8,5,.8), 0 1px 0 rgba(255,255,255,.35) inset; background: var(--stock-white); }
+
+/* materials */
+.da-tape { position: absolute; pointer-events: none; z-index: 3;
+  background: linear-gradient(90deg, rgba(250,240,205,.55), rgba(250,240,205,.72) 35%, rgba(250,240,205,.58) 70%, rgba(250,240,205,.5));
+  box-shadow: 0 1px 1px rgba(10,8,5,.18); }
+.da-rstamp { position: absolute; pointer-events: none; opacity: .8; mix-blend-mode: multiply; overflow: visible; }
+.da-rstamp-box { position: absolute; right: 8px; top: 8px; padding: 2px 6px; border: 2px solid var(--seal-red); color: var(--seal-red);
+  font-family: var(--font-mono); font-size: 9px; letter-spacing: .2em; transform: rotate(-8deg); opacity: .7; mix-blend-mode: multiply; filter: url(#da-ink); }
+.da-postage { position: absolute; width: 30px; height: 36px; background: #cfe3d5; padding: 3px;
+  -webkit-mask: radial-gradient(circle at 0 0, transparent 2.2px, #000 2.4px) 0 0 / 6px 6px; mask: radial-gradient(circle at 0 0, transparent 2.2px, #000 2.4px) 0 0 / 6px 6px; }
+.da-postage__in { width: 100%; height: 100%; background: linear-gradient(160deg, #3c8a68, #1f5a43); }
+.da-stain { position: absolute; pointer-events: none; border-radius: 50%; mix-blend-mode: multiply; opacity: .55;
+  background: radial-gradient(ellipse at 50% 50%, rgba(140,90,30,.18), rgba(140,90,30,.05) 60%, transparent 70%); }
+.da-stain--ring { background: radial-gradient(ellipse at 50% 50%, transparent 56%, rgba(120,70,20,.32) 60%, rgba(120,70,20,.12) 66%, transparent 72%); }
+.da-fold { position: absolute; pointer-events: none; }
+.da-fold--h { left: 0; right: 0; height: 6px; margin-top: -3px; background: linear-gradient(180deg, rgba(255,255,255,.14), rgba(10,8,5,.22) 55%, transparent); }
+.da-fold--v { top: 0; bottom: 0; width: 6px; margin-left: -3px; background: linear-gradient(90deg, rgba(255,255,255,.12), rgba(10,8,5,.2) 55%, transparent); }
+.da-wear-corner { position: absolute; inset: 0; pointer-events: none; background:
+  radial-gradient(circle at 0 0, rgba(255,255,255,.25), transparent 12%),
+  radial-gradient(circle at 100% 100%, rgba(255,255,255,.2), transparent 10%),
+  radial-gradient(circle at 100% 0, rgba(10,8,5,.18), transparent 9%); }
+.da-clip { position: absolute; pointer-events: none; filter: drop-shadow(0 3px 3px rgba(10,8,5,.7)); }
+
+/* the hover title — the live desk's, at the bottom right */
+.desk-alt-hover { opacity: 0; transition: opacity var(--dur-base); pointer-events: none; }
+.desk-alt-hover.is-on { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .da-bundle, .da-sheet { transition: none; }
+}
+
+/* ── The small documents that peek from the piles ────────────────────────── */
+.da-sheet--dark { background-color: #1c1a17; background-image: none; }
+.da-disc { position: absolute; right: 8px; bottom: 8px; width: 36px; height: 36px; border-radius: 50%;
+  background: radial-gradient(circle, var(--stock-cream) 0 5px, #b2372c 5px 12px, #1c1a17 12px 100%); opacity: .9; }
+.da-pattern { position: absolute; inset: 0; background:
+  linear-gradient(90deg, transparent 49.5%, rgba(42,34,24,.35) 49.5% 50.5%, transparent 50.5%),
+  repeating-linear-gradient(180deg, transparent 0 6px, rgba(42,34,24,.35) 6px 7px, transparent 7px 12px) 0 0 / 100% 100%,
+  linear-gradient(180deg, transparent 49.5%, rgba(42,34,24,.55) 49.5% 50.5%, transparent 50.5%); opacity: .8; }
+.da-strip { position: absolute; inset: 0; background:
+  repeating-linear-gradient(180deg, transparent 0 6px, rgba(255,255,255,.75) 6px 9px, transparent 9px 14px) 3px 0 / 4px 100% no-repeat,
+  repeating-linear-gradient(180deg, transparent 0 6px, rgba(255,255,255,.75) 6px 9px, transparent 9px 14px) right 3px top 0 / 4px 100% no-repeat,
+  repeating-linear-gradient(180deg, #3a3128 0 24px, #1c1a17 24px 27px) 10px 0 / calc(100% - 20px) 100% no-repeat; }
+
+/* ── A flat bundle rising a beat before its grid opens ───────────────────── */
+.da-bundle { transition: translate .28s var(--ease-out), scale .28s var(--ease-out), filter var(--dur-base) var(--ease-base); }
+.da-bundle.is-rising { translate: 0 -14px; scale: 1.035; filter: brightness(1.06); }
+.da-bundle.is-rising .da-sheet, .da-bundle.is-rising .da-scan { box-shadow: 0 22px 34px -10px rgba(10,8,5,.9), 0 1px 0 rgba(255,255,255,.35) inset; }
+
+/* ── The fan — the series layer ──────────────────────────────────────────── */
+.da-fan-content { pointer-events: none; }
+.da-fan { position: absolute; inset: 0; pointer-events: none; }
+.da-fan__paper {
+  position: absolute; left: 0; top: 0; transform-origin: 0 0;
+  appearance: none; border: 0; padding: 0; margin: 0; background: none; cursor: pointer;
+  pointer-events: auto; display: block; will-change: transform;
+}
+.da-fan__paper > * { position: absolute; left: 0; top: 0; }
+.da-fan__paper .da-sheet, .da-fan__paper .da-scan, .da-fan__paper .da-photo { box-shadow: 0 30px 50px -18px rgba(10,8,5,.95), 0 1px 0 rgba(255,255,255,.35) inset; }
+.da-fan__paper:hover .da-sheet, .da-fan__paper:hover .da-scan, .da-fan__paper:hover .da-photo,
+.da-fan__paper:focus-visible .da-sheet, .da-fan__paper:focus-visible .da-scan, .da-fan__paper:focus-visible .da-photo { box-shadow: 0 40px 60px -18px rgba(10,8,5,1), 0 0 0 1px rgba(232,224,208,.35), 0 1px 0 rgba(255,255,255,.35) inset; }
+.da-fan__paper:focus-visible { outline: 2px solid var(--color-vellum); outline-offset: 6px; }
+@media (max-width: 600px) {
+  .da-fan { overflow-y: auto; -webkit-overflow-scrolling: touch; pointer-events: auto; }
+}

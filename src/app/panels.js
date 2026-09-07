@@ -107,6 +107,22 @@ function constellationFor(slug) {
 // Stack of active layer contents, each: { veil, content, cleanup, update }
 const layerStack = [];
 
+// The papers desk (/home-alt, src/app/desk-alt.js) supplies its own series
+// layer — the lifted bundle, fanned — in place of makeSeriesSheet, and opens
+// each bundle as the series it is (no labor ↔ accumulation remap). Registered
+// before initPanels resolves so deep links restore through it too.
+let altSeriesSheet = null;
+let remapDeskClicks = true;
+export function configureAltDesk({ seriesSheet }) {
+  altSeriesSheet = seriesSheet;
+  remapDeskClicks = false;
+}
+const clickTarget = (key) => (remapDeskClicks ? deskTarget(key) : key);
+export const sheetHelpers = { makeVeil: (fn) => makeVeil(fn), makeContent: () => makeContent(), attachEscapeHandler: (c, fn) => attachEscapeHandler(c, fn), makeBreadcrumb: (segs) => makeBreadcrumb(segs), subcollectionCount: (series, key) => {
+  const homedSlug = homedConstellationSlug(series, key);
+  return homedSlug ? (constellationFor(homedSlug)?.items.length || 0) : (archive?.series[series]?.subcollections?.[key]?.items.length || 0);
+} };
+
 export async function initPanels() {
   const res = await fetch("/data/archive.json");
   archive = await res.json();
@@ -224,7 +240,7 @@ function pushLayerForState(state, silent = false) {
         if (!silent) navigate({ layer: "browse", series: state.series, subcollection: subs[0], view: "all", item: null });
         return;
       }
-      pushSheet(makeSeriesSheet(state.series));
+      pushSheet(altSeriesSheet ? altSeriesSheet(state.series, sheetHelpers) : makeSeriesSheet(state.series));
       break;
     }
     case "browse": {
@@ -328,11 +344,11 @@ function showSkipMenu(deskObjects) {
   deskObjects.forEach(({ type, key, label }) => {
     const btn = document.createElement("button");
     // Name the destination (swapped for labor/accumulation), matching the desk hover.
-    btn.textContent = type === "series" ? (archive.series[deskTarget(key)]?.label || label) : label;
+    btn.textContent = type === "series" ? (archive.series[clickTarget(key)]?.label || label) : label;
     btn.addEventListener("click", () => {
       menu.remove();
       if (type === "guide") navigate({ layer: "guide" });
-      else navigate({ layer: "series", series: deskTarget(key), subcollection: null, item: null });
+      else navigate({ layer: "series", series: clickTarget(key), subcollection: null, item: null });
     });
     menu.appendChild(btn);
   });
@@ -386,7 +402,7 @@ function renderDesk() {
     const key = btn.dataset.key;
     if (type === "series") {
       btn.addEventListener("click", () => {
-        navigate({ layer: "series", series: deskTarget(key), subcollection: null, item: null });
+        navigate({ layer: "series", series: clickTarget(key), subcollection: null, item: null });
       });
     } else if (type === "guide") {
       btn.addEventListener("click", () => {

@@ -1,0 +1,88 @@
+/* ── Desk-papers mockups — shared styles ──────────────────────────────────────
+   Tokens copied from mockups/contact/shared.css (the live [data-theme="dark"]
+   extraction). The desk surface and the paper/object treatments below are
+   MOCKUP-only: nothing here mirrors a live desk stylesheet, because the live
+   desk is a WebGL scene (src/app/scene.js). The overlay classes
+   (.layer-breadcrumb, .mock-banner) mirror main.css.
+─────────────────────────────────────────────────────────────────────────── */
+@import url('assets/fonts/fonts.css');0,600;1,400&family=Homemade+Apple&family=Caveat:wght@400;600&display=swap');
+:root { --font-hand: 'Homemade Apple', cursive; --font-note: 'Caveat', cursive; --ink-blue: #25407a; --ink-pencil: rgba(50,44,38,0.7); --ink-green: #2d8a5a; }
+
+:root {
+  --color-ink:        #1a1510;
+  --color-paper:      #f5f3ef;
+  --color-vellum:     #e8e0d0;
+  --color-shadow:     #0a0805;
+  --color-surface-dk: #1e1a14;
+
+  --bg:         #000000;
+  --bg-surface: var(--color-surface-dk);
+  --fg:         var(--color-vellum);
+  --fg-muted:   rgba(232, 224, 208, 0.6);
+  --border:     rgba(232, 224, 208, 0.2);
+  --border-dim: rgba(232, 224, 208, 0.12);
+  --hover-bg:   rgba(232, 224, 208, 0.05);
+
+  --overlay-text:    var(--color-vellum);
+  --overlay-muted:   rgba(232, 224, 208, 0.5);
+  --overlay-padding: 2rem;
+
+  --font-mono:  'Commit Mono', ui-monospace, 'Cascadia Mono', 'Fira Mono', monospace;
+  --font-serif: 'EB Garamond', Georgia, serif;
+  --font:       var(--font-serif);
+
+  --text-xs:   0.8rem;
+  --text-sm:   0.9rem;
+  --text-base: 1.0rem;
+  --text-md:   1.1rem;
+  --text-lg:   1.2rem;
+  --text-xl:   1.4rem;
+
+  --leading-tight: 1.3;
+  --leading-base:  1.5;
+  --leading-loose: 1.6;
+
+  --tracking-base:  0.03em;
+  --tracking-wide:  0.07em;
+  --tracking-wider: 0.1em;
+
+  --dur-fast: 0.1s;
+  --dur-base: 0.15s;
+  --dur-slow: 0.32s;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-base: ease;
+
+  /* MOCKUP: paper stocks and the desk */
+  --stock-cream:   #ece4d1;
+  --stock-white:   #f3efe6;
+  --stock-manila:  #d3bb85;
+  --stock-thermal: #f7f3ea;
+  --stock-diazo:   #33507c;
+  --stock-diazo-line: rgba(200, 214, 236, 0.75);
+  --ink-on-paper:  #2a2218;
+  --ink-faint:     rgba(42, 34, 24, 0.35);
+  --seal-red:      #b2372c;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: var(--bg); color: var(--fg); font-family: var(--font); overflow: hidden; }
+a { color: inherit; }
+code { font-family: var(--font-mono); font-size: 0.9em; }
+
+.mock-banner {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+  display: flex; justify-content: space-between; gap: 1rem;
+  padding: 0.5rem var(--overlay-padding);
+  font-family: var(--font-mono); font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wider); text-transform: uppercase;
+  color: var(--overlay-muted); pointer-events: none;
+}
+.layer-breadcrumb {
+  position: fixed; left: var(--overlay-padding); bottom: var(--overlay-padding); z-index: 40;
+  display: flex; gap: 0.5rem; align-items: center;
+  font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide);
+  color: var(--overlay-muted);
+}
+.layer-breadcrumb .current { color: var(--overlay-text); }
+.layer-breadcrumb .sep { opacity: 0.5; }
+@media (max-width: 600px) { :root { --overlay-padding: 1rem; } }

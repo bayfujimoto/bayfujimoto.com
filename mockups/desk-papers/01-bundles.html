@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Desk papers — bundles on the desk</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+/* ── The desk ─────────────────────────────────────────────────────────────────
+   A warm wood ground lit from the top of the screen, as the live scene's spot
+   (0xffb347, placed at z = −2) lights it. Shadows therefore fall DOWN the
+   screen. The camera does not move; the composition is scaled to fit. */
+.desk-viewport {
+  position: fixed; inset: 0; overflow: hidden;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 18%, rgba(255, 179, 71, 0.22), transparent 70%),
+    repeating-linear-gradient(92deg, rgba(0,0,0,0.05) 0 3px, transparent 3px 11px),
+    repeating-linear-gradient(88deg, rgba(255,255,255,0.02) 0 1px, transparent 1px 23px),
+    linear-gradient(180deg, #4a3320 0%, #34231400 40%),
+    #2b1c0f;
+}
+.stage {
+  position: absolute; left: 50%; top: 50%;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+/* Every placed thing — bundle or object — is positioned by the layout table. */
+.placed {
+  position: absolute; left: 0; top: 0;
+  transform-origin: 50% 50%;
+  transition: transform var(--dur-slow) var(--ease-out), filter var(--dur-base) var(--ease-base);
+}
+@media (prefers-reduced-motion: reduce) { .placed, .placed * { transition: none !important; } }
+
+/* ── The folder ──────────────────────────────────────────────────────────────
+   One folder, open, holds every paper. Left flap / right panel; a tab on the
+   top edge; worn. It is not a hit area — the bundles inside are. */
+.folder { position: absolute; left: 0; top: 0; pointer-events: none;
+  background: var(--stock-manila);
+  box-shadow: 0 14px 30px -8px rgba(10,8,5,0.9), 0 1px 0 rgba(255,255,255,0.3) inset;
+  background-image:
+    radial-gradient(ellipse at 20% 10%, rgba(255,255,255,0.10), transparent 50%),
+    radial-gradient(ellipse at 90% 100%, rgba(10,8,5,0.10), transparent 50%);
+}
+.under-folder { position: absolute; left: 0; top: 0; pointer-events: none; border-radius: 10px; background: #2a3f66;
+  background-image: radial-gradient(ellipse at 10% 0%, rgba(255,255,255,0.10), transparent 50%);
+  box-shadow: 0 14px 30px -8px rgba(10,8,5,0.9), 0 1px 0 rgba(255,255,255,0.12) inset; }
+.under-folder .utab { position: absolute; right: -26px; top: 46%; width: 26px; height: 40px; background: #2a3f66; border-radius: 0 6px 6px 0; }
+.folder { border-radius: 4px; }
+.folder .flap { position: absolute; left: 0; top: 0; bottom: 0; background: rgba(10,8,5,0.045);
+  box-shadow: inset -6px 0 10px -8px rgba(10,8,5,0.6); }
+.folder .fold { position: absolute; top: 0; bottom: 0; width: 1px; background: rgba(10,8,5,0.22); }
+.folder .tab { position: absolute; height: 22px; background: var(--stock-manila);
+  box-shadow: 0 -2px 4px -2px rgba(10,8,5,0.5); border-radius: 3px 3px 0 0; }
+.folder .tab::after { content: ""; position: absolute; left: 10px; right: 10px; top: 7px; height: 8px; border-top: 1px solid rgba(10,8,5,0.15); border-bottom: 1px solid rgba(10,8,5,0.15); }
+.folder .wear { position: absolute; inset: 0; background:
+    linear-gradient(135deg, rgba(10,8,5,0.12), transparent 4%),
+    linear-gradient(-45deg, rgba(10,8,5,0.10), transparent 3%); }
+.folder .inside-print { position: absolute; border: 1px solid rgba(10,8,5,0.22); background: repeating-linear-gradient(180deg, transparent 0 17px, rgba(10,8,5,0.16) 17px 18px); }
+.folder .inside-print::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 18px; background: rgba(10,8,5,0.06); }
+.folder--vertical .flap { right: 0; bottom: auto; box-shadow: inset 0 -6px 10px -8px rgba(10,8,5,0.6); }
+.folder--vertical .fold { left: 0; right: 0; top: auto; bottom: auto; width: auto; height: 1px; }
+
+.desk-viewport.is-vertical { overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.desk-viewport.is-vertical .stage { position: relative; left: 0; top: 0; }
+
+/* ── Bundles ─────────────────────────────────────────────────────────────────
+   A bundle is one series: two to four documents clipped together. The button
+   is the hit area (its box is the bundle's footprint); the sheets fan inside. */
+.bundle {
+  appearance: none; border: 0; padding: 0; margin: 0; background: none;
+  font: inherit; color: var(--ink-on-paper); text-align: left; cursor: pointer;
+  display: block;
+}
+.bundle:focus-visible, .object:focus-visible { outline: 2px solid var(--color-vellum); outline-offset: 10px; }
+.bundle:hover .sheet, .bundle:hover .scan, .bundle:focus-visible .sheet, .bundle:focus-visible .scan { box-shadow: 0 10px 22px -6px rgba(10,8,5,0.85), 0 1px 0 rgba(255,255,255,0.35) inset; }
+.bundle:hover { filter: brightness(1.05); }
+
+.sheet {
+  position: absolute; left: 0; top: 0;
+  background: var(--stock-cream);
+  box-shadow: 0 6px 14px -5px rgba(10,8,5,0.8), 0 1px 0 rgba(255,255,255,0.35) inset;
+  transform-origin: 50% 50%;
+  overflow: hidden;
+  transition: box-shadow var(--dur-base) var(--ease-base);
+}
+.sheet--white   { background: var(--stock-white); }
+.sheet--manila  { background: var(--stock-manila); }
+.sheet--thermal { background: var(--stock-thermal); }
+.sheet--diazo   { background: var(--stock-diazo); color: var(--stock-diazo-line); }
+
+/* Printed matter — enough to read as a document type from above, no more. */
+.rule-lines { position: absolute; inset: 0; background: repeating-linear-gradient(180deg, transparent 0 9px, var(--ink-faint) 9px 10px); opacity: 0.55; }
+.rule-lines--dense { background: repeating-linear-gradient(180deg, transparent 0 5px, var(--ink-faint) 5px 6px); opacity: 0.4; }
+.grid-lines { position: absolute; inset: 0;
+  background: repeating-linear-gradient(180deg, transparent 0 15px, var(--ink-faint) 15px 16px),
+              repeating-linear-gradient(90deg, transparent 0 31px, var(--ink-faint) 31px 32px); opacity: 0.5; }
+.diazo-lines { position: absolute; inset: 0; opacity: 0.9;
+  background:
+    linear-gradient(90deg, transparent 49.5%, var(--stock-diazo-line) 49.5% 50.5%, transparent 50.5%),
+    linear-gradient(180deg, transparent 49.5%, var(--stock-diazo-line) 49.5% 50.5%, transparent 50.5%);
+  opacity: 0.35; }
+.diazo-plan { position: absolute; left: 14%; top: 14%; width: 46%; height: 62%; border: 1px solid var(--stock-diazo-line); opacity: 0.8; }
+.diazo-plan::before { content: ""; position: absolute; left: 35%; top: 0; bottom: 0; border-left: 1px solid var(--stock-diazo-line); }
+.diazo-plan::after  { content: ""; position: absolute; left: 0; right: 0; top: 55%; border-top: 1px solid var(--stock-diazo-line); }
+.title-block { position: absolute; right: 6px; bottom: 6px; width: 34%; height: 26%; border: 1px solid currentColor; font-family: var(--font-mono); font-size: 6px; line-height: 1.3; padding: 3px; letter-spacing: 0.05em; text-transform: uppercase; opacity: 0.9; }
+.title-block b { display: block; font-size: 7px; font-weight: 400; }
+.perf { position: absolute; top: 0; bottom: 0; width: 0; border-left: 2px dashed var(--ink-faint); }
+.head { position: absolute; left: 10px; top: 8px; font-family: var(--font-mono); font-size: 7px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-on-paper); opacity: 0.8; }
+.head--serif { font-family: var(--font-serif); text-transform: none; letter-spacing: 0.02em; font-size: 10px; font-style: italic; }
+.body-text { position: absolute; left: 10px; right: 10px; font-family: var(--font-serif); font-size: 6.5px; line-height: 1.35; color: var(--ink-on-paper); opacity: 0.55; }
+.mono-text { position: absolute; left: 8px; right: 8px; font-family: var(--font-mono); font-size: 5.5px; line-height: 1.45; color: var(--ink-on-paper); opacity: 0.6; white-space: pre; }
+.seal { position: absolute; width: 26px; height: 26px; border: 2px solid var(--seal-red); border-radius: 2px; opacity: 0.85; mix-blend-mode: multiply; }
+.seal::before, .seal::after { content: ""; position: absolute; background: var(--seal-red); }
+.seal::before { left: 5px; top: 5px; width: 6px; height: 12px; }
+.seal::after  { right: 5px; top: 8px; width: 7px; height: 9px; }
+.sketch { position: absolute; inset: 0; }
+.stamp-bar { position: absolute; left: 0; right: 0; height: 14px; background: var(--seal-red); opacity: 0.55; mix-blend-mode: multiply; }
+.big { position: absolute; left: 44px; top: 24px; font-family: var(--font-serif); font-size: 44px; line-height: 1; color: #2a3f66; letter-spacing: -0.02em; }
+.sheet--blue { background: #c9d5e6; }
+.photo--dark { background: #1c1a17; }
+.photo { position: absolute; background: linear-gradient(160deg, #6a5a48, #2f261c 70%); border: 4px solid var(--stock-white); box-shadow: 0 6px 14px -5px rgba(10,8,5,0.8); }
+
+/* Series label — a file label stuck on the top sheet. Mono caps, as the live
+   desk's container line; the serif name as the live desk's label. */
+.label {
+  position: absolute; padding: 3px 6px 4px;
+  background: var(--stock-white); color: var(--ink-on-paper);
+  box-shadow: 0 1px 2px rgba(10,8,5,0.5);
+  font-family: var(--font-serif); font-size: 13px; line-height: 1.1; letter-spacing: var(--tracking-base);
+  white-space: nowrap;
+}
+.label small { display: block; font-family: var(--font-mono); font-size: 6.5px; letter-spacing: var(--tracking-wider); text-transform: uppercase; opacity: 0.55; margin-top: 2px; }
+.label::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--seal-red); opacity: 0.55; }
+
+/* Clips — the closure of each bundle. */
+.clip { position: absolute; pointer-events: none; filter: drop-shadow(0 3px 3px rgba(10,8,5,0.7)); }
+
+/* ── Objects — the three things that are not paper ───────────────────────── */
+.object { appearance: none; border: 0; padding: 0; margin: 0; background: none; cursor: pointer; display: block; }
+.object--key { overflow: visible; }
+.object--key img { display: block; width: 150px; height: 150px; margin: -34px 0 0 -18px; filter: drop-shadow(0 12px 10px rgba(10,8,5,0.7)); transition: filter var(--dur-base) var(--ease-base); }
+.object--key:hover img { filter: drop-shadow(0 18px 14px rgba(10,8,5,0.8)) brightness(1.08); }
+.object--key .tag { position: absolute; left: -40px; top: 74px; width: 58px; height: 32px; background: var(--stock-cream); box-shadow: 0 5px 10px -4px rgba(10,8,5,0.8); transform: rotate(-14deg); }
+.object--key .tag::before { content: ""; position: absolute; left: 5px; top: 12px; width: 6px; height: 6px; border-radius: 50%; border: 1px solid var(--ink-faint); }
+.object--key .tag span { position: absolute; left: 16px; top: 10px; font-family: var(--font-mono); font-size: 6px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-on-paper); opacity: 0.75; }
+.object--key .string { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; }
+
+.object--amber { width: 128px; height: 104px; }
+.object--amber svg { display: block; width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 10px 12px rgba(10,8,5,0.75)); transition: filter var(--dur-base) var(--ease-base); }
+.object--amber:hover svg { filter: drop-shadow(0 14px 16px rgba(10,8,5,0.85)) brightness(1.06); }
+
+/* The stamp: a rectangular prism lying on its side. Top face + the one side
+   face the near-top-down camera sees (toward the bottom of the screen). Not a
+   button — it is the instrument, not an entry; the sheet beside it is. */
+.stamp { width: 92px; height: 36px; pointer-events: none; }
+.stamp .top  { position: absolute; inset: 0 0 10px 0; background: linear-gradient(180deg, #a09889, #8a8274); box-shadow: 0 1px 0 rgba(255,255,255,0.25) inset; }
+.stamp .side { position: absolute; left: 0; right: 0; bottom: 0; height: 10px; background: #5f584d; }
+.stamp .face { position: absolute; left: 0; top: 0; bottom: 10px; width: 8px; background: #6e675a; }
+.stamp::after { content: ""; position: absolute; left: 4px; right: -4px; top: 8px; bottom: -6px; background: rgba(10,8,5,0.6); filter: blur(6px); z-index: -1; }
+.stamp .mark { position: absolute; left: 6px; top: 7px; font-family: var(--font-mono); font-size: 6px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.35); }
+
+
+/* ── Materials ─────────────────────────────────────────────────────────────
+   Grain on every sheet and on the folder; a ragged edge on the sheets that
+   carry .sheet--rough (SVG displacement); torn edges as clip-path polygons;
+   tape as translucent strips; ink from an SVG dropout filter; handwriting
+   from Homemade Apple (cursive) and Caveat (notes). */
+.sheet::after, .folder::after, .tape::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .32 0 0 0 0 .27 0 0 0 0 .2 0 0 0 .5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: .55; mix-blend-mode: multiply;
+}
+.folder::after { opacity: .7; }
+.sheet--diazo::after { mix-blend-mode: screen; opacity: .25; }
+.sheet--rough { filter: url(#rough); }
+.sheet { background-image: linear-gradient(160deg, rgba(255,255,255,.35), transparent 40%, rgba(10,8,5,.06)); }
+.sheet--white { background-image: linear-gradient(160deg, rgba(255,255,255,.4), transparent 45%, rgba(10,8,5,.05)); }
+.sheet--thermal { background-image: linear-gradient(180deg, rgba(10,8,5,.04), transparent 20%, transparent 80%, rgba(10,8,5,.05)); }
+
+.tape { position: absolute; pointer-events: none; z-index: 3;
+  background: linear-gradient(90deg, rgba(250,240,205,.55), rgba(250,240,205,.72) 35%, rgba(250,240,205,.58) 70%, rgba(250,240,205,.5));
+  box-shadow: 0 1px 1px rgba(10,8,5,.18); }
+.tape::after { opacity: .35; }
+
+.hand { position: absolute; font-family: var(--font-hand); color: var(--ink-blue); white-space: pre-line; }
+.hand--blue { color: var(--ink-blue); }
+.note { position: absolute; font-family: var(--font-note); font-weight: 600; color: var(--ink-blue); line-height: 1; white-space: nowrap; }
+.big { position: absolute; left: 44px; top: 24px; font-family: var(--font-serif); font-size: 44px; line-height: 1; color: #2a3f66; letter-spacing: -0.02em; }
+
+.rstamp { position: absolute; pointer-events: none; opacity: .8; mix-blend-mode: multiply; overflow: visible; }
+.rstamp-box { position: absolute; right: 8px; top: 8px; padding: 2px 6px; border: 2px solid var(--seal-red); color: var(--seal-red);
+  font-family: var(--font-mono); font-size: 9px; letter-spacing: .2em; transform: rotate(-8deg); opacity: .7; mix-blend-mode: multiply; filter: url(#ink); }
+.seal--ink { filter: url(#ink); }
+.postage { position: absolute; left: 12px; top: 340px; width: 30px; height: 36px; background: #cfe3d5; padding: 3px;
+  -webkit-mask: radial-gradient(circle at 0 0, transparent 2.2px, #000 2.4px) 0 0 / 6px 6px; mask: radial-gradient(circle at 0 0, transparent 2.2px, #000 2.4px) 0 0 / 6px 6px; transform: rotate(4deg); }
+.postage__in { width: 100%; height: 100%; background: linear-gradient(160deg, #3c8a68, #1f5a43); }
+
+.stain { position: absolute; pointer-events: none; border-radius: 50%; mix-blend-mode: multiply; opacity: .55;
+  background: radial-gradient(ellipse at 50% 50%, rgba(140,90,30,.18), rgba(140,90,30,.05) 60%, transparent 70%); }
+.stain--ring { background: radial-gradient(ellipse at 50% 50%, transparent 56%, rgba(120,70,20,.32) 60%, rgba(120,70,20,.12) 66%, transparent 72%); }
+
+.fold { position: absolute; pointer-events: none; }
+.fold--h { left: 0; right: 0; height: 6px; margin-top: -3px; background: linear-gradient(180deg, rgba(255,255,255,.14), rgba(10,8,5,.22) 55%, transparent); }
+.fold--v { top: 0; bottom: 0; width: 6px; margin-left: -3px; background: linear-gradient(90deg, rgba(255,255,255,.12), rgba(10,8,5,.2) 55%, transparent); }
+.wear-corner { position: absolute; inset: 0; pointer-events: none; background:
+  radial-gradient(circle at 0 0, rgba(255,255,255,.25), transparent 12%),
+  radial-gradient(circle at 100% 100%, rgba(255,255,255,.2), transparent 10%),
+  radial-gradient(circle at 100% 0, rgba(10,8,5,.18), transparent 9%); }
+
+.scan { position: absolute; display: block; height: auto; box-shadow: 0 6px 14px -5px rgba(10,8,5,.8), 0 1px 0 rgba(255,255,255,.35) inset; }
+.photo__img { position: absolute; inset: 0; background: linear-gradient(160deg, #7a6a52, #2f261c 70%); }
+
+/* ── Test overlays ───────────────────────────────────────────────────────── */
+.show-hits .bundle, .show-hits .object { outline: 1px dashed rgba(232,224,208,0.9); outline-offset: 0; }
+.show-hits .bundle::after, .show-hits .object::after {
+  content: attr(data-id); position: absolute; left: 0; top: -16px;
+  font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--color-vellum); background: rgba(10,8,5,0.7); padding: 1px 4px;
+}
+.show-hits .stamp { outline: 1px dotted rgba(232,224,208,0.5); }
+.hide-objects .object, .hide-objects .stamp { display: none; }
+
+/* ── Controls ────────────────────────────────────────────────────────────── */
+.controls {
+  position: fixed; right: var(--overlay-padding); top: 2.4rem; z-index: 45;
+  display: flex; flex-direction: column; gap: 0.35rem;
+  font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide);
+  color: var(--overlay-muted);
+}
+.controls .row { display: flex; gap: 0.6rem; align-items: center; min-height: 44px; }
+.controls .row > span:first-child { width: 7.5rem; text-transform: uppercase; font-size: 0.7rem; opacity: 0.7; }
+.controls button {
+  appearance: none; background: none; border: 1px solid var(--border-dim); color: var(--overlay-muted);
+  font: inherit; letter-spacing: inherit; padding: 0.3rem 0.6rem; min-height: 32px; cursor: pointer;
+}
+.controls button[aria-pressed="true"] { color: var(--overlay-text); border-color: var(--border); background: var(--hover-bg); }
+.controls .regime { font-size: 0.7rem; opacity: 0.6; text-transform: uppercase; }
+@media (max-width: 600px) {
+  .controls { top: auto; bottom: 0; left: 0; right: 0; padding: 0.5rem var(--overlay-padding) 3rem; background: linear-gradient(180deg, transparent, rgba(10,8,5,0.85) 30%); flex-direction: row; flex-wrap: wrap; gap: 0.25rem 0.6rem; }
+  .controls .row { min-height: 40px; }
+  .controls .row > span:first-child { display: none; }
+  .controls .regime { width: 100%; }
+}
+
+/* Hover title — mirrors the live desk's bottom-centre hover title. */
+.hover-title {
+  position: fixed; left: 50%; bottom: var(--overlay-padding); transform: translateX(-50%);
+  font-family: var(--font-serif); font-size: var(--text-lg); letter-spacing: var(--tracking-base);
+  color: var(--overlay-text); opacity: 0; transition: opacity var(--dur-base) var(--ease-base);
+  pointer-events: none; text-align: center; z-index: 40;
+}
+.hover-title.is-on { opacity: 1; }
+.hover-title small { display: block; font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: var(--tracking-wider); color: var(--overlay-muted); margin-top: 0.2rem; }
+</style>
+</head>
+<body>
+<div class="mock-banner"><span>desk papers · 01 bundles</span><span>layout test — nothing decided</span></div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <filter id="rough" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3.5" xChannelSelector="R" yChannelSelector="G"/></filter>
+  <filter id="pencil" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="2" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="1.6"/></filter>
+  <filter id="ink" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="3" seed="9" result="n"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1.6 -0.35" result="m"/><feComposite in="SourceGraphic" in2="m" operator="in" result="inked"/><feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="1" seed="3" result="d"/><feDisplacementMap in="inked" in2="d" scale="1.2"/></filter>
+</defs></svg>
+<div class="desk-viewport">
+<div class="stage" id="stage">
+  <div class="under-folder" id="under" aria-hidden="true"><div class="utab"></div></div>
+  <div class="folder" id="folder" aria-hidden="true"><div class="flap" id="flap" hidden></div><div class="fold" id="fold" hidden></div><div class="tab" id="tab"></div><div class="wear"></div><div class="stain stain--ring" style="left:72%;top:78%;width:120px;height:104px;opacity:.5"></div><div class="stain" style="left:6%;top:60%;width:180px;height:120px;opacity:.35"></div><div class="inside-print" id="insidePrint"></div></div>
+
+  <button class="placed bundle" data-id="identity" data-title="Identity" data-sub="cv · timetable · card" data-fx="14" data-fy="18" style="width:162px;height:540px" aria-label="Identity — cv · timetable · card">
+    <div class="sheet sheet--white sheet--rough" style="left:-2px;top:63px;width:130px;height:441px"><div class="head head--serif">Curriculum vitae</div>
+<div class="mono-text" style="top:28px">2025—  low design office
+2024   shop architects
+2023   b.arch, austin
+—
+labor · design · bim</div>
+<div class="rule-lines rule-lines--dense" style="top:78px;opacity:.28"></div>
+<div class="note" style="left:8px;top:150px;transform:rotate(-6deg);font-size:15px">update → 2026</div>
+<div class="postage"><div class="postage__in"></div></div>
+<svg class="rstamp" style="left:14px;top:330px;width:115px;height:115px;transform:rotate(-18deg)" viewBox="0 0 100 100" aria-hidden="true"><g filter="url(#ink)" fill="none" stroke="var(--ink-green)"><circle cx="50" cy="50" r="46" stroke-width="2.2"/><circle cx="50" cy="50" r="33" stroke-width="1.4"/><path id="tp7267" d="M50 50 m-40 0 a40 40 0 1 1 80 0 a40 40 0 1 1 -80 0" /></g><text filter="url(#ink)" fill="var(--ink-green)" font-family="ui-monospace, monospace" font-size="9.5" letter-spacing="1.5"><textPath href="#tp7267" startOffset="2%">LOW DESIGN OFFICE · RECEIVED ·</textPath></text><text filter="url(#ink)" fill="var(--ink-green)" x="50" y="54" text-anchor="middle" font-family="ui-monospace, monospace" font-size="10" font-weight="700">SEP 06 2026</text></svg></div>
+    <div class="sheet sheet sheet--rough" style="left:-2px;top:-4px;width:148px;height:29px"><div class="note" style="left:8px;top:2px;font-size:15px;letter-spacing:.06em">2001 · 2010 · 2019 · 2024 · 2026</div><div class="tape" style="left:4px;top:-5px;width:29px;height:16px;transform:rotate(-8deg)"></div><div class="tape" style="left:126px;top:-4px;width:29px;height:16px;transform:rotate(6deg)"></div></div>
+    <div class="sheet sheet--white" style="left:18px;top:446px;width:115px;height:65px"><div class="head head--serif" style="top:6px;font-style:normal">B. Fujimoto</div><div class="mono-text" style="top:20px">architect · austin</div><div class="stain" style="left:-10px;top:-14px;width:46px;height:40px;opacity:.5"></div></div>
+    <div class="sheet sheet sheet--torn-top" style="left:7px;top:508px;width:180px;height:20px;clip-path:polygon(0.0% 1.1%,7.1% 0.5%,14.3% 2.3%,21.4% 0.3%,28.6% 1.9%,35.7% 1.3%,42.9% 0.2%,50.0% 1.8%,57.1% 0.1%,64.3% 1.5%,71.4% 0.2%,78.6% 0.3%,85.7% 1.5%,92.9% 2.9%,100.0% 0.4%,100.0% 100.0%,0.0% 100.0%)"><div class="rule-lines" style="opacity:.3"></div></div>
+    <svg class="clip" style="left:-68px;top:86px;width:56px;height:46px;transform:rotate(-90deg)" viewBox="0 0 48 40" aria-hidden="true"><rect x="10" y="10" width="28" height="16" fill="#1c1a17"/><path d="M12 10 L16 2 M36 10 L32 2" stroke="#1c1a17" stroke-width="2" fill="none"/><path d="M6 12 C2 14, 2 22, 8 24 M42 12 C46 14, 46 22, 40 24" stroke="#8a8478" stroke-width="2.5" fill="none"/></svg>
+  </button>
+  <button class="placed bundle" data-id="consumption" data-title="Consumption" data-sub="log · ticket · receipt" data-fx="140" data-fy="-14" style="width:306px;height:288px" aria-label="Consumption — log · ticket · receipt">
+    <div class="sheet sheet--white sheet--rough" style="left:13px;top:14px;width:279px;height:252px"><div class="head" style="top:8px;left:44px">log · films books records</div><div class="big">Log</div>
+<div class="rule-lines" style="top:64px;opacity:.3"></div>
+<div class="hand hand--blue" style="top:120px;left:70px;font-size:9.5px;line-height:17px">stalker — the rings of saturn
+pink moon,  the long goodbye
+on longing · la jetée · 2026</div>
+<div class="stain stain--ring" style="left:190px;top:170px;width:70px;height:62px"></div>
+<div class="note" style="left:8px;top:200px;font-size:16px;color:var(--ink-pencil)">again in sept.</div></div>
+    <img class="scan" src="assets/EPH-2026-018-front-web.webp" style="left:47px;top:0px;width:144px;transform:rotate(-1deg)" alt="">
+    <div class="photo photo--dark" style="left:200px;top:96px;width:40px;height:40px"><div class="photo__img"></div><div class="tape" style="left:-14px;top:-9px;width:36px;height:13px;transform:rotate(-30deg)"></div></div>
+    <svg class="clip" style="left:259px;top:36px;width:22px;height:52px;transform:rotate(0deg)" viewBox="0 0 22 52" aria-hidden="true"><path d="M6 44 V10 a5 5 0 0 1 10 0 V40 a3 3 0 0 1 -6 0 V14" stroke="#b9b2a4" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+  </button>
+  <button class="placed bundle" data-id="creation" data-title="Creation" data-sub="sheet · print" data-fx="144" data-fy="194" style="width:306px;height:342px" aria-label="Creation — sheet · print">
+    <div class="sheet sheet sheet--rough" style="left:9px;top:4px;width:279px;height:324px"><div class="hand" style="top:14px;left:14px;right:12px;font-size:11px;line-height:19px;color:var(--ink-blue)">the surface remembers what the record forgets — a crease, a thumbprint, the place where the pen ran dry. keep the sheet. the note is only its excuse.</div>
+<svg class="sketch" viewBox="0 0 279 324" aria-hidden="true"><g filter="url(#pencil)" fill="none" stroke="#3a3128" stroke-width="1" opacity="0.7">
+<path d="M40 275 L40 175 L140 140 L140 240 Z"/><path d="M140 140 L225 165 L225 265 L140 240"/><path d="M40 175 L78 152 L78 250 M78 152 L170 118" stroke-dasharray="3 3"/>
+<path d="M180 210 c-10 -40 20 -60 30 -30 c 10 -30 40 -10 22 20 c 30 5 20 40 -8 32 c 5 30 -35 30 -30 5 c -30 10 -40 -25 -14 -27" stroke-width=".9"/>
+<path d="M60 300 C100 288, 170 310, 250 292"/></g></svg>
+<div class="seal seal--ink" style="left:212px;top:268px;transform:rotate(-4deg)"></div>
+<div class="mono-text" style="left:12px;top:296px;opacity:.45">untitled · graphite · 2026</div><div class="tape" style="left:-7px;top:-7px;width:54px;height:18px;transform:rotate(-40deg)"></div></div>
+    <div class="sheet sheet--thermal sheet--torn-right" style="left:180px;top:301px;width:68px;height:27px;clip-path:polygon(0.0% 0.0%,98.2% 0.0%,95.0% 16.7%,92.4% 33.3%,95.4% 50.0%,96.8% 66.7%,92.2% 83.3%,99.6% 100.0%,0.0% 100.0%)"><div class="note" style="top:-2px;left:6px;font-size:15px">print ↑</div></div>
+  </button>
+  <button class="placed bundle" data-id="labor" data-title="Labor" data-sub="drawing · specification · transmittal" data-fx="418" data-fy="65" style="width:252px;height:472px" aria-label="Labor — drawing · specification · transmittal">
+    <div class="sheet sheet--white sheet--torn-bottom" style="left:14px;top:7px;width:153px;height:117px;clip-path:polygon(0.0% 0.0%,100.0% 0.0%,100.0% 97.0%,92.9% 99.0%,85.7% 99.5%,78.6% 99.6%,71.4% 98.9%,64.3% 97.1%,57.1% 99.4%,50.0% 98.0%,42.9% 97.8%,35.7% 98.7%,28.6% 98.1%,21.4% 99.8%,14.3% 99.8%,7.1% 99.3%,0.0% 97.6%)"><div class="head">specification · 09 21 00</div><div class="mono-text" style="top:20px;line-height:8px;opacity:.5">2.1  gypsum board assemblies
+2.2  metal framing, 20 ga
+2.3  acoustic insulation
+3.1  install per mfr. instr.</div><div class="rule-lines rule-lines--dense" style="top:64px;opacity:.25"></div><div class="rstamp-box">ISSUED</div></div>
+    <div class="sheet sheet--diazo sheet--rough" style="left:5px;top:88px;width:198px;height:360px"><div class="diazo-lines"></div><div class="fold fold--h" style="top:50%"></div><div class="fold fold--v" style="left:50%"></div>
+<svg class="sketch" viewBox="0 0 198 360" aria-hidden="true"><g filter="url(#pencil)" fill="none" stroke="rgba(205,220,240,.85)" stroke-width="1">
+<rect x="30" y="30" width="136" height="120"/><path d="M30 90 H166 M96 30 V150 M60 30 V90 M132 90 V150"/><path d="M40 40 h20 M40 44 h14" stroke-width=".6"/>
+<path d="M30 200 H166 M30 200 L30 300 L166 300 L166 200"/><path d="M30 300 L98 250 L166 300" /><path d="M60 260 v40 M120 260 v40 M60 260 h20 v20 h-20 z M110 260 h20 v20 h-20 z" stroke-width=".7"/>
+<path d="M20 330 H178" stroke-dasharray="6 3" stroke-width=".6"/></g></svg>
+<div class="title-block" style="width:44%;height:14%"><b>Labor</b>a-101 · plan · record</div>
+<div class="note" style="left:14px;top:300px;color:rgba(255,255,255,.7);font-size:15px;transform:rotate(-2deg)">rev 2 — see transmittal</div>
+<div class="wear-corner"></div><div class="tape" style="left:173px;top:-5px;width:32px;height:14px;transform:rotate(4deg)"></div></div>
+    <div class="sheet sheet--thermal sheet--rough" style="left:86px;top:340px;width:153px;height:117px"><div class="head">transmittal</div><div class="mono-text" style="top:20px;line-height:8px">1  a-101   plan
+2  a-201   elevations
+3  a-501   details
+—  issued for record</div><div class="hand" style="left:70px;top:58px;font-size:13px;color:var(--ink-blue);transform:rotate(-8deg)">bf</div></div>
+  </button>
+  <button class="placed bundle" data-id="accumulation" data-title="Accumulation" data-sub="map · receipt · brochure · ticket · postcard · bill" data-fx="554" data-fy="-4" style="width:297px;height:540px" aria-label="Accumulation — map · receipt · brochure · ticket · postcard · bill">
+    <img class="scan" src="assets/EPH-2026-029-front-web.webp" style="left:18px;top:40px;width:187px;transform:rotate(0.5deg)" alt="">
+    <img class="scan" src="assets/EPH-2026-013-front-web.webp" style="left:7px;top:-4px;width:180px;transform:rotate(-1deg)" alt="">
+    <img class="scan" src="assets/EPH-2026-010-front-web.webp" style="left:25px;top:115px;width:166px;transform:rotate(0.6deg)" alt="">
+    <img class="scan" src="assets/EPH-2026-006-front-web.webp" style="left:32px;top:364px;width:79px;transform:rotate(-1deg)" alt="">
+    <img class="scan" src="assets/EPH-2026-018-front-web.webp" style="left:115px;top:288px;width:212px;transform-origin:0 0;transform:rotate(90deg) translate(0,-100%)" alt="">
+    <img class="scan" src="assets/EPH-2026-017-front-web.webp" style="left:229px;top:319px;width:68px;transform:rotate(1deg)" alt="">
+    <img class="scan" src="assets/EPH-2026-014-front-web.webp" style="left:151px;top:468px;width:101px;transform:rotate(-1deg)" alt="">
+    <svg class="clip" style="left:7px;top:553px;width:36px;height:30px;transform:rotate(0deg)" viewBox="0 0 48 40" aria-hidden="true"><rect x="10" y="10" width="28" height="16" fill="#1c1a17"/><path d="M12 10 L16 2 M36 10 L32 2" stroke="#1c1a17" stroke-width="2" fill="none"/><path d="M6 12 C2 14, 2 22, 8 24 M42 12 C46 14, 46 22, 40 24" stroke="#8a8478" stroke-width="2.5" fill="none"/></svg>
+    <svg class="clip" style="left:18px;top:544px;width:22px;height:52px;transform:rotate(0deg)" viewBox="0 0 22 52" aria-hidden="true"><path d="M6 44 V10 a5 5 0 0 1 10 0 V40 a3 3 0 0 1 -6 0 V14" stroke="#b9b2a4" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+    <svg class="clip" style="left:157px;top:7px;width:44px;height:14px;transform:rotate(-20deg)" viewBox="0 0 44 14" aria-hidden="true"><path d="M4 7 H40 M40 7 a3 3 0 1 1 -3 -3" stroke="#b9b2a4" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M4 7 a3 3 0 1 0 0 -0.1" stroke="#b9b2a4" stroke-width="2" fill="none"/></svg>
+  </button>
+
+  <!-- KEY — the Guide. The rendered thumbnail of the real model, with its paper tag. -->
+  <button class="placed object object--key" data-id="guide" data-title="Guide" data-sub="key on a paper tag" style="width:116px;height:86px" aria-label="Guide — the key on a paper tag">
+    <img src="../../public/thumbnails/desk/key.png" alt="">
+    <svg class="string" width="150" height="150" viewBox="0 0 150 150" aria-hidden="true">
+      <path d="M16 58 C2 66, -4 74, -6 86" stroke="rgba(232,224,208,0.7)" stroke-width="1" fill="none"/>
+    </svg>
+    <div class="tag"><span>guide</span></div>
+  </button>
+
+  <!-- AMBER — an amorphous block. Unresolved; drawn as a placeholder. -->
+  <button class="placed object object--amber" data-id="amber" data-title="Amber" data-sub="unresolved" style="width:128px;height:104px" aria-label="A block of amber, its purpose unresolved">
+    <svg viewBox="0 0 128 104" aria-hidden="true">
+      <defs>
+        <radialGradient id="amb" cx="40%" cy="35%" r="70%">
+          <stop offset="0" stop-color="#f3bd57"/><stop offset="0.5" stop-color="#c97a1e"/><stop offset="1" stop-color="#6a3a0a"/>
+        </radialGradient>
+        <linearGradient id="amb-side" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#7a4210"/><stop offset="1" stop-color="#3d1f05"/>
+        </linearGradient>
+      </defs>
+      <!-- underside / thickness, visible toward the bottom of the screen -->
+      <path d="M18 50 L30 22 L62 12 L98 20 L116 46 L110 78 L84 96 L46 98 L24 84 Z" transform="translate(0 6)" fill="url(#amb-side)" opacity="0.95"/>
+      <!-- top: an irregular outline, broken into facets -->
+      <g opacity="0.94">
+        <path d="M18 50 L30 22 L62 12 L98 20 L116 46 L110 78 L84 96 L46 98 L24 84 Z" fill="url(#amb)"/>
+        <g fill="#ffe2a0" stroke="#fff1cc" stroke-width="0.6" stroke-opacity="0.35">
+          <path d="M30 22 L62 12 L56 44 Z" opacity="0.28"/>
+          <path d="M62 12 L98 20 L80 40 L56 44 Z" opacity="0.18"/>
+          <path d="M98 20 L116 46 L94 58 L80 40 Z" opacity="0.10"/>
+          <path d="M18 50 L30 22 L56 44 L40 66 Z" opacity="0.14"/>
+          <path d="M56 44 L80 40 L94 58 L70 72 L40 66 Z" opacity="0.06"/>
+          <path d="M116 46 L110 78 L84 96 L70 72 L94 58 Z" opacity="0.02"/>
+          <path d="M18 50 L40 66 L70 72 L46 98 L24 84 Z" opacity="0.05"/>
+          <path d="M70 72 L84 96 L46 98 Z" opacity="0.03"/>
+        </g>
+        <g fill="#2e1804" opacity="0.6"><circle cx="58" cy="52" r="1.5"/><circle cx="76" cy="66" r="1"/><path d="M84 46 l6 3 l-4 4 z"/><circle cx="44" cy="74" r="0.9"/><path d="M50 36 l5 1 l-2 3 z"/></g>
+        <path d="M34 26 L60 16" stroke="#fff6dc" stroke-opacity="0.7" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+      </g>
+    </svg>
+  </button>
+
+  <!-- STAMP — placeholder: a rectangular prism lying on its side beside Creation's sheet. -->
+  <div class="placed stamp" data-id="stamp" aria-hidden="true">
+    <div class="top"><span class="mark">seal</span></div><div class="face"></div><div class="side"></div>
+  </div>
+
+</div>
+</div>
+
+<div class="controls" aria-label="layout test controls">
+  <div class="row"><span>arrangement</span>
+    <button data-set="arr" data-val="pile" aria-pressed="true">pile</button>
+    <button data-set="arr" data-val="spread" aria-pressed="false">spread</button></div>
+  <div class="row"><span>hit areas</span><button id="tHits" aria-pressed="false">outline</button></div>
+  <div class="row"><span>objects</span><button id="tObj" aria-pressed="true">shown</button></div>
+  <div class="regime" id="regime"></div>
+</div>
+
+<div class="hover-title" id="hoverTitle"></div>
+<nav class="layer-breadcrumb" aria-label="breadcrumb"><span>mockups</span><span class="sep">/</span><span>desk papers</span><span class="sep">/</span><span class="current">01 bundles</span></nav>
+
+<script>
+// ── Layouts ──────────────────────────────────────────────────────────────────
+// Design units: the wide stage is 1200 × 800, the vertical stage 400 × 900.
+// As in scene.js, only position (and here rotation) changes between regimes;
+// every bundle and object keeps its size. Two arrangements per regime:
+//   pile    — the reference's overlap; tests occlusion and legibility
+//   spread  — nothing overlaps; the control
+const STAGES = { wide: { w: 1200, h: 780 }, vertical: { w: 1200, h: 780 } };
+// The folder, per regime: box, flap width (wide) or height (vertical), tab.
+const FOLDER = {
+  wide:     { x: 200, y: 90, w: 801, h: 567, flap: 0, tab: { x: 144, w: 171 } },
+  vertical: { x: 200, y: 90, w: 801, h: 567, flap: 0, tab: { x: 144, w: 171 } },
+};
+// Bundles and objects. Coordinates are FOLDER-relative for the papers (they
+// are all inside it) and stage-relative for the three objects. Rotation is
+// kept within ±1.5° — the reference's papers are square to the folder.
+const LAYOUTS = {
+  wide: {
+    pile:   { stamp: { in: true, x: 315, y: 562, r: 0 }, guide: { x: 40, y: 640, r: 12 }, amber: { x: 1050, y: 600, r: -8 } },
+    spread: { stamp: { in: true, x: 315, y: 562, r: 0 }, guide: { x: 40, y: 640, r: 12 }, amber: { x: 1050, y: 600, r: -8 } },
+  },
+};
+LAYOUTS.vertical = {
+  pile:   { stamp: LAYOUTS.wide.pile.stamp, guide: { x: 250, y: 720, r: 12 }, amber: { x: 960, y: 700, r: -8 } },
+  spread: { stamp: LAYOUTS.wide.pile.stamp, guide: { x: 250, y: 720, r: 12 }, amber: { x: 960, y: 700, r: -8 } },
+};
+// Draw order: bottom to top, per arrangement (pile only matters).
+const ZORDER = ["identity", "labor", "consumption", "creation", "accumulation", "stamp", "guide", "amber"];
+
+const stage = document.getElementById("stage");
+const placed = [...stage.querySelectorAll(".placed")];
+let arr = "pile";
+const regimeFor = (w) => (w < 600 ? "vertical" : "wide");
+
+const viewport = document.querySelector(".desk-viewport");
+const folder = document.getElementById("folder");
+function apply() {
+  const regime = regimeFor(window.innerWidth);
+  const { w, h } = STAGES[regime];
+  const f = FOLDER[regime];
+  stage.style.width = w + "px"; stage.style.height = h + "px";
+  
+  let s;
+  if (regime === "vertical") {
+    // The phone shows the same composition, fitted to the width.
+    // Fit the folder and its overhangs (stage x 150–1160) to the width, not the whole stage.
+    const cx = 655, cw = 1010, pad = 6; s = (window.innerWidth - pad * 2) / cw;
+    stage.style.transform = `translate(${-cx * s}px, ${-h * s / 2 - 40}px) scale(${s})`;
+    stage.style.marginBottom = 0;
+  } else {
+    const pad = 48; s = Math.min((window.innerWidth - pad * 2) / w, (window.innerHeight - pad * 2 - 40) / h);
+    stage.style.transform = `translate(${-w * s / 2}px, ${-h * s / 2}px) scale(${s})`;
+    stage.style.marginBottom = 0;
+  }
+  // folder
+  folder.classList.toggle("folder--vertical", regime === "vertical");
+  folder.style.left = f.x + "px"; folder.style.top = f.y + "px"; folder.style.width = f.w + "px"; folder.style.height = f.h + "px";
+  const flap = document.getElementById("flap"), fold = document.getElementById("fold"), tab = document.getElementById("tab");
+  const under = document.getElementById("under");
+  under.style.left = (f.x - 46) + "px"; under.style.top = (f.y + 56) + "px"; under.style.width = (f.w + 46) + "px"; under.style.height = (f.h - 20) + "px";
+  const ip = document.getElementById("insidePrint");
+  ip.hidden = true;
+  tab.style.left = f.tab.x + "px"; tab.style.width = f.tab.w + "px"; tab.style.top = "-22px";
+  const map = LAYOUTS[regime][arr];
+  placed.forEach((el) => {
+    let p = map[el.dataset.id];
+    if (!p && el.dataset.fx != null) p = { in: true, x: +el.dataset.fx, y: +el.dataset.fy, r: 0 };
+    if (!p) return;
+    const x = p.in ? f.x + p.x : p.x, y = p.in ? f.y + p.y : p.y;
+    el.style.transform = `translate(${x}px, ${y}px) rotate(${p.r}deg)`;
+    el.style.zIndex = ZORDER.indexOf(el.dataset.id) + 1;
+  });
+  document.getElementById("regime").textContent = `${regime} · ${window.innerWidth}×${window.innerHeight} · ×${s.toFixed(2)}`;
+}
+window.addEventListener("resize", apply); apply();
+
+// Controls
+document.querySelectorAll('[data-set="arr"]').forEach((b) => b.addEventListener("click", () => {
+  arr = b.dataset.val;
+  document.querySelectorAll('[data-set="arr"]').forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+  apply();
+}));
+const toggle = (id, cls, on, off) => { const b = document.getElementById(id); b.addEventListener("click", () => {
+  const now = b.getAttribute("aria-pressed") !== "true"; b.setAttribute("aria-pressed", String(now));
+  b.textContent = now ? on : off; document.body.classList.toggle(cls, id === "tHits" ? now : !now);
+}); };
+toggle("tHits", "show-hits", "outline", "outline");
+toggle("tObj", "hide-objects", "shown", "hidden");
+
+// Hover title, as the live desk shows it
+const ht = document.getElementById("hoverTitle");
+placed.forEach((el) => {
+  if (!el.dataset.title) return;
+  const show = () => { ht.innerHTML = `${el.dataset.title}<small>${el.dataset.sub}</small>`; ht.classList.add("is-on"); };
+  const hide = () => ht.classList.remove("is-on");
+  el.addEventListener("pointerenter", show); el.addEventListener("pointerleave", hide);
+  el.addEventListener("focus", show); el.addEventListener("blur", hide);
+  el.addEventListener("click", () => { ht.innerHTML = `${el.dataset.title}<small>opens · ${el.dataset.sub}</small>`; ht.classList.add("is-on"); });
+});
+</script>
+</body>
+</html>

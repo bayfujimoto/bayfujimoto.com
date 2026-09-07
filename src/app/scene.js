@@ -23,6 +23,7 @@ let onSceneResume = null;
 let onSheetsClosing = null;
 export function notifySheetsClosing() { onSheetsClosing?.(); }
 export function pauseSceneRender() { renderPaused = true; }
+export function isSceneRenderPaused() { return renderPaused; }
 export function resumeSceneRender() { renderPaused = false; onSceneResume?.(); }
 
 // How a desk object is surfaced — flat materials or its own textures — is one

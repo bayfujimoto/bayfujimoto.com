@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Desk papers mockups — index</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+html, body { overflow: auto; }
+.idx { width: min(720px, 92vw); margin: 0 auto; padding: 6rem 0 4rem; }
+.idx h1 { font-size: var(--text-xl); font-weight: 400; margin: 0 0 0.5rem; }
+.idx .sub { font-size: var(--text-sm); color: var(--overlay-muted); margin-bottom: 3rem; max-width: 54ch; line-height: var(--leading-loose); }
+.idx a.entry { display: grid; grid-template-columns: 3.5rem 1fr; gap: 0.35rem 1.25rem; align-items: baseline; padding: 1rem 0.5rem; border-bottom: 1px solid var(--border-dim); text-decoration: none; color: var(--overlay-text); }
+.idx a.entry:hover { background: var(--hover-bg); }
+.idx .num { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--overlay-muted); letter-spacing: var(--tracking-wider); }
+.idx .name { font-size: var(--text-md); }
+.idx .desc { grid-column: 2; font-size: var(--text-sm); color: var(--overlay-muted); line-height: var(--leading-base); max-width: 50ch; }
+.idx .rule { margin: 0 0 2.5rem; padding: 1rem 1.25rem; border: 1px solid var(--border-dim); font-size: var(--text-sm); color: var(--overlay-text); line-height: var(--leading-loose); max-width: 54ch; }
+.idx .rule .overlay-label { font-family: var(--font-mono); margin-bottom: 0.5rem; display: block; font-size: var(--text-xs); letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--overlay-muted); }
+.idx h2 { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--overlay-muted); font-weight: normal; margin: 2.5rem 0 0.5rem; }
+.idx dl { font-size: var(--text-sm); color: var(--overlay-muted); line-height: var(--leading-base); max-width: 54ch; }
+.idx dt { color: var(--overlay-text); margin-top: 0.6rem; }
+.idx dd { margin: 0; }
+</style>
+</head>
+<body>
+<div class="mock-banner"><span>desk papers · rev 3 · 2026-09-06</span><span>studies — nothing decided</span></div>
+<main class="idx">
+  <h1>Desk papers — layout test</h1>
+  <p class="sub">The five series as <b>bundles of documents</b> — two to four
+  sheets clipped together — in place of the five containers (dossier, box,
+  sphere, stamp-and-paper, bundle). Three things stay dimensional: the key,
+  an amber block, and the stamp, which lies beside Creation's sheet as its
+  instrument rather than its entry. The test asks two questions: does a pile
+  of paper still read as a scene, and can every entry be seen and hit when
+  the papers overlap.</p>
+  <div class="rule"><span class="overlay-label">what is tested</span>
+    Flat CSS, no WebGL. Lit from the top of the screen as the live spot is
+    (shadows fall down-screen). Rev 2 follows the reference collage closely:
+    every paper lies inside <b>one open folder</b> (a manila folder over a
+    blue one, offset), the sheets are square to the folder (±0.5°), small
+    pieces overhang its edges, and there are <b>no file labels</b> — each
+    document names itself. The five bundles are the folder's columns: a
+    narrow left column, two tall centre sheets, a portrait blue drawing, a
+    right column. On the phone the same composition is fitted to the width
+    (legibility deferred). The <b>hit areas</b> toggle outlines every
+    button's footprint; <b>objects</b> hides the key, amber and stamp.
+    <br><br>Rev 3 is the <b>material pass</b>: grain on every sheet and on the
+    folder; ragged and torn edges; tape; fold creases and corner wear on the
+    drawing; coffee rings; a rubber stamp and a seal with ink dropout;
+    handwriting (Homemade Apple for the cursive, Caveat for the notes) and
+    pencil sketches with a displacement filter. The Accumulation column and
+    the film ticket are <b>real scans from the archive</b> — the display
+    derivatives of EPH-2026-006, 010, 013, 014, 017, 018 and 029, copied into
+    <code>assets/</code> so the mockup opens offline. That is the argument in
+    one column: the archive already holds the material the reference is made
+    of.</div>
+
+  <h2>the bundles</h2>
+  <dl>
+    <dt>Identity</dt><dd>résumé (the tall left column) · timetable strip · business card — bulldog clip on the folder edge</dd>
+    <dt>Labor</dt><dd>portrait diazo drawing · specification · transmittal slip</dd>
+    <dt>Consumption</dt><dd>viewing log (the titled centre sheet) · ticket stub on its top edge · a print — paper clip</dd>
+    <dt>Creation</dt><dd>sketch sheet bearing the seal impression · a print tag; the stamp hangs below the folder's bottom edge</dd>
+    <dt>Accumulation</dt><dd>blue backing sheet · receipt pinned at the top · brochure · ticket · a postcard overhanging the right edge — bulldog and paper clip on the bottom edge</dd>
+  </dl>
+
+  <h2>studies</h2>
+  <a class="entry" href="01-bundles.html"><span class="num">01</span><span class="name">Bundles on the desk</span>
+    <span class="desc">Rev 2 — the reference's layout, one folder. The
+    key is the rendered thumbnail of the real model; the amber block and the
+    stamp (a rectangular prism on its side) are placeholders.</span></a>
+</main>
+<nav class="layer-breadcrumb" aria-label="breadcrumb"><span>mockups</span><span class="sep">/</span><span class="current">desk papers</span></nav>
+</body>
+</html>
