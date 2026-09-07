@@ -1,6 +1,7 @@
 import { initRouter, setDeskPath } from "./app/router.js";
 import { initPanels } from "./app/panels.js";
 import { initDeskAlt } from "./app/desk-alt.js";
+import { initDeskMetal } from "./app/desk-metal.js";
 import { METAL_PATH } from "./app/look.js";
 import "./styles/main.css";
 
@@ -10,11 +11,13 @@ import "./styles/main.css";
 // it replaced is kept on the `original-desk-objects` branch, where it is
 // still the default and this one lives at /home-alt.
 //
-// /home-metal is the same desk under the steel look (src/app/look.js): a
-// brushed table and a handheld flashlight. The desk layer keeps that address
-// so the look holds through the sheets and back.
-if (window.location.pathname.replace(/\/+$/, "") === METAL_PATH) setDeskPath(METAL_PATH);
+// /home-metal is the desk rebuilt in the scene (src/app/desk-metal.js): every
+// paper a textured plane on a real PBR table under a handheld flashlight.
+// The desk layer keeps that address so the look holds through the sheets
+// and back.
+const metal = window.location.pathname.replace(/\/+$/, "") === METAL_PATH;
+if (metal) setDeskPath(METAL_PATH);
 
 initRouter();
 initPanels();
-initDeskAlt();
+if (metal) initDeskMetal(); else initDeskAlt();

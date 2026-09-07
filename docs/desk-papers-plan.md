@@ -241,3 +241,46 @@ room with one cold panel overhead (PMREM — one per renderer, since a PMREM
 texture belongs to the context that made it); the DOM stage's light overlay
 becomes a beam whose radius is computed from the cone; the flashlight's aim is
 frame-rate independent.
+
+## The desk in the scene (`/home-metal`, 2026-09-07)
+
+Bay's second look at the steel look: not realistic. The fixes he asked for
+— a real flashlight print, dust through the whole room, a real PBR table with
+smudging, no lag on the light, the beam raking across the surface as in his
+reference, game techniques throughout — all needed the papers to be IN the
+scene, and he agreed to move them (the plan's option A). So `/home-metal` is
+now `src/app/desk-metal.js`: one WebGL scene, everything in it.
+
+- **Papers**: `src/app/desk-docs.js` describes every document as a spec (the
+  same content as the DOM desk's HTML, typeset from the archive), and
+  `src/app/paper.js` draws each to a canvas — stock, grain, ragged and torn
+  edges, rules, serif/mono/handwritten text, scans, stamps with ink dropout,
+  tape, stains, creases — which becomes the texture of a plane with a shared
+  fibrous paper normal map. Sheets stack at 0.23 mm and cast real shadows.
+- **Table**: Poly Haven `rust_coarse_01` (CC0), 2K WebP diffuse / normal /
+  ARM on R2 under `models/web/textures/` (`publish-web-models.js --textures`);
+  `metal_plate_02` is uploaded as the alternative. `TUNE.table` in
+  desk-metal.js.
+- **Flashlight**: a SpotLight with a cookie (`makeCookie`: hotspot, corona,
+  reflector rings, unevenness) and a 2K PCF-soft shadow map. Bay's rule: it
+  sits low on an arc at the near edge and slides with the cursor's x, always
+  aimed at the desk's centre — cursor right, light from the lower right —
+  with no lag; only a slow handheld sway (off under reduced motion).
+  `TUNE.flashlight` (radius, height, sweep, angle, intensity).
+- **Air**: a volumetric cone (additive shader, radial and length falloff,
+  noise) and room-filling dust — Points across the whole desk volume, lit
+  per particle by the cone in the vertex shader, so the motes glow only where
+  the beam passes.
+- **Post**: EffectComposer — RenderPass, UnrealBloom on the hotspot,
+  OutputPass; ACES; grain over the frame.
+- **The fan**: the series layer still comes through `panels.js`; the
+  documents are clones of the desk's planes drawn in a hand canvas above the
+  veil (z depth×10+1), rising from their desk pose to a row facing the camera
+  (a column on a phone); invisible DOM buttons projected over them carry
+  clicks, hover, focus and labels.
+- Bay chose: worn oxidised steel; dim cold ambient; papers into the scene;
+  bloom + volumetric + dust (no SSAO, no vignette).
+
+The DOM desk at `/` is untouched; `?look=steel` there still shows the earlier
+DOM approximation. When the scene desk is approved it should become the desk
+and desk-alt.js retire (desk-docs.js already holds the documents once).

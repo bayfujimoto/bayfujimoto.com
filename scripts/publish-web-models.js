@@ -12,15 +12,20 @@
 //   node scripts/publish-web-models.js                # upload
 //   node scripts/publish-web-models.js --dry-run      # list what would upload
 //   node scripts/publish-web-models.js --src <dir>    # default .optimized-models/t1024
+//   node scripts/publish-web-models.js --textures <dir>
+//       upload every .webp/.jpg/.png in <dir> to models/web/textures/ — the
+//       table's PBR maps (Poly Haven, CC0; src/app/desk-metal.js)
 //
 // Requires in .env.local: CLOUDFLARE_ACCOUNT_ID, R2_BUCKET_NAME,
 //                         R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY
 
-import { readFileSync, existsSync, statSync } from "fs";
+import { readFileSync, existsSync, statSync, readdirSync } from "fs";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { DESK_OBJECTS, DESK_CLIPS } from "../src/shared/desk-objects.js";
 
 const DRY_RUN = process.argv.includes("--dry-run");
+const texArg = process.argv.indexOf("--textures");
+const TEXTURES = texArg > -1 ? new URL(process.argv[texArg + 1].replace(/\/?$/, "/"), import.meta.url) : null;
 const srcArg = process.argv.indexOf("--src");
 const SRC = new URL(
   srcArg > -1 ? process.argv[srcArg + 1] : "./.optimized-models/t1024/",
@@ -65,5 +70,19 @@ for (const { file } of [...Object.values(DESK_OBJECTS), ...Object.values(DESK_CL
     ContentType: "model/gltf-binary",
   }));
   console.log(`uploaded  ${DEST_PREFIX + file}  (${kb} KB)`);
+}
+
+if (TEXTURES) {
+  const MIME = { webp: "image/webp", jpg: "image/jpeg", jpeg: "image/jpeg", png: "image/png" };
+  for (const file of readdirSync(TEXTURES).filter((f) => /\.(webp|jpe?g|png)$/i.test(f)).sort()) {
+    const path = new URL(file, TEXTURES);
+    const body = readFileSync(path);
+    const kb = Math.round(statSync(path).size / 1024);
+    total += kb;
+    const key = `${DEST_PREFIX}textures/${file}`;
+    if (DRY_RUN) { console.log(`would upload  ${key}  (${kb} KB)`); continue; }
+    await client.send(new PutObjectCommand({ Bucket: BUCKET, Key: key, Body: body, ContentType: MIME[file.split(".").pop().toLowerCase()] || "application/octet-stream", CacheControl: "public, max-age=31536000, immutable" }));
+    console.log(`uploaded  ${key}  (${kb} KB)`);
+  }
 }
 console.log(`${DRY_RUN ? "would upload" : "uploaded"} ${total} KB total`);

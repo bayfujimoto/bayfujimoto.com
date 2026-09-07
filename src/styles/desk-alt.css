@@ -191,3 +191,8 @@
 }
 /* ── The objects canvas — above the papers, below every veil ─────────────── */
 .desk-alt-objects { position: fixed; inset: 0; z-index: 2; pointer-events: none; display: block; }
+
+/* The fan's buttons over the papers in hand (desk-metal.js): invisible,
+   positioned by projection each frame; the focus ring is the affordance. */
+.da-fan__paper--hand { background: none; border: 0; cursor: pointer; }
+.da-fan__paper--hand:focus-visible { outline: 2px solid var(--color-vellum); outline-offset: 6px; }
