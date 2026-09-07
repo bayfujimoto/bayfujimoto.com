@@ -1,7 +1,9 @@
 // ── The look — one switch for the desk's light and material ──────────────────
-// Two looks, both complete, chosen by LOOK below (or ?look=wood / ?look=steel
-// on the URL, for comparing). Rolling back is changing DEFAULT_LOOK — or
-// checking out `main`, which has only the wood.
+// Two looks, both complete. The wood is the desk at "/"; the steel is the
+// desk at "/home-metal" (main.js keeps the desk layer at that address, so
+// the look holds through the sheets and back). ?look=wood / ?look=steel on
+// either address overrides, for comparing. Rolling the steel back is
+// deleting the /home-metal branch of this switch.
 //
 //   wood   — the desk as built: a warm lamp on a wooden desk.
 //   steel  — a brushed stainless table under a handheld flashlight: a cold,
@@ -9,10 +11,12 @@
 //            a dark room to reflect, dust in the beam, a faint flicker, grain
 //            over the frame, and a blue-black palette for the layers above.
 
-const DEFAULT_LOOK = "steel";
+const DEFAULT_LOOK = "wood";
+export const METAL_PATH = "/home-metal";
 
 const params = new URLSearchParams(window.location.search);
-export const LOOK = params.get("look") === "wood" || params.get("look") === "steel" ? params.get("look") : DEFAULT_LOOK;
+const byPath = window.location.pathname.replace(/\/+$/, "") === METAL_PATH ? "steel" : DEFAULT_LOOK;
+export const LOOK = params.get("look") === "wood" || params.get("look") === "steel" ? params.get("look") : byPath;
 
 export const LOOKS = {
   wood: {

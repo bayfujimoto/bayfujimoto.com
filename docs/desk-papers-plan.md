@@ -223,11 +223,12 @@ overlapping, which keeps the hit areas adjacent rectangles.
 
 ## The steel look (branch `look-steel`, 2026-09-07)
 
-A second look for the desk, tried on its own branch: a brushed stainless
-table under a handheld flashlight — colder and darker, after Resident Evil.
-Both looks are complete and switchable in `src/app/look.js` (`DEFAULT_LOOK`;
-`?look=wood` / `?look=steel` on the URL to compare), so rolling back is one
-constant on the branch, or simply staying on `main`, which has only the wood.
+A second look for the desk: a brushed stainless table under a handheld
+flashlight — colder and darker, after Resident Evil. Merged to `main` and
+routed to **`/home-metal`** (the wood stays at `/`); both looks are complete
+in `src/app/look.js`, chosen by path (`?look=wood` / `?look=steel` overrides
+for comparing), so rolling the steel back is removing that branch of the
+switch.
 Bay's choices: a dim cold ambient outside the beam (the bundles stay
 findable); the beam aimed at the cursor with a lag and a slow handheld sway
 (the finger, on touch; centre at rest); the current desk.glb re-skinned

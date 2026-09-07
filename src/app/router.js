@@ -4,9 +4,11 @@ import { CONSTELLATION_HOMES, homedConstellationSlug } from "../shared/constella
 // Homed constellations (the biography) — see src/shared/constellation-homes.js.
 export { CONSTELLATION_HOMES, homedConstellationSlug };
 
-// The desk's address. "/home-alt" was the papers desk's address while it was
-// a study beside the live desk (the `original-desk-objects` branch keeps that
-// arrangement); it still parses as the desk and is rewritten to "/".
+// The desk's address: "/" — or "/home-metal", the same desk under the steel
+// look (main.js sets it before initRouter). "/home-alt" was the papers desk's
+// address while it was a study beside the live desk (the
+// `original-desk-objects` branch keeps that arrangement); it still parses as
+// the desk and is rewritten to "/".
 let deskPath = "/";
 export function setDeskPath(p) { deskPath = p; }
 export function getDeskPath() { return deskPath; }
@@ -17,7 +19,7 @@ function locationToState() {
   const params = new URLSearchParams(window.location.search);
   const item = params.get("item") || null;
 
-  if (parts.length === 0 || parts[0] === "home-alt") {
+  if (parts.length === 0 || parts[0] === "home-alt" || parts[0] === "home-metal") {
     return { layer: "desk", series: null, subcollection: null, view: null, item: null };
   }
 
