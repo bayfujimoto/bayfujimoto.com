@@ -14,7 +14,8 @@ constellations:
 source: Received as a gift from a friend
 inspection: card
 assets:
-  front: EPH-2026-017-front.jpg
-  thumbnail: EPH-2026-017-front-thumb.jpg
+  front: EPH-2026-017-front.png?v=62a29e4ec6x2
+  thumbnail: EPH-2026-017-front-thumb.webp?v=62a29e4ec6x2
+  back: EPH-2026-017-back.png?v=b92aaa1fc20x2
 dimensions: 62 x 88
 ---
