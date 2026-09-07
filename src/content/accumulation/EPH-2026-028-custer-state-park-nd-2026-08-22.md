@@ -14,4 +14,5 @@ inspection: card
 assets:
   front: EPH-2026-028-front.png?v=1efa666fc5x2
   thumbnail: EPH-2026-028-front-thumb.webp?v=1efa666fc5x2
+  back: EPH-2026-028-back.png?v=c18f3d8ac6x2
 ---
