@@ -4,9 +4,9 @@ import { CONSTELLATION_HOMES, homedConstellationSlug } from "../shared/constella
 // Homed constellations (the biography) — see src/shared/constellation-homes.js.
 export { CONSTELLATION_HOMES, homedConstellationSlug };
 
-// The desk's address. "/" on the live site; "/home-alt" while the papers desk
-// (src/app/desk-alt.js) is a temporary landing page beside it. main.js sets it
-// before initRouter so the desk layer round-trips through the same path.
+// The desk's address. "/home-alt" was the papers desk's address while it was
+// a study beside the live desk (the `original-desk-objects` branch keeps that
+// arrangement); it still parses as the desk and is rewritten to "/".
 let deskPath = "/";
 export function setDeskPath(p) { deskPath = p; }
 export function getDeskPath() { return deskPath; }
@@ -112,7 +112,8 @@ export function initRouter() {
   // A homed constellation's /constellations/<slug>/ address resolves to its
   // series address; rewrite the bar so the canonical URL is what gets shared.
   const canonical = stateToURL(getState());
-  if (initial.layer !== "desk" && canonical !== window.location.pathname + window.location.search) {
+  const here = window.location.pathname + window.location.search;
+  if (canonical !== here && (initial.layer !== "desk" || /^\/home-alt\/?$/.test(window.location.pathname))) {
     history.replaceState(null, "", canonical);
   }
   console.log("[router] init →", window.location.pathname + window.location.search, initial);

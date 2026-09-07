@@ -1,7 +1,8 @@
-// ── The papers desk — /home-alt ──────────────────────────────────────────────
-// A temporary landing page beside the live desk: the five series as bundles of
-// documents clipped together inside one open folder, with the key, an amber
-// block and the stamp as the only things that are not paper. The folder and
+// ── The papers desk ──────────────────────────────────────────────────────────
+// The desk: the five series as bundles of documents clipped together inside
+// one open folder, with the key, an amber block, the stamp and the clips as
+// the only things that are not paper. It replaced the five-container desk
+// (scene.js; kept on the `original-desk-objects` branch) on 2026-09-07. The folder and
 // the papers are a DOM layer over the WebGL desk; the wood, the three objects
 // and the clips are the scene. Ported from mockups/desk-papers/ (rev 3); the
 // plan of record is docs/desk-papers-plan.md.
@@ -327,35 +328,45 @@ const EASE_IN_OUT = "cubic-bezier(0.55, 0, 0.15, 1)";
 
 function makeFanFactory(ctx) {
   return function makeFanSheet(seriesKey, H) {
-    const { archive, layer, reduceMotion } = ctx;
-    const s = archive.series[seriesKey];
-    const bundle = layer.querySelector(`.da-bundle[data-id="${seriesKey}"]`);
+    // panels.js wants the sheet at once; the desk's data and DOM may still be
+    // loading on a deep link. The shell is returned now and filled on ready.
     const veil = H.makeVeil(() => navigate({ layer: "desk" }));
     const content = H.makeContent();
     content.classList.add("da-fan-content");
     const fan = document.createElement("div");
     fan.className = "da-fan";
     content.appendChild(fan);
+    let metaEl = null;
+    let teardown = () => {};
+    const escOff = H.attachEscapeHandler(content, () => navigate({ layer: "desk" }));
 
-    const meta = document.createElement("div");
-    meta.className = "layer-meta";
-    meta.innerHTML = `<h1 class="overlay-title">${esc(s.label)}</h1><p class="overlay-subtitle">${esc(s.subtitle || s.container || "")}</p>`;
-    content.appendChild(meta);
-    let metaEl = meta;
-    const subtitleRest = s.subtitle || s.container || "";
-    const setSubtitle = (t) => { const p = metaEl.querySelector(".overlay-subtitle"); if (p) p.textContent = t; };
+    function setup() {
+      const { archive, layer, reduceMotion } = ctx;
+      const s = archive.series[seriesKey];
+      if (!s) return;
+      const bundle = layer.querySelector(`.da-bundle[data-id="${seriesKey}"]`);
 
-    content.appendChild(H.makeBreadcrumb([
-      { label: "desk", onClick: () => navigate({ layer: "desk" }) },
-      { label: s.label, current: true },
-    ]));
+      const meta = document.createElement("div");
+      meta.className = "layer-meta";
+      meta.innerHTML = `<h1 class="overlay-title">${esc(s.label)}</h1><p class="overlay-subtitle">${esc(s.subtitle || s.container || "")}</p>`;
+      // pushSheet hoists a .layer-meta that is in the content at push time;
+      // arriving later, this one is hoisted by hand.
+      if (metaEl) metaEl.replaceWith(meta); else document.body.appendChild(meta);
+      metaEl = meta;
+      metaEl.style.zIndex = String((parseInt(content.style.getPropertyValue("--depth")) || 1) * 10 + 2);
+      const subtitleRest = s.subtitle || s.container || "";
+      const setSubtitle = (t) => { const p = metaEl.querySelector(".overlay-subtitle"); if (p) p.textContent = t; };
 
-    const subs = Object.keys(s.subcollections || {});
-    const docs = subs.map((key) => ({ key, label: s.subcollections[key].label || key, count: H.subcollectionCount(seriesKey, key), src: bundle?.querySelector(`[data-sub="${key}"]`) || null }));
+      content.appendChild(H.makeBreadcrumb([
+        { label: "desk", onClick: () => navigate({ layer: "desk" }) },
+        { label: s.label, current: true },
+      ]));
 
-    const papers = [];
-    const originals = [];
-    function build() {
+      const subs = Object.keys(s.subcollections || {});
+      const docs = subs.map((key) => ({ key, label: s.subcollections[key].label || key, count: H.subcollectionCount(seriesKey, key), src: bundle?.querySelector(`[data-sub="${key}"]`) || null }));
+
+      const papers = [];
+      const originals = [];
       docs.forEach((d, i) => {
         const btn = document.createElement("button");
         btn.type = "button"; btn.className = "da-fan__paper";
@@ -363,14 +374,13 @@ function makeFanFactory(ctx) {
         let w = 120, h = 160, clone;
         if (d.src) {
           // The document itself, unchanged: the same markup and inline
-          // style, only re-anchored at the button's origin.
+          // style, re-anchored at the button's origin. Its small rotation on
+          // the desk rides on the button (deskPose), so it squares up rising.
           clone = d.src.cloneNode(true);
           clone.removeAttribute("data-sub");
           w = parseFloat(d.src.style.width) || d.src.offsetWidth || w;
           h = parseFloat(d.src.style.height) || d.src.offsetHeight || h;
           if (d.src.tagName === "IMG" && !d.src.style.height) h = w * ((d.src.naturalHeight || 1) / (d.src.naturalWidth || 1));
-          // Its small rotation on the desk rides on the button (deskPose), so
-          // the sheet squares up as it rises.
           clone.style.left = "0"; clone.style.top = "0"; clone.style.transform = ""; clone.style.visibility = "visible";
           originals.push(d.src);
         } else {
@@ -390,60 +400,56 @@ function makeFanFactory(ctx) {
         fan.appendChild(btn);
         papers.push({ btn, w, h, src: d.src, i });
       });
-    }
 
-    function slots() {
-      const vw = window.innerWidth, vh = window.innerHeight;
-      const n = papers.length || 1;
-      if (vw < 600) {
-        const pad = 16, gap = 14, colW = vw - pad * 2;
-        let y = 64;
-        const out = papers.map((p) => {
-          const sc = Math.min(colW / p.w, (vh * 0.5) / p.h);
-          const slot = { x: vw / 2 - (p.w * sc) / 2, y, sc };
-          y += p.h * sc + gap;
-          return slot;
+      function slots() {
+        const vw = window.innerWidth, vh = window.innerHeight;
+        const n = papers.length || 1;
+        if (vw < 600) {
+          const pad = 16, gap = 14, colW = vw - pad * 2;
+          let y = 64;
+          const out = papers.map((p) => {
+            const sc = Math.min(colW / p.w, (vh * 0.5) / p.h);
+            const slot = { x: vw / 2 - (p.w * sc) / 2, y, sc };
+            y += p.h * sc + gap;
+            return slot;
+          });
+          fan.style.height = `${y + 120}px`;
+          return out;
+        }
+        const pad = 48, gap = 24;
+        const W = Math.min(1100, vw - pad * 2);
+        const slotW = (W - gap * (n - 1)) / n;
+        const maxH = vh * 0.62;
+        const x0 = (vw - W) / 2;
+        fan.style.height = "";
+        return papers.map((p, i) => {
+          const sc = Math.min(slotW / p.w, maxH / p.h);
+          const cx = x0 + slotW * (i + 0.5) + gap * i;
+          return { x: cx - (p.w * sc) / 2, y: vh * 0.47 - (p.h * sc) / 2, sc };
         });
-        fan.style.height = `${y + 120}px`;
-        return out;
       }
-      const pad = 48, gap = 24;
-      const W = Math.min(1100, vw - pad * 2);
-      const slotW = (W - gap * (n - 1)) / n;
-      const maxH = vh * 0.62;
-      const x0 = (vw - W) / 2;
-      fan.style.height = "";
-      return papers.map((p, i) => {
-        const sc = Math.min(slotW / p.w, maxH / p.h);
-        const cx = x0 + slotW * (i + 0.5) + gap * i;
-        return { x: cx - (p.w * sc) / 2, y: vh * 0.47 - (p.h * sc) / 2, sc };
-      });
-    }
-    // Where a paper lies on the desk, in fan (screen) coordinates. The sheet's
-    // own small rotation rides along so the clone covers it exactly.
-    function deskPose(p) {
-      if (!p.src) return null;
-      const r = p.src.getBoundingClientRect();
-      const fr = fan.getBoundingClientRect();
-      const sc = ctx.fit().s;
-      const rot = /rotate\((-?[\d.]+)deg\)/.exec(p.src.style.transform || "");
-      return { x: r.left + r.width / 2 - (p.w * sc) / 2 - fr.left, y: r.top + r.height / 2 - (p.h * sc) / 2 - fr.top + fan.scrollTop, sc, rot: rot ? parseFloat(rot[1]) : 0 };
-    }
-    const pose = (p, q) => { p.btn.style.transform = `translate(${q.x}px, ${q.y}px) scale(${q.sc}) rotate(${q.rot || 0}deg)`; };
-    function place(animated) {
-      const target = slots();
-      papers.forEach((p, i) => {
-        p.btn.style.transition = animated ? `transform ${LIFT_MS}ms ${EASE_IN_OUT}` : "none";
-        pose(p, target[i]);
-      });
-    }
+      function deskPose(p) {
+        if (!p.src) return null;
+        const r = p.src.getBoundingClientRect();
+        const fr = fan.getBoundingClientRect();
+        const sc = ctx.fit().s;
+        const rot = /rotate\((-?[\d.]+)deg\)/.exec(p.src.style.transform || "");
+        return { x: r.left + r.width / 2 - (p.w * sc) / 2 - fr.left, y: r.top + r.height / 2 - (p.h * sc) / 2 - fr.top + fan.scrollTop, sc, rot: rot ? parseFloat(rot[1]) : 0 };
+      }
+      const pose = (p, q) => { p.btn.style.transform = `translate(${q.x}px, ${q.y}px) scale(${q.sc}) rotate(${q.rot || 0}deg)`; };
+      function place(animated) {
+        const target = slots();
+        papers.forEach((p, i) => {
+          p.btn.style.transition = animated ? `transform ${LIFT_MS}ms ${EASE_IN_OUT}` : "none";
+          pose(p, target[i]);
+        });
+      }
+      let lowered = false;
+      const onResize = () => { if (!lowered) place(false); };
+      const canMove = () => !reduceMotion && window.innerWidth >= 600 && papers.every((p) => p.src) && getState().layer === "series";
 
-    let lowered = false;
-    const onResize = () => { if (!lowered) place(false); };
-    const canMove = () => !reduceMotion && window.innerWidth >= 600 && papers.every((p) => p.src);
-
-    function open() {
-      build();
+      // Rise: from where the papers lie (a click on the desk) or straight into
+      // place (a deep link, a sheet already over the fan).
       if (canMove()) {
         papers.forEach((p) => { p.btn.style.transition = "none"; pose(p, deskPose(p)); });
         requestAnimationFrame(() => {
@@ -455,21 +461,29 @@ function makeFanFactory(ctx) {
         place(false);
       }
       window.addEventListener("resize", onResize);
-    }
-    function cleanup() {
-      lowered = true;
-      window.removeEventListener("resize", onResize);
-      const moving = canMove();
-      if (moving) papers.forEach((p) => { p.btn.style.transition = `transform ${LOWER_MS}ms ${EASE_IN_OUT}`; pose(p, deskPose(p)); });
-      // The originals come back the frame the clones land; the content's own
-      // fade is held until then (desk-alt.css, .da-fan-content).
-      setTimeout(() => { originals.forEach((o) => { o.style.visibility = ""; }); }, moving ? LOWER_MS : 0);
-      escOff();
-    }
-    const escOff = H.attachEscapeHandler(content, () => navigate({ layer: "desk" }));
-    requestAnimationFrame(() => { if (ctx.ready) open(); else ctx.whenReady.then(open); });
 
-    return { veil, content, cleanup, onHoist: (el) => { metaEl = el; }, update: (state) => state.layer === "series" && state.series === seriesKey };
+      teardown = () => {
+        lowered = true;
+        window.removeEventListener("resize", onResize);
+        const moving = !reduceMotion && window.innerWidth >= 600 && papers.every((p) => p.src);
+        if (moving) papers.forEach((p) => { p.btn.style.transition = `transform ${LOWER_MS}ms ${EASE_IN_OUT}`; pose(p, deskPose(p)); });
+        // The originals come back the frame the clones land; the content's
+        // own fade is held until then (desk-alt.css, .da-fan-content).
+        setTimeout(() => { originals.forEach((o) => { o.style.visibility = ""; }); }, moving ? LOWER_MS : 0);
+        setTimeout(() => metaEl?.remove(), 400);
+      };
+    }
+
+    // panels.js appends the content on push; the papers need it in the
+    // document to measure, so set up on the next frame (or when the desk is).
+    requestAnimationFrame(() => { if (ctx.ready) setup(); else ctx.whenReady.then(() => requestAnimationFrame(setup)); });
+
+    return {
+      veil, content,
+      cleanup: () => { teardown(); escOff(); },
+      onHoist: (el) => { metaEl = el; },
+      update: (state) => state.layer === "series" && state.series === seriesKey,
+    };
   };
 }
 

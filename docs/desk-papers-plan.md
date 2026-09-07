@@ -5,7 +5,10 @@ inside one open folder. Covers the mapping from documents to subcollections,
 the bundle interaction (lift, fan, open), rendering, routing, the objects that
 stay dimensional, and the order of work.
 
-Status: proposed 2026-09-06 after the layout test in `mockups/desk-papers/`
+Status: **the desk since 2026-09-07** — `/` loads the papers desk; the
+five-container desk is preserved on the `original-desk-objects` branch (there
+it is still the default and this one is at `/home-alt`). Recorded in
+`docs/decisions.md` ("The papers desk"). History: proposed 2026-09-06 after the layout test in `mockups/desk-papers/`
 (rev 3 — the reference's layout, then its materials). **Phase 1 built
 2026-09-07 as a temporary landing page at `/home-alt`** (`src/app/desk-alt.js`,
 `src/styles/desk-alt.css`; `main.js` switches on the path, `router.js` keeps

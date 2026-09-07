@@ -6,6 +6,14 @@ import { DESK_OBJECTS, MODEL_BASE, WEB_BASE } from "../shared/desk-objects.js";
 import { stripTextures, createModelLoader } from "./model-look.js";
 import { createInspector } from "./desk-inspect.js";
 
+// NOTE (2026-09-07): initScene — the five-container desk — is no longer
+// called; the papers desk (desk-alt.js) is the desk. This module stays for
+// the render-pause contract panels.js and desk-alt.js share
+// (pauseSceneRender / resumeSceneRender / isSceneRenderPaused /
+// notifySheetsClosing) and for the `original-desk-objects` branch. The
+// key's lift-and-turn (desk-inspect.js) is not yet wired into the papers
+// desk; it belongs there next.
+
 const seriesInfo = {};
 
 // While an overlay veil is open the desk sits behind a darkened, blurred

@@ -1,15 +1,13 @@
-import { initRouter, setDeskPath } from "./app/router.js";
+import { initRouter } from "./app/router.js";
 import { initPanels } from "./app/panels.js";
-import { initScene } from "./app/scene.js";
 import { initDeskAlt } from "./app/desk-alt.js";
 import "./styles/main.css";
 
-// /home-alt is the papers desk — one open folder of clipped documents in place
-// of the five containers — while it is a study beside the live desk. Same
-// router, same sheets; only the desk layer differs. docs/desk-papers-plan.md.
-const altDesk = window.location.pathname.replace(/\/+$/, "") === "/home-alt";
-if (altDesk) setDeskPath("/home-alt");
-
+// The desk is the papers desk — one open folder of clipped documents, with
+// the key, the amber block, the stamp and the clips as the only objects
+// (src/app/desk-alt.js; docs/desk-papers-plan.md). The five-container desk
+// it replaced is kept on the `original-desk-objects` branch, where it is
+// still the default and this one lives at /home-alt.
 initRouter();
 initPanels();
-if (altDesk) initDeskAlt(); else initScene();
+initDeskAlt();
