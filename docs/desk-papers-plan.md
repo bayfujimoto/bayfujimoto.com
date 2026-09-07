@@ -5,10 +5,13 @@ inside one open folder. Covers the mapping from documents to subcollections,
 the bundle interaction (lift, fan, open), rendering, routing, the objects that
 stay dimensional, and the order of work.
 
-Status: **the desk since 2026-09-07** — `/` loads the papers desk; the
-five-container desk is preserved on the `original-desk-objects` branch (there
-it is still the default and this one is at `/home-alt`). Recorded in
-`docs/decisions.md` ("The papers desk"). History: proposed 2026-09-06 after the layout test in `mockups/desk-papers/`
+Status: **the desk since 2026-09-07**, and since the same evening rendered
+entirely in the scene with two lights (`src/app/desk-scene.js`; decisions.md
+"The desk in the scene, with two lights") — the DOM desk (`desk-alt.js`) and
+the look switch (`look.js`) are retired, `/home-alt` and `/home-metal`
+resolve to `/`. The five-container desk is preserved on the
+`original-desk-objects` branch. Recorded in `docs/decisions.md` ("The papers
+desk"). History: proposed 2026-09-06 after the layout test in `mockups/desk-papers/`
 (rev 3 — the reference's layout, then its materials). **Phase 1 built
 2026-09-07 as a temporary landing page at `/home-alt`** (`src/app/desk-alt.js`,
 `src/styles/desk-alt.css`; `main.js` switches on the path, `router.js` keeps
@@ -284,3 +287,19 @@ now `src/app/desk-metal.js`: one WebGL scene, everything in it.
 The DOM desk at `/` is untouched; `?look=steel` there still shows the earlier
 DOM approximation. When the scene desk is approved it should become the desk
 and desk-alt.js retire (desk-docs.js already holds the documents once).
+
+## One desk, two lights (2026-09-07, evening)
+
+Bay combined the two: the scene desk keeps the wooden desk.glb and gets both
+rigs — the overhead lamp as **light mode**, the flashlight as **dark mode** —
+switched with Space on the desk (his choice: Space only; the mode follows the
+system's colour scheme on arrival). The switch is a short timeline over two
+factors the render loop applies each frame (`lampF`, `torch`): into dark, the
+lamp drops out in ~120 ms, ~700 ms of darkness, then the flashlight stutters
+through six jittered steps to full; back, the flashlight clicks off, ~500 ms,
+then the lamp flickers up through five steps and settles. The cone, the dust,
+the cold fill, the room reflection, bloom and grain all ride `torch`; the
+palette attribute flips as the lamp goes out (`data-mode="dark"`) and as the
+lamp settles. Reduced motion switches at once. Tuning: `TUNE.lamp` and
+`TUNE.flashlight` in desk-scene.js; the step tables in `goDark()` /
+`goLight()`.

@@ -1,10 +1,9 @@
-/* ── The steel look ───────────────────────────────────────────────────────────
-   Active when <html data-look="steel"> (src/app/look.js). A brushed table
-   under a handheld flashlight: the palette above the desk goes blue-black,
-   the paper overlay becomes a beam, grain sits over the frame. Everything
-   here is scoped to the attribute, so the wood look is untouched by it. */
+/* ── Dark mode — the flashlight ──────────────────────────────────────────────
+   Active when <html data-mode="dark"> (src/app/desk-scene.js sets it as the
+   lamp goes out). The palette above the desk goes blue-black and grain sits
+   over the frame. Scoped to the attribute, so light mode is untouched. */
 
-[data-look="steel"][data-theme="dark"] {
+[data-mode="dark"][data-theme="dark"] {
   --color-shadow:     #04060a;
   --color-surface-dk: #0e1218;
   --bg:               #04060a;
@@ -20,21 +19,21 @@
   --overlay-text:     #d6dde8;
   --overlay-muted:    rgba(214, 221, 232, 0.5);
 }
-[data-look="steel"] .layer-veil--visible { background: rgba(2, 5, 10, 0.56); }
-[data-look="steel"] .loading-screen__bloom {
+[data-mode="dark"] .layer-veil--visible { background: rgba(2, 5, 10, 0.56); }
+[data-mode="dark"] .loading-screen__bloom {
   background: radial-gradient(ellipse 34% 30% at 50% 44%, rgba(228, 238, 255, 0.10), rgba(228, 238, 255, 0) 70%);
 }
 
 /* The beam on the paper: a cold glow where it falls (screen), and outside it
    a blue-black darkening (multiply) that leaves the desk faintly legible.
    --lx/--ly/--lr are set per frame. */
-[data-look="steel"] .desk-alt__light { --lr: 30vmax;
+[data-mode="dark"] .desk-alt__light { --lr: 30vmax;
   background:
     linear-gradient(rgba(150, 172, 205, .38), rgba(150, 172, 205, .38)),
     radial-gradient(circle var(--lr) at var(--lx) var(--ly), rgba(0,0,0,0) 58%, rgba(5, 9, 16, .55) 84%, rgba(5, 9, 16, .74) 100%);
   mix-blend-mode: multiply;
 }
-[data-look="steel"] .desk-alt__glow { position: absolute; inset: 0; pointer-events: none; --lr: 30vmax; --lx: 50%; --ly: 40%;
+[data-mode="dark"] .desk-alt__glow { position: absolute; inset: 0; pointer-events: none; --lr: 30vmax; --lx: 50%; --ly: 40%;
   background: radial-gradient(circle var(--lr) at var(--lx) var(--ly), rgba(228, 238, 255, .34) 0, rgba(228, 238, 255, .20) 48%, rgba(228, 238, 255, .06) 76%, rgba(228, 238, 255, 0) 100%);
   mix-blend-mode: screen; opacity: var(--flicker, 1);
 }

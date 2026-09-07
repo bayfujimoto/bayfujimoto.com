@@ -1,21 +1,27 @@
-// ── The desk in the scene — /home-metal ──────────────────────────────────────
-// The papers desk with everything in WebGL: the table (a real PBR surface —
-// Poly Haven's rust_coarse_01, CC0), the folder, every document as a textured
-// plane (paper.js draws them from desk-docs.js), the key, the amber, the
-// stamp and the clips — one scene, one light, real shadows. The light is a
-// handheld flashlight: it slides along an arc at the near edge with the
-// cursor's x and is aimed at the point under the cursor, so the beam lands
-// where the pointer is and rakes across the surface on its way, every edge
-// throwing a long shadow. Industry
-// mechanics: a light cookie on the spot, a shadow map, physically based
-// materials under a dark environment, a volumetric cone, room-filling dust
-// lit per particle by the cone, bloom on the hotspot, ACES.
+// ── The desk — one scene, two lights ─────────────────────────────────────────
+// The papers desk in WebGL: the wooden desk (desk.glb, its own wood), the
+// folder, every document as a textured plane (paper.js draws them from
+// desk-docs.js), the key, the amber, the stamp and the clips — one scene,
+// real shadows. Two modes, switched with the Space key on the desk:
 //
-// The DOM desk (desk-alt.js) remains at "/"; this one is the same desk
-// rebuilt for the light. The fan (the series layer) is still pushed through
-// panels.js: the lifted papers are clones drawn in a hand canvas above the
-// veil, and the buttons that receive the clicks are DOM elements laid over
-// them, so keyboard and screen readers see the same five documents.
+//   light — the overhead lamp: a warm spot above the desk that leans toward
+//           the pointer, the desk as it has always been lit.
+//   dark  — the flashlight: held low on an arc at the near edge, on the
+//           cursor's side, aimed at the point under the cursor, so the beam
+//           lands where the pointer is and rakes across the surface; a cookie
+//           on the spot, a volumetric cone, dust through the room lit by the
+//           beam, bloom on the hotspot, grain over the frame, and a cold
+//           palette for the layers above (desk-dark.css).
+//
+// Going dark, the overhead goes out, a beat of darkness, then the flashlight
+// stutters on. Coming back, the flashlight clicks off, a beat, and the lamp
+// flickers back the way an old fixture does. The mode follows the system's
+// colour scheme on arrival. Reduced motion switches at once.
+//
+// The fan (the series layer) is still pushed through panels.js: the lifted
+// papers are clones drawn in a hand canvas above the veil, and the buttons
+// that receive the clicks are DOM elements laid over them, so keyboard and
+// screen readers see the same five documents. docs/desk-papers-plan.md.
 
 import * as THREE from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
@@ -31,26 +37,26 @@ import { isSceneRenderPaused } from "./scene.js";
 import { configureAltDesk } from "./panels.js";
 import { REGIMES, buildDocBundles, PX_PER_MM } from "./desk-docs.js";
 import { renderPaper, paperNormal, ensureFonts, loadImage } from "./paper.js";
-import { LOOK } from "./look.js";
-import "../styles/desk-alt.css";
-import "../styles/look-steel.css";
+import "../styles/desk.css";
+import "../styles/desk-dark.css";
 
 // ── Tuning ───────────────────────────────────────────────────────────────────
 // The numbers to move by eye. Distances in desk units (1 unit ≈ 78 mm).
 const TUNE = {
-  table: { set: "rust_coarse_01", repeat: 2.6, roughness: 1.0, metalness: 1.0, normalScale: 0.9, envIntensity: 0.9 },
+  lamp: { color: 0xffb347, intensity: 120, distance: 20, angle: Math.PI / 5, penumbra: 0.4, decay: 1.5, height: 8, ambient: [0xffe0b0, 0.5] },
   flashlight: {
-    color: 0xe8efff, intensity: 115, angle: 26 * Math.PI / 180, penumbra: 0.5, decay: 1.7,
-    radius: 5.4,       // the arc's radius around the desk centre
-    height: 2.1,       // how high the hand is above the table
+    color: 0xe8efff, intensity: 115, angle: 26 * Math.PI / 180, penumbra: .5, decay: 2.3,
+    radius: 3,       // the arc's radius around the desk centre
+    height: 2,       // how high the hand is above the table
     sweep: 58,         // degrees the source swings each way as the cursor crosses the screen
     aimAt: [0, 0, 0.25],   // where the beam rests when nothing is pointing
     cookie: true,
   },
-  ambient: { hemi: [0x6f86a6, 0x05070b, 0.32] },
+  ambient: { hemi: [0x6f86a6, 0x05070b, 0.32] },   // dark mode's fill
+  darkEnv: 0.5,
   bloom: { strength: 0.42, radius: 0.55, threshold: 0.86 },
   volumetric: { opacity: 0.16 },
-  dust: { count: 900, size: 0.02, box: [12, 2.6, 8] },
+  dust: { count: 900, size: 0.01, box: [12, 2.6, 8] },
 };
 const regimeName = () => (window.innerWidth < 600 ? "vertical" : "wide");
 const HALF_FOV = Math.tan((75 / 2) * Math.PI / 180);
@@ -93,9 +99,12 @@ function makeFolderTexture(w, h, color, opts = {}) {
 }
 
 // ── Init ─────────────────────────────────────────────────────────────────────
-export async function initDeskMetal() {
+export async function initDesk() {
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  document.documentElement.dataset.look = LOOK;
+  // The mode — light (the lamp) or dark (the flashlight) — from the system.
+  let mode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  const setPalette = (m) => { document.documentElement.dataset.mode = m; };
+  setPalette(mode);
   let readyResolve; const whenReady = new Promise((r) => { readyResolve = r; });
   const ctx = { ready: false, whenReady };
 
@@ -114,8 +123,14 @@ export async function initDeskMetal() {
   const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
   camera.position.set(0, 5, 0.5); camera.lookAt(0, 0, 0);
 
-  // ── Lights ──
-  scene.add(new THREE.HemisphereLight(...TUNE.ambient.hemi));
+  // ── Lights: the lamp (light mode) and the flashlight (dark mode) ──
+  const Lp = TUNE.lamp;
+  const lampAmbient = new THREE.AmbientLight(Lp.ambient[0], Lp.ambient[1]); scene.add(lampAmbient);
+  const lamp = new THREE.SpotLight(Lp.color, Lp.intensity, Lp.distance, Lp.angle, Lp.penumbra, Lp.decay);
+  lamp.position.set(0, Lp.height, -2); lamp.target.position.set(0, 0, 0);
+  lamp.castShadow = true; lamp.shadow.mapSize.set(2048, 2048); lamp.shadow.camera.near = 4; lamp.shadow.camera.far = 20; lamp.shadow.bias = -0.001; lamp.shadow.normalBias = 0.01;
+  scene.add(lamp, lamp.target);
+  const hemi = new THREE.HemisphereLight(...TUNE.ambient.hemi); scene.add(hemi);
   const F = TUNE.flashlight;
   const spot = new THREE.SpotLight(F.color, F.intensity, 0, F.angle, F.penumbra, F.decay);
   spot.castShadow = true; spot.shadow.mapSize.set(2048, 2048);
@@ -130,7 +145,7 @@ export async function initDeskMetal() {
     const room = new THREE.Scene(); room.background = new THREE.Color(0x000000);
     const panel = (w, h, color, pos, rot) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color, side: THREE.DoubleSide })); m.position.set(...pos); m.rotation.set(...rot); room.add(m); };
     panel(6, 2.2, 0x8ea3c4, [0, 6, -1], [Math.PI / 2, 0, 0]); panel(3, 1.2, 0x2c3949, [-7, 2, 0], [0, Math.PI / 2, 0]); panel(3, 1.2, 0x1d2634, [7, 2, 0], [0, -Math.PI / 2, 0]);
-    const pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromScene(room, 0.03).texture; scene.environmentIntensity = 0.5; pm.dispose();
+    const pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromScene(room, 0.03).texture; scene.environmentIntensity = 0; pm.dispose();
   }
 
   // ── Post ──
@@ -143,22 +158,15 @@ export async function initDeskMetal() {
   const manager = new THREE.LoadingManager();
   manager.onLoad = () => { render(performance.now()); dismissLoadingScreen(); };
   const loader = createModelLoader(manager);
-  const texLoader = new THREE.TextureLoader(manager); texLoader.setCrossOrigin("anonymous");
 
-  // ── The table ──
-  {
-    const T = TUNE.table; const base = `${WEB_BASE}textures/${T.set}_`;
-    const tex = (name, srgb) => { const t = texLoader.load(`${base}${name}_2k.webp`); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(T.repeat, T.repeat); t.anisotropy = 8; if (srgb) t.colorSpace = THREE.SRGBColorSpace; return t; };
-    const map = tex("diff", true), normalMap = tex("nor_gl"), arm = tex("arm");
-    const material = new THREE.MeshStandardMaterial({ map, normalMap, normalScale: new THREE.Vector2(T.normalScale, T.normalScale), aoMap: arm, roughnessMap: arm, metalnessMap: arm, roughness: T.roughness, metalness: T.metalness, envMapIntensity: T.envIntensity });
-    loader.load(`${MODEL_BASE}desk.glb`, (gltf) => {
-      const desk = gltf.scene;
-      const box = new THREE.Box3().setFromObject(desk); const size = new THREE.Vector3(); box.getSize(size);
-      desk.scale.setScalar(20 / size.x); box.setFromObject(desk); desk.position.set(0, -box.max.y, 1);
-      desk.traverse((c) => { if (c.isMesh) { c.receiveShadow = true; c.castShadow = false; c.material = material; if (c.geometry.attributes.uv && !c.geometry.attributes.uv1) c.geometry.setAttribute("uv1", c.geometry.attributes.uv); } });
-      scene.add(desk);
-    });
-  }
+  // ── The table: the wooden desk, its own materials ──
+  loader.load(`${MODEL_BASE}desk.glb`, (gltf) => {
+    const desk = gltf.scene;
+    const box = new THREE.Box3().setFromObject(desk); const size = new THREE.Vector3(); box.getSize(size);
+    desk.scale.setScalar(20 / size.x); box.setFromObject(desk); desk.position.set(0, -box.max.y, 1);
+    desk.traverse((c) => { if (c.isMesh) { c.receiveShadow = true; c.castShadow = false; } });
+    scene.add(desk);
+  });
 
   // ── The composition: folder, papers, objects, in one group scaled per regime ──
   const stageGroup = new THREE.Group(); scene.add(stageGroup);
@@ -292,6 +300,13 @@ export async function initDeskMetal() {
   }, { passive: true });
   document.addEventListener("mouseleave", () => { havePointer = false; });
   const t0 = performance.now();
+  const lampPos = { x: 0, z: -2 };
+  function aimLamp() {
+    // The overhead leans toward the pointer and stays over the desk's middle.
+    const mx = havePointer ? pointerNdc.x : 0, my = havePointer ? pointerNdc.y : 0;
+    lampPos.x += (mx - lampPos.x) * 0.08; lampPos.z += ((-2 + -my * 0.5) - lampPos.z) * 0.08;
+    lamp.position.x = lampPos.x; lamp.position.z = lampPos.z; lamp.target.updateMatrixWorld();
+  }
   function aim(now) {
     // The hand: on the arc at the near edge, on the cursor's side. The beam:
     // at the point under the cursor. Both move at once, without lag.
@@ -306,8 +321,64 @@ export async function initDeskMetal() {
     // A beam aimed near the hand would blow out; hold the pool's exposure
     // roughly level as the throw shortens (the eye does the same).
     const d = spot.position.distanceTo(spot.target.position);
-    spot.intensity = F.intensity * Math.max(0.3, Math.pow(d / F.radius, 1.25));
+    spot.intensity = F.intensity * Math.max(0.3, Math.pow(d / F.radius, 1.25)) * torch;
   }
+
+  // ── The switch ──
+  // Two factors the render loop applies every frame: `lampF` for the
+  // overhead and its warm ambient, `torch` for the flashlight and everything
+  // that belongs to it (the cone, the dust, the cold fill, the room to
+  // reflect). A change of mode is a short timeline that drives them.
+  let lampF = mode === "light" ? 1 : 0, torch = mode === "dark" ? 1 : 0;
+  let timeline = null;   // { start, steps: [{ at, lamp, torch }] } — piecewise, holds the last step
+  const rr = rng(77);
+  const jitter = (arr, base) => arr.map((st) => ({ ...st, at: st.at + base * (rr() - 0.5) * 0.35 }));
+  function goDark() {
+    // the overhead goes out; a beat; the flashlight stutters on
+    const t = [{ at: 0, lamp: 1, torch: 0 }, { at: 60, lamp: 0.35, torch: 0 }, { at: 120, lamp: 0, torch: 0 }, { at: 820, lamp: 0, torch: 0.55 }, { at: 900, lamp: 0, torch: 0 }, { at: 1010, lamp: 0, torch: 0.8 }, { at: 1080, lamp: 0, torch: 0.15 }, { at: 1160, lamp: 0, torch: 0.95 }, { at: 1260, lamp: 0, torch: 0.6 }, { at: 1340, lamp: 0, torch: 1 }];
+    timeline = { start: performance.now(), steps: jitter(t, 80) };
+    setPalette("dark");
+  }
+  function goLight() {
+    // the flashlight clicks off; a beat; the lamp flickers back and settles
+    const t = [{ at: 0, lamp: 0, torch: 1 }, { at: 40, lamp: 0, torch: 0 }, { at: 560, lamp: 0.25, torch: 0 }, { at: 620, lamp: 0, torch: 0 }, { at: 760, lamp: 0.6, torch: 0 }, { at: 830, lamp: 0.2, torch: 0 }, { at: 920, lamp: 0.85, torch: 0 }, { at: 1000, lamp: 0.5, torch: 0 }, { at: 1100, lamp: 1, torch: 0 }];
+    timeline = { start: performance.now(), steps: jitter(t, 90) };
+    setTimeout(() => setPalette("light"), 900);
+  }
+  function setMode(next) {
+    if (next === mode) return;
+    mode = next;
+    if (reduceMotion) { lampF = mode === "light" ? 1 : 0; torch = mode === "dark" ? 1 : 0; timeline = null; setPalette(mode); return; }
+    if (mode === "dark") goDark(); else goLight();
+  }
+  function tickTimeline(now) {
+    if (!timeline) return;
+    const e = now - timeline.start; let cur = timeline.steps[0];
+    for (const st of timeline.steps) { if (e >= st.at) cur = st; }
+    lampF = cur.lamp; torch = cur.torch;
+    if (e > timeline.steps[timeline.steps.length - 1].at) timeline = null;
+  }
+  function applyFactors() {
+    lamp.intensity = Lp.intensity * lampF; lampAmbient.intensity = Lp.ambient[1] * lampF;
+    lamp.visible = lampF > 0.001;
+    hemi.intensity = TUNE.ambient.hemi[2] * torch;
+    scene.environmentIntensity = TUNE.darkEnv * torch;
+    spot.visible = torch > 0.001;
+    bloom.strength = TUNE.bloom.strength * torch;
+    coneMat.uniforms.uOpacity.value = TUNE.volumetric.opacity * torch;
+    dustMat.uniforms.uTorch.value = torch;
+    if (grainEl) grainEl.style.opacity = String(0.11 * torch);
+  }
+  // Space, on the desk, toggles the mode.
+  window.addEventListener("keydown", (e) => {
+    if (e.code !== "Space" || e.repeat || e.altKey || e.ctrlKey || e.metaKey) return;
+    const tag = (e.target && e.target.tagName) || "";
+    if (/INPUT|TEXTAREA|SELECT/.test(tag) || e.target?.isContentEditable) return;
+    if (getState().layer !== "desk") return;
+    e.preventDefault();
+    setMode(mode === "dark" ? "light" : "dark");
+  });
+  let grainEl = null;
 
   // ── Volumetric cone ──
   const coneMat = new THREE.ShaderMaterial({
@@ -341,8 +412,8 @@ export async function initDeskMetal() {
   // ── Dust, everywhere, lit by the cone ──
   const dustMat = new THREE.ShaderMaterial({
     transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
-    uniforms: { uTime: { value: 0 }, uLightPos: { value: new THREE.Vector3() }, uLightDir: { value: new THREE.Vector3() }, uCosOuter: { value: Math.cos(F.angle) }, uCosInner: { value: Math.cos(F.angle * (1 - F.penumbra)) }, uSize: { value: TUNE.dust.size * renderer.getPixelRatio() * window.innerHeight }, uColor: { value: new THREE.Color(F.color) } },
-    vertexShader: `uniform float uTime; uniform vec3 uLightPos; uniform vec3 uLightDir; uniform float uCosOuter; uniform float uCosInner; uniform float uSize;
+    uniforms: { uTime: { value: 0 }, uTorch: { value: 1 }, uLightPos: { value: new THREE.Vector3() }, uLightDir: { value: new THREE.Vector3() }, uCosOuter: { value: Math.cos(F.angle) }, uCosInner: { value: Math.cos(F.angle * (1 - F.penumbra)) }, uSize: { value: TUNE.dust.size * renderer.getPixelRatio() * window.innerHeight }, uColor: { value: new THREE.Color(F.color) } },
+    vertexShader: `uniform float uTime; uniform float uTorch; uniform vec3 uLightPos; uniform vec3 uLightDir; uniform float uCosOuter; uniform float uCosInner; uniform float uSize;
       attribute vec3 seed; varying float vLit;
       void main(){
         vec3 p = position;
@@ -353,7 +424,7 @@ export async function initDeskMetal() {
         float c = dot(toP, uLightDir);
         float spot = smoothstep(uCosOuter, uCosInner, c);
         float att = 1.0 / (1.0 + d * d * 0.09);
-        vLit = spot * att * 1.1 + 0.004;
+        vLit = (spot * att * 1.1 + 0.004) * uTorch;
         vec4 mv = modelViewMatrix * vec4(p, 1.0);
         gl_PointSize = uSize * (0.6 + 0.8 * seed.y) / -mv.z;
         gl_Position = projectionMatrix * mv;
@@ -408,7 +479,7 @@ export async function initDeskMetal() {
   });
 
   // ── The fan, in hand ──
-  configureAltDesk({ seriesSheet: makeFanFactory({ ctx, camera, bundleGroups, stageGroup, archive, reduceMotion, spot, renderer }) });
+  configureAltDesk({ seriesSheet: makeFanFactory({ ctx, camera, bundleGroups, stageGroup, archive, reduceMotion, getMode: () => mode }) });
 
   // ── Build ──
   buildFolder();
@@ -419,7 +490,8 @@ export async function initDeskMetal() {
 
   // ── Render ──
   function render(now) {
-    aim(now); placeCone();
+    tickTimeline(now); applyFactors();
+    aimLamp(); aim(now); placeCone();
     coneMat.uniforms.uTime.value = (now - t0) / 1000;
     dustMat.uniforms.uTime.value = (now - t0) / 1000;
     dustMat.uniforms.uLightPos.value.copy(spot.position);
@@ -446,8 +518,9 @@ export async function initDeskMetal() {
     for (let i = 0; i < img.data.length; i += 4) { const v = 96 + Math.floor(r() * 96); img.data[i] = img.data[i + 1] = img.data[i + 2] = v; img.data[i + 3] = 255; }
     g.putImageData(img, 0, 0);
     const grain = document.createElement("div"); grain.className = "look-grain"; grain.setAttribute("aria-hidden", "true");
-    grain.style.backgroundImage = `url(${c.toDataURL()})`; document.body.appendChild(grain);
-    if (!reduceMotion) { let f = 0; (function jitter() { requestAnimationFrame(jitter); if (++f % 3) return; grain.style.backgroundPosition = `${Math.floor(Math.random() * 256)}px ${Math.floor(Math.random() * 256)}px`; })(); }
+    grain.style.backgroundImage = `url(${c.toDataURL()})`; grain.style.opacity = String(0.11 * torch); document.body.appendChild(grain);
+    grainEl = grain;
+    if (!reduceMotion) { let f = 0; (function jitterGrain() { requestAnimationFrame(jitterGrain); if (++f % 3) return; grain.style.backgroundPosition = `${Math.floor(Math.random() * 256)}px ${Math.floor(Math.random() * 256)}px`; })(); }
   }
 }
 
@@ -458,7 +531,7 @@ export async function initDeskMetal() {
 const LIFT_MS = 900, LOWER_MS = 340;
 const easeInOut = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
-function makeFanFactory({ ctx, camera, bundleGroups, stageGroup, archive, reduceMotion, spot }) {
+function makeFanFactory({ ctx, camera, bundleGroups, stageGroup, archive, reduceMotion, getMode }) {
   return function makeFanSheet(seriesKey, H) {
     const veil = H.makeVeil(() => navigate({ layer: "desk" }));
     const content = H.makeContent(); content.classList.add("da-fan-content");
@@ -476,8 +549,9 @@ function makeFanFactory({ ctx, camera, bundleGroups, stageGroup, archive, reduce
       hr.setPixelRatio(Math.min(window.devicePixelRatio, 2)); hr.setSize(window.innerWidth, window.innerHeight); hr.setClearColor(0, 0);
       hr.toneMapping = THREE.ACESFilmicToneMapping;
       const hs = new THREE.Scene();
-      hs.add(new THREE.HemisphereLight(0xdfe8f8, 0x1a1e26, 0.9));
-      const key = new THREE.DirectionalLight(0xe8efff, 1.6); key.position.set(-1.5, 4, 3); hs.add(key);
+      const dark = getMode() === "dark";
+      hs.add(new THREE.HemisphereLight(dark ? 0xdfe8f8 : 0xfff1d6, dark ? 0x1a1e26 : 0x2a1f12, 0.9));
+      const key = new THREE.DirectionalLight(dark ? 0xe8efff : 0xffcf8a, 1.6); key.position.set(-1.5, 4, 3); hs.add(key);
 
       const meta = document.createElement("div"); meta.className = "layer-meta";
       meta.innerHTML = `<h1 class="overlay-title">${esc(s.label)}</h1><p class="overlay-subtitle">${esc(s.subtitle || s.container || "")}</p>`;

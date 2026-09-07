@@ -4,11 +4,10 @@ import { CONSTELLATION_HOMES, homedConstellationSlug } from "../shared/constella
 // Homed constellations (the biography) — see src/shared/constellation-homes.js.
 export { CONSTELLATION_HOMES, homedConstellationSlug };
 
-// The desk's address: "/" — or "/home-metal", the same desk under the steel
-// look (main.js sets it before initRouter). "/home-alt" was the papers desk's
-// address while it was a study beside the live desk (the
-// `original-desk-objects` branch keeps that arrangement); it still parses as
-// the desk and is rewritten to "/".
+// The desk's address is "/". "/home-alt" and "/home-metal" were the papers
+// desk's addresses while it was a study beside the live desk and while its
+// lighting was a study beside that (the `original-desk-objects` branch keeps
+// the first arrangement); both still parse as the desk and are rewritten.
 let deskPath = "/";
 export function setDeskPath(p) { deskPath = p; }
 export function getDeskPath() { return deskPath; }
@@ -115,7 +114,7 @@ export function initRouter() {
   // series address; rewrite the bar so the canonical URL is what gets shared.
   const canonical = stateToURL(getState());
   const here = window.location.pathname + window.location.search;
-  if (canonical !== here && (initial.layer !== "desk" || /^\/home-alt\/?$/.test(window.location.pathname))) {
+  if (canonical !== here && (initial.layer !== "desk" || /^\/home-(alt|metal)\/?$/.test(window.location.pathname))) {
     history.replaceState(null, "", canonical);
   }
   console.log("[router] init →", window.location.pathname + window.location.search, initial);
