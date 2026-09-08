@@ -349,6 +349,8 @@ export async function initDesk() {
     const t = [{ at: 0, lamp: 1, torch: 0 }, { at: 60, lamp: 0.35, torch: 0 }, { at: 120, lamp: 0, torch: 0 }, { at: 380, lamp: 0, torch: 0.55 }, { at: 440, lamp: 0, torch: 0 }, { at: 530, lamp: 0, torch: 0.8 }, { at: 590, lamp: 0, torch: 0.15 }, { at: 660, lamp: 0, torch: 0.95 }, { at: 740, lamp: 0, torch: 0.6 }, { at: 800, lamp: 0, torch: 1 }];
     timeline = { start: performance.now(), steps: jitter(t, 80) };
     setPalette("dark");
+    // nothing is hovered in the dark: drop the highlight now, hold it until the flashlight is on
+    hoverHold = true; litBundle = null; hovered = null; hideHover();
   }
   function goLight() {
     // the lamp fades up quickly; the flashlight clicks off right as it comes on
@@ -371,7 +373,7 @@ export async function initDesk() {
       const f = Math.min(1, Math.max(0, (e - cur.at) / (next.at - cur.at)));
       lampF = cur.lamp + (next.lamp - cur.lamp) * f; torch = cur.torch + (next.torch - cur.torch) * f;
     } else { lampF = cur.lamp; torch = cur.torch; }
-    if (e > steps[steps.length - 1].at) timeline = null;
+    if (e > steps[steps.length - 1].at) { timeline = null; if (hoverHold) { hoverHold = false; pendingPick = lastPointer; } } // the beam is on: hover resumes where the pointer is
   }
   function applyFactors() {
     lamp.intensity = Lp.intensity * lampF; lampAmbient.intensity = Lp.ambient[1] * lampF;
@@ -476,7 +478,7 @@ export async function initDesk() {
     if (!h) return null;
     return h.object.userData.altId ? { kind: "object", id: h.object.userData.altId } : { kind: "bundle", id: h.object.userData.bundle };
   }
-  let hovered = null, pendingPick = null;
+  let hovered = null, pendingPick = null, lastPointer = null, hoverHold = false;
   // Hover, without breaking the pile: the sheets glow a little through their
   // own image, and the bundle rises a hair —
   // together with every bundle stacked on top of it, so nothing passes
@@ -500,10 +502,10 @@ export async function initDesk() {
       if (Math.abs(y - entry.group.position.y) > 1e-5) entry.group.position.y = y;
     });
   }
-  canvas.addEventListener("pointermove", (e) => { pendingPick = e; }, { passive: true });
+  canvas.addEventListener("pointermove", (e) => { pendingPick = e; lastPointer = e; }, { passive: true });
   function hoverTick() {
     const e = pendingPick; if (!e) return; pendingPick = null;
-    if (getState().layer !== "desk") return;
+    if (getState().layer !== "desk" || hoverHold) return;
     const p = pick(e); const key = p ? p.kind + ":" + p.id : null;
     if (key === hovered) return; hovered = key;
     litBundle = p && p.kind === "bundle" ? p.id : null;
