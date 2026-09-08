@@ -43,7 +43,7 @@ import "../styles/desk-dark.css";
 // ── Tuning ───────────────────────────────────────────────────────────────────
 // The numbers to move by eye. Distances in desk units (1 unit ≈ 78 mm).
 const TUNE = {
-  lamp: { color: 0xffeddc, intensity: 110, distance: 20, angle: Math.PI / 5, penumbra: 0.4, decay: 1.5, height: 8, ambient: [0xfff5ec, 0.5] },
+  lamp: { color: 0xffeddc, intensity: 82, distance: 20, angle: Math.PI / 5, penumbra: 0.4, decay: 1.5, height: 8, ambient: [0xfff5ec, 0.4] },
   flashlight: {
     color: 0xe8efff, intensity: 115, angle: 26 * Math.PI / 180, penumbra: .5, decay: 2.3,
     radius: 3,       // the arc's radius around the desk centre
@@ -595,8 +595,8 @@ function makeFanFactory({ ctx, camera, bundleGroups, stageGroup, archive, reduce
       // lit to match the desk: the cool overhead (TUNE.lamp) or the flashlight
       // (light mode is deliberately neutral: the desk's sheets read near-white
       // under the lamp plus the room's environment, and any tint here shows)
-      hs.add(new THREE.HemisphereLight(dark ? 0xdfe8f8 : 0xffffff, dark ? 0x1a1e26 : 0x9c9c9c, dark ? 0.9 : 0.8));
-      const key = new THREE.DirectionalLight(dark ? 0xe8efff : 0xfffaf4, dark ? 1.6 : 1.25); key.position.set(-1.5, 4, 3); hs.add(key);
+      hs.add(new THREE.HemisphereLight(dark ? 0xdfe8f8 : 0xffffff, dark ? 0x1a1e26 : 0x9c9c9c, dark ? 0.9 : 0.66));
+      const key = new THREE.DirectionalLight(dark ? 0xe8efff : 0xfffaf4, dark ? 1.6 : 1.0); key.position.set(-1.5, 4, 3); hs.add(key);
 
       const meta = document.createElement("div"); meta.className = "layer-meta";
       meta.innerHTML = `<h1 class="overlay-title">${esc(s.label)}</h1><p class="overlay-subtitle">${esc(s.subtitle || s.container || "")}</p>`;
