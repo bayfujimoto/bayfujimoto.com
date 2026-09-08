@@ -109,6 +109,14 @@ export function buildDocBundles(archive) {
   const record = music[0] ? String(music[0].title || "").toLowerCase() : "side a · side b";
   const game = games[0] ? String(games[0].title || "").toLowerCase() : "slot 1";
 
+  // A 4 × 6 print of one of the photos, chosen afresh on every load: the first
+  // gallery image of a random photo entry, at true size (PX_PER_MM), and
+  // turned to the picture's orientation once it has loaded (autoOrient).
+  const photos = sub("creation", "photos").filter((i) => i.assets?.gallery?.[0]?.file);
+  const photoPick = photos.length ? photos[Math.floor(Math.random() * photos.length)] : null;
+  const photoSrc = photoPick ? imageUrl(photoPick.assets.gallery[0].file, "display") : null;
+  const PRINT_W = Math.round(152.4 * PX_PER_MM), PRINT_H = Math.round(101.6 * PX_PER_MM);
+
   const A = accumulationSlots(series.accumulation?.items || []);
   const scanDoc = (rec, x, y, rot, extra = {}) => rec ? { sub: null, x, y, rot, w: Math.round(rec.w * PX_PER_MM), h: Math.round(rec.h * PX_PER_MM), stock: "white", seed: 9, cutout: !!rec.cutout, layers: [{ t: "image", src: rec.src, x: 0, y: 0, w: Math.round(rec.w * PX_PER_MM), h: Math.round(rec.h * PX_PER_MM) }], ...extra } : null;
 
@@ -149,7 +157,7 @@ export function buildDocBundles(archive) {
         { t: "sketch", x: 0, y: 0, scale: S(155) / 279, paths: ["M40 175 L78 152 L78 250 M78 152 L170 118"], dash: [3, 3], opacity: 0.6 },
         { t: "seal", x: 212, y: 268, rotate: -4 }, mono(`untitled · graphite · ${thisYear}`, 12, 296, { opacity: 0.45 }), { t: "crease", angle: -8, at: 34, strength: 0.6 }, tape(-4, -4, 30, 10, -40),
       ] }),
-      { sub: "photos", x: S(13), y: S(120), rot: -5, w: S(52), h: S(40), stock: "white", seed: 4, layers: [{ t: "photo", x: 0, y: 0, w: S(52), h: S(40) }, tape(14, -5, 24, 8, 8)] },
+      { sub: "photos", x: S(6), y: S(92), rot: -5, w: PRINT_W, h: PRINT_H, stock: "white", seed: 4, gloss: true, autoOrient: true, layers: [{ t: "photo", x: 0, y: 0, w: PRINT_W, h: PRINT_H, src: photoSrc, border: Math.round(3 * PX_PER_MM), fit: "cover" }] },
       doc(null, 100, 167, 38, 15, { stock: "thermal", torn: "right", seed: 5, layers: [note("print ↑", 6, -2)] }),
     ] },
 

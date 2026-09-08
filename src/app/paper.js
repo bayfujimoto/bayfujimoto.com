@@ -117,13 +117,19 @@ function drawText(ctx, L) {
 
 // ── The renderer ─────────────────────────────────────────────────────────────
 export async function renderPaper(spec, scale = 2) {
-  const w = spec.w, h = spec.h;
-  const c = document.createElement("canvas"); c.width = Math.ceil(w * scale); c.height = Math.ceil(h * scale);
+  const c = document.createElement("canvas"); c.width = Math.ceil(spec.w * scale); c.height = Math.ceil(spec.h * scale);
   const ctx = c.getContext("2d"); ctx.scale(scale, scale);
   const seed = spec.seed || 1;
   // images first, so the draw is synchronous after
   const imgs = await Promise.all((spec.layers || []).filter((L) => L.src).map((L) => loadImage(L.src)));
   const imgFor = new Map(); (spec.layers || []).filter((L) => L.src).forEach((L, i) => imgFor.set(L, imgs[i]));
+  // a print turns to match its picture: swap the sheet (and the layer) if the
+  // image's orientation disagrees with the spec's
+  if (spec.autoOrient) {
+    const L0 = (spec.layers || []).find((L) => L.src && imgFor.get(L)); const im = L0 && imgFor.get(L0);
+    if (im && (im.naturalWidth > im.naturalHeight) !== (spec.w > spec.h)) { [spec.w, spec.h] = [spec.h, spec.w]; [L0.w, L0.h] = [L0.h, L0.w]; c.width = Math.ceil(spec.w * scale); c.height = Math.ceil(spec.h * scale); ctx.setTransform(scale, 0, 0, scale, 0, 0); }
+  }
+  const w = spec.w, h = spec.h;
 
   const outline = edgePath(w, h, seed, !!spec.rough, spec.torn || null);
   ctx.save(); ctx.clip(outline);
@@ -140,7 +146,7 @@ export async function renderPaper(spec, scale = 2) {
       case "grid": { ctx.save(); ctx.globalAlpha = 0.5; ctx.strokeStyle = INK.faint; ctx.lineWidth = 1; for (let y = (L.top || 0); y < h; y += 16) { ctx.beginPath(); ctx.moveTo(0, y + 0.5); ctx.lineTo(w, y + 0.5); ctx.stroke(); } for (let x = 0; x < w; x += 32) { ctx.beginPath(); ctx.moveTo(x + 0.5, L.top || 0); ctx.lineTo(x + 0.5, h); ctx.stroke(); } ctx.restore(); break; }
       case "text": drawText(ctx, L); break;
       case "image": { const im = imgFor.get(L); if (!im) break; ctx.save(); ctx.translate(L.x, L.y); if (L.rotate) ctx.rotate(L.rotate * Math.PI / 180); ctx.drawImage(im, 0, 0, L.w, L.h); ctx.restore(); break; }
-      case "photo": { ctx.save(); ctx.translate(L.x, L.y); if (L.rotate) ctx.rotate(L.rotate * Math.PI / 180); ctx.fillStyle = STOCK.white; ctx.fillRect(0, 0, L.w, L.h); const im = imgFor.get(L); const b = 4; if (im) { ctx.drawImage(im, b, b, L.w - b * 2, L.h - b * 2); } else { const g = ctx.createLinearGradient(0, 0, L.w, L.h); g.addColorStop(0, "#7a6a52"); g.addColorStop(0.7, "#2f261c"); ctx.fillStyle = g; ctx.fillRect(b, b, L.w - b * 2, L.h - b * 2); } ctx.restore(); break; }
+      case "photo": { ctx.save(); ctx.translate(L.x, L.y); if (L.rotate) ctx.rotate(L.rotate * Math.PI / 180); ctx.fillStyle = STOCK.white; ctx.fillRect(0, 0, L.w, L.h); const im = imgFor.get(L); const b = L.border ?? 4; if (im) { const iw = L.w - b * 2, ih = L.h - b * 2; if (L.fit === "cover") { const r = Math.max(iw / im.naturalWidth, ih / im.naturalHeight); const sw = iw / r, sh = ih / r; ctx.drawImage(im, (im.naturalWidth - sw) / 2, (im.naturalHeight - sh) / 2, sw, sh, b, b, iw, ih); } else ctx.drawImage(im, b, b, iw, ih); } else { const g = ctx.createLinearGradient(0, 0, L.w, L.h); g.addColorStop(0, "#7a6a52"); g.addColorStop(0.7, "#2f261c"); ctx.fillStyle = g; ctx.fillRect(b, b, L.w - b * 2, L.h - b * 2); } ctx.restore(); break; }
       case "sketch": { ctx.save(); ctx.translate(L.x || 0, L.y || 0); ctx.scale(L.scale || 1, L.scale || 1); ctx.strokeStyle = L.stroke || "#3a3128"; ctx.lineWidth = L.width || 1; ctx.globalAlpha = L.opacity ?? 0.7; ctx.lineCap = "round"; const r = rng(seed + 7); for (const d of L.paths) { const p = new Path2D(d); ctx.setLineDash(L.dash || []); ctx.stroke(p); ctx.save(); ctx.translate((r() - 0.5) * 1.2, (r() - 0.5) * 1.2); ctx.globalAlpha *= 0.45; ctx.stroke(p); ctx.restore(); } ctx.restore(); break; }
       case "stampCircle": {
         ctx.save(); ctx.translate(L.x + L.d / 2, L.y + L.d / 2); ctx.rotate((L.rotate || -14) * Math.PI / 180); const R = L.d / 2;
@@ -171,7 +177,7 @@ export async function renderPaper(spec, scale = 2) {
   }
   // texture over the sheet: the fine grain, a coarser mottle of fibre and
   // foxing, and the faint darkening a sheet has toward its edges
-  const dim = spec.stock === "diazo" || spec.stock === "dark";
+  const dim = spec.stock === "diazo" || spec.stock === "dark" || spec.gloss; // a glossy print takes almost no grain
   ctx.save(); ctx.globalCompositeOperation = "multiply";
   ctx.globalAlpha = dim ? 0.12 : 0.28; ctx.fillStyle = ctx.createPattern(grain(), "repeat"); ctx.fillRect(0, 0, w, h);
   ctx.globalAlpha = dim ? 0.05 : 0.12; ctx.save(); ctx.scale(3.7, 3.1); ctx.fillStyle = ctx.createPattern(grain(), "repeat"); ctx.fillRect(0, 0, w / 3.7, h / 3.1); ctx.restore();

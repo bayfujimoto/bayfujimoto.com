@@ -219,7 +219,9 @@ export async function initDesk() {
       for (const d of b.docs) {
         const { canvas: pc } = await renderPaper(d, scale);
         const tex = new THREE.CanvasTexture(pc); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8; tex.generateMipmaps = true; tex.minFilter = THREE.LinearMipmapLinearFilter;
-        const mat = new THREE.MeshStandardMaterial({ map: tex, transparent: true, alphaTest: 0.5, roughness: 0.92, metalness: 0, normalMap: paperNormalTex, normalScale: new THREE.Vector2(0.55, 0.55), side: THREE.DoubleSide, emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: 0 }); // emissive = the hover lift, through the sheet's own image
+        const mat = d.gloss
+          ? new THREE.MeshPhysicalMaterial({ map: tex, transparent: true, alphaTest: 0.5, roughness: 0.38, metalness: 0, clearcoat: 0.7, clearcoatRoughness: 0.2, normalMap: paperNormalTex, normalScale: new THREE.Vector2(0.12, 0.12), side: THREE.DoubleSide, emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: 0 }) // a glossy print: smooth, with a coat that catches the lamp
+          : new THREE.MeshStandardMaterial({ map: tex, transparent: true, alphaTest: 0.5, roughness: 0.92, metalness: 0, normalMap: paperNormalTex, normalScale: new THREE.Vector2(0.55, 0.55), side: THREE.DoubleSide, emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: 0 }); // emissive = the hover lift, through the sheet's own image
         const mesh = new THREE.Mesh(new THREE.PlaneGeometry(U(d.w), U(d.h)), mat);
         mesh.rotation.x = -Math.PI / 2; mesh.rotation.z = -(d.rot || 0) * Math.PI / 180;
         mesh.position.set(U(d.x + d.w / 2), 0.014 + i * 0.0028, U(d.y + d.h / 2));
