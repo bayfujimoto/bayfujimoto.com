@@ -236,6 +236,7 @@ export async function initDesk() {
       const p = Rg.bundles[id]; if (!p) return;
       const z = Rg.zorder.indexOf(id);
       entry.group.position.set(gx(Fd.x + p[0]), z * 0.012, gz(Fd.y + p[1])); entry.baseY = z * 0.012;
+      entry.rect = { x: Fd.x + p[0], y: Fd.y + p[1], w: entry.b.box[0], h: entry.b.box[1] }; // stage px, for "what lies on top of what"
     });
   }
 
@@ -476,17 +477,37 @@ export async function initDesk() {
     return h.object.userData.altId ? { kind: "object", id: h.object.userData.altId } : { kind: "bundle", id: h.object.userData.bundle };
   }
   let hovered = null, pendingPick = null;
-  // The hovered bundle lifts a touch, as the DOM desk's did: its sheets glow
-  // through their own image, eased in and out; fainter under the flashlight.
+  // Hover, without breaking the pile: a small close light fades in a hand's
+  // height above the bundle (as if a lamp were leaned toward it), the sheets
+  // glow faintly through their own image, and the bundle rises a hair —
+  // together with every bundle stacked on top of it, so nothing passes
+  // through anything: the column lifts as one, pushed from underneath.
   let litBundle = null;
+  const closeLight = new THREE.PointLight(0xffffff, 0, 6, 2); closeLight.visible = false; scene.add(closeLight);
+  const closeTarget = new THREE.Vector3(); let closeI = 0;
+  const overlaps = (a, b) => a && b && a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
+  function liftSet(id) {
+    const out = new Set(); if (!id || !bundleGroups.has(id)) return out;
+    out.add(id); let grew = true;
+    while (grew) { grew = false; bundleGroups.forEach((e, k) => { if (out.has(k)) return; for (const j of out) { const h = bundleGroups.get(j); if (e.baseY > h.baseY && overlaps(e.rect, h.rect)) { out.add(k); grew = true; break; } } }); }
+    return out;
+  }
   function tickHighlight() {
-    const peak = mode === "dark" ? 0.14 : 0.3, lift = 0.008;
+    const dark = mode === "dark";
+    const peak = dark ? 0.06 : 0.12, lift = 0.006, lightPeak = dark ? 1.4 : 4.5;
+    const lifted = liftSet(litBundle);
     bundleGroups.forEach((entry, id) => {
       const on = id === litBundle, target = on ? peak : 0;
       for (const d of entry.docs) { const m = d.mesh.material; const v = m.emissiveIntensity + (target - m.emissiveIntensity) * 0.18; if (Math.abs(v - m.emissiveIntensity) > 1e-4) m.emissiveIntensity = v; }
-      const y = entry.group.position.y + ((entry.baseY || 0) + (on ? lift : 0) - entry.group.position.y) * 0.18; // and the bundle rises a hair, so its shadow deepens
+      const y = entry.group.position.y + ((entry.baseY || 0) + (lifted.has(id) ? lift : 0) - entry.group.position.y) * 0.18;
       if (Math.abs(y - entry.group.position.y) > 1e-5) entry.group.position.y = y;
+      if (on) { closeTarget.set(U(entry.b.box[0] / 2), 0, U(entry.b.box[1] / 2)); entry.group.localToWorld(closeTarget); closeTarget.y += 1.1 * stageGroup.scale.x; }
     });
+    const ti = litBundle ? lightPeak : 0;
+    closeI += (ti - closeI) * 0.16;
+    if (litBundle) closeLight.position.lerp(closeTarget, closeLight.visible ? 0.3 : 1);
+    closeLight.color.set(dark ? 0xdfe8ff : 0xfff6ea);
+    closeLight.intensity = closeI; closeLight.visible = closeI > 0.01;
   }
   canvas.addEventListener("pointermove", (e) => { pendingPick = e; }, { passive: true });
   function hoverTick() {
