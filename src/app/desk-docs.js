@@ -39,8 +39,12 @@ function mm(dim) { const m = /(\d+(?:\.\d+)?)\s*[x×]\s*(\d+(?:\.\d+)?)/.exec(St
 const RED_BACKGROUND = new Set(["EPH-2026-023", "EPH-2026-026"]);
 
 function accumulationSlots(items) {
-  const usable = (i) => i.assets?.front && mm(i.dimensions) && (i.assets?.cutout || !RED_BACKGROUND.has(i.id));
-  const pool = byDateDesc(items).filter(usable).map((i) => { const [w, h] = mm(i.dimensions); return { id: i.id, src: i.assets.cutout ? imageUrl(i.assets.cutout, "cutout") : imageUrl(i.assets.front, "display"), w, h, aspect: h / w, area: w * h }; });
+  // A scan that was cut out carries its cut-out mode in the ?v= token of its
+  // front (…c20x2, as panels.js reads it); the cut-out PNG has the sheet's real
+  // silhouette, so the desk shows that rather than the rectangular display scan.
+  const isCut = (v) => { const qi = v ? v.indexOf("?v=") : -1; return qi !== -1 && /c\d+x\d+$/.test(v.slice(qi + 3)); };
+  const usable = (i) => i.assets?.front && mm(i.dimensions) && (isCut(i.assets.front) || !RED_BACKGROUND.has(i.id));
+  const pool = byDateDesc(items).filter(usable).map((i) => { const [w, h] = mm(i.dimensions); const cut = isCut(i.assets.front); return { id: i.id, src: imageUrl(i.assets.front, cut ? "cutout" : "display"), cutout: cut, w, h, aspect: h / w, area: w * h }; });
   const take = (pred) => { let best = null, bs = Infinity; pool.forEach((c) => { const sc = pred(c); if (sc < bs) { bs = sc; best = c; } }); if (best) pool.splice(pool.indexOf(best), 1); return best; };
   const fits = (c, maxW, maxH) => (c.w <= maxW && c.h <= maxH ? 0 : 1e6);
   const nearAspect = (t, maxW = 999, maxH = 999) => (c) => Math.abs(Math.log(c.aspect) - Math.log(t)) + fits(c, maxW, maxH);
@@ -85,7 +89,7 @@ export function buildDocBundles(archive) {
   const game = games[0] ? String(games[0].title || "").toLowerCase() : "slot 1";
 
   const A = accumulationSlots(series.accumulation?.items || []);
-  const scanDoc = (rec, x, y, rot, extra = {}) => rec ? { sub: null, x, y, rot, w: Math.round(rec.w * PX_PER_MM), h: Math.round(rec.h * PX_PER_MM), stock: "white", seed: 9, layers: [{ t: "image", src: rec.src, x: 0, y: 0, w: Math.round(rec.w * PX_PER_MM), h: Math.round(rec.h * PX_PER_MM) }], ...extra } : null;
+  const scanDoc = (rec, x, y, rot, extra = {}) => rec ? { sub: null, x, y, rot, w: Math.round(rec.w * PX_PER_MM), h: Math.round(rec.h * PX_PER_MM), stock: "white", seed: 9, cutout: !!rec.cutout, layers: [{ t: "image", src: rec.src, x: 0, y: 0, w: Math.round(rec.w * PX_PER_MM), h: Math.round(rec.h * PX_PER_MM) }], ...extra } : null;
 
   const doc = (sub, x, y, w, h, o = {}) => ({ sub, x: S(x), y: S(y), rot: o.rot || 0, w: S(w), h: S(h), stock: o.stock || "cream", rough: !!o.rough, torn: o.torn || null, seed: o.seed || (x * 7 + y * 13) | 0, layers: o.layers || [] });
 

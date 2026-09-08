@@ -224,6 +224,7 @@ export async function initDesk() {
         mesh.rotation.x = -Math.PI / 2; mesh.rotation.z = -(d.rot || 0) * Math.PI / 180;
         mesh.position.set(U(d.x + d.w / 2), 0.014 + i * 0.0028, U(d.y + d.h / 2));
         mesh.castShadow = true; mesh.receiveShadow = true;
+        mesh.customDepthMaterial = new THREE.MeshDepthMaterial({ depthPacking: THREE.RGBADepthPacking, map: tex, alphaTest: 0.5 }); // the shadow follows the sheet's real outline (cutouts)
         mesh.userData = { bundle: b.id, sub: d.sub || null, spec: d };
         group.add(mesh); entry.docs.push({ mesh, spec: d }); i++;
       }
@@ -344,13 +345,13 @@ export async function initDesk() {
   const jitter = (arr, base) => arr.map((st) => ({ ...st, at: st.at + base * (rr() - 0.5) * 0.35 }));
   function goDark() {
     // the overhead goes out; a beat; the flashlight stutters on
-    const t = [{ at: 0, lamp: 1, torch: 0 }, { at: 60, lamp: 0.35, torch: 0 }, { at: 120, lamp: 0, torch: 0 }, { at: 820, lamp: 0, torch: 0.55 }, { at: 900, lamp: 0, torch: 0 }, { at: 1010, lamp: 0, torch: 0.8 }, { at: 1080, lamp: 0, torch: 0.15 }, { at: 1160, lamp: 0, torch: 0.95 }, { at: 1260, lamp: 0, torch: 0.6 }, { at: 1340, lamp: 0, torch: 1 }];
+    const t = [{ at: 0, lamp: 1, torch: 0 }, { at: 60, lamp: 0.35, torch: 0 }, { at: 120, lamp: 0, torch: 0 }, { at: 380, lamp: 0, torch: 0.55 }, { at: 440, lamp: 0, torch: 0 }, { at: 530, lamp: 0, torch: 0.8 }, { at: 590, lamp: 0, torch: 0.15 }, { at: 660, lamp: 0, torch: 0.95 }, { at: 740, lamp: 0, torch: 0.6 }, { at: 800, lamp: 0, torch: 1 }];
     timeline = { start: performance.now(), steps: jitter(t, 80) };
     setPalette("dark");
   }
   function goLight() {
-    // the lamp fades up quickly; once it is on, the flashlight clicks off
-    const t = [{ at: 0, lamp: 0, torch: 1 }, { at: 280, lamp: 1, torch: 1, lerp: true }, { at: 420, lamp: 1, torch: 1 }, { at: 440, lamp: 1, torch: 0 }];
+    // the lamp fades up quickly; the flashlight clicks off right as it comes on
+    const t = [{ at: 0, lamp: 0, torch: 1 }, { at: 220, lamp: 0.8, torch: 1, lerp: true }, { at: 225, lamp: 0.8, torch: 0 }, { at: 300, lamp: 1, torch: 0, lerp: true }];
     timeline = { start: performance.now(), steps: t };
     setTimeout(() => setPalette("light"), 200);
   }

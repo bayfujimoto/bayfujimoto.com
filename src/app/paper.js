@@ -126,9 +126,9 @@ export async function renderPaper(spec, scale = 2) {
 
   const outline = edgePath(w, h, seed, !!spec.rough, spec.torn || null);
   ctx.save(); ctx.clip(outline);
-  // stock
-  ctx.fillStyle = STOCK[spec.stock || "cream"]; ctx.fillRect(-4, -4, w + 8, h + 8);
-  if (spec.stock !== "dark" && spec.stock !== "diazo") {
+  // stock — a cutout scan brings its own shape, so it gets no sheet behind it
+  if (!spec.cutout) { ctx.fillStyle = STOCK[spec.stock || "cream"]; ctx.fillRect(-4, -4, w + 8, h + 8); }
+  if (!spec.cutout && spec.stock !== "dark" && spec.stock !== "diazo") {
     const g = ctx.createLinearGradient(0, 0, w, h); g.addColorStop(0, "rgba(255,255,255,.35)"); g.addColorStop(0.45, "rgba(255,255,255,0)"); g.addColorStop(1, "rgba(10,8,5,.06)");
     ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
   }
@@ -178,6 +178,11 @@ export async function renderPaper(spec, scale = 2) {
   vg.addColorStop(0, "rgba(255,255,255,1)"); vg.addColorStop(1, dim ? "rgba(228,228,228,1)" : "rgba(238,232,220,1)");
   ctx.globalAlpha = 1; ctx.fillStyle = vg; ctx.fillRect(0, 0, w, h);
   ctx.restore();
+  if (spec.cutout) { // keep only the cutout's own silhouette: the texture must not paint the sheet back in
+    ctx.save(); ctx.globalCompositeOperation = "destination-in";
+    for (const L of spec.layers || []) { const im = L.src && imgFor.get(L); if (!im) continue; ctx.save(); ctx.translate(L.x, L.y); if (L.rotate) ctx.rotate(L.rotate * Math.PI / 180); ctx.drawImage(im, 0, 0, L.w, L.h); ctx.restore(); }
+    ctx.restore();
+  }
   ctx.restore();
   return { canvas: c, w, h, outline };
 }
