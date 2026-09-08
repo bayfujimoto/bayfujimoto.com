@@ -79,7 +79,14 @@ const imageCache = new Map();
 export function loadImage(src) {
   if (!src) return Promise.resolve(null);
   if (imageCache.has(src)) return imageCache.get(src);
-  const pr = new Promise((res) => { const im = new Image(); im.crossOrigin = "anonymous"; im.onload = () => res(im); im.onerror = () => res(null); im.src = src; });
+  // Canvas needs a CORS load. The same image is shown elsewhere on the site
+  // as a plain <img>, and that response — cached for a year, without the
+  // Access-Control-Allow-Origin header, and without Vary — would be handed
+  // back to a crossOrigin request and fail it (a black sheet on the deploy,
+  // fine on a fresh dev cache). A distinct URL gives the canvas load its own
+  // cache entry.
+  const url = src.startsWith("data:") || src.startsWith("blob:") ? src : src + (src.includes("?") ? "&" : "?") + "canvas=1";
+  const pr = new Promise((res) => { const im = new Image(); im.crossOrigin = "anonymous"; im.onload = () => res(im); im.onerror = () => res(null); im.src = url; });
   imageCache.set(src, pr); return pr;
 }
 
