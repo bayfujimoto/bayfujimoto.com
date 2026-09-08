@@ -477,14 +477,11 @@ export async function initDesk() {
     return h.object.userData.altId ? { kind: "object", id: h.object.userData.altId } : { kind: "bundle", id: h.object.userData.bundle };
   }
   let hovered = null, pendingPick = null;
-  // Hover, without breaking the pile: a small close light fades in a hand's
-  // height above the bundle (as if a lamp were leaned toward it), the sheets
-  // glow faintly through their own image, and the bundle rises a hair —
+  // Hover, without breaking the pile: the sheets glow a little through their
+  // own image, and the bundle rises a hair —
   // together with every bundle stacked on top of it, so nothing passes
   // through anything: the column lifts as one, pushed from underneath.
   let litBundle = null;
-  const closeLight = new THREE.PointLight(0xffffff, 0, 6, 2); closeLight.visible = false; scene.add(closeLight);
-  const closeTarget = new THREE.Vector3(); let closeI = 0;
   const overlaps = (a, b) => a && b && a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
   function liftSet(id) {
     const out = new Set(); if (!id || !bundleGroups.has(id)) return out;
@@ -494,20 +491,14 @@ export async function initDesk() {
   }
   function tickHighlight() {
     const dark = mode === "dark";
-    const peak = dark ? 0.06 : 0.12, lift = 0.006, lightPeak = dark ? 1.4 : 4.5;
+    const peak = dark ? 0.12 : 0.26, lift = 0.006;
     const lifted = liftSet(litBundle);
     bundleGroups.forEach((entry, id) => {
       const on = id === litBundle, target = on ? peak : 0;
       for (const d of entry.docs) { const m = d.mesh.material; const v = m.emissiveIntensity + (target - m.emissiveIntensity) * 0.18; if (Math.abs(v - m.emissiveIntensity) > 1e-4) m.emissiveIntensity = v; }
       const y = entry.group.position.y + ((entry.baseY || 0) + (lifted.has(id) ? lift : 0) - entry.group.position.y) * 0.18;
       if (Math.abs(y - entry.group.position.y) > 1e-5) entry.group.position.y = y;
-      if (on) { closeTarget.set(U(entry.b.box[0] / 2), 0, U(entry.b.box[1] / 2)); entry.group.localToWorld(closeTarget); closeTarget.y += 1.1 * stageGroup.scale.x; }
     });
-    const ti = litBundle ? lightPeak : 0;
-    closeI += (ti - closeI) * 0.16;
-    if (litBundle) closeLight.position.lerp(closeTarget, closeLight.visible ? 0.3 : 1);
-    closeLight.color.set(dark ? 0xdfe8ff : 0xfff6ea);
-    closeLight.intensity = closeI; closeLight.visible = closeI > 0.01;
   }
   canvas.addEventListener("pointermove", (e) => { pendingPick = e; }, { passive: true });
   function hoverTick() {
