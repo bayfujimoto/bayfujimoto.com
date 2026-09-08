@@ -235,7 +235,7 @@ export async function initDesk() {
     bundleGroups.forEach((entry, id) => {
       const p = Rg.bundles[id]; if (!p) return;
       const z = Rg.zorder.indexOf(id);
-      entry.group.position.set(gx(Fd.x + p[0]), z * 0.012, gz(Fd.y + p[1]));
+      entry.group.position.set(gx(Fd.x + p[0]), z * 0.012, gz(Fd.y + p[1])); entry.baseY = z * 0.012;
     });
   }
 
@@ -480,10 +480,12 @@ export async function initDesk() {
   // through their own image, eased in and out; fainter under the flashlight.
   let litBundle = null;
   function tickHighlight() {
-    const peak = mode === "dark" ? 0.05 : 0.11;
+    const peak = mode === "dark" ? 0.14 : 0.3, lift = 0.008;
     bundleGroups.forEach((entry, id) => {
-      const target = id === litBundle ? peak : 0;
+      const on = id === litBundle, target = on ? peak : 0;
       for (const d of entry.docs) { const m = d.mesh.material; const v = m.emissiveIntensity + (target - m.emissiveIntensity) * 0.18; if (Math.abs(v - m.emissiveIntensity) > 1e-4) m.emissiveIntensity = v; }
+      const y = entry.group.position.y + ((entry.baseY || 0) + (on ? lift : 0) - entry.group.position.y) * 0.18; // and the bundle rises a hair, so its shadow deepens
+      if (Math.abs(y - entry.group.position.y) > 1e-5) entry.group.position.y = y;
     });
   }
   canvas.addEventListener("pointermove", (e) => { pendingPick = e; }, { passive: true });
@@ -579,8 +581,10 @@ function makeFanFactory({ ctx, camera, bundleGroups, stageGroup, archive, reduce
       const hs = new THREE.Scene();
       const dark = getMode() === "dark";
       // lit to match the desk: the cool overhead (TUNE.lamp) or the flashlight
-      hs.add(new THREE.HemisphereLight(dark ? 0xdfe8f8 : TUNE.lamp.ambient[0], dark ? 0x1a1e26 : 0x4a4038, dark ? 0.9 : 0.7));
-      const key = new THREE.DirectionalLight(dark ? 0xe8efff : TUNE.lamp.color, dark ? 1.6 : 1.5); key.position.set(-1.5, 4, 3); hs.add(key);
+      // (light mode is deliberately neutral: the desk's sheets read near-white
+      // under the lamp plus the room's environment, and any tint here shows)
+      hs.add(new THREE.HemisphereLight(dark ? 0xdfe8f8 : 0xffffff, dark ? 0x1a1e26 : 0x9c9c9c, dark ? 0.9 : 0.8));
+      const key = new THREE.DirectionalLight(dark ? 0xe8efff : 0xfffaf4, dark ? 1.6 : 1.25); key.position.set(-1.5, 4, 3); hs.add(key);
 
       const meta = document.createElement("div"); meta.className = "layer-meta";
       meta.innerHTML = `<h1 class="overlay-title">${esc(s.label)}</h1><p class="overlay-subtitle">${esc(s.subtitle || s.container || "")}</p>`;
