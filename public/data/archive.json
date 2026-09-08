@@ -268,6 +268,27 @@
           "label": "films",
           "items": [
             {
+              "id": "FILM-2026-556",
+              "slug": "the-evil-dead-1981-2026-09-06",
+              "title": "The Evil Dead",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "1981",
+              "director": "",
+              "watch_date": "2026-09-06",
+              "display_date": "September 6, 2026",
+              "sort_date": "2026-09-06",
+              "rating": 0,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/the-evil-dead/",
+              "assets": {
+                "backdrop": "https://a.ltrbxd.com/resized/alternative-backdrop/5/1/3/8/8/tmdb/eUEqWIswh9yBXhPvfJsl8MBC8DG-1200-1200-675-675-crop-000000.jpg?v=f9f0dcfb38",
+                "poster": "https://a.ltrbxd.com/resized/sm/upload/c7/4g/ae/zn/7cpSdCrBY7UhiygkcP57dpixXsW-0-600-0-900-crop.jpg?v=1525e98692"
+              }
+            },
+            {
               "id": "FILM-2026-555",
               "slug": "the-fog-1980-2026-09-04",
               "title": "The Fog",
@@ -18230,6 +18251,26 @@
       "subcollections": {},
       "items": [
         {
+          "id": "EPH-2026-032",
+          "slug": "home-tx-usa-2026-09-05",
+          "series": "accumulation",
+          "item_type": "document",
+          "status": "published",
+          "display_date": "September 5, 2026",
+          "sort_date": "2026-09-05",
+          "title": "Promotional Postcard",
+          "issuer": "Sony Pictures",
+          "place": "Home, TX, USA",
+          "source": "Alamo Drafthouse freebie",
+          "dimensions": "153 x 102",
+          "inspection": "card",
+          "assets": {
+            "front": "EPH-2026-032-front.png?v=ef721f9bc20x2",
+            "thumbnail": "EPH-2026-032-front-thumb.webp?v=ef721f9bc20x2",
+            "back": "EPH-2026-032-back.png?v=6d96f5b0c20x2"
+          }
+        },
+        {
           "id": "EPH-2026-028",
           "slug": "custer-state-park-nd-2026-08-22",
           "series": "accumulation",
@@ -18244,7 +18285,8 @@
           "inspection": "card",
           "assets": {
             "front": "EPH-2026-028-front.png?v=1efa666fc5x2",
-            "thumbnail": "EPH-2026-028-front-thumb.webp?v=1efa666fc5x2"
+            "thumbnail": "EPH-2026-028-front-thumb.webp?v=1efa666fc5x2",
+            "back": "EPH-2026-028-back.png?v=c18f3d8ac6x2"
           }
         },
         {
@@ -18525,8 +18567,8 @@
           "context_note": "Commemorative ticket",
           "dimensions": "180 x 60",
           "assets": {
-            "front": "EPH-2026-018-front.jpg",
-            "thumbnail": "EPH-2026-018-front-thumb.jpg"
+            "front": "EPH-2026-018-front.png?v=358feaa8c20x2",
+            "thumbnail": "EPH-2026-018-front-thumb.webp?v=358feaa8c20x2"
           }
         },
         {
@@ -18546,10 +18588,31 @@
           "source": "Received as a gift from a friend",
           "inspection": "card",
           "assets": {
-            "front": "EPH-2026-017-front.jpg",
-            "thumbnail": "EPH-2026-017-front-thumb.jpg"
+            "front": "EPH-2026-017-front.png?v=62a29e4ec6x2",
+            "thumbnail": "EPH-2026-017-front-thumb.webp?v=62a29e4ec6x2",
+            "back": "EPH-2026-017-back.png?v=b92aaa1fc20x2"
           },
           "dimensions": "62 x 88"
+        },
+        {
+          "id": "EPH-2026-033",
+          "slug": "paris-france-2024-11-30",
+          "series": "accumulation",
+          "item_type": "document",
+          "status": "published",
+          "display_date": "November 30, 2024",
+          "sort_date": "2024-11-30",
+          "title": "Cinema Voucher",
+          "issuer": "Pathé",
+          "place": "Paris, France",
+          "context_note": "I accidentally bought tickets for a dubbed movie instead of subtitled.",
+          "inspection": "card",
+          "assets": {
+            "front": "EPH-2026-033-front.png?v=54a3589ec20x2",
+            "thumbnail": "EPH-2026-033-front-thumb.webp?v=54a3589ec20x2",
+            "back": "EPH-2026-033-back.png?v=993b1d59c20x2"
+          },
+          "dimensions": "86 x 54"
         },
         {
           "id": "EPH-2026-014",
@@ -18582,10 +18645,30 @@
           "place": "Lyon, France",
           "inspection": "card",
           "assets": {
-            "front": "EPH-2026-012-front.jpg",
-            "thumbnail": "EPH-2026-012-front-thumb.jpg"
+            "front": "EPH-2026-012-front.png?v=2236fe4ec20x2",
+            "thumbnail": "EPH-2026-012-front-thumb.webp?v=2236fe4ec20x2",
+            "back": "EPH-2026-012-back.png?v=b429a6a6c20x2"
           },
           "dimensions": "76 x 76"
+        },
+        {
+          "id": "EPH-2026-004",
+          "slug": "paris-france-2024-08-25",
+          "series": "accumulation",
+          "item_type": "ticket",
+          "status": "published",
+          "display_date": "August 25, 2024",
+          "sort_date": "2024-08-25",
+          "title": "Eiffel Tower Ticket",
+          "context_note": "Edges are worn because I carried it in my wallet for a year.",
+          "place": "Paris, France",
+          "source": "Eiffel Tower",
+          "inspection": "card",
+          "assets": {
+            "front": "EPH-2026-004-front.png?v=d912d3d5c20x2",
+            "thumbnail": "EPH-2026-004-front-thumb.webp?v=d912d3d5c20x2",
+            "back": "EPH-2026-004-back.png?v=9027a455c20x2"
+          }
         },
         {
           "id": "EPH-2026-016",
@@ -18601,8 +18684,8 @@
           "source": "Alamo Drafthouse, Downtown Brooklyn",
           "inspection": "card",
           "assets": {
-            "front": "EPH-2026-016-front.jpg",
-            "thumbnail": "EPH-2026-016-front-thumb.jpg"
+            "front": "EPH-2026-016-front.png?v=95ad6e46c10x2",
+            "thumbnail": "EPH-2026-016-front-thumb.webp?v=95ad6e46c10x2"
           },
           "dimensions": "76 x 103"
         },
@@ -18622,10 +18705,12 @@
           ],
           "inspection": "card",
           "assets": {
-            "front": "EPH-2026-006-front.jpg",
-            "thumbnail": "EPH-2026-006-front-thumb.jpg"
+            "front": "EPH-2026-006-front.png?v=f87026bfc20x2",
+            "thumbnail": "EPH-2026-006-front-thumb.webp?v=f87026bfc20x2",
+            "back": "EPH-2026-006-back.png?v=06a6c4fcc20x2"
           },
-          "dimensions": "54 x 85"
+          "dimensions": "54 x 85",
+          "context_note": "Edges are worn because I kept it in my wallet for several months."
         }
       ]
     }
@@ -18674,7 +18759,7 @@
         "object": "key",
         "model": "desk-guide-key.glb",
         "thumbnail": "/thumbnails/desk/key.png",
-        "count": 777,
+        "count": 781,
         "subcollections": null,
         "description": ""
       },
@@ -18713,7 +18798,7 @@
         "object": "sphere",
         "model": "desk-consumption-sphere.glb",
         "thumbnail": "/thumbnails/desk/consumption.png",
-        "count": 720,
+        "count": 721,
         "subcollections": 5,
         "description": "A sphere, the one object without an inside. What was taken in: films logged as viewings, books as readings, music, coffee, games. Titles are transcribed as given; the ratings are the archivist's."
       },
@@ -18739,7 +18824,7 @@
         "object": "box",
         "model": "desk-labor-box.glb",
         "thumbnail": "/thumbnails/desk/accumulation.png",
-        "count": 18,
+        "count": 21,
         "subcollections": null,
         "description": "A box. The small printed things that survived a pocket, a suitcase, or a glovebox: tickets, receipts, brochures, printed matter. Each is scanned both sides and measured, and shown on the plate at true scale."
       }
@@ -19182,8 +19267,9 @@
           "source": "Received as a gift from a friend",
           "inspection": "card",
           "assets": {
-            "front": "EPH-2026-017-front.jpg",
-            "thumbnail": "EPH-2026-017-front-thumb.jpg"
+            "front": "EPH-2026-017-front.png?v=62a29e4ec6x2",
+            "thumbnail": "EPH-2026-017-front-thumb.webp?v=62a29e4ec6x2",
+            "back": "EPH-2026-017-back.png?v=b92aaa1fc20x2"
           },
           "dimensions": "62 x 88"
         },
@@ -19998,8 +20084,9 @@
           "source": "Received as a gift from a friend",
           "inspection": "card",
           "assets": {
-            "front": "EPH-2026-017-front.jpg",
-            "thumbnail": "EPH-2026-017-front-thumb.jpg"
+            "front": "EPH-2026-017-front.png?v=62a29e4ec6x2",
+            "thumbnail": "EPH-2026-017-front-thumb.webp?v=62a29e4ec6x2",
+            "back": "EPH-2026-017-back.png?v=b92aaa1fc20x2"
           },
           "dimensions": "62 x 88"
         }
@@ -20134,10 +20221,12 @@
           ],
           "inspection": "card",
           "assets": {
-            "front": "EPH-2026-006-front.jpg",
-            "thumbnail": "EPH-2026-006-front-thumb.jpg"
+            "front": "EPH-2026-006-front.png?v=f87026bfc20x2",
+            "thumbnail": "EPH-2026-006-front-thumb.webp?v=f87026bfc20x2",
+            "back": "EPH-2026-006-back.png?v=06a6c4fcc20x2"
           },
-          "dimensions": "54 x 85"
+          "dimensions": "54 x 85",
+          "context_note": "Edges are worn because I kept it in my wallet for several months."
         }
       ]
     },
@@ -20153,9 +20242,9 @@
     }
   },
   "_counters": {
-    "EPH": 31,
-    "FILM": 555,
-    "BOOK": 408,
+    "EPH": 33,
+    "FILM": 556,
+    "BOOK": 414,
     "MUSIC": 8,
     "COFFEE": 2,
     "GAME": 4,
