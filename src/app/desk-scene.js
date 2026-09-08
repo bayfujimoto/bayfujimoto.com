@@ -43,7 +43,7 @@ import "../styles/desk-dark.css";
 // ── Tuning ───────────────────────────────────────────────────────────────────
 // The numbers to move by eye. Distances in desk units (1 unit ≈ 78 mm).
 const TUNE = {
-  lamp: { color: 0xffb347, intensity: 120, distance: 20, angle: Math.PI / 5, penumbra: 0.4, decay: 1.5, height: 8, ambient: [0xffe0b0, 0.5] },
+  lamp: { color: 0xffeddc, intensity: 110, distance: 20, angle: Math.PI / 5, penumbra: 0.4, decay: 1.5, height: 8, ambient: [0xfff5ec, 0.5] },
   flashlight: {
     color: 0xe8efff, intensity: 115, angle: 26 * Math.PI / 180, penumbra: .5, decay: 2.3,
     radius: 3,       // the arc's radius around the desk centre
@@ -250,7 +250,16 @@ export async function initDesk() {
   function addObject(id, model, cfg, anchor, clickable) {
     const f = fitModel(model, cfg); stageGroup.add(model);
     objects.push({ id, model, ...f, anchor });
-    if (clickable) model.traverse((ch) => { if (ch.isMesh) { ch.userData.altId = id; clickables.push(ch); } });
+    if (clickable) {
+      // Hit-test a box around the object, not its meshes: the key is
+      // thousands of shells, and a raycast through them on every pointer
+      // move stalled the frame while the beam was on it.
+      const box = new THREE.Box3().setFromObject(model); const size = new THREE.Vector3(); box.getSize(size);
+      const proxy = new THREE.Mesh(new THREE.BoxGeometry(size.x, size.y, size.z), new THREE.MeshBasicMaterial({ colorWrite: false, depthWrite: false, transparent: true, opacity: 0 }));
+      proxy.userData.altId = id; proxy.renderOrder = 10; model.add(proxy);
+      proxy.position.copy(box.getCenter(new THREE.Vector3())).sub(model.position).divideScalar(model.scale.x); proxy.scale.setScalar(1 / model.scale.x);
+      clickables.push(proxy);
+    }
     placeObjects();
   }
   function placeObjects() {
@@ -340,10 +349,10 @@ export async function initDesk() {
     setPalette("dark");
   }
   function goLight() {
-    // the flashlight clicks off; a beat; the lamp flickers back and settles
-    const t = [{ at: 0, lamp: 0, torch: 1 }, { at: 40, lamp: 0, torch: 0 }, { at: 560, lamp: 0.25, torch: 0 }, { at: 620, lamp: 0, torch: 0 }, { at: 760, lamp: 0.6, torch: 0 }, { at: 830, lamp: 0.2, torch: 0 }, { at: 920, lamp: 0.85, torch: 0 }, { at: 1000, lamp: 0.5, torch: 0 }, { at: 1100, lamp: 1, torch: 0 }];
-    timeline = { start: performance.now(), steps: jitter(t, 90) };
-    setTimeout(() => setPalette("light"), 900);
+    // the lamp fades up quickly; once it is on, the flashlight clicks off
+    const t = [{ at: 0, lamp: 0, torch: 1 }, { at: 280, lamp: 1, torch: 1, lerp: true }, { at: 420, lamp: 1, torch: 1 }, { at: 440, lamp: 1, torch: 0 }];
+    timeline = { start: performance.now(), steps: t };
+    setTimeout(() => setPalette("light"), 200);
   }
   function setMode(next) {
     if (next === mode) return;
@@ -353,10 +362,14 @@ export async function initDesk() {
   }
   function tickTimeline(now) {
     if (!timeline) return;
-    const e = now - timeline.start; let cur = timeline.steps[0];
-    for (const st of timeline.steps) { if (e >= st.at) cur = st; }
-    lampF = cur.lamp; torch = cur.torch;
-    if (e > timeline.steps[timeline.steps.length - 1].at) timeline = null;
+    const e = now - timeline.start; const steps = timeline.steps;
+    let i = 0; while (i + 1 < steps.length && e >= steps[i + 1].at) i++;
+    const cur = steps[i], next = steps[i + 1];
+    if (next && next.lerp) {   // a fade into the next step, rather than a cut
+      const f = Math.min(1, Math.max(0, (e - cur.at) / (next.at - cur.at)));
+      lampF = cur.lamp + (next.lamp - cur.lamp) * f; torch = cur.torch + (next.torch - cur.torch) * f;
+    } else { lampF = cur.lamp; torch = cur.torch; }
+    if (e > steps[steps.length - 1].at) timeline = null;
   }
   function applyFactors() {
     lamp.intensity = Lp.intensity * lampF; lampAmbient.intensity = Lp.ambient[1] * lampF;
@@ -461,15 +474,17 @@ export async function initDesk() {
     if (!h) return null;
     return h.object.userData.altId ? { kind: "object", id: h.object.userData.altId } : { kind: "bundle", id: h.object.userData.bundle };
   }
-  let hovered = null;
-  canvas.addEventListener("pointermove", (e) => {
+  let hovered = null, pendingPick = null;
+  canvas.addEventListener("pointermove", (e) => { pendingPick = e; }, { passive: true });
+  function hoverTick() {
+    const e = pendingPick; if (!e) return; pendingPick = null;
     if (getState().layer !== "desk") return;
     const p = pick(e); const key = p ? p.kind + ":" + p.id : null;
     if (key === hovered) return; hovered = key;
     if (!p) { hideHover(); canvas.style.cursor = "default"; return; }
     if (p.kind === "object") { const i = OBJECT_INFO[p.id](); showHover(i.title, i.sub); canvas.style.cursor = p.id === "guide" ? "pointer" : "default"; }
     else { const info = archive.series[p.id] || {}; const flat = FLAT.has(p.id) || Object.keys(info.subcollections || {}).length <= 1; showHover(info.label || p.id, flat ? `${info.items?.length || ""} records`.trim() : (info.subtitle || info.container || "")); canvas.style.cursor = "pointer"; }
-  });
+  }
   canvas.addEventListener("click", (e) => {
     if (getState().layer !== "desk") return;
     const p = pick(e); if (!p) return;
@@ -490,6 +505,7 @@ export async function initDesk() {
 
   // ── Render ──
   function render(now) {
+    hoverTick();
     tickTimeline(now); applyFactors();
     aimLamp(); aim(now); placeCone();
     coneMat.uniforms.uTime.value = (now - t0) / 1000;

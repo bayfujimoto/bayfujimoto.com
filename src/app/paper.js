@@ -20,14 +20,26 @@ const FONT = {
 
 export async function ensureFonts() {
   if (!document.fonts) return;
-  const l = document.createElement("link");
-  if (!document.querySelector("link[data-da-fonts]")) {
-    l.rel = "stylesheet"; l.dataset.daFonts = "1";
-    l.href = "https://fonts.googleapis.com/css2?family=Homemade+Apple&family=Caveat:wght@400;600&display=swap";
-    document.head.appendChild(l);
-  }
+  // The handwriting comes from Google Fonts; the stylesheet has to have
+  // arrived before document.fonts can load anything from it, so wait for the
+  // link itself (bounded), then for the faces, then for the set to settle.
+  let link = document.querySelector("link[data-da-fonts]");
+  const linkLoaded = new Promise((res) => {
+    if (link && (link.dataset.loaded || link.sheet)) return res(); // already in (index.html carries the link; .sheet is set once it has arrived)
+    if (!link) {
+      link = document.createElement("link");
+      link.rel = "stylesheet"; link.dataset.daFonts = "1";
+      link.href = "https://fonts.googleapis.com/css2?family=Homemade+Apple&family=Caveat:wght@400;600&display=swap";
+      document.head.appendChild(link);
+    }
+    link.addEventListener("load", () => { link.dataset.loaded = "1"; res(); }, { once: true });
+    link.addEventListener("error", () => res(), { once: true });
+    setTimeout(res, 4000);
+  });
+  await linkLoaded;
   const wants = ["12px 'EB Garamond'", "italic 12px 'EB Garamond'", "12px 'Commit Mono'", "12px 'Homemade Apple'", "600 12px 'Caveat'", "12px 'Caveat'"];
   await Promise.all(wants.map((f) => document.fonts.load(f).catch(() => null)));
+  await document.fonts.ready;
 }
 
 function rng(seed) { let s = seed >>> 0; return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296); }
@@ -156,8 +168,16 @@ export async function renderPaper(spec, scale = 2) {
       default: break;
     }
   }
-  // grain over the sheet
-  ctx.save(); ctx.globalCompositeOperation = "multiply"; ctx.globalAlpha = spec.stock === "diazo" || spec.stock === "dark" ? 0.18 : 0.42; ctx.fillStyle = ctx.createPattern(grain(), "repeat"); ctx.fillRect(0, 0, w, h); ctx.restore();
+  // texture over the sheet: the fine grain, a coarser mottle of fibre and
+  // foxing, and the faint darkening a sheet has toward its edges
+  const dim = spec.stock === "diazo" || spec.stock === "dark";
+  ctx.save(); ctx.globalCompositeOperation = "multiply";
+  ctx.globalAlpha = dim ? 0.22 : 0.6; ctx.fillStyle = ctx.createPattern(grain(), "repeat"); ctx.fillRect(0, 0, w, h);
+  ctx.globalAlpha = dim ? 0.12 : 0.35; ctx.save(); ctx.scale(3.7, 3.1); ctx.fillStyle = ctx.createPattern(grain(), "repeat"); ctx.fillRect(0, 0, w / 3.7, h / 3.1); ctx.restore();
+  const vg = ctx.createRadialGradient(w / 2, h / 2, Math.min(w, h) * 0.35, w / 2, h / 2, Math.max(w, h) * 0.75);
+  vg.addColorStop(0, "rgba(255,255,255,1)"); vg.addColorStop(1, dim ? "rgba(200,200,200,1)" : "rgba(214,204,186,1)");
+  ctx.globalAlpha = 1; ctx.fillStyle = vg; ctx.fillRect(0, 0, w, h);
+  ctx.restore();
   ctx.restore();
   return { canvas: c, w, h, outline };
 }
