@@ -219,7 +219,7 @@ export async function initDesk() {
       for (const d of b.docs) {
         const { canvas: pc } = await renderPaper(d, scale);
         const tex = new THREE.CanvasTexture(pc); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8; tex.generateMipmaps = true; tex.minFilter = THREE.LinearMipmapLinearFilter;
-        const mat = new THREE.MeshStandardMaterial({ map: tex, transparent: true, alphaTest: 0.5, roughness: 0.92, metalness: 0, normalMap: paperNormalTex, normalScale: new THREE.Vector2(0.55, 0.55), side: THREE.DoubleSide });
+        const mat = new THREE.MeshStandardMaterial({ map: tex, transparent: true, alphaTest: 0.5, roughness: 0.92, metalness: 0, normalMap: paperNormalTex, normalScale: new THREE.Vector2(0.55, 0.55), side: THREE.DoubleSide, emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: 0 }); // emissive = the hover lift, through the sheet's own image
         const mesh = new THREE.Mesh(new THREE.PlaneGeometry(U(d.w), U(d.h)), mat);
         mesh.rotation.x = -Math.PI / 2; mesh.rotation.z = -(d.rot || 0) * Math.PI / 180;
         mesh.position.set(U(d.x + d.w / 2), 0.014 + i * 0.0028, U(d.y + d.h / 2));
@@ -476,12 +476,23 @@ export async function initDesk() {
     return h.object.userData.altId ? { kind: "object", id: h.object.userData.altId } : { kind: "bundle", id: h.object.userData.bundle };
   }
   let hovered = null, pendingPick = null;
+  // The hovered bundle lifts a touch, as the DOM desk's did: its sheets glow
+  // through their own image, eased in and out; fainter under the flashlight.
+  let litBundle = null;
+  function tickHighlight() {
+    const peak = mode === "dark" ? 0.05 : 0.11;
+    bundleGroups.forEach((entry, id) => {
+      const target = id === litBundle ? peak : 0;
+      for (const d of entry.docs) { const m = d.mesh.material; const v = m.emissiveIntensity + (target - m.emissiveIntensity) * 0.18; if (Math.abs(v - m.emissiveIntensity) > 1e-4) m.emissiveIntensity = v; }
+    });
+  }
   canvas.addEventListener("pointermove", (e) => { pendingPick = e; }, { passive: true });
   function hoverTick() {
     const e = pendingPick; if (!e) return; pendingPick = null;
     if (getState().layer !== "desk") return;
     const p = pick(e); const key = p ? p.kind + ":" + p.id : null;
     if (key === hovered) return; hovered = key;
+    litBundle = p && p.kind === "bundle" ? p.id : null;
     if (!p) { hideHover(); canvas.style.cursor = "default"; return; }
     if (p.kind === "object") { const i = OBJECT_INFO[p.id](); showHover(i.title, i.sub); canvas.style.cursor = p.id === "guide" ? "pointer" : "default"; }
     else { const info = archive.series[p.id] || {}; const flat = FLAT.has(p.id) || Object.keys(info.subcollections || {}).length <= 1; showHover(info.label || p.id, flat ? `${info.items?.length || ""} records`.trim() : (info.subtitle || info.container || "")); canvas.style.cursor = "pointer"; }
@@ -489,7 +500,7 @@ export async function initDesk() {
   canvas.addEventListener("click", (e) => {
     if (getState().layer !== "desk") return;
     const p = pick(e); if (!p) return;
-    hideHover();
+    hideHover(); litBundle = null; hovered = null;
     if (p.kind === "object") { if (p.id === "guide") navigate({ layer: "guide" }); return; }
     navigate({ layer: "series", series: p.id, subcollection: null, item: null });
   });
@@ -506,7 +517,7 @@ export async function initDesk() {
 
   // ── Render ──
   function render(now) {
-    hoverTick();
+    hoverTick(); tickHighlight();
     tickTimeline(now); applyFactors();
     aimLamp(); aim(now); placeCone();
     coneMat.uniforms.uTime.value = (now - t0) / 1000;
@@ -567,8 +578,9 @@ function makeFanFactory({ ctx, camera, bundleGroups, stageGroup, archive, reduce
       hr.toneMapping = THREE.ACESFilmicToneMapping;
       const hs = new THREE.Scene();
       const dark = getMode() === "dark";
-      hs.add(new THREE.HemisphereLight(dark ? 0xdfe8f8 : 0xfff1d6, dark ? 0x1a1e26 : 0x2a1f12, 0.9));
-      const key = new THREE.DirectionalLight(dark ? 0xe8efff : 0xffcf8a, 1.6); key.position.set(-1.5, 4, 3); hs.add(key);
+      // lit to match the desk: the cool overhead (TUNE.lamp) or the flashlight
+      hs.add(new THREE.HemisphereLight(dark ? 0xdfe8f8 : TUNE.lamp.ambient[0], dark ? 0x1a1e26 : 0x4a4038, dark ? 0.9 : 0.7));
+      const key = new THREE.DirectionalLight(dark ? 0xe8efff : TUNE.lamp.color, dark ? 1.6 : 1.5); key.position.set(-1.5, 4, 3); hs.add(key);
 
       const meta = document.createElement("div"); meta.className = "layer-meta";
       meta.innerHTML = `<h1 class="overlay-title">${esc(s.label)}</h1><p class="overlay-subtitle">${esc(s.subtitle || s.container || "")}</p>`;
