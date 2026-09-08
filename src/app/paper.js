@@ -172,10 +172,10 @@ export async function renderPaper(spec, scale = 2) {
   // foxing, and the faint darkening a sheet has toward its edges
   const dim = spec.stock === "diazo" || spec.stock === "dark";
   ctx.save(); ctx.globalCompositeOperation = "multiply";
-  ctx.globalAlpha = dim ? 0.22 : 0.6; ctx.fillStyle = ctx.createPattern(grain(), "repeat"); ctx.fillRect(0, 0, w, h);
-  ctx.globalAlpha = dim ? 0.12 : 0.35; ctx.save(); ctx.scale(3.7, 3.1); ctx.fillStyle = ctx.createPattern(grain(), "repeat"); ctx.fillRect(0, 0, w / 3.7, h / 3.1); ctx.restore();
-  const vg = ctx.createRadialGradient(w / 2, h / 2, Math.min(w, h) * 0.35, w / 2, h / 2, Math.max(w, h) * 0.75);
-  vg.addColorStop(0, "rgba(255,255,255,1)"); vg.addColorStop(1, dim ? "rgba(200,200,200,1)" : "rgba(214,204,186,1)");
+  ctx.globalAlpha = dim ? 0.12 : 0.28; ctx.fillStyle = ctx.createPattern(grain(), "repeat"); ctx.fillRect(0, 0, w, h);
+  ctx.globalAlpha = dim ? 0.05 : 0.12; ctx.save(); ctx.scale(3.7, 3.1); ctx.fillStyle = ctx.createPattern(grain(), "repeat"); ctx.fillRect(0, 0, w / 3.7, h / 3.1); ctx.restore();
+  const vg = ctx.createRadialGradient(w / 2, h / 2, Math.min(w, h) * 0.45, w / 2, h / 2, Math.max(w, h) * 0.8);
+  vg.addColorStop(0, "rgba(255,255,255,1)"); vg.addColorStop(1, dim ? "rgba(228,228,228,1)" : "rgba(238,232,220,1)");
   ctx.globalAlpha = 1; ctx.fillStyle = vg; ctx.fillRect(0, 0, w, h);
   ctx.restore();
   ctx.restore();
