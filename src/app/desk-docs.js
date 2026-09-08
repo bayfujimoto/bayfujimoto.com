@@ -77,6 +77,27 @@ export function buildDocBundles(archive) {
   const timetable = (years.length ? years : ["2001", "2010", "2019", "2024", "2026"]).slice(-5).join(" · ");
   const contact = sub("identity", "contact")[0] || {};
   const cardName = contact.name || "B. Fujimoto", cardLine = contact.role_line || "architect · austin";
+  // The card on the desk is the typeset calling card from the plate
+  // (calling-card.js: 89 × 51 mm, sizes in mm), drawn here in the doc's px.
+  const cardLayers = (() => {
+    const wpx = S(64), hpx = S(37), k = wpx / 89;             // px per mm on this sheet
+    const pad = 6 * k, W = wpx, L = [];
+    L.push({ t: "rect", x: 0, y: 0, w: W, h: hpx, color: "#ece6d8" });
+    let y = (6 + 4.2) * k;                                      // baselines, as the SVG lays them
+    L.push({ t: "text", x: pad, y: y - 3.6 * k, text: cardName, font: "serif", size: 3.6 * k, color: "#1a1510", letterSpacing: "0.1px" });
+    if (cardLine) { y += 3.6 * k; L.push({ t: "text", x: pad, y: y - 2.1 * k, text: cardLine, font: "serif", italic: true, size: 2.1 * k, color: "#1a1510", opacity: 0.7 }); }
+    y += 3.2 * k;
+    L.push({ t: "rect", x: pad, y: y, w: W - pad * 2, h: Math.max(0.5, 0.18 * k), color: "rgba(120,60,50,.4)" });
+    const channels = (Array.isArray(contact.channels) ? contact.channels : []).filter((c) => c && c.value);
+    const room = hpx - pad - y, step = channels.length ? Math.min(4.4 * k, room / (channels.length + 0.4)) : 0;
+    let ly = y + step;
+    for (const c of channels) {
+      if (c.label) L.push({ t: "text", x: pad, y: ly - 1.7 * k, text: String(c.label), font: "mono", size: 1.7 * k, uppercase: true, letterSpacing: "0.3px", color: "#1a1510", opacity: 0.55 });
+      L.push({ t: "text", x: W - pad, y: ly - 2.3 * k, text: String(c.value), font: "mono", size: 2.3 * k, align: "right", color: "#1a1510" });
+      ly += step;
+    }
+    return L;
+  })();
 
   const films = byDateDesc(sub("consumption", "films")), books = byDateDesc(sub("consumption", "books")), music = byDateDesc(sub("consumption", "music")), coffee = byDateDesc(sub("consumption", "coffee")), games = byDateDesc(sub("consumption", "games"));
   const titles = (arr, n) => arr.slice(0, n).map((i) => String(i.title || "").toLowerCase());
@@ -101,7 +122,7 @@ export function buildDocBundles(archive) {
         { t: "stampCircle", x: S(8), y: S(183), d: S(64), text: "LOW DESIGN OFFICE · RECEIVED ·", date: "SEP 06 2026", rotate: -18 },
       ] }),
       doc("biography", -1, -2, 82, 16, { rough: true, layers: [note(timetable, 8, 5, { size: 11, letterSpacing: "1px" }), tape(2, -3, 16, 9, -8), tape(70, -2, 16, 9, 6)] }),
-      doc("contact", 10, 248, 64, 36, { stock: "white", layers: [headSerif(cardName, 10, 6, { italic: false }), mono(cardLine, 10, 20), { t: "stain", x: -10, y: -14, w: 46, h: 40, opacity: 0.5 }] }),
+      doc("contact", 10, 248, 64, 37, { stock: "white", layers: cardLayers }),
       doc(null, 4, 282, 100, 11, { torn: "top", seed: 3, layers: [{ t: "rules", opacity: 0.3 }] }),
     ] },
 

@@ -99,6 +99,7 @@ function drawText(ctx, L) {
   ctx.fillStyle = L.color || INK.paper; ctx.globalAlpha = L.opacity ?? 1;
   ctx.textBaseline = "top";
   if ("letterSpacing" in ctx) ctx.letterSpacing = L.letterSpacing || "0px";
+  ctx.textAlign = L.align === "right" ? "right" : L.align === "center" ? "center" : "left";
   const lines = String(L.text ?? "").split("\n"); const lh = L.lineHeight || size * 1.35;
   let y = 0;
   for (const raw of lines) {
