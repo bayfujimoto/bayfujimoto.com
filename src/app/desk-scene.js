@@ -638,12 +638,18 @@ function makeFanFactory({ ctx, camera, bundleGroups, stageGroup, archive, reduce
         const centre = camera.position.clone().addScaledVector(forward, D);
         // a plane's local +z is its face (PlaneGeometry faces +z); rotate it to face the camera
         const faceQ = camQ.clone();
+        // Each sheet keeps the depth order it has on the desk: the top sheet
+        // ends nearest the camera, the next a hair behind, and so on — so the
+        // sheets never pass through one another on the way up or down.
+        const order = papers.slice().sort((a, b) => (b.from?.pos.y || 0) - (a.from?.pos.y || 0));
+        const step = 0.012, dOf = new Map(); order.forEach((p, k) => dOf.set(p, D + k * step));
+        const depthOf = (p) => dOf.get(p) || D;
         if (vertical) {
           const pad = 0.08, gap = 0.06, colW = vw - pad * 2; let y = vh / 2 - 0.35;
-          papers.forEach((p) => { const wu = U(p.w), hu = U(p.h); const sc = Math.min(colW / wu, (vh * 0.42) / hu); const cy = y - hu * sc / 2; p.to = { pos: centre.clone().addScaledVector(up, cy), quat: faceQ, scale: sc }; y -= hu * sc + gap; });
+          papers.forEach((p) => { const wu = U(p.w), hu = U(p.h); const sc = Math.min(colW / wu, (vh * 0.42) / hu); const cy = y - hu * sc / 2; const k = depthOf(p) / D; p.to = { pos: centre.clone().addScaledVector(forward, depthOf(p) - D).addScaledVector(up, cy * k), quat: faceQ, scale: sc * k }; y -= hu * sc + gap; });
         } else {
           const W = Math.min(vw * 0.86, vw - 0.4), gap = 0.08, slotW = (W - gap * (n - 1)) / n, maxH = vh * 0.62;
-          papers.forEach((p, i) => { const wu = U(p.w), hu = U(p.h); const sc = Math.min(slotW / wu, maxH / hu); const cx = -W / 2 + slotW * (i + 0.5) + gap * i; p.to = { pos: centre.clone().addScaledVector(right, cx).addScaledVector(up, -0.04), quat: faceQ, scale: sc }; });
+          papers.forEach((p, i) => { const wu = U(p.w), hu = U(p.h); const sc = Math.min(slotW / wu, maxH / hu); const cx = -W / 2 + slotW * (i + 0.5) + gap * i; const k = depthOf(p) / D; p.to = { pos: centre.clone().addScaledVector(forward, depthOf(p) - D).addScaledVector(right, cx * k).addScaledVector(up, -0.04 * k), quat: faceQ, scale: sc * k }; });
         }
       }
       const pose = (p, a) => {
