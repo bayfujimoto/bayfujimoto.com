@@ -1,161 +1,197 @@
 # The desk's documents — a brainstorm, 2026-09-08
 
-What each sheet on the desk could be, several ways each. "Live" means the sheet
-is typeset from the archive at load and changes as entries are added, the way
-the Log's handwriting, the receipts and the record sleeve already do. "Fixed"
-means it quotes a particular entry that will stay. Everything here is
-buildable with the layers paper.js already has (text in the four faces,
-rules, grid, sketch paths, stamps, seals, tape, stains, creases, photo, image,
-strip, disc, pattern, fold) or with a small addition noted in place.
+What each sheet on the desk could be, several ways each. **Live** means the
+sheet is typeset from the archive at load and changes as entries are added,
+the way the Log's handwriting, the receipts and the record sleeve already do.
+**Fixed** means it quotes a particular entry that will stay. Everything here
+is buildable with the layers paper.js already has (text in the four faces,
+rules, grid, sketch paths, stamps, seals, tape, stains, creases, photo,
+image, strip, disc, pattern, fold) unless a small addition is noted.
+
+Data notes: `seen_via` is filled for only 16 of 549 films, so anything keyed
+on theatrical watches will rarely change; coffee entries carry no tasting
+notes and sketch entries no primary image yet, so those variants would show
+placeholders until the records are filled in.
 
 ## Identity
 
-**CV** (live now: the four most recent entries). Options: (a) a typed
-résumé with the real role lines — "junior designer · low design office ·
-2025—", "shop architects · 2023–24", "rice · b.arch 2025 · b.a. 2023" — with
-the top line struck through in ink and rewritten by hand whenever the newest
-entry has no end date, so the sheet reads as one kept up by hand; (b) the
-transcript form: a Rice-style grid of terms down the left with the two degrees
-as stamped lines and the study-abroad term (RSAP, fall 2024) circled; (c) a
-letterhead sheet from the current employer (a plain "LOW DESIGN OFFICE" head
-in mono) with a two-line "to whom it may concern" that never gets finished —
-pen runs dry mid-sentence; the Received stamp already on it fits this best.
+### CV — now live: the four most recent entries
 
-**Timetable / biography** (live now: the years of the CV). Options: (a) the
-strip stays but becomes a true timeline — a rule with ticks per year and the
-organisations lettered under their spans in mono, so the whole career fits a
-paper tape; (b) a torn train-timetable header: "AUSTIN → HOUSTON → NEW YORK →
-AUSTIN" with departure years, cities read from the CV entries' organisations
-(Rice = Houston, SHoP = New York, Weiss/LDO = Austin); (c) a luggage-tag shape
-(rounded end, a reinforced hole) with the four cities and the current one
-underlined — small, hangs off the bulldog clip.
+- **Typed résumé, corrected by hand (live).** The real role lines — "junior
+  designer · low design office · 2025—", "shop architects · 2023–24", "rice ·
+  b.arch 2025 · b.a. 2023" — with the newest open-ended entry struck through
+  in ink and rewritten by hand, so the sheet reads as one kept up by pen.
+- **Transcript (fixed).** A Rice-style grid of terms down the left, the two
+  degrees as stamped lines, the RSAP fall-2024 term circled.
+- **Letterhead, unfinished (fixed).** A plain "LOW DESIGN OFFICE" head in mono
+  and a "to whom it may concern" that trails off where the pen runs dry; the
+  Received stamp already on the sheet suits this best.
 
-**Contact** — done: the calling card.
+### Timetable / biography strip — now live: the CV's years
+
+- **True timeline (live).** A rule with a tick per year and the organisations
+  lettered under their spans in mono, the whole career on a paper tape.
+- **Train timetable header (live).** "AUSTIN → HOUSTON → NEW YORK → AUSTIN"
+  with departure years, the cities read from the CV entries' organisations
+  (Rice = Houston, SHoP = New York, Weiss / LDO = Austin).
+- **Luggage tag (live).** A rounded-end tag with a reinforced hole, the four
+  cities listed and the current one underlined, hanging off the bulldog clip.
+
+### Contact — done: the calling card from the plate
 
 ## Consumption
 
-**Films — the Log** (live now: two latest titles, plus a backdrop still).
-Options: (a) a ledger page with the last five watches as dated rows —
-"09·06  the evil dead  ·  09·04  the fog  ★★" — with the rating drawn as
-tiny stars and rewatches marked "again" in the margin (the data has 83
-rewatches); (b) a torn ticket-stub corner pasted on for the last theatrical
-watch (seen_via "theatrical" / "theatrical, imax"), the title hand-lettered
-on the stub; (c) a running tally in the head — "549 films · 39 five-star" —
-counted live, and a five-star column: the last three 5s (Challengers,
-Jurassic Park, Carrie) written larger in the note hand; (d) a year strip along
-the bottom: 2022 · 2023 · 2024 · 2025 · 2026 with the count of watches per
-year as tally marks (201 for 2024 would need grouping into fives — a good
-texture).
+### Films — the Log — now live: two latest titles and a backdrop still
 
-**Books — the receipt** (live now: three latest titles at 12.00). Options:
-(a) keep the receipt but price by page-count or by rating ("4.00" for four
-stars) and add a real "subtotal", with the store name as a bookshop's
-thermal head; (b) a library due-date slip: a card with a column of stamped
-dates, the last three read dates stamped in the red date-stamp face (the
-stampBox layer, rotated), the titles hand-written beside; (c) a bookmark —
-tall, narrow, torn top — with the book Bay is in the middle of (the latest
-entry without a rating, currently Butcher's Crossing) and a pencilled page
-number; (d) an index card of five-star titles only (The Shining, A Certain
-Hunger, Time War, The Secret History, Watchmen…), one per line in mono, as a
-"to reread" list.
+- **Ledger rows (live).** The last five watches as dated rows — "09·06  the
+  evil dead · 09·04  the fog ★★" — with ratings as tiny drawn stars and
+  "again" in the margin for rewatches (the data has 83).
+- **Ticket-stub corner (live, rarely changes).** A torn stub pasted on for the
+  last theatrical watch (`seen_via` "theatrical" / "theatrical, imax"), the
+  title hand-lettered on it.
+- **Running tally and five-star column (live).** "549 films · 39 five-star"
+  in the head, counted live, and the last three fives — currently
+  Challengers, Jurassic Park, Carrie — written larger in the note hand.
+- **Year strip (live).** 2022 · 2023 · 2024 · 2025 · 2026 along the bottom
+  with watches per year as tally marks; 2024's 201 grouped into fives would
+  make a good texture.
 
-**Music — the record sleeve** (live now: the latest title on a disc). Options:
-(a) a 7-inch sleeve with a centre hole cut out (the disc showing through it)
-and the artist/title typed on a label sticker — "RELS B & KALI UCHIS — EL
-CIELO — 2026"; (b) a cassette J-card: side A / side B with the latest four
-titles split across, the spine text reading down; (c) a setlist-style
-hand-written sheet of the last three adds with the year in brackets; (d) a
-record-store price tag stuck on the sleeve, "$ 24 · used · VG+" in the
-note hand.
+### Books — the receipt — now live: three latest titles at 12.00
 
-**Coffee — the café receipt** (live now: three bags at 4.50). Options: (a)
-a bag label instead of a receipt: "ONYX COFFEE LAB · COLOMBIA EL PARAISO ·
-WASHED" in mono on a kraft rectangle with a roast date box and a small
-tasting-note line, from the latest bag; (b) keep the receipt but as a café
-tab — "2 × cortado" — with the ring stain (already there) and a tip line
-filled in by hand; (c) a cupping form: a grid of five short scales
-(aroma/acidity/body/finish/overall) with pencilled marks, the origin and
-process in the head; (d) a torn postal label from a subscription box with the
-roaster's name and a tracking barcode drawn as rule ticks.
+- **Priced by rating (live).** Keep the receipt but price each line by its
+  rating ("4.00" for four stars), add a real subtotal, and head it as a
+  bookshop's thermal print.
+- **Library due-date slip (live).** A card with a column of stamped dates —
+  the last three read dates in the red date-stamp face (stampBox, rotated) —
+  titles hand-written beside them.
+- **Bookmark (live).** Tall, narrow, torn at the top, carrying the book in
+  progress (the latest entry without a rating, currently Butcher's Crossing)
+  and a pencilled page number.
+- **"To reread" index card (fixed).** Five-star titles only — The Shining, A
+  Certain Hunger, This Is How You Lose the Time War, The Secret History,
+  Watchmen — one per line in mono.
 
-**Games — the save card** (live now: the latest title). Options: (a) a
-memory-card label with three slots that read from play_status — "slot 1 ▸
-indiana jones (playing)", "slot 2 ▸ tomodachi life (demo)", "slot 3 ▸ disco
-elysium (completed)"; (b) a pixel-font (mono, uppercase, wide-spaced)
-"CONTINUE?" screen on dark stock with a blinking-cursor rectangle and the
-current game's name; (c) a graph-paper sheet with a hand-drawn map fragment
-of Outer Wilds' solar system — fixed, a nod to one specific entry; (d) a
-cartridge-shaped sticker with the platform name (Switch 2) as the head.
+### Music — the record sleeve — now live: the latest title on a disc
+
+- **7-inch sleeve with a cut centre (live).** The disc showing through a hole
+  and a label sticker typed "RELS B & KALI UCHIS — EL CIELO — 2026".
+- **Cassette J-card (live).** Side A / side B with the latest four adds split
+  across, the spine text reading down.
+- **Setlist sheet (live).** The last three adds hand-written with the year in
+  brackets.
+- **Record-store price tag (fixed).** "$ 24 · used · VG+" in the note hand,
+  stuck on the sleeve.
+
+### Coffee — the café receipt — now live: three bags at 4.50
+
+- **Bag label (live).** "ONYX COFFEE LAB · COLOMBIA EL PARAISO · WASHED" in
+  mono on a kraft rectangle with a roast-date box and a tasting-note line,
+  from the latest bag.
+- **Café tab (live).** "2 × cortado" with the existing ring stain and a tip
+  line filled in by hand.
+- **Cupping form (live).** A grid of five short scales — aroma, acidity,
+  body, finish, overall — with pencilled marks; origin and process in the
+  head.
+- **Subscription postal label (live).** A torn label with the roaster's name
+  and a tracking barcode drawn as rule ticks.
+
+### Games — the save card — now live: the latest title
+
+- **Memory-card label from `play_status` (live).** "slot 1 ▸ indiana jones
+  (playing) · slot 2 ▸ tomodachi life (demo) · slot 3 ▸ disco elysium
+  (completed)".
+- **CONTINUE? screen (live).** Dark stock, wide-spaced uppercase mono, a
+  blinking-cursor rectangle and the current game's name.
+- **Outer Wilds map fragment (fixed).** Graph paper with a hand-drawn piece of
+  the solar system, a nod to one specific entry.
+- **Cartridge sticker (live).** A cartridge-shaped label headed with the
+  platform (Switch 2).
 
 ## Creation
 
-**Sketches — the big sheet** (fixed now: the box drawing and the handwritten
-epigraph). Options: (a) keep the drawing but take it from an actual sketch
-entry when one has a primary asset — the Site Section as a faint image layer
-with graphite lines over it; (b) a trace-paper overlay (a translucent sheet —
-a new stock with alpha) laid over the sketch below, with a section line and
-two dimension strings; (c) the epigraph becomes the latest note's title in
-the hand — "Archive as Interface" — with a date and one sentence, so the
-sheet updates with the notes subcollection while the drawing stays.
+### Sketches — the big sheet — now fixed: the box drawing and the epigraph
 
-**Notes** (fixed now: one sentence). Options: (a) a torn notebook page with
-the latest note's title as the head and its first line, dated (live); (b) a
-sticky note — small square, yellow stock, one crease — with two words in the
-note hand: the latest note's title; (c) an index card with "On Material
-Presence" and a numbered three-line outline (fixed).
+- **Drawing from a real entry (live once an asset exists).** The Site Section
+  as a faint image layer with graphite lines over it.
+- **Trace-paper overlay (fixed; needs a stock with alpha).** A translucent
+  sheet laid over the drawing with a section line and two dimension strings.
+- **Epigraph from the latest note (live).** The note's title — "Archive as
+  Interface" — with a date and one sentence in the hand, while the drawing
+  stays.
 
-**Photos** (live now: a photo from the collection). Options: (a) a print
-with a white border and the place written on the back — showing the front,
-but the back's writing bleeding faintly through (a mirrored, low-opacity
-text layer): "estes park, colorado · x100t · 08·19"; (b) a contact strip: six
-small frames from the latest photo entry's gallery in a row on dark stock
-with frame numbers, the way the videos strip works now; (c) a film-lab
-envelope with the roll's places typed on the flap — the last road trip's
-sequence, Glacier → Bear Lodge → Badlands → Sand Dunes → Rocky Mountain,
-read from the photos' places in order (live).
+### Notes — now fixed: one sentence
 
-**Prototypes — the pattern** (fixed now: fold lines). Options: (a) a printed
-UI wireframe of the Archive UI prototype — a small grid of grey boxes and a
-"v0.3" head — the site's own first draft; (b) a wayfinding-sign mock: an arrow
-and "↑ GALLERY  → WORKSHOP" in bold mono, from the Wayfinding System entry;
-(c) keep the fold pattern but label the tabs A/B/C and glue-tab hatching,
-with the latest prototype's title on the flap (live).
+- **Torn notebook page (live).** The latest note's title as the head, its
+  first line, and a date.
+- **Sticky note (live).** A small yellow square, one crease, two words in the
+  note hand: the latest note's title.
+- **Index card (fixed).** "On Material Presence" with a numbered three-line
+  outline.
 
-**Videos — the strip** (fixed now: black film strip). Options: (a) the strip
-with frames taken from the latest video's thumbnail (live) and edge code
-"KODAK 5219" in tiny mono; (b) a tape-cassette label — "STUDIO DOCUMENTATION
-· 05·2024 · 12:40" — on white with two rules (live); (c) a clapperboard
-sticker: SCENE/TAKE boxes with pencilled numbers.
+### Photos — now live: a photo from the collection
 
-**Print** (fixed: "print ↑"). Options: (a) a lab job ticket — "8×10 · matte ·
-qty 2" in mono; (b) a strip of test-print colour patches (small squares in
-the site's palette) with density numbers under them.
+- **Print with the back bleeding through (live).** The place written on the
+  reverse, mirrored at low opacity through the front: "estes park, colorado
+  · x100t · 08·19".
+- **Contact strip (live).** Six small frames from the latest entry's gallery
+  in a row on dark stock with frame numbers, as the videos strip works now.
+- **Film-lab envelope (live).** The last road trip's places typed on the flap
+  in order — Glacier → Bear Lodge → Badlands → Sand Dunes → Rocky Mountain —
+  read from the photos' places.
+
+### Prototypes — the pattern — now fixed: fold lines
+
+- **Wireframe print (fixed).** A small grid of grey boxes and a "v0.3" head
+  for the Archive UI prototype — the site's own first draft.
+- **Wayfinding sign mock (fixed).** An arrow and "↑ GALLERY → WORKSHOP" in
+  bold mono, from the Wayfinding System entry.
+- **Labelled fold pattern (live).** Keep the fold lines, add A/B/C tabs and
+  glue-tab hatching, with the latest prototype's title on the flap.
+
+### Videos — the strip — now fixed: black film strip
+
+- **Frames from the latest video (live).** The strip carrying the latest
+  video's thumbnail in its frames and "KODAK 5219" edge code in tiny mono.
+- **Tape-cassette label (live).** "STUDIO DOCUMENTATION · 05·2024 · 12:40" on
+  white between two rules.
+- **Clapperboard sticker (fixed).** SCENE / TAKE boxes with pencilled numbers.
+
+### Print slip — now fixed: "print ↑"
+
+- **Lab job ticket (fixed).** "8×10 · matte · qty 2" in mono.
+- **Test-print patches (fixed).** A strip of small colour squares in the
+  site's palette with density numbers under them.
 
 ## Labor
 
-**Specification** (fixed: 09 21 00 gypsum). Options: (a) a section from the
-real project — Wencun Village's brickwork: "04 21 00 · clay unit masonry ·
-running bond · lime mortar" — quoting the thesis line about hybrid
-construction as the note; (b) a transmittal instead: "TO: Rice University ·
-RE: Wencun Village · 9 sheets" with the sheet count read from the project's
-subitems (live); (c) keep the spec but stamp it "ISSUED FOR REVIEW" with the
-project's display date.
+### Specification — now fixed: 09 21 00 gypsum
 
-**Drawing — the diazo print** (fixed: a plan and a section). Options: (a) the
-same sheet with a title block filled from the latest project — "WENCUN
-VILLAGE · CALLIGRAPHY LIBRARY · A-201 · SPRING 2025" (live); (b) a plan that
-actually reads as the library: a courtyard square with a brick hatch and a
-north arrow; (c) a folded set: two sheets, the top one an index of drawings
-listing A-101, A-201, A-301 with the project's subitem count as the sheet
-count.
+- **The real project's masonry (fixed).** "04 21 00 · clay unit masonry ·
+  running bond · lime mortar", with the Wencun Village thesis line about
+  hybrid construction as the note.
+- **Transmittal (live).** "TO: Rice University · RE: Wencun Village · 9
+  sheets", the sheet count read from the project's subitems.
+- **Issued for review (live).** Keep the spec, stamp it ISSUED FOR REVIEW with
+  the project's display date.
 
-**Transmittal** (fixed). Options: (a) live, as (b) above; (b) a mailing label
-addressed to the school with the project's context ("academic") as a small
-box ticked.
+### Drawing — the diazo print — now fixed: a plan and a section
 
-## Accumulation
+- **Title block from the latest project (live).** "WENCUN VILLAGE ·
+  CALLIGRAPHY LIBRARY · A-201 · SPRING 2025".
+- **A plan that reads as the library (fixed).** A courtyard square with a
+  brick hatch and a north arrow.
+- **Drawing index on top (live).** A second sheet listing A-101, A-201,
+  A-301, with the sheet count from the subitems.
 
-These are the scans themselves and should stay; but the pile could take one
-typeset sheet on top: (a) an inventory slip — "21 records · 8 tickets · 8
-documents · 4 brochures · 1 handout", counted live — on thermal stock; (b) a
-date-stamped envelope the newest ticket seems to have arrived in.
+### Transmittal — now fixed
+
+- **Live transmittal.** As above.
+- **Mailing label (live).** Addressed to the school, with the project's
+  context ("academic") as a ticked box.
+
+## Accumulation — the scans stay; one typeset slip could sit on top
+
+- **Inventory slip (live).** "21 records · 8 tickets · 8 documents · 4
+  brochures · 1 handout" on thermal stock, counted live.
+- **Envelope (live).** A date-stamped envelope the newest ticket seems to
+  have arrived in.
