@@ -344,8 +344,20 @@ export async function initDesk() {
   }
   if (coarse && typeof DeviceOrientationEvent !== "undefined") {
     if (typeof DeviceOrientationEvent.requestPermission === "function") {
-      const ask = () => { DeviceOrientationEvent.requestPermission().then((r) => { if (r === "granted") window.addEventListener("deviceorientation", onOrientation, { passive: true }); }).catch(() => {}); window.removeEventListener("touchend", ask); };
+      // Safari grants motion only from inside a tap's own handler (touchend or
+      // click, synchronously); keep asking on taps until it answers, since a
+      // tap that lands on the loading screen or a button may not count.
+      let asked = false;
+      const ask = () => {
+        if (asked) return;
+        let pr; try { pr = DeviceOrientationEvent.requestPermission(); } catch (e) { return; }
+        asked = true;
+        const done = () => { window.removeEventListener("touchend", ask); window.removeEventListener("click", ask); };
+        pr.then((r) => { if (r === "granted") { window.addEventListener("deviceorientation", onOrientation, { passive: true }); done(); } else done(); })   // denied: Safari remembers until reload
+          .catch(() => { asked = false; });                                                                                                                 // not from a gesture: try on the next tap
+      };
       window.addEventListener("touchend", ask, { passive: true });
+      window.addEventListener("click", ask, { passive: true });
     } else window.addEventListener("deviceorientation", onOrientation, { passive: true });
   }
   const t0 = performance.now();
@@ -763,7 +775,7 @@ function makeFanFactory({ ctx, camera, bundleGroups, stageGroup, archive, reduce
       teardown = () => {
         window.removeEventListener("resize", onResize);
         phase = "down"; phaseStart = performance.now();
-        if (reduceMotion || window.innerWidth < 600) { phaseStart -= LOWER_MS; }
+        if (reduceMotion) { phaseStart -= LOWER_MS; }   // the phone lowers its sheets too
         setTimeout(() => meta.remove(), 400);
         // safety: if the frame loop never lands (tab hidden), restore
         setTimeout(() => { papers.forEach((p) => { if (p.src) p.src.mesh.visible = true; }); if (hc.isConnected) { cancelAnimationFrame(raf); hc.remove(); hr.dispose(); } }, LOWER_MS + 200);
