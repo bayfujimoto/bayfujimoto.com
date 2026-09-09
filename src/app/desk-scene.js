@@ -160,7 +160,7 @@ export async function initDesk() {
   // the papers arrive last (their images), and a desk shown before them
   // was a stack of sheets at the origin.
   let modelsIn = false, papersIn = false;
-  const maybeDismiss = () => { if (modelsIn && papersIn) { render(performance.now()); dismissLoadingScreen(); } };
+  const maybeDismiss = () => { if (modelsIn && papersIn) { render(performance.now()); dismissLoadingScreen(); torchArrival(); } };
   manager.onLoad = () => { modelsIn = true; maybeDismiss(); };
   const loader = createModelLoader(manager);
 
@@ -349,7 +349,9 @@ export async function initDesk() {
   // overhead and its warm ambient, `torch` for the flashlight and everything
   // that belongs to it (the cone, the dust, the cold fill, the room to
   // reflect). A change of mode is a short timeline that drives them.
-  let lampF = mode === "light" ? 1 : 0, torch = mode === "dark" ? 1 : 0;
+  // Arriving in the dark, the flashlight is off until the threshold lifts,
+  // then stutters on (torchArrival, fired from maybeDismiss).
+  let lampF = mode === "light" ? 1 : 0, torch = mode === "dark" && !reduceMotion ? 0 : (mode === "dark" ? 1 : 0);
   let timeline = null;   // { start, steps: [{ at, lamp, torch }] } — piecewise, holds the last step
   const rr = rng(77);
   const jitter = (arr, base) => arr.map((st) => ({ ...st, at: st.at + base * (rr() - 0.5) * 0.35 }));
@@ -359,6 +361,13 @@ export async function initDesk() {
     timeline = { start: performance.now(), steps: jitter(t, 80) };
     setPalette("dark");
     // nothing is hovered in the dark: drop the highlight now, hold it until the flashlight is on
+    hoverHold = true; litBundle = null; hovered = null; hideHover();
+  }
+  function torchArrival() {
+    // the site opened in the dark: a beat of black as the threshold lifts, then the flashlight stutters on
+    if (mode !== "dark" || reduceMotion || torch === 1) return;
+    const t = [{ at: 0, lamp: 0, torch: 0 }, { at: 700, lamp: 0, torch: 0.55 }, { at: 760, lamp: 0, torch: 0 }, { at: 850, lamp: 0, torch: 0.8 }, { at: 910, lamp: 0, torch: 0.15 }, { at: 980, lamp: 0, torch: 0.95 }, { at: 1060, lamp: 0, torch: 0.6 }, { at: 1120, lamp: 0, torch: 1 }];
+    timeline = { start: performance.now(), steps: jitter(t, 80) };
     hoverHold = true; litBundle = null; hovered = null; hideHover();
   }
   function goLight() {
