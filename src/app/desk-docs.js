@@ -37,6 +37,7 @@ function year(d) { return String(d || "").slice(0, 4); }
 const thisYear = year(new Date().toISOString());
 function mm(dim) { const m = /(\d+(?:\.\d+)?)\s*[x×]\s*(\d+(?:\.\d+)?)/.exec(String(dim || "")); return m ? [parseFloat(m[1]), parseFloat(m[2])] : null; }
 const RED_BACKGROUND = new Set(["EPH-2026-023", "EPH-2026-026"]);
+const BACKING_ID = "EPH-2026-029";
 
 function accumulationSlots(items) {
   // A scan that was cut out carries its cut-out mode in the ?v= token of its
@@ -46,10 +47,14 @@ function accumulationSlots(items) {
   const usable = (i) => i.assets?.front && mm(i.dimensions) && (isCut(i.assets.front) || !RED_BACKGROUND.has(i.id));
   const pool = byDateDesc(items).filter(usable).map((i) => { const [w, h] = mm(i.dimensions); const cut = isCut(i.assets.front); return { id: i.id, src: imageUrl(i.assets.front, cut ? "cutout-desk" : "display"), fallback: cut ? imageUrl(i.assets.front, "cutout") : null, cutout: cut, w, h, aspect: h / w, area: w * h }; });
   const take = (pred) => { let best = null, bs = Infinity; pool.forEach((c) => { const sc = pred(c); if (sc < bs) { bs = sc; best = c; } }); if (best) pool.splice(pool.indexOf(best), 1); return best; };
+  // The backing sheet is pinned rather than auto-picked: the size rule would
+  // take the largest sheet in the pool, and this is the one that belongs under
+  // the bundle. Falls back to the rule if the record ever leaves the archive.
+  const takeId = (id) => { const i = pool.findIndex((c) => c.id === id); return i === -1 ? null : pool.splice(i, 1)[0]; };
   const fits = (c, maxW, maxH) => (c.w <= maxW && c.h <= maxH ? 0 : 1e6);
   const nearAspect = (t, maxW = 999, maxH = 999) => (c) => Math.abs(Math.log(c.aspect) - Math.log(t)) + fits(c, maxW, maxH);
   return {
-    backing:  take((c) => (c.aspect >= 1 && c.w <= 190 ? -c.area : 1e9)),
+    backing:  takeId(BACKING_ID) || take((c) => (c.aspect >= 1 && c.w <= 190 ? -c.area : 1e9)),
     receipt:  take(nearAspect(0.55, 125, 80)),
     brochure: take(nearAspect(1.4, 120, 220)),
     longTkt:  take((c) => (c.aspect < 0.5 && c.w >= 120 ? nearAspect(0.33)(c) : 1e9)),
@@ -120,7 +125,7 @@ export function buildDocBundles(archive) {
   const A = accumulationSlots(series.accumulation?.items || []);
   const scanDoc = (rec, x, y, rot, extra = {}) => rec ? { sub: null, x, y, rot, w: Math.round(rec.w * PX_PER_MM), h: Math.round(rec.h * PX_PER_MM), stock: "white", seed: 9, cutout: !!rec.cutout, layers: [{ t: "image", src: rec.src, fallback: rec.fallback, x: 0, y: 0, w: Math.round(rec.w * PX_PER_MM), h: Math.round(rec.h * PX_PER_MM) }], ...extra } : null;
 
-  const doc = (sub, x, y, w, h, o = {}) => ({ sub, x: S(x), y: S(y), rot: o.rot || 0, w: S(w), h: S(h), stock: o.stock || "cream", rough: !!o.rough, torn: o.torn || null, seed: o.seed || (x * 7 + y * 13) | 0, layers: o.layers || [] });
+  const doc = (sub, x, y, w, h, o = {}) => ({ sub, x: S(x), y: S(y), rot: o.rot || 0, w: S(w), h: S(h), stock: o.stock || "cream", rough: !!o.rough, torn: o.torn || null, cutout: !!o.cutout, seed: o.seed || (x * 7 + y * 13) | 0, layers: o.layers || [] });
 
   return [
     { id: "identity", title: labelOf("identity"), sub: "cv · timetable · card", box: [S(90), S(300)], clips: [{ kind: "bulldog", x: -14, y: S(48), r: 90 }], docs: [
@@ -150,7 +155,12 @@ export function buildDocBundles(archive) {
     { id: "creation", title: labelOf("creation"), sub: "sketch · note · print · pattern · strip", box: [S(170), S(190)], clips: [], docs: [
       doc("notes", -5, -10, 90, 70, { rough: true, rot: -3, layers: [hand("a note — kept for the sentence in it, not the page.", 8, 8, { size: 8, lineHeight: 14, maxWidth: 140 }), { t: "crease", angle: 12, at: 40, strength: 0.7 }, { t: "crease", angle: -70, at: 70, strength: 0.5 }] }),
       doc("prototypes", 65, 152, 70, 50, { rot: 4, layers: [{ t: "pattern" }, head("pattern · fold on dashed", 6, 4)] }),
-      doc("videos", 123, 42, 22, 150, { stock: "dark", rot: 1, layers: [{ t: "strip" }] }),
+      // The strip is a scan of real film rather than a drawn one, and it is cut
+      // out: the sprocket holes are transparent in the image, so the sheet is
+      // punched through and the desk shows between them. Sized to the image's
+      // own 691 × 1945 and hung from the same bottom edge (192) as the drawn
+      // strip it replaces, so its stub still reads below the sketch sheet.
+      doc("videos", 123, 63, 46, 129, { rot: 1, cutout: true, layers: [{ t: "image", src: "/desk/filmstrip.webp", x: 0, y: 0, w: S(46), h: S(129) }] }),
       doc("sketches", 5, 2, 155, 180, { rough: true, layers: [
         hand("the surface remembers what the record forgets — a crease, a thumbprint, the place where the pen ran dry. keep the sheet. the note is only its excuse.", 14, 14, { maxWidth: S(155) - 28 }),
         { t: "sketch", x: 0, y: 0, scale: S(155) / 279, paths: ["M40 275 L40 175 L140 140 L140 240 Z", "M140 140 L225 165 L225 265 L140 240", "M180 210 c-10 -40 20 -60 30 -30 c 10 -30 40 -10 22 20 c 30 5 20 40 -8 32 c 5 30 -35 30 -30 5 c -30 10 -40 -25 -14 -27", "M60 300 C100 288, 170 310, 250 292"], opacity: 0.7 },

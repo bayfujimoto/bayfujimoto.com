@@ -25,6 +25,9 @@ public/assets/
 # …except the Guide card's desk-object stills: derived from the code's own
 # models and look (scripts/render-desk-thumbnails.js), so they version with it.
 !public/thumbnails/desk/*.png
+# …and the desk's own artwork: sheets the desk draws that are not archive
+# records and have no R2 home (the film strip in `creation`).
+!public/desk/*.webp
 
 # Goodreads export — read by ingest/enrichment, never committed
 Goodreads Library Export.csv
