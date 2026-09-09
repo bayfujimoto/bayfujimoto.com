@@ -60,6 +60,7 @@ const TUNE = {
 };
 const regimeName = () => (window.innerWidth < 600 ? "vertical" : "wide");
 const HALF_FOV = Math.tan((75 / 2) * Math.PI / 180);
+const REF_STAGE_SCALE = 0.98;   // the wide stage's fitScale at 1440 × 900 — the flashlight's arc was tuned there
 const REF_PX_PER_UNIT = 900 / (2 * 5 * HALF_FOV);     // stage px per desk unit at the reference viewport
 const U = (px) => px / REF_PX_PER_UNIT;                // stage px → desk units (before the group's scale)
 const esc = (t) => String(t ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -313,12 +314,40 @@ export async function initDesk() {
   let havePointer = false;
   const aimRay = new THREE.Raycaster(), deskPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0), aimHit = new THREE.Vector3();
   const aimPoint = new THREE.Vector3(...F.aimAt);
-  window.addEventListener("pointermove", (e) => {
-    pointerNdc.set((e.clientX / window.innerWidth) * 2 - 1, -(e.clientY / window.innerHeight) * 2 + 1);
+  const setAim = (nx, ny) => {
+    pointerNdc.set(nx, ny);
     aimRay.setFromCamera(pointerNdc, camera);
     if (aimRay.ray.intersectPlane(deskPlane, aimHit)) { aimPoint.copy(aimHit); havePointer = true; }
-  }, { passive: true });
+  };
+  let touching = false;
+  window.addEventListener("pointermove", (e) => { if (e.pointerType === "touch") touching = true; setAim((e.clientX / window.innerWidth) * 2 - 1, -(e.clientY / window.innerHeight) * 2 + 1); }, { passive: true });
+  window.addEventListener("pointerdown", (e) => { if (e.pointerType === "touch") { touching = true; setAim((e.clientX / window.innerWidth) * 2 - 1, -(e.clientY / window.innerHeight) * 2 + 1); } }, { passive: true });
+  window.addEventListener("pointerup", () => { touching = false; }, { passive: true });
+  window.addEventListener("pointercancel", () => { touching = false; }, { passive: true });
   document.addEventListener("mouseleave", () => { havePointer = false; });
+
+  // The gyro: on a phone the beam also follows the hand that holds it. The
+  // pose at the first reading is "straight ahead"; tilting the phone swings
+  // the beam from there, and a finger on the glass overrides it while down.
+  // iOS asks permission, and only from a tap — so the request rides the first
+  // touch; Android and the rest just start listening.
+  const coarse = window.matchMedia("(pointer: coarse)").matches;
+  const gyro = { on: false, b0: null, g0: null, x: 0, y: 0 };
+  function onOrientation(e) {
+    if (e.beta == null || e.gamma == null) return;
+    if (gyro.b0 == null) { gyro.b0 = e.beta; gyro.g0 = e.gamma; }
+    const clamp = (v) => Math.max(-1, Math.min(1, v));
+    // ~22° of tilt either way swings the beam edge to edge; eased so a still hand rests
+    const tx = clamp((e.gamma - gyro.g0) / 22), ty = clamp(-(e.beta - gyro.b0) / 22);
+    gyro.x += (tx - gyro.x) * 0.35; gyro.y += (ty - gyro.y) * 0.35; gyro.on = true;
+    if (!touching) setAim(gyro.x, gyro.y);
+  }
+  if (coarse && typeof DeviceOrientationEvent !== "undefined") {
+    if (typeof DeviceOrientationEvent.requestPermission === "function") {
+      const ask = () => { DeviceOrientationEvent.requestPermission().then((r) => { if (r === "granted") window.addEventListener("deviceorientation", onOrientation, { passive: true }); }).catch(() => {}); window.removeEventListener("touchend", ask); };
+      window.addEventListener("touchend", ask, { passive: true });
+    } else window.addEventListener("deviceorientation", onOrientation, { passive: true });
+  }
   const t0 = performance.now();
   const lampPos = { x: 0, z: -2 };
   function aimLamp() {
@@ -335,13 +364,16 @@ export async function initDesk() {
     const t = (now - t0) / 1000;
     const sway = reduceMotion ? 0 : 1;
     const theta = (x * F.sweep + sway * (Math.sin(t * 0.6) * 1.2 + Math.sin(t * 1.7) * 0.4)) * Math.PI / 180;
-    spot.position.set(aimAt.x + Math.sin(theta) * F.radius, F.height + sway * Math.sin(t * 0.8) * 0.02, aimAt.z + Math.cos(theta) * F.radius);
+    // the arc is the desk's: it scales with the stage, so on a phone the hand
+    // sits at the near edge of the smaller desk exactly as it does on a wide one
+    const k = stageGroup.scale.x / REF_STAGE_SCALE, radius = F.radius * k, height = F.height * k;
+    spot.position.set(aimAt.x + Math.sin(theta) * radius, height + sway * Math.sin(t * 0.8) * 0.02, aimAt.z + Math.cos(theta) * radius);
     spot.target.position.set(target.x + sway * Math.sin(t * 0.5) * 0.04, 0, target.z + sway * Math.cos(t * 0.43) * 0.03);
     spot.target.updateMatrixWorld();
     // A beam aimed near the hand would blow out; hold the pool's exposure
     // roughly level as the throw shortens (the eye does the same).
     const d = spot.position.distanceTo(spot.target.position);
-    spot.intensity = F.intensity * Math.max(0.3, Math.pow(d / F.radius, 1.25)) * torch;
+    spot.intensity = F.intensity * k * k * Math.max(0.3, Math.pow(d / radius, 1.25)) * torch;
   }
 
   // ── The switch ──
@@ -666,8 +698,23 @@ function makeFanFactory({ ctx, camera, bundleGroups, stageGroup, archive, reduce
         const step = 0.012, dOf = new Map(); order.forEach((p, k) => dOf.set(p, D + k * step));
         const depthOf = (p) => dOf.get(p) || D;
         if (vertical) {
-          const pad = 0.08, gap = 0.06, colW = vw - pad * 2; let y = vh / 2 - 0.35;
-          papers.forEach((p) => { const wu = U(p.w), hu = U(p.h); const sc = Math.min(colW / wu, (vh * 0.42) / hu); const cy = y - hu * sc / 2; const k = depthOf(p) / D; p.to = { pos: centre.clone().addScaledVector(forward, depthOf(p) - D).addScaledVector(up, cy * k), quat: faceQ, scale: sc * k }; y -= hu * sc + gap; });
+          // On a phone the sheets bunch: two staggered columns (one for up to
+          // three), each sheet scaled to its cell, cells overlapping a fifth,
+          // a little turned — and all of it inside the screen, above the title.
+          const top = vh / 2 - 0.30, bottom = -vh / 2 + 0.42, usable = top - bottom, pad = 0.06;
+          const cols = n <= 3 ? 1 : 2, rows = Math.ceil(n / cols);
+          const cellW = (vw - pad * 2) / cols, cellH = usable / rows;
+          const overlap = rows > 1 ? 1.12 : 1;            // a sheet may run into the next cell by this much
+          papers.forEach((p, i) => {
+            const wu = U(p.w), hu = U(p.h);
+            const sc = Math.min((cellW * (cols === 1 ? 0.8 : 0.92)) / wu, (cellH * overlap) / hu);
+            const r = i % cols, c = Math.floor(i / cols);
+            const cx = cols === 1 ? 0 : (r === 0 ? -1 : 1) * cellW * 0.47 * (c % 2 ? -1 : 1) + (c % 2 ? 0.02 : -0.02);
+            const cy = top - cellH * (c + 0.5) + (r === 0 ? 0.03 : -0.03);
+            const k = depthOf(p) / D;
+            const q = faceQ.clone().multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), ((i % 2 ? 1 : -1) * (2.5 + (i % 3)) * Math.PI) / 180));
+            p.to = { pos: centre.clone().addScaledVector(forward, depthOf(p) - D).addScaledVector(right, cx * k).addScaledVector(up, cy * k), quat: q, scale: sc * k };
+          });
         } else {
           const W = Math.min(vw * 0.86, vw - 0.4), gap = 0.08, slotW = (W - gap * (n - 1)) / n, maxH = vh * 0.62;
           papers.forEach((p, i) => { const wu = U(p.w), hu = U(p.h); const sc = Math.min(slotW / wu, maxH / hu); const cx = -W / 2 + slotW * (i + 0.5) + gap * i; const k = depthOf(p) / D; p.to = { pos: centre.clone().addScaledVector(forward, depthOf(p) - D).addScaledVector(right, cx * k).addScaledVector(up, -0.04 * k), quat: faceQ, scale: sc * k }; });
