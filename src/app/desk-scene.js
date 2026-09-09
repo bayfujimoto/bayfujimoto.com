@@ -114,12 +114,22 @@ export async function initDesk() {
   let renderer;
   try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: "high-performance" }); }
   catch (e) { dismissLoadingScreen(); return; }
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  // Budget: a phone renders at 1.5× at most; a desktop at 2× unless that is
+  // more than ~6 MP, in which case the ratio comes down to meet it. Shadows
+  // are 1K on a phone, 1.5K elsewhere, plain PCF, and only re-rendered when
+  // something that casts or receives them has moved (see wantShadows).
+  const PHONE = window.matchMedia("(pointer: coarse)").matches;
+  const pixelRatio = () => { const dpr = window.devicePixelRatio || 1; const cap = PHONE ? 1.5 : 2; const mp = window.innerWidth * window.innerHeight; return Math.max(1, Math.min(dpr, cap, Math.sqrt(6e6 / mp))); };
+  renderer.setPixelRatio(pixelRatio());
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setClearColor(0x03050a, 1);
-  renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFShadowMap; renderer.shadowMap.autoUpdate = false;
+  const SHADOW = PHONE ? 1024 : 1536;
+  let shadowsDirty = true; const wantShadows = () => { shadowsDirty = true; };
   renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.0;
 
+  let awakeUntil = Infinity;   // frames are drawn until this time; Infinity until the desk is built
+  const wake = (ms) => { const t = performance.now() + ms; if (awakeUntil === Infinity || t > awakeUntil) awakeUntil = t; };
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
   camera.position.set(0, 5, 0.5); camera.lookAt(0, 0, 0);
@@ -129,12 +139,12 @@ export async function initDesk() {
   const lampAmbient = new THREE.AmbientLight(Lp.ambient[0], Lp.ambient[1]); scene.add(lampAmbient);
   const lamp = new THREE.SpotLight(Lp.color, Lp.intensity, Lp.distance, Lp.angle, Lp.penumbra, Lp.decay);
   lamp.position.set(0, Lp.height, -2); lamp.target.position.set(0, 0, 0);
-  lamp.castShadow = true; lamp.shadow.mapSize.set(2048, 2048); lamp.shadow.camera.near = 4; lamp.shadow.camera.far = 20; lamp.shadow.bias = -0.001; lamp.shadow.normalBias = 0.01;
+  lamp.castShadow = true; lamp.shadow.mapSize.set(SHADOW, SHADOW); lamp.shadow.camera.near = 4; lamp.shadow.camera.far = 20; lamp.shadow.bias = -0.001; lamp.shadow.normalBias = 0.01;
   scene.add(lamp, lamp.target);
   const hemi = new THREE.HemisphereLight(...TUNE.ambient.hemi); scene.add(hemi);
   const F = TUNE.flashlight;
   const spot = new THREE.SpotLight(F.color, F.intensity, 0, F.angle, F.penumbra, F.decay);
-  spot.castShadow = true; spot.shadow.mapSize.set(2048, 2048);
+  spot.castShadow = true; spot.shadow.mapSize.set(SHADOW, SHADOW);
   spot.shadow.camera.near = 0.5; spot.shadow.camera.far = 20; spot.shadow.bias = -0.00015; spot.shadow.normalBias = 0.01; spot.shadow.radius = 3;
   if (F.cookie) spot.map = makeCookie();
   scene.add(spot, spot.target);
@@ -275,6 +285,7 @@ export async function initDesk() {
     placeObjects();
   }
   function placeObjects() {
+    wantShadows(); wake(600);
     objects.forEach((o) => {
       const a = o.anchor(); if (!a) return;
       o.model.scale.setScalar(o.base);
@@ -331,7 +342,7 @@ export async function initDesk() {
   // the beam from there, and a finger on the glass overrides it while down.
   // iOS asks permission, and only from a tap — so the request rides the first
   // touch; Android and the rest just start listening.
-  const coarse = window.matchMedia("(pointer: coarse)").matches;
+  const coarse = PHONE;
   const gyro = { on: false, b0: null, g0: null, x: 0, y: 0 };
   function onOrientation(e) {
     if (e.beta == null || e.gamma == null) return;
@@ -365,7 +376,8 @@ export async function initDesk() {
   function aimLamp() {
     // The overhead leans toward the pointer and stays over the desk's middle.
     const mx = havePointer ? pointerNdc.x : 0, my = havePointer ? pointerNdc.y : 0;
-    lampPos.x += (mx - lampPos.x) * 0.08; lampPos.z += ((-2 + -my * 0.5) - lampPos.z) * 0.08;
+    const nx = lampPos.x + (mx - lampPos.x) * 0.08, nz = lampPos.z + ((-2 + -my * 0.5) - lampPos.z) * 0.08;
+    if (Math.abs(nx - lampPos.x) > 1e-4 || Math.abs(nz - lampPos.z) > 1e-4) { lampPos.x = nx; lampPos.z = nz; wantShadows(); wake(120); }
     lamp.position.x = lampPos.x; lamp.position.z = lampPos.z; lamp.target.updateMatrixWorld();
   }
   function aim(now) {
@@ -422,7 +434,7 @@ export async function initDesk() {
   }
   function setMode(next) {
     if (next === mode) return;
-    mode = next;
+    mode = next; wake(2000);
     if (reduceMotion) { lampF = mode === "light" ? 1 : 0; torch = mode === "dark" ? 1 : 0; timeline = null; setPalette(mode); return; }
     if (mode === "dark") goDark(); else goLight();
   }
@@ -511,12 +523,13 @@ export async function initDesk() {
     fragmentShader: `uniform vec3 uColor; varying float vLit;
       void main(){ vec2 q = gl_PointCoord - 0.5; float a = smoothstep(0.5, 0.05, length(q)); gl_FragColor = vec4(uColor, a * vLit); }`,
   });
+  let dust;
   {
     const N = TUNE.dust.count, [bw, bh, bd] = TUNE.dust.box; const r = rng(31);
     const pos = new Float32Array(N * 3), seed = new Float32Array(N * 3);
     for (let i = 0; i < N; i++) { pos[i * 3] = (r() - 0.5) * bw; pos[i * 3 + 1] = 0.05 + r() * bh; pos[i * 3 + 2] = (r() - 0.5) * bd; seed[i * 3] = r(); seed[i * 3 + 1] = r(); seed[i * 3 + 2] = r(); }
     const g = new THREE.BufferGeometry(); g.setAttribute("position", new THREE.BufferAttribute(pos, 3)); g.setAttribute("seed", new THREE.BufferAttribute(seed, 3));
-    const dust = new THREE.Points(g, dustMat); dust.frustumCulled = false; dust.renderOrder = 21; scene.add(dust);
+    dust = new THREE.Points(g, dustMat); dust.frustumCulled = false; dust.renderOrder = 21; scene.add(dust);
   }
 
   // ── Hover and click ──
@@ -559,9 +572,9 @@ export async function initDesk() {
     const lifted = liftSet(litBundle);
     bundleGroups.forEach((entry, id) => {
       const on = id === litBundle, target = on ? peak : 0;
-      for (const d of entry.docs) { const m = d.mesh.material; const v = m.emissiveIntensity + (target - m.emissiveIntensity) * 0.18; if (Math.abs(v - m.emissiveIntensity) > 1e-4) m.emissiveIntensity = v; }
+      for (const d of entry.docs) { const m = d.mesh.material; const v = m.emissiveIntensity + (target - m.emissiveIntensity) * 0.18; if (Math.abs(v - m.emissiveIntensity) > 1e-4) { m.emissiveIntensity = v; wake(120); } }
       const y = entry.group.position.y + ((entry.baseY || 0) + (lifted.has(id) ? lift : 0) - entry.group.position.y) * 0.18;
-      if (Math.abs(y - entry.group.position.y) > 1e-5) entry.group.position.y = y;
+      if (Math.abs(y - entry.group.position.y) > 1e-5) { entry.group.position.y = y; wantShadows(); wake(120); }
     });
   }
   canvas.addEventListener("pointermove", (e) => { pendingPick = e; lastPointer = e; }, { passive: true });
@@ -584,7 +597,7 @@ export async function initDesk() {
   });
 
   // ── The fan, in hand ──
-  configureAltDesk({ seriesSheet: makeFanFactory({ ctx, camera, bundleGroups, stageGroup, archive, reduceMotion, getMode: () => mode }) });
+  configureAltDesk({ seriesSheet: makeFanFactory({ ctx, camera, bundleGroups, stageGroup, archive, reduceMotion, getMode: () => mode, wantShadows, wake }) });
 
   // ── Build ──
   buildFolder();
@@ -593,24 +606,50 @@ export async function initDesk() {
   layoutBundles();
   ctx.ready = true; readyResolve();
   papersIn = true; maybeDismiss();
+  awakeUntil = performance.now() + 3000; wantShadows();   // from here on, frames on demand
 
   // ── Render ──
   function render(now) {
     hoverTick(); tickHighlight();
     tickTimeline(now); applyFactors();
     aimLamp(); aim(now); placeCone();
-    coneMat.uniforms.uTime.value = (now - t0) / 1000;
-    dustMat.uniforms.uTime.value = (now - t0) / 1000;
-    dustMat.uniforms.uLightPos.value.copy(spot.position);
-    dustMat.uniforms.uLightDir.value.subVectors(spot.target.position, spot.position).normalize();
-    composer.render();
+    const lit = torch > 0.001;
+    cone.visible = lit; dust.visible = lit;
+    if (lit) {
+      coneMat.uniforms.uTime.value = (now - t0) / 1000;
+      dustMat.uniforms.uTime.value = (now - t0) / 1000;
+      dustMat.uniforms.uLightPos.value.copy(spot.position);
+      dustMat.uniforms.uLightDir.value.subVectors(spot.target.position, spot.position).normalize();
+      wantShadows();   // the hand sways: the beam's shadows move every frame
+    }
+    if (shadowsDirty) { renderer.shadowMap.needsUpdate = true; shadowsDirty = false; }
+    // the bloom chain (five blurred mips at full resolution) only earns its
+    // keep under the flashlight; the lamp renders straight to the canvas
+    if (lit) composer.render(); else renderer.render(scene, camera);
   }
-  if (reduceMotion) render(performance.now());
-  else (function animate(now) { requestAnimationFrame(animate); if (isSceneRenderPaused()) return; render(now); })(performance.now());
+  // The loop runs only while something is changing. Light mode is still
+  // between inputs — the lamp settles, the hover eases, then nothing — so a
+  // frame is drawn on demand (wake(ms) asks for frames for a while). Dark
+  // mode sways and drifts and stays live; a phone takes it at 30 fps.
+  let lastFrame = 0;
+  function animate(now) {
+    requestAnimationFrame(animate);
+    if (isSceneRenderPaused()) return;
+    const live = torch > 0.001 || !!timeline;
+    if (!live && now > awakeUntil && !pendingPick) return;
+    if (live && PHONE && now - lastFrame < 30) return;
+    lastFrame = now; render(now);
+  }
+  if (reduceMotion) { render(performance.now()); wake(1500); }
+  animate(performance.now());
+  window.addEventListener("pointermove", () => wake(1400), { passive: true });   // the lamp drift takes ~1 s to settle
+  window.addEventListener("pointerdown", () => wake(1400), { passive: true });
+  window.addEventListener("keydown", () => wake(1400));
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) { wantShadows(); wake(600); } });
 
   window.addEventListener("resize", () => {
     camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight); composer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(pixelRatio()); renderer.setSize(window.innerWidth, window.innerHeight); composer.setSize(window.innerWidth, window.innerHeight); wantShadows(); wake(600);
     dustMat.uniforms.uSize.value = TUNE.dust.size * renderer.getPixelRatio() * window.innerHeight;
     const next = regimeName();
     if (next !== regime) { regime = next; buildFolder(); layoutBundles(); placeObjects(); }
@@ -638,7 +677,7 @@ export async function initDesk() {
 const LIFT_MS = 900, LOWER_MS = 340;
 const easeInOut = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
-function makeFanFactory({ ctx, camera, bundleGroups, stageGroup, archive, reduceMotion, getMode }) {
+function makeFanFactory({ ctx, camera, bundleGroups, stageGroup, archive, reduceMotion, getMode, wantShadows, wake }) {
   return function makeFanSheet(seriesKey, H) {
     const veil = H.makeVeil(() => navigate({ layer: "desk" }));
     const content = H.makeContent(); content.classList.add("da-fan-content");
@@ -754,7 +793,7 @@ function makeFanFactory({ ctx, camera, bundleGroups, stageGroup, archive, reduce
 
       papers.forEach(readFrom); computeTo();
       // originals hide while their clones are in hand
-      papers.forEach((p) => { if (p.src) p.src.mesh.visible = false; });
+      papers.forEach((p) => { if (p.src) p.src.mesh.visible = false; }); wantShadows(); wake(400);
       const start = performance.now();
       const rising = !reduceMotion && getState().layer === "series";
       let phase = "up", phaseStart = start, raf = 0;
@@ -766,7 +805,7 @@ function makeFanFactory({ ctx, camera, bundleGroups, stageGroup, archive, reduce
         papers.forEach((p) => { pose(p, a); p.mesh.updateMatrixWorld(); });
         placeButtons();
         hr.render(hs, camera);
-        if (phase === "down" && a <= 0) { cancelAnimationFrame(raf); papers.forEach((p) => { if (p.src) p.src.mesh.visible = true; }); hc.remove(); hr.dispose(); }
+        if (phase === "down" && a <= 0) { cancelAnimationFrame(raf); papers.forEach((p) => { if (p.src) p.src.mesh.visible = true; }); wantShadows(); wake(400); hc.remove(); hr.dispose(); }
       }
       frame(start);
       const onResize = () => { hr.setSize(window.innerWidth, window.innerHeight); computeTo(); };
@@ -778,7 +817,7 @@ function makeFanFactory({ ctx, camera, bundleGroups, stageGroup, archive, reduce
         if (reduceMotion) { phaseStart -= LOWER_MS; }   // the phone lowers its sheets too
         setTimeout(() => meta.remove(), 400);
         // safety: if the frame loop never lands (tab hidden), restore
-        setTimeout(() => { papers.forEach((p) => { if (p.src) p.src.mesh.visible = true; }); if (hc.isConnected) { cancelAnimationFrame(raf); hc.remove(); hr.dispose(); } }, LOWER_MS + 200);
+        setTimeout(() => { papers.forEach((p) => { if (p.src) p.src.mesh.visible = true; }); wantShadows(); wake(400); if (hc.isConnected) { cancelAnimationFrame(raf); hc.remove(); hr.dispose(); } }, LOWER_MS + 200);
       };
     }
     requestAnimationFrame(() => { if (ctx.ready) setup(); else ctx.whenReady.then(() => requestAnimationFrame(setup)); });
