@@ -156,7 +156,12 @@ export async function initDesk() {
   composer.addPass(new OutputPass());
 
   const manager = new THREE.LoadingManager();
-  manager.onLoad = () => { render(performance.now()); dismissLoadingScreen(); };
+  // The threshold lifts only when both the models and the papers are in —
+  // the papers arrive last (their images), and a desk shown before them
+  // was a stack of sheets at the origin.
+  let modelsIn = false, papersIn = false;
+  const maybeDismiss = () => { if (modelsIn && papersIn) { render(performance.now()); dismissLoadingScreen(); } };
+  manager.onLoad = () => { modelsIn = true; maybeDismiss(); };
   const loader = createModelLoader(manager);
 
   // ── The table: the wooden desk, its own materials ──
@@ -207,10 +212,13 @@ export async function initDesk() {
 
   async function buildPapers() {
     const scale = Math.min(3, Math.max(2, window.devicePixelRatio || 1) * 1.5);
+    // every sheet's images in flight at once, so the pile isn't one round trip per sheet
+    await Promise.all(bundles.flatMap((b) => b.docs.flatMap((d) => (d.layers || []).filter((L) => L.src).map((L) => loadImage(L.src)))));
     for (const b of bundles) {
       const group = new THREE.Group(); stageGroup.add(group);
       const entry = { group, docs: [], hit: null, b };
       bundleGroups.set(b.id, entry);
+      placeBundle(entry, b.id);   // in its place from the first frame, not at the origin until every sheet is drawn
       // the hit area: an invisible plane over the bundle's box
       const hit = new THREE.Mesh(new THREE.PlaneGeometry(U(b.box[0]), U(b.box[1])), new THREE.MeshBasicMaterial({ colorWrite: false, depthWrite: false, transparent: true, opacity: 0 }));
       hit.rotation.x = -Math.PI / 2; hit.position.set(U(b.box[0] / 2), 0.05, U(b.box[1] / 2)); hit.userData = { bundle: b.id }; hit.renderOrder = 10;
@@ -232,15 +240,14 @@ export async function initDesk() {
       }
     }
   }
-  function layoutBundles() {
+  function placeBundle(entry, id) {
     const Rg = R(); const Fd = Rg.folder;
-    bundleGroups.forEach((entry, id) => {
-      const p = Rg.bundles[id]; if (!p) return;
-      const z = Rg.zorder.indexOf(id);
-      entry.group.position.set(gx(Fd.x + p[0]), z * 0.012, gz(Fd.y + p[1])); entry.baseY = z * 0.012;
-      entry.rect = { x: Fd.x + p[0], y: Fd.y + p[1], w: entry.b.box[0], h: entry.b.box[1] }; // stage px, for "what lies on top of what"
-    });
+    const p = Rg.bundles[id]; if (!p) return;
+    const z = Rg.zorder.indexOf(id);
+    entry.group.position.set(gx(Fd.x + p[0]), z * 0.012, gz(Fd.y + p[1])); entry.baseY = z * 0.012;
+    entry.rect = { x: Fd.x + p[0], y: Fd.y + p[1], w: entry.b.box[0], h: entry.b.box[1] }; // stage px, for "what lies on top of what"
   }
+  function layoutBundles() { bundleGroups.forEach(placeBundle); }
 
   // ── Objects & clips ──
   const objects = [];   // { id, model, base, cx, cz, posY, anchor }
@@ -528,10 +535,11 @@ export async function initDesk() {
 
   // ── Build ──
   buildFolder();
+  stageGroup.scale.setScalar(fitScale());
   await buildPapers();
   layoutBundles();
-  stageGroup.scale.setScalar(fitScale());
   ctx.ready = true; readyResolve();
+  papersIn = true; maybeDismiss();
 
   // ── Render ──
   function render(now) {

@@ -1,4 +1,5 @@
 const BASE = import.meta.env.VITE_R2_BASE_URL || "";
+export const IMAGE_BASE = BASE;   // where the archive's own images live (canvas may draw these)
 
 // Increment when thumbnails are regenerated in R2 to bust browser/CDN caches.
 const THUMB_VERSION = "20260425";

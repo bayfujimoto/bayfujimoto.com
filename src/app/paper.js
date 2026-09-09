@@ -1,3 +1,5 @@
+import { IMAGE_BASE } from "./image-url.js";
+
 // ── Paper — documents rendered to canvas, for the desk in the scene ──────────
 // The papers desk draws each document from a small spec (desk-docs.js) onto a
 // 2D canvas, which becomes the texture of a plane in the WebGL desk
@@ -76,6 +78,7 @@ function edgePath(w, h, seed, rough, torn) {
 }
 
 const imageCache = new Map();
+const IMAGE_WAIT_MS = 15000;
 export function loadImage(src) {
   if (!src) return Promise.resolve(null);
   if (imageCache.has(src)) return imageCache.get(src);
@@ -86,7 +89,17 @@ export function loadImage(src) {
   // fine on a fresh dev cache). A distinct URL gives the canvas load its own
   // cache entry.
   const url = src.startsWith("data:") || src.startsWith("blob:") ? src : src + (src.includes("?") ? "&" : "?") + "canvas=1";
-  const pr = new Promise((res) => { const im = new Image(); im.crossOrigin = "anonymous"; im.onload = () => res(im); im.onerror = () => res(null); im.src = url; });
+  // Only the archive's own images (and inline data) can be drawn: another
+  // host won't grant canvas use, and a request to it can hang and hold the
+  // whole desk. And no image may hold the desk for long — past the limit the
+  // sheet draws its placeholder.
+  const local = src.startsWith("data:") || src.startsWith("blob:") || src.startsWith("/") || (IMAGE_BASE.length > 0 && src.startsWith(IMAGE_BASE)) || src.startsWith(location.origin);
+  if (!local) { const none = Promise.resolve(null); imageCache.set(src, none); return none; }
+  const pr = new Promise((res) => {
+    const im = new Image(); im.crossOrigin = "anonymous";
+    const t = setTimeout(() => { im.src = ""; res(null); }, IMAGE_WAIT_MS);
+    im.onload = () => { clearTimeout(t); res(im); }; im.onerror = () => { clearTimeout(t); res(null); }; im.src = url;
+  });
   imageCache.set(src, pr); return pr;
 }
 
