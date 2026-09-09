@@ -738,6 +738,11 @@ function makeFanFactory({ ctx, camera, bundleGroups, stageGroup, archive, reduce
       }
       function computeTo() {
         const n = papers.length, D = 2.6;                       // distance in front of the camera
+        if (!n) return;
+        // Every sheet in a bundle is scaled by the SAME factor, never one that
+        // fits each to its own slot: opening a collection must not resize the
+        // documents relative to one another — a calling card stays a calling
+        // card beside the CV, exactly as they sit on the desk.
         const vh = 2 * D * HALF_FOV, vw = vh * camera.aspect;
         const vertical = window.innerWidth < 600;
         const camQ = camera.quaternion.clone();
@@ -759,9 +764,9 @@ function makeFanFactory({ ctx, camera, bundleGroups, stageGroup, archive, reduce
           const cols = n <= 3 ? 1 : 2, rows = Math.ceil(n / cols);
           const cellW = (vw - pad * 2) / cols, cellH = usable / rows;
           const overlap = rows > 1 ? 1.12 : 1;            // a sheet may run into the next cell by this much
+          const fitW = cellW * (cols === 1 ? 0.8 : 0.92);
+          const sc = Math.min(...papers.map((p) => Math.min(fitW / U(p.w), (cellH * overlap) / U(p.h))));
           papers.forEach((p, i) => {
-            const wu = U(p.w), hu = U(p.h);
-            const sc = Math.min((cellW * (cols === 1 ? 0.8 : 0.92)) / wu, (cellH * overlap) / hu);
             const r = i % cols, c = Math.floor(i / cols);
             const cx = cols === 1 ? 0 : (r === 0 ? -1 : 1) * cellW * 0.47 * (c % 2 ? -1 : 1) + (c % 2 ? 0.02 : -0.02);
             const cy = top - cellH * (c + 0.5) + (r === 0 ? 0.03 : -0.03);
@@ -770,8 +775,14 @@ function makeFanFactory({ ctx, camera, bundleGroups, stageGroup, archive, reduce
             p.to = { pos: centre.clone().addScaledVector(forward, depthOf(p) - D).addScaledVector(right, cx * k).addScaledVector(up, cy * k), quat: q, scale: sc * k };
           });
         } else {
-          const W = Math.min(vw * 0.86, vw - 0.4), gap = 0.08, slotW = (W - gap * (n - 1)) / n, maxH = vh * 0.62;
-          papers.forEach((p, i) => { const wu = U(p.w), hu = U(p.h); const sc = Math.min(slotW / wu, maxH / hu); const cx = -W / 2 + slotW * (i + 0.5) + gap * i; const k = depthOf(p) / D; p.to = { pos: centre.clone().addScaledVector(forward, depthOf(p) - D).addScaledVector(right, cx * k).addScaledVector(up, -0.04 * k), quat: faceQ, scale: sc * k }; });
+          // the row is measured, not slotted: the shared scale is whatever lets
+          // the sheets' true widths sit side by side and the tallest one fit.
+          const W = Math.min(vw * 0.86, vw - 0.4), gap = 0.08, maxH = vh * 0.62;
+          const totalW = papers.reduce((t, p) => t + U(p.w), 0), tallest = Math.max(...papers.map((p) => U(p.h)));
+          const sc = Math.min((W - gap * (n - 1)) / totalW, maxH / tallest);
+          const rowW = totalW * sc + gap * (n - 1);
+          let x = -rowW / 2;
+          papers.forEach((p) => { const wu = U(p.w) * sc, cx = x + wu / 2; x += wu + gap; const k = depthOf(p) / D; p.to = { pos: centre.clone().addScaledVector(forward, depthOf(p) - D).addScaledVector(right, cx * k).addScaledVector(up, -0.04 * k), quat: faceQ, scale: sc * k }; });
         }
       }
       const pose = (p, a) => {
