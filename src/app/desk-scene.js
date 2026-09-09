@@ -176,13 +176,15 @@ export async function initDesk() {
   const loader = createModelLoader(manager);
 
   // ── The table: the wooden desk, its own materials ──
-  loader.load(`${MODEL_BASE}desk.glb`, (gltf) => {
+  const onDesk = (gltf) => {
     const desk = gltf.scene;
     const box = new THREE.Box3().setFromObject(desk); const size = new THREE.Vector3(); box.getSize(size);
     desk.scale.setScalar(20 / size.x); box.setFromObject(desk); desk.position.set(0, -box.max.y, 1);
     desk.traverse((c) => { if (c.isMesh) { c.receiveShadow = true; c.castShadow = false; } });
-    scene.add(desk);
-  });
+    scene.add(desk); wantShadows(); wake(600);
+  };
+  // the finished copy (WebP maps, meshopt; scripts/publish-desk-assets.js), the original if it isn't there
+  loader.load(`${WEB_BASE}desk-web.glb`, onDesk, undefined, () => loader.load(`${MODEL_BASE}desk.glb`, onDesk));
 
   // ── The composition: folder, papers, objects, in one group scaled per regime ──
   const stageGroup = new THREE.Group(); scene.add(stageGroup);
@@ -293,7 +295,8 @@ export async function initDesk() {
     });
   }
   const objectAnchor = (id) => () => R().objects[id];
-  loader.load(`${WEB_BASE}${DESK_OBJECTS.guide.file}`, (gltf) => addObject("guide", gltf.scene, { w: 1, h: 1, d: 1, ry: 90 }, objectAnchor("guide"), true));
+  const onKey = (gltf) => addObject("guide", gltf.scene, { w: 1, h: 1, d: 1, ry: 90 }, objectAnchor("guide"), true);
+  loader.load(`${WEB_BASE}${DESK_OBJECTS.guide.lite || DESK_OBJECTS.guide.file}`, onKey, undefined, () => loader.load(`${WEB_BASE}${DESK_OBJECTS.guide.file}`, onKey));
   {
     const geo = new THREE.IcosahedronGeometry(0.5, 2); const pos = geo.attributes.position; const r = rng(42); const v = new THREE.Vector3();
     for (let i = 0; i < pos.count; i++) { v.fromBufferAttribute(pos, i); v.multiplyScalar(0.82 + 0.28 * Math.sin(v.x * 5.1 + 1.3) * Math.cos(v.z * 4.3) + 0.08 * (r() - 0.5)); v.y *= 0.6; pos.setXYZ(i, v.x, v.y, v.z); }

@@ -16,7 +16,7 @@ export const DESK_OBJECTS = {
   consumption:  { noun: "sphere",  file: "desk-consumption-sphere.glb" },
   creation:     { noun: "stamp",   file: "desk-creation-stamp.glb" },
   accumulation: { noun: "bundle",  file: "desk-accumulation-bundle.glb" },
-  guide:        { noun: "key",     file: "desk-guide-key.glb" },
+  guide:        { noun: "key",     file: "desk-guide-key.glb", lite: "desk-guide-key-lite.glb" },   // lite: ~42 k triangles, 790 KB (scripts/publish-desk-assets.js)
 };
 
 // The clips on the papers desk (/home-alt, src/app/desk-alt.js): binder

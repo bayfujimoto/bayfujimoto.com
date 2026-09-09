@@ -141,7 +141,7 @@ export async function renderPaper(spec, scale = 2) {
   const ctx = c.getContext("2d"); ctx.scale(scale, scale);
   const seed = spec.seed || 1;
   // images first, so the draw is synchronous after
-  const imgs = await Promise.all((spec.layers || []).filter((L) => L.src).map((L) => loadImage(L.src)));
+  const imgs = await Promise.all((spec.layers || []).filter((L) => L.src).map((L) => loadImage(L.src).then((im) => im || (L.fallback ? loadImage(L.fallback) : null))));
   const imgFor = new Map(); (spec.layers || []).filter((L) => L.src).forEach((L, i) => imgFor.set(L, imgs[i]));
   // a print turns to match its picture: swap the sheet (and the layer) if the
   // image's orientation disagrees with the spec's

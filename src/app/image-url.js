@@ -36,6 +36,11 @@ export function imageUrl(filename, variant = "original") {
     // Full-resolution transparent cut-out (derived from the raw master).
     return `${BASE}/cutouts/${stripExt(filename)}-cut.png?v=${ver || DISPLAY_VERSION}`;
   }
+  if (variant === "cutout-desk") {
+    // The same cut-out at desk size (≤ 1000 px, WebP with alpha) — what the
+    // desk draws onto its sheets; scripts/publish-desk-assets.js makes them.
+    return `${BASE}/cutouts/${stripExt(filename)}-cut-desk.webp?v=${ver || DISPLAY_VERSION}`;
+  }
   return `${BASE}/originals/${filename}${ver ? `?v=${ver}` : ""}`;
 }
 
