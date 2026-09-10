@@ -196,7 +196,8 @@ function makeAssetUploadField(field, value, handleChange, getItemId) {
   group.appendChild(assetFieldRow(field.label, "image", media));
 
   // Cut-out ("remove backing") rows — per asset; only on scan-oriented fields
-  // (coffee front/back, inspection=card front/back, inspection=object thumbnail).
+  // (coffee front/back, game cover, inspection=card front/back,
+  // inspection=object thumbnail).
   const cut = field.allowCutout ? makeCutoutControl() : null;
   if (cut) cut.rows.forEach((r) => group.appendChild(r));
 

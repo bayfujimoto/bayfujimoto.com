@@ -96,8 +96,13 @@ export function getTypeGroups(itemType) {
         { role: "back", allowCutout: true, skipThumbnail: true }, // thumbnail is the front's
       ])];
 
+    // Game covers are often photographed off the physical case or box art on a
+    // colored ground, so the cover gets the same "remove backing" cut-out
+    // control the scanned accumulation assets use.
     case "game":
-      return [schemaMetaGroup("game", "game-meta", "Game"), assetGroupWithThumb(["cover"])];
+      return [schemaMetaGroup("game", "game-meta", "Game"), assetGroupWithThumb([
+        { role: "cover", allowCutout: true },
+      ])];
 
     // ── Labor (custom view; not schema-driven) ───────────────
 
