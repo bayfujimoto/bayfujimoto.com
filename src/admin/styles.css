@@ -3200,33 +3200,63 @@ body.admin-gutter-dragging.dragging-h {
   display: flex;
   flex-direction: column;
   width: 100%;
-  cursor: pointer;
   outline: none;
 }
 
 .admin-datepicker-trigger {
   display: inline-flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   padding: 2px 4px;
   border-bottom: 1px solid var(--border-faint);
   font-family: var(--font-mono);
   font-size: var(--text-sm);
   color: var(--fg);
-  user-select: none;
 }
 @media (max-width: 700px) { .admin-datepicker-trigger { font-size: 16px; } }
 .admin-datepicker-trigger:hover { background: var(--bg-elevated); }
 .admin-datepicker.open .admin-datepicker-trigger {
   background: color-mix(in srgb, var(--accent-blue) 10%, transparent);
 }
-.admin-datepicker:focus-visible .admin-datepicker-trigger {
+.admin-datepicker:focus-within .admin-datepicker-trigger {
   outline: 1px solid var(--fg);
   outline-offset: -1px;
 }
-.admin-datepicker-value { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.admin-datepicker-value.is-empty { color: var(--fg-dim); }
-.admin-datepicker-icon { flex-shrink: 0; margin-left: 6px; color: var(--fg-dim); font-size: 0.85em; }
+.admin-datepicker.is-invalid .admin-datepicker-trigger {
+  outline: 1px solid var(--accent-red);
+  outline-offset: -1px;
+}
+
+/* The value is a text input so dates can be typed; it wears no chrome of its
+   own — the trigger row is the visible field. */
+.admin-datepicker input.admin-datepicker-value,
+.admin-datepicker input.admin-datepicker-value:focus {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  outline: none;
+  border-radius: 0;
+}
+.admin-datepicker input.admin-datepicker-value::placeholder { color: var(--fg-dim); opacity: 1; }
+
+.admin-datepicker button.admin-datepicker-icon {
+  flex-shrink: 0;
+  margin-left: 6px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--fg-dim);
+  font-family: inherit;
+  font-size: 0.85em;
+  line-height: 1;
+  cursor: pointer;
+}
+.admin-datepicker button.admin-datepicker-icon:hover { color: var(--fg); }
 
 .admin-datepicker-dropdown {
   display: none;

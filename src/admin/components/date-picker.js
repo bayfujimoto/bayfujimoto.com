@@ -2,13 +2,15 @@
  * makeDatePicker — custom terminal-style calendar, matching makeSelect's chrome.
  *
  * Replaces the native <input type="date"> so the popup is themed to the admin
- * aesthetic instead of the OS default, and clicking the field opens the calendar.
+ * aesthetic instead of the OS default. The field itself is a real text input:
+ * the date can be typed (ISO, US slash, YYYYMMDD, or "February 28, 2025" all
+ * parse) or picked from the calendar, which the ▦ button toggles.
  * Value is an ISO date string ("YYYY-MM-DD") or "".
  *
  * @param {string} initialValue
  * @param {(value: string) => void} onChange
  * @param {{ placeholder?: string }} [config]
- * @returns {{ el: HTMLElement, getValue: () => string, setValue: (v: string) => void }}
+ * @returns {{ el: HTMLElement, input: HTMLInputElement, getValue: () => string, setValue: (v: string) => void }}
  */
 
 const MONTHS = ["January", "February", "March", "April", "May", "June",
@@ -21,6 +23,45 @@ function parseISO(v) {
 }
 function toISO(y, mo, d) {
   return `${y}-${String(mo + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+}
+
+// Reject impossible dates (Feb 30, month 13) by round-tripping through Date.
+function validParts(y, mo1, d) {
+  if (!(y >= 1 && mo1 >= 1 && mo1 <= 12 && d >= 1 && d <= 31)) return "";
+  const dt = new Date(y, mo1 - 1, d);
+  if (dt.getFullYear() !== y || dt.getMonth() !== mo1 - 1 || dt.getDate() !== d) return "";
+  return toISO(y, mo1 - 1, d);
+}
+
+/**
+ * Parse what the user typed into an ISO date, forgivingly.
+ * Accepts: 2025-02-28 · 2025/2/28 · 2/28/2025 · 2/28/25 · 20250228 ·
+ *          "February 28, 2025" · "28 Feb 2025".
+ * Returns "" when the text is empty or unparseable.
+ */
+export function parseLooseDate(str) {
+  const s = (str || "").trim();
+  if (!s) return "";
+
+  let m = /^(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})$/.exec(s);
+  if (m) return validParts(+m[1], +m[2], +m[3]);
+
+  m = /^(\d{1,2})[-/.](\d{1,2})[-/.](\d{2}|\d{4})$/.exec(s);
+  if (m) {
+    let y = +m[3];
+    if (m[3].length === 2) y += y < 70 ? 2000 : 1900;
+    return validParts(y, +m[1], +m[2]);
+  }
+
+  if (/^\d{8}$/.test(s)) return validParts(+s.slice(0, 4), +s.slice(4, 6), +s.slice(6, 8));
+
+  // Month-name forms — only when there are letters, so bare numbers never fall
+  // through to Date's loose parsing.
+  if (/[a-z]/i.test(s)) {
+    const dt = new Date(s);
+    if (!isNaN(dt) && /\d{4}/.test(s)) return toISO(dt.getFullYear(), dt.getMonth(), dt.getDate());
+  }
+  return "";
 }
 
 // Format an ISO date (YYYY-MM-DD) as a human display date ("February 28, 2025").
@@ -38,20 +79,26 @@ export function makeDatePicker(initialValue, onChange, config = {}) {
 
   const el = document.createElement("div");
   el.className = "admin-datepicker";
-  el.setAttribute("tabindex", "0");
-  el.setAttribute("role", "combobox");
-  el.setAttribute("aria-haspopup", "dialog");
-  el.setAttribute("aria-expanded", "false");
 
-  // ── Trigger ──────────────────────────────────────────────────
+  // ── Trigger ────────────────────────────────────────────
+  // The value is a real text input, so a date can be typed as well as picked.
   const trigger = document.createElement("div");
   trigger.className = "admin-datepicker-trigger";
-  trigger.setAttribute("aria-hidden", "true");
-  const valueEl = document.createElement("span");
+  const valueEl = document.createElement("input");
+  valueEl.type = "text";
   valueEl.className = "admin-datepicker-value";
-  const iconEl = document.createElement("span");
+  valueEl.autocomplete = "off";
+  valueEl.spellcheck = false;
+  valueEl.placeholder = config.placeholder || "YYYY-MM-DD";
+  valueEl.setAttribute("role", "combobox");
+  valueEl.setAttribute("aria-haspopup", "dialog");
+  valueEl.setAttribute("aria-expanded", "false");
+  const iconEl = document.createElement("button");
+  iconEl.type = "button";
   iconEl.className = "admin-datepicker-icon";
   iconEl.textContent = "▦";
+  iconEl.tabIndex = -1;
+  iconEl.setAttribute("aria-label", "Open calendar");
   trigger.appendChild(valueEl);
   trigger.appendChild(iconEl);
   el.appendChild(trigger);
@@ -67,10 +114,12 @@ export function makeDatePicker(initialValue, onChange, config = {}) {
   // button and fire focusout → close; keeping focus on the root avoids that.
   dropdown.addEventListener("mousedown", (e) => e.preventDefault());
 
-  function updateTrigger() {
-    valueEl.textContent = value || (config.placeholder || "YYYY-MM-DD");
-    valueEl.classList.toggle("is-empty", !value);
+  // Sync the field's text to the committed value. Skipped while the user is
+  // mid-keystroke so typing is never yanked out from under them.
+  function updateTrigger({ syncText = true } = {}) {
+    if (syncText) valueEl.value = value;
     el.dataset.value = value;
+    el.classList.toggle("is-invalid", false);
   }
 
   function initView() {
@@ -162,11 +211,13 @@ export function makeDatePicker(initialValue, onChange, config = {}) {
     renderCalendar();
   }
   function pick(d) { commit(toISO(view.y, view.mo, d)); }
-  function commit(v) {
-    value = v || "";
-    updateTrigger();
-    close();
-    onChange?.(value);
+  function commit(v, { syncText = true, close: doClose = true } = {}) {
+    const next = v || "";
+    const changed = next !== value;
+    value = next;
+    updateTrigger({ syncText });
+    if (doClose) close();
+    if (changed) onChange?.(value);
   }
 
   function open() {
@@ -175,24 +226,98 @@ export function makeDatePicker(initialValue, onChange, config = {}) {
     initView();
     renderCalendar();
     el.classList.add("open");
-    el.setAttribute("aria-expanded", "true");
+    valueEl.setAttribute("aria-expanded", "true");
   }
   function close() {
     if (!isOpen) return;
     isOpen = false;
     el.classList.remove("open");
-    el.setAttribute("aria-expanded", "false");
+    valueEl.setAttribute("aria-expanded", "false");
   }
 
-  trigger.addEventListener("click", (e) => {
+  // ── Typing ─────────────────────────────────────────────
+  // While typing a run of bare digits at the end of the field, slot the dashes
+  // in so "20250228" becomes "2025-02-28" without the user reaching for them.
+  function autoDash() {
+    const raw = valueEl.value;
+    const atEnd = valueEl.selectionStart === raw.length && valueEl.selectionEnd === raw.length;
+    if (!atEnd) return;
+    const digits = raw.replace(/-/g, "");
+    if (!/^\d{1,8}$/.test(digits)) return;
+    let out = digits.slice(0, 4);
+    if (digits.length > 4) out += "-" + digits.slice(4, 6);
+    if (digits.length > 6) out += "-" + digits.slice(6, 8);
+    if (out !== raw) {
+      valueEl.value = out;
+      valueEl.setSelectionRange(out.length, out.length);
+    }
+  }
+
+  // Commit what's typed. Unparseable text is left in place and flagged rather
+  // than silently discarded, so a typo is visible and fixable.
+  function commitTyped({ close: doClose = false } = {}) {
+    const raw = valueEl.value.trim();
+    if (!raw) { commit("", { close: doClose }); return true; }
+    const iso = parseLooseDate(raw);
+    if (!iso) { el.classList.add("is-invalid"); return false; }
+    commit(iso, { close: doClose });
+    if (isOpen) { initView(); renderCalendar(); }
+    return true;
+  }
+
+  // A half-typed date still parses ("3/14/20" → 2020), so live-commit is held
+  // back until the text is unambiguously finished; the rest waits for blur.
+  function looksComplete(str) {
+    const s = (str || "").trim();
+    return /^\d{4}-\d{2}-\d{2}$/.test(s)
+        || /^\d{1,2}[-/.]\d{1,2}[-/.]\d{4}$/.test(s)
+        || /^\d{8}$/.test(s)
+        || /[a-z]/i.test(s);
+  }
+
+  valueEl.addEventListener("input", () => {
+    autoDash();
+    el.classList.remove("is-invalid");
+    const iso = looksComplete(valueEl.value) ? parseLooseDate(valueEl.value) : "";
+    // Live-commit only a complete, valid date; partials wait for blur/Enter.
+    if (iso) {
+      commit(iso, { syncText: false, close: false });
+      if (isOpen) { initView(); renderCalendar(); }
+    } else if (!valueEl.value.trim()) {
+      commit("", { syncText: false, close: false });
+    }
+  });
+
+  valueEl.addEventListener("blur", () => {
+    if (commitTyped()) updateTrigger();
+  });
+
+  valueEl.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (commitTyped({ close: true })) updateTrigger();
+    } else if (e.key === "Escape") {
+      if (isOpen) { e.preventDefault(); close(); }
+      else { updateTrigger(); }
+    } else if (e.key === "ArrowDown" && !isOpen) {
+      e.preventDefault();
+      open();
+    }
+  });
+
+  // Keep the toggle from stealing focus out of the field.
+  iconEl.addEventListener("mousedown", (e) => e.preventDefault());
+  iconEl.addEventListener("click", (e) => {
     e.stopPropagation();
-    el.focus();
-    isOpen ? close() : open();
+    e.preventDefault();
+    if (isOpen) { close(); valueEl.focus(); }
+    else { valueEl.focus(); open(); }
   });
-  el.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); isOpen ? close() : open(); }
-    else if (e.key === "Escape" && isOpen) { e.preventDefault(); close(); }
+  // Clicking the surrounding chrome (not the input) puts the caret in the field.
+  trigger.addEventListener("mousedown", (e) => {
+    if (e.target === trigger) { e.preventDefault(); valueEl.focus(); }
   });
+
   // Close when focus leaves the whole component (clicking a day keeps focus inside).
   el.addEventListener("focusout", (e) => {
     if (!el.contains(e.relatedTarget)) close();
@@ -202,6 +327,7 @@ export function makeDatePicker(initialValue, onChange, config = {}) {
 
   return {
     el,
+    input: valueEl,
     getValue() { return value; },
     setValue(v) { value = v || ""; updateTrigger(); },
   };

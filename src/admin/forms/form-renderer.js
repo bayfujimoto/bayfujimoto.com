@@ -870,7 +870,7 @@ function makeField(field, value, onChange, getValue) {
     label.id = labelId;
 
     const handle = makeDatePicker(value ?? "", (v) => onChange(field.id, v));
-    handle.el.setAttribute("aria-labelledby", labelId);
+    (handle.input || handle.el).setAttribute("aria-labelledby", labelId);
     wrapper.appendChild(handle.el);
 
     if (field.hint) {
