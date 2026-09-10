@@ -699,6 +699,15 @@ body {
 .item-grid__cell--books .item-grid__thumb {
   object-position: center;
 }
+/* Games grid: box art reads as a cover, so it is inset and centred the same way
+   a book's is — without the padding the thumbnail runs edge-to-edge into the
+   cell's rules. Scoped to games; the shared dimension scaling in panels.js
+   (renderContent) still applies to any game that records dimensions. */
+.item-grid--games .item-grid__cell,
+.item-grid__cell--games {
+  padding: 0.6rem;
+}
+
 /* `.item-grid__cell--<kind>` is the per-cell form of each grid modifier: a
    constellation's cross-series grid gives every record its own subcollection's
    treatment (panels.js → renderContent, `kind`). */

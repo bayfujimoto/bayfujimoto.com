@@ -967,6 +967,9 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
     // Music: albums/EPs are square sleeves; singles render as a vinyl picture
     // disc (round crop). The per-item disc class is applied to single cells below.
     if (activeSubKey === "music") grid.classList.add("item-grid--music");
+    // Games: box art is a cover like a book's, so it gets the same inset rather
+    // than butting edge-to-edge against the cell's rules.
+    if (activeSubKey === "games") grid.classList.add("item-grid--games");
     // Photos: a pile of prints per cell, the whole photo always visible with
     // padding — scoped like the books/films/music modifiers.
     // decisions.md → "Photo entries — display treatment".
