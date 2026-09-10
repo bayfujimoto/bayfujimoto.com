@@ -12,7 +12,7 @@ artist: Audrey Nuna
 year: "2024"
 music_label: Arista Records
 assets:
-  cover: MUSIC-2026-002-cover.jpeg
-  thumbnail: https://coverartarchive.org/release/2e03bf19-654c-4e6c-80ee-2754684b88f3/40426790417-250.jpg
+  cover: MUSIC-2026-002-cover.jpeg?v=a882b2fco
+  thumbnail: MUSIC-2026-002-cover-thumb.jpg?v=a882b2fco
 dimensions: 314 x 314
 ---
