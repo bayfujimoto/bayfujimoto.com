@@ -12,4 +12,7 @@ developer: ZA/UM
 platform: mac
 year: "2019"
 play_status: completed
+assets:
+  cover: GAME-2026-001-cover.avif?v=8aa867a5o
+  thumbnail: GAME-2026-001-cover-thumb.jpg?v=8aa867a5o
 ---
