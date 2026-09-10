@@ -14,6 +14,6 @@ developer: Bethesda
 platform: Switch 2
 play_status: playing
 assets:
-  cover: GAME-2026-003-cover.png?v=7c62d7e3o
-  thumbnail: GAME-2026-003-cover-thumb.jpg?v=7c62d7e3o
+  cover: GAME-2026-003-cover.jpg?v=cd1edc52c20x2
+  thumbnail: GAME-2026-003-cover-thumb.webp?v=cd1edc52c20x2
 ---
