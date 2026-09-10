@@ -720,6 +720,14 @@ body {
   padding: 0.9rem;
 }
 
+/* Games: a cover that is a plain rectangular scan of the box art stands in for
+   the physical edition, so its corners are rounded like a case. Cut-out covers
+   carry their own silhouette and keep square edges — panels.js (isBoxedEdition)
+   decides from the asset's ?v= cut token and tags the element. */
+.item-grid__thumb--edition {
+  border-radius: 4px;
+}
+
 /* Music grid: singles read as a vinyl picture disc — the square cover art is
    cropped to a circle with a transparent spindle hole punched through the
    centre (it shows the background behind the disc), so a song is
@@ -1257,6 +1265,18 @@ body {
   background: transparent;
   user-select: none;
   -webkit-user-drag: none;
+}
+
+/* Games on the plate: the same rounded edition corners. A game records no
+   dimensions, so the plate letterboxes its reproduction inside the square
+   field — the element box has to hug the artwork before a radius means
+   anything, hence the auto sizing that replaces the 100% / 100% above. */
+.item-card__repro--edition img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 10px;
 }
 
 /* Plain image cell (no dimensions recorded) */

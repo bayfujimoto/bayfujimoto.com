@@ -67,6 +67,17 @@ function fullVariants(value) {
   return isCutoutAsset(value) ? ["cutout", "display", "original"] : ["display", "original"];
 }
 
+// A game met as a plain rectangular scan of its box art stands in for the
+// physical edition, so its corners are rounded like a case. A cut-out cover
+// already carries its own silhouette — rounding would crop the artwork — so it
+// keeps square element edges. Both the grid thumbnail and the card's plate ask
+// this question of the same source asset.
+function isBoxedEdition(item) {
+  if (item?.item_type !== "game") return false;
+  const asset = primaryAsset(item);
+  return !!asset && !isCutoutAsset(asset);
+}
+
 // Film backdrops are external Letterboxd URLs scraped at 1200×675 — roughly five
 // times the pixels a grid cell (~213px wide) can show, so each cell waits on an
 // oversized download before it paints. Letterboxd serves on-demand resized
@@ -1242,6 +1253,8 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
 
             // Singles read as a record: crop the square cover to a disc.
             if (item.item_type === "single") cell.classList.add("item-grid__cell--disc");
+            // Games read as the boxed edition: round the box-art scan's corners.
+            if (isBoxedEdition(item)) img.classList.add("item-grid__thumb--edition");
 
             let scaled = false;
             if (item.dimensions && maxDim > 0) {
@@ -1576,6 +1589,8 @@ function buildPlate(item, dims, sidePx, img, zoom = 1, panX = 0, panY = 0, opts 
     const repro = el("div", "item-card__repro");
     // Singles read as a record on the card too: crop the reproduction to a disc.
     if (item.item_type === "single") repro.classList.add("item-card__repro--disc");
+    // Games read as the boxed edition: rounded corners on the box-art scan.
+    if (isBoxedEdition(item)) repro.classList.add("item-card__repro--edition");
     if (img.parentElement) img.parentElement.removeChild(img);
     repro.appendChild(img);
     fo.appendChild(repro);
