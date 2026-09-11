@@ -11,6 +11,11 @@ title: Animal Crossing
 developer: Nintendo
 platform: GameCube
 assets:
-  cover: GAME-2026-005-cover.webp?v=980f46b2o
-  thumbnail: GAME-2026-005-cover-thumb.jpg?v=980f46b2o
+  cover: GAME-2026-005-cover.png?v=47dc6f76bxgamecube-rxpfa
+  thumbnail: GAME-2026-005-cover-thumb.webp?v=47dc6f76bxgamecube-rxpfa
+year: "2001"
+cover_fit:
+  zoom: 1.1
+  x: 0
+  "y": -0.05
 ---

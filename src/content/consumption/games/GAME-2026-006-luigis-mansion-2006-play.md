@@ -11,6 +11,11 @@ title: Luigi's Mansion
 developer: Nintendo
 platform: GameCube
 assets:
-  cover: GAME-2026-006-cover.jpeg?v=6bfa7b02o
-  thumbnail: GAME-2026-006-cover-thumb.jpg?v=6bfa7b02o
+  cover: GAME-2026-006-cover.png?v=b5dbf2b7bxgamecube-1nv2c39
+  thumbnail: GAME-2026-006-cover-thumb.webp?v=b5dbf2b7bxgamecube-1nv2c39
+cover_fit:
+  zoom: 1.02
+  x: 0
+  "y": 0.04
+year: "2001"
 ---

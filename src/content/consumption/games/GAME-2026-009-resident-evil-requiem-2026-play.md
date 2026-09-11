@@ -12,6 +12,11 @@ developer: Capcom
 platform: Switch 2
 play_status: completed
 assets:
-  cover: GAME-2026-009-cover.webp?v=548988aao
-  thumbnail: GAME-2026-009-cover-thumb.jpg?v=548988aao
+  cover: GAME-2026-009-cover.jpg?v=5fd2f1e0bxswitch2-1l7odvx
+  thumbnail: GAME-2026-009-cover-thumb.webp?v=5fd2f1e0bxswitch2-1l7odvx
+year: "2026"
+cover_fit:
+  zoom: 1
+  x: 0.01
+  "y": 0.08
 ---

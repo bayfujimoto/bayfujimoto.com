@@ -12,6 +12,6 @@ developer: Nintendo
 platform: Switch 2
 play_status: playing
 assets:
-  cover: GAME-2026-007-cover.jpg?v=80a4dc61c20x2
-  thumbnail: GAME-2026-007-cover-thumb.webp?v=80a4dc61c20x2
+  cover: GAME-2026-007-cover.png?v=f010b981bxswitch2-9kiqvr
+  thumbnail: GAME-2026-007-cover-thumb.webp?v=f010b981bxswitch2-9kiqvr
 ---
