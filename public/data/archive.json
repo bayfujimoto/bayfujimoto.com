@@ -15915,24 +15915,6 @@
           "label": "music",
           "items": [
             {
-              "id": "MUSIC-2026-003",
-              "slug": "rels-b-el-cielo",
-              "title": "EL CIELO",
-              "series": "consumption",
-              "subcollection": "music",
-              "item_type": "single",
-              "status": "published",
-              "display_date": "June 22, 2026",
-              "sort_date": "2026-06-22",
-              "artist": "RELS B & Kali Uchis",
-              "year": "2026",
-              "assets": {
-                "cover": "MUSIC-2026-003-cover.jpg",
-                "thumbnail": "MUSIC-2026-003-cover-thumb.jpg"
-              },
-              "dimensions": "300 x 300"
-            },
-            {
               "id": "MUSIC-2026-002",
               "slug": "audrey-nuna-trench",
               "title": "Trench",
@@ -15946,29 +15928,105 @@
               "year": "2024",
               "music_label": "Arista Records",
               "assets": {
-                "cover": "MUSIC-2026-002-cover.jpeg",
-                "thumbnail": "https://coverartarchive.org/release/2e03bf19-654c-4e6c-80ee-2754684b88f3/40426790417-250.jpg"
+                "cover": "MUSIC-2026-002-cover.jpeg?v=a882b2fco",
+                "thumbnail": "MUSIC-2026-002-cover-thumb.jpg?v=a882b2fco"
               },
               "dimensions": "314 x 314"
             },
             {
-              "id": "MUSIC-2026-001",
-              "slug": "samara-cyn-detour",
-              "title": "Detour",
+              "id": "MUSIC-2026-010",
+              "slug": "pinkpantheress-heaven-knows",
               "series": "consumption",
               "subcollection": "music",
               "item_type": "album",
               "status": "published",
-              "display_date": "June 22, 2026",
-              "sort_date": "2026-06-22",
-              "artist": "Samara Cyn",
-              "year": "2026",
-              "music_label": "VANTA Records",
+              "display_date": "June 10, 2026",
+              "sort_date": "2026-06-10",
+              "title": "Heaven Knows",
+              "artist": "PinkPantheress",
+              "year": "2023",
+              "music_label": "Warner Records",
               "assets": {
-                "cover": "MUSIC-2026-001-cover.jpeg",
-                "thumbnail": "https://coverartarchive.org/release/d748a91f-4cd7-45c8-ba39-d876413062f3/44647482490-250.jpg"
+                "cover": "MUSIC-2026-010-cover.jpeg?v=ab57bc43o",
+                "thumbnail": "MUSIC-2026-010-cover-thumb.jpg?v=ab57bc43o"
               },
               "dimensions": "314 x 314"
+            },
+            {
+              "id": "MUSIC-2026-013",
+              "slug": "billie-marten-dog-eared",
+              "series": "consumption",
+              "subcollection": "music",
+              "item_type": "album",
+              "status": "published",
+              "display_date": "October 15, 2025",
+              "sort_date": "2025-10-15",
+              "title": "Dog Eared",
+              "artist": "Billie Marten",
+              "year": "2025",
+              "music_label": "Fiction Records",
+              "assets": {
+                "cover": "MUSIC-2026-013-cover.jpeg?v=0cdcb1d0o",
+                "thumbnail": "MUSIC-2026-013-cover-thumb.jpg?v=0cdcb1d0o"
+              },
+              "dimensions": "314 x 314"
+            },
+            {
+              "id": "MUSIC-2026-014",
+              "slug": "kendrick-lamar-gnx",
+              "series": "consumption",
+              "subcollection": "music",
+              "item_type": "album",
+              "status": "published",
+              "display_date": "November 22, 2024",
+              "sort_date": "2024-11-22",
+              "title": "GNX",
+              "artist": "Kendrick Lamar",
+              "year": "2024",
+              "music_label": "pgLang",
+              "assets": {
+                "cover": "MUSIC-2026-014-cover.jpeg?v=7c318a3co",
+                "thumbnail": "MUSIC-2026-014-cover-thumb.jpg?v=7c318a3co"
+              },
+              "dimensions": "314 x 314"
+            },
+            {
+              "id": "MUSIC-2026-015",
+              "slug": "rei-ami-foil",
+              "series": "consumption",
+              "subcollection": "music",
+              "item_type": "album",
+              "status": "published",
+              "display_date": "November 11, 2024",
+              "sort_date": "2024-11-11",
+              "title": "FOIL",
+              "artist": "Rei Ami",
+              "year": "2021",
+              "music_label": "Visionary Records",
+              "assets": {
+                "cover": "MUSIC-2026-015-cover.jpeg?v=1478cb4do",
+                "thumbnail": "MUSIC-2026-015-cover-thumb.jpg?v=1478cb4do"
+              },
+              "dimensions": "314 x 314"
+            },
+            {
+              "id": "MUSIC-2026-016",
+              "slug": "audrey-nuna-jokes-on-me",
+              "series": "consumption",
+              "subcollection": "music",
+              "item_type": "single",
+              "status": "published",
+              "display_date": "May 3, 2024",
+              "sort_date": "2024-05-03",
+              "title": "Jokes On Me",
+              "artist": "Audrey Nuna",
+              "year": "2024",
+              "album": "TRENCH",
+              "assets": {
+                "cover": "MUSIC-2026-016-cover.jpeg?v=8c3830aao",
+                "thumbnail": "MUSIC-2026-016-cover-thumb.jpg?v=8c3830aao"
+              },
+              "dimensions": "300 x 300"
             },
             {
               "id": "MUSIC-2026-008",
@@ -15989,6 +16047,25 @@
               "tags": [
                 "jazz"
               ],
+              "dimensions": "314 x 314"
+            },
+            {
+              "id": "MUSIC-2026-009",
+              "slug": "denzel-curry-melt-my-eyez-see-your-future",
+              "series": "consumption",
+              "subcollection": "music",
+              "item_type": "album",
+              "status": "published",
+              "display_date": "March 22, 2022",
+              "sort_date": "2022-03-22",
+              "title": "Melt My Eyez See Your Future",
+              "artist": "Denzel Curry",
+              "year": "2022",
+              "music_label": "Loma Vista Recordings",
+              "assets": {
+                "cover": "MUSIC-2026-009-cover.jpeg?v=75409115o",
+                "thumbnail": "MUSIC-2026-009-cover-thumb.jpg?v=75409115o"
+              },
               "dimensions": "314 x 314"
             },
             {
@@ -16014,6 +16091,25 @@
               ]
             },
             {
+              "id": "MUSIC-2026-017",
+              "slug": "lous-and-the-yakuza-gore",
+              "series": "consumption",
+              "subcollection": "music",
+              "item_type": "album",
+              "status": "published",
+              "display_date": "June 20, 2021",
+              "sort_date": "2021-06-20",
+              "title": "Gore",
+              "artist": "Lous and the Yakuza",
+              "year": "2020",
+              "music_label": "Columbia Records",
+              "assets": {
+                "cover": "MUSIC-2026-017-cover.jpeg?v=92be2e4bo",
+                "thumbnail": "MUSIC-2026-017-cover-thumb.jpg?v=92be2e4bo"
+              },
+              "dimensions": "314 x 314"
+            },
+            {
               "id": "MUSIC-2026-007",
               "slug": "benee-fire-on-marzz",
               "series": "consumption",
@@ -16029,6 +16125,44 @@
               "assets": {
                 "cover": "MUSIC-2026-007-cover.jpeg",
                 "thumbnail": "MUSIC-2026-007-cover-thumb.jpg"
+              },
+              "dimensions": "314 x 314"
+            },
+            {
+              "id": "MUSIC-2026-011",
+              "slug": "vince-staples-fm",
+              "series": "consumption",
+              "subcollection": "music",
+              "item_type": "album",
+              "status": "published",
+              "display_date": "November 2, 2018",
+              "sort_date": "2018-11-02",
+              "title": "FM!",
+              "artist": "Vince Staples",
+              "year": "2018",
+              "music_label": "Def Jam Recordings",
+              "assets": {
+                "cover": "MUSIC-2026-011-cover.jpeg?v=5e471873o",
+                "thumbnail": "MUSIC-2026-011-cover-thumb.jpg?v=5e471873o"
+              },
+              "dimensions": "314 x 314"
+            },
+            {
+              "id": "MUSIC-2026-012",
+              "slug": "vince-staples-big-fish-theory",
+              "series": "consumption",
+              "subcollection": "music",
+              "item_type": "album",
+              "status": "published",
+              "display_date": "March 10, 2018",
+              "sort_date": "2018-03-10",
+              "title": "Big Fish Theory",
+              "year": "2017",
+              "artist": "Vince Staples",
+              "music_label": "Def Jam Recordings",
+              "assets": {
+                "cover": "MUSIC-2026-012-cover.jpg?v=e0ad82b1o",
+                "thumbnail": "MUSIC-2026-012-cover-thumb.jpg?v=e0ad82b1o"
               },
               "dimensions": "314 x 314"
             },
@@ -16123,20 +16257,6 @@
           "label": "games",
           "items": [
             {
-              "id": "GAME-2026-004",
-              "slug": "tomodachi-life-living-the-dream-2026-play",
-              "series": "consumption",
-              "subcollection": "games",
-              "item_type": "game",
-              "status": "published",
-              "display_date": "June 13, 2026",
-              "sort_date": "2026-06-13",
-              "title": "Tomodachi Life: Living the Dream",
-              "developer": "Nintendo",
-              "platform": "Switch 2",
-              "play_status": "demo"
-            },
-            {
               "id": "GAME-2026-003",
               "slug": "indiana-jones-and-the-great-circle-2026-play",
               "series": "consumption",
@@ -16151,7 +16271,11 @@
               ],
               "developer": "Bethesda",
               "platform": "Switch 2",
-              "play_status": "playing"
+              "play_status": "playing",
+              "assets": {
+                "cover": "GAME-2026-003-cover.jpg?v=cd1edc52c20x2",
+                "thumbnail": "GAME-2026-003-cover-thumb.webp?v=cd1edc52c20x2"
+              }
             },
             {
               "id": "GAME-2026-001",
@@ -16164,28 +16288,46 @@
               "display_date": 2021,
               "sort_date": "2021-06-01",
               "developer": "ZA/UM",
-              "platform": "mac",
+              "platform": "Steam",
               "year": "2019",
-              "play_status": "completed"
+              "play_status": "completed",
+              "assets": {
+                "cover": "GAME-2026-001-cover.avif?v=8aa867a5o",
+                "thumbnail": "GAME-2026-001-cover-thumb.jpg?v=8aa867a5o"
+              }
             },
             {
-              "id": "GAME-2026-002",
-              "slug": "outer-wilds-2020-play",
-              "title": "Outer Wilds",
+              "id": "GAME-2026-006",
+              "slug": "luigis-mansion-2006-play",
               "series": "consumption",
               "subcollection": "games",
               "item_type": "game",
               "status": "published",
-              "display_date": 2020,
-              "sort_date": "2020-08-01",
-              "developer": "Mobius Digital",
-              "platform": "PC",
-              "year": "2019",
-              "tags": [],
-              "context_note": "",
+              "display_date": "~2006",
+              "sort_date": "2006-01-01",
+              "title": "Luigi's Mansion",
+              "developer": "Nintendo",
+              "platform": "GameCube",
               "assets": {
-                "cover": null,
-                "thumbnail": null
+                "cover": "GAME-2026-006-cover.jpeg?v=6bfa7b02o",
+                "thumbnail": "GAME-2026-006-cover-thumb.jpg?v=6bfa7b02o"
+              }
+            },
+            {
+              "id": "GAME-2026-005",
+              "slug": "animal-crossing-2006-play",
+              "series": "consumption",
+              "subcollection": "games",
+              "item_type": "game",
+              "status": "published",
+              "display_date": "~2006",
+              "sort_date": "2006-01-01",
+              "title": "Animal Crossing",
+              "developer": "Nintendo",
+              "platform": "GameCube",
+              "assets": {
+                "cover": "GAME-2026-005-cover.webp?v=980f46b2o",
+                "thumbnail": "GAME-2026-005-cover-thumb.jpg?v=980f46b2o"
               }
             }
           ]
@@ -18595,6 +18737,25 @@
           "dimensions": "62 x 88"
         },
         {
+          "id": "EPH-2026-038",
+          "slug": "paris-france-2024-12-13",
+          "series": "accumulation",
+          "item_type": "document",
+          "status": "published",
+          "display_date": "December 13, 2024",
+          "sort_date": "2024-12-13",
+          "title": "Business Card",
+          "issuer": "La table d'Aligre",
+          "place": "Paris, France",
+          "dimensions": "85 x 55",
+          "inspection": "card",
+          "assets": {
+            "front": "EPH-2026-038-front.png?v=4465f0efc20x2",
+            "thumbnail": "EPH-2026-038-front-thumb.webp?v=4465f0efc20x2",
+            "back": "EPH-2026-038-back.png?v=bb6c7722c20x2"
+          }
+        },
+        {
           "id": "EPH-2026-033",
           "slug": "paris-france-2024-11-30",
           "series": "accumulation",
@@ -18634,6 +18795,44 @@
           "dimensions": "120 x 62"
         },
         {
+          "id": "EPH-2026-039",
+          "slug": "paris-france-2024-11-13",
+          "series": "accumulation",
+          "item_type": "document",
+          "status": "published",
+          "display_date": "November 13, 2024",
+          "sort_date": "2024-11-13",
+          "title": "Business Card",
+          "issuer": "L'ebauchoir",
+          "place": "Paris, France",
+          "dimensions": "54 x 84",
+          "inspection": "card",
+          "assets": {
+            "front": "EPH-2026-039-front.png?v=85cf17e4c20x2",
+            "thumbnail": "EPH-2026-039-front-thumb.webp?v=85cf17e4c20x2",
+            "back": "EPH-2026-039-back.png?v=4c8f6caac20x2"
+          }
+        },
+        {
+          "id": "EPH-2026-037",
+          "slug": "lyon-france-2024-11-04",
+          "series": "accumulation",
+          "item_type": "ticket",
+          "status": "published",
+          "display_date": "November 4, 2024",
+          "sort_date": "2024-11-04",
+          "title": "Transit Card",
+          "issuer": "TCL",
+          "place": "Lyon, France",
+          "dimensions": "86 x 54",
+          "inspection": "card",
+          "assets": {
+            "front": "EPH-2026-037-front.png?v=335f69d2c20x2",
+            "thumbnail": "EPH-2026-037-front-thumb.webp?v=335f69d2c20x2",
+            "back": "EPH-2026-037-back.png?v=07a37672c20x2"
+          }
+        },
+        {
           "id": "EPH-2026-012",
           "slug": "lyon-france-2024-11-01",
           "series": "accumulation",
@@ -18652,6 +18851,63 @@
           "dimensions": "76 x 76"
         },
         {
+          "id": "EPH-2026-035",
+          "slug": "london-united-kingdom-2024-10-15",
+          "series": "accumulation",
+          "item_type": "ticket",
+          "status": "published",
+          "display_date": "October 15, 2024",
+          "sort_date": "2024-10-15",
+          "inspection": "card",
+          "assets": {
+            "front": "EPH-2026-035-front.png?v=1344ef42c20x2",
+            "thumbnail": "EPH-2026-035-front-thumb.webp?v=1344ef42c20x2",
+            "back": "EPH-2026-035-back.png?v=6c6eacd4c20x2"
+          },
+          "title": "Oyster Card",
+          "issuer": "Transport For London",
+          "place": "London, United Kingdom",
+          "dimensions": "85 x 54"
+        },
+        {
+          "id": "EPH-2026-034",
+          "slug": "bordeaux-france-2024-09-30",
+          "series": "accumulation",
+          "item_type": "document",
+          "status": "published",
+          "display_date": "September 30, 2024",
+          "sort_date": "2024-09-30",
+          "inspection": "card",
+          "assets": {
+            "front": "EPH-2026-034-front.png?v=de6cefdcc20x2",
+            "thumbnail": "EPH-2026-034-front-thumb.webp?v=de6cefdcc20x2",
+            "back": "EPH-2026-034-back.png?v=0e3bacadc20x2"
+          },
+          "title": "Transit Card",
+          "issuer": "Transports Bordeaux Métropole",
+          "place": "Bordeaux, France",
+          "dimensions": "85 x 53"
+        },
+        {
+          "id": "EPH-2026-036",
+          "slug": "bordeaux-france-2024-09-29",
+          "series": "accumulation",
+          "item_type": "ticket",
+          "status": "published",
+          "display_date": "September 29, 2024",
+          "sort_date": "2024-09-29",
+          "inspection": "card",
+          "assets": {
+            "front": "EPH-2026-036-front.png?v=ec7ae208c8x2",
+            "thumbnail": "EPH-2026-036-front-thumb.webp?v=ec7ae208c8x2",
+            "back": "EPH-2026-036-back.png?v=a03ef6e5c20x2"
+          },
+          "title": "Museum Ticket",
+          "issuer": "Museé d'art contemporain de Bordeaux",
+          "place": "Bordeaux, France",
+          "dimensions": "83 x 54"
+        },
+        {
           "id": "EPH-2026-004",
           "slug": "paris-france-2024-08-25",
           "series": "accumulation",
@@ -18668,7 +18924,8 @@
             "front": "EPH-2026-004-front.png?v=d912d3d5c20x2",
             "thumbnail": "EPH-2026-004-front-thumb.webp?v=d912d3d5c20x2",
             "back": "EPH-2026-004-back.png?v=9027a455c20x2"
-          }
+          },
+          "dimensions": "53 x 81"
         },
         {
           "id": "EPH-2026-016",
@@ -18759,7 +19016,7 @@
         "object": "key",
         "model": "desk-guide-key.glb",
         "thumbnail": "/thumbnails/desk/key.png",
-        "count": 781,
+        "count": 794,
         "subcollections": null,
         "description": ""
       },
@@ -18798,7 +19055,7 @@
         "object": "sphere",
         "model": "desk-consumption-sphere.glb",
         "thumbnail": "/thumbnails/desk/consumption.png",
-        "count": 721,
+        "count": 728,
         "subcollections": 5,
         "description": "A sphere, the one object without an inside. What was taken in: films logged as viewings, books as readings, music, coffee, games. Titles are transcribed as given; the ratings are the archivist's."
       },
@@ -18824,7 +19081,7 @@
         "object": "box",
         "model": "desk-labor-box.glb",
         "thumbnail": "/thumbnails/desk/accumulation.png",
-        "count": 21,
+        "count": 27,
         "subcollections": null,
         "description": "A box. The small printed things that survived a pocket, a suitcase, or a glovebox: tickets, receipts, brochures, printed matter. Each is scanned both sides and measured, and shown on the plate at true scale."
       }
@@ -20242,12 +20499,12 @@
     }
   },
   "_counters": {
-    "EPH": 33,
+    "EPH": 39,
     "FILM": 556,
-    "BOOK": 414,
-    "MUSIC": 8,
+    "BOOK": 447,
+    "MUSIC": 17,
     "COFFEE": 2,
-    "GAME": 4,
+    "GAME": 6,
     "SKETCH": 2,
     "PHOTO": 25,
     "PROTO": 2,

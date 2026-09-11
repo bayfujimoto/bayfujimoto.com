@@ -319,6 +319,40 @@ The algorithm is shared with the `scripts/cutout-red-background.js` batch CLI vi
 `src/shared/cutout.js`, so client-side and CLI results are identical. Cut-out provenance
 (tolerance, defringe) is recorded on the asset.
 
+### Game boxes (cover set into the platform's case)
+
+A game record's cover is **bare key art** — the picture on the front of the box, with no
+case, platform band or rating. At upload the admin sets that art into the box of the
+platform it was played on and bakes the composite as the cover's derivatives, so every
+game reads as the physical edition it was met as, whether or not a clean retail image
+exists. `src/shared/game-box.js` holds the manifest (nine templates, geometry in template
+pixels) and the platform → template map; `src/admin/lib/game-box-render.js` draws it on a
+canvas; `scripts/rebuild-game-boxes.js` draws the same thing with sharp when a template
+changes.
+
+- **`platform`** is a controlled select (Switch 2, Switch, PS3, Wii U, Wii, GameCube, 3DS,
+  DS, DS Lite, DSi, Steam) and *chooses the case*: the three DS models share one box; Steam
+  is an invented case for anything played on a computer. **`esrb`** is a select of rating
+  letters (E, E10+, T, M, AO, EC, RP, or none) printed into the case's ESRB slot from the
+  official icons in `public/game-boxes/esrb/`.
+- Under the cover row: **box** (derived, read-only — which case the platform resolves to),
+  **fit** (a live preview of the art in its case; drag to nudge, wheel or the `zoom` /
+  `x` / `y` inputs to crop — stored as `cover_fit` only when it differs from cover-fill),
+  and **find cover** (a SteamGridDB title search through `netlify/functions/steamgriddb.js`,
+  600×900 static grids; picking one uploads it as the cover and fills `title` / `year` when
+  they are empty).
+- Editing `platform`, `esrb` or the fit while a cover exists **re-renders the box from the
+  master automatically** (debounced), so the record never carries a box that disagrees
+  with its fields. Rotation carries the box options too.
+- R2 layout mirrors a cut-out: `originals/<base>.<ext>` is the raw art, `cutouts/<base>-cut.png`
+  the full-resolution transparent box, `display/…-web.webp` and `thumbnails/…-thumb.webp`
+  derived from it. The `?v=` token ends in `bx<template>-<hash>` (template version, rating,
+  fit), which the site reads the way it reads a cut-out's `c20x2` — the case's own corners
+  are the silhouette, so the boxed-edition rounding is not applied.
+- Records from before the templates (full retail scans) still render as before; they need
+  bare key art re-uploaded, not a rebuild. `STEAMGRIDDB_API_KEY` lives in the Netlify
+  environment (and `.env.local` for `netlify dev`).
+
 ### Relationship editor
 
 Must support:

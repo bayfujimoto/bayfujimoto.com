@@ -2569,6 +2569,100 @@ body.admin-gutter-dragging.dragging-h {
 .admin-field--sub > .admin-input-wrap { justify-self: start; width: max-content; }
 .admin-field .asset-num { width: 8ch; }
 
+/* ── Game box rows (cover of a game record) ──
+   box: derived name · fit: live preview + zoom/x/y · find cover: SteamGridDB */
+.gamebox-template { font-size: var(--text-xs); color: var(--fg-muted); }
+.gamebox-template.is-empty { color: var(--fg-dim); font-style: italic; }
+
+.gamebox-fit {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+  min-width: 0;
+}
+.gamebox-preview {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  background:
+    repeating-conic-gradient(var(--border-faint) 0 25%, transparent 0 50%) 0 0 / 12px 12px;
+  border: 1px solid var(--border-inner);
+  cursor: grab;
+  touch-action: none;
+}
+.gamebox-preview:active { cursor: grabbing; }
+.gamebox-fit__controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: center;
+}
+.gamebox-fit__num {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: var(--text-xs);
+  color: var(--fg-muted);
+}
+.gamebox-fit__num .asset-num { width: 7ch; }
+.gamebox-fit__reset,
+.gamebox-find__go {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid var(--border-inner);
+  padding: 4px 8px;
+  min-height: 28px;
+  cursor: pointer;
+}
+.gamebox-fit__reset:hover,
+.gamebox-find__go:hover { color: var(--fg); border-color: var(--border); }
+
+.gamebox-find {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  width: 100%;
+}
+.gamebox-find__line { display: flex; gap: 6px; align-items: center; }
+.gamebox-find__q {
+  flex: 1 1 auto;
+  min-width: 0;
+  font: inherit;
+  font-size: max(16px, var(--text-sm));
+  color: var(--fg);
+  background: transparent;
+  border: 1px solid var(--border-inner);
+  padding: 4px 8px;
+}
+.gamebox-find__results { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+.gamebox-find__name { font-size: var(--text-xs); color: var(--fg-muted); }
+.gamebox-find__strip {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 4px;
+}
+.gamebox-find__pick {
+  flex: 0 0 auto;
+  width: 64px;
+  height: 96px;
+  padding: 0;
+  border: 1px solid var(--border-inner);
+  background: var(--border-faint);
+  cursor: pointer;
+  overflow: hidden;
+}
+.gamebox-find__pick img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.gamebox-find__pick:hover,
+.gamebox-find__pick:focus-visible { border-color: var(--fg); outline: none; }
+.gamebox-find__none { font-size: var(--text-xs); color: var(--fg-dim); font-style: italic; }
+
 /* ── Contraption state builder ── */
 .contraption-states {
   display: flex;

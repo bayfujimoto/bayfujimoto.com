@@ -7,6 +7,7 @@
 // the card.
 
 import { adminFields, physicalFields } from "../../shared/field-schema.js";
+import { PLATFORMS, ESRB_RATINGS } from "../../shared/game-box.js";
 
 const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
 
@@ -31,6 +32,7 @@ function assetGroup(roles) {
         assetRole:     role,
         skipThumbnail: cfg.skipThumbnail ?? false,
         allowCutout:   cfg.allowCutout ?? false,
+        gameBox:       cfg.gameBox ?? false,
       };
     }),
   };
@@ -96,13 +98,30 @@ export function getTypeGroups(itemType) {
         { role: "back", allowCutout: true, skipThumbnail: true }, // thumbnail is the front's
       ])];
 
-    // Game covers are often photographed off the physical case or box art on a
-    // colored ground, so the cover gets the same "remove backing" cut-out
-    // control the scanned accumulation assets use.
-    case "game":
-      return [schemaMetaGroup("game", "game-meta", "Game"), assetGroupWithThumb([
-        { role: "cover", allowCutout: true },
+    // Games: the cover is bare key art, set into the box of the platform it
+    // was played on at upload (src/shared/game-box.js). `platform` is a
+    // controlled vocabulary because it chooses the case; `esrb` fills the
+    // case's rating slot. The cut-out control does not apply — the box
+    // template carries the silhouette.
+    case "game": {
+      const meta = schemaMetaGroup("game", "game-meta", "Game");
+      const fields = [];
+      for (const f of meta.fields) {
+        if (f.id === "platform") {
+          fields.push({ id: "platform", label: "platform", type: "select",
+            options: [{ value: "", label: "— choose" }, ...PLATFORMS.map(p => p.value)],
+            hint: "The hardware it was played on — chooses the box the cover is set into." });
+          fields.push({ id: "esrb", label: "ESRB", type: "select",
+            options: ESRB_RATINGS.map(r => (r === "" ? { value: "", label: "— none" } : r)),
+            hint: "Rating letter printed in the box's slot. Leave empty for no badge." });
+        } else {
+          fields.push(f);
+        }
+      }
+      return [{ ...meta, fields }, assetGroupWithThumb([
+        { role: "cover", label: "cover (key art)", gameBox: true },
       ])];
+    }
 
     // ── Labor (custom view; not schema-driven) ───────────────
 

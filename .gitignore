@@ -28,6 +28,10 @@ public/assets/
 # …and the desk's own artwork: sheets the desk draws that are not archive
 # records and have no R2 home (the film strip in `creation`).
 !public/desk/*.webp
+# …and the game box templates + ESRB icons the admin sets covers into
+# (src/shared/game-box.js): site assets, not archive records.
+!public/game-boxes/*.png
+!public/game-boxes/esrb/*.png
 
 # Goodreads export — read by ingest/enrichment, never committed
 Goodreads Library Export.csv

@@ -1,4 +1,5 @@
 import { cutout, detectBacking } from "../../shared/cutout.js";
+import { boxTokenMode, isBoxAsset } from "../../shared/game-box.js";
 
 async function getPresignedUrl(filename, contentType, prefix) {
   const res = await fetch("/api/r2-upload-url", {
@@ -120,7 +121,9 @@ async function contentVersion(file, options = {}) {
   } catch {
     hex = Date.now().toString(36); // hashing unavailable — fall back to a unique stamp
   }
-  const mode = options.cutout ? `c${options.tolerance ?? 20}x${options.defringe ?? 2}` : "o";
+  let mode = "o";
+  if (options.cutout) mode = `c${options.tolerance ?? 20}x${options.defringe ?? 2}`;
+  else if (options.box) mode = boxTokenMode(options.box);
   return `${hex}${mode}`;
 }
 
@@ -206,6 +209,42 @@ async function uploadImageWithDerivatives(file, base, options = {}) {
       return { originalName, thumbName, version, cutout: true, params };
     }
 
+    if (options.box) {
+      // Game box: the raw key art is the master; the composite (art set into
+      // the platform's case, ESRB badge in its slot) is a transparent PNG
+      // under cutouts/ — the same slot a cut-out's silhouette uses, so the
+      // site's cutout → display → original chain shows it unchanged — and
+      // drives the display and thumbnail derivatives.
+      const { renderGameBox } = await import("./game-box-render.js");
+      const boxCanvas = await renderGameBox(img, options.box);
+      const cutName = `${base}-cut.png`;
+      const thumbName = `${base}-thumb.webp`;
+      const webName = `${base}-web.webp`;
+
+      const [origUrl, cutUrl, thumbUrl, webUrl] = await Promise.all([
+        getPresignedUrl(originalName, file.type, "originals"),
+        getPresignedUrl(cutName, "image/png", "cutouts"),
+        getPresignedUrl(thumbName, "image/webp", "thumbnails"),
+        getPresignedUrl(webName, "image/webp", "display"),
+      ]);
+      const [cutBlob, thumbBlob, webBlob] = await Promise.all([
+        canvasToBlob(boxCanvas, "image/png"),
+        makeThumbnail(boxCanvas, 200, "image/webp", 0.85),
+        makeWebSize(boxCanvas, 2048, "image/webp", 0.82),
+      ]);
+      await Promise.all([
+        putToR2(origUrl, file, file.type),
+        putToR2(cutUrl, cutBlob, "image/png"),
+        putToR2(thumbUrl, thumbBlob, "image/webp"),
+        putToR2(webUrl, webBlob, "image/webp"),
+      ]);
+      await deleteR2Keys([
+        `thumbnails/${base}-thumb.jpg`,
+        replacedOriginalKey(options.replaces, originalName),
+      ]);
+      return { originalName, thumbName, version, box: options.box };
+    }
+
     // Non-cut-out: full original + JPEG thumbnail + WebP display.
     const thumbName = `${base}-thumb.jpg`;
     const webName = `${base}-web.webp`;
@@ -237,6 +276,24 @@ async function uploadImageWithDerivatives(file, base, options = {}) {
 }
 
 const cutFields = (r) => (r.cutout ? { cutout: true, cutout_params: r.params } : {});
+
+// ── Game boxes ───────────────────────────────────────────────────────────────
+// Re-render an uploaded cover's box without re-uploading the art: fetch the
+// master back, composite it with the given box options (template from the
+// platform, rating, fit), and rewrite the derivatives under the same base
+// name. The ?v= token moves with the box params so cached URLs bust.
+// Returns the same shape as uploadImageAsset ({ original, thumbnail }).
+export async function rerenderGameBox(stored, box) {
+  const name = String(stored).split("?")[0];
+  const base = name.replace(/\.[^./]+$/, "");
+  const blob = await fetchOriginalBlob(stored);
+  const ext = name.split(".").pop().toLowerCase() || "jpg";
+  const file = new File([blob], `${base}.${ext}`, { type: blob.type || "image/jpeg" });
+  const r = await uploadImageWithDerivatives(file, base, { box, replaces: stored });
+  return { original: withV(r.originalName, r.version), thumbnail: withV(r.thumbName, r.version) };
+}
+
+export { isBoxAsset };
 
 export async function uploadGalleryAsset(file, itemId, index, options) {
   const n = String(index + 1).padStart(2, "0");
@@ -307,22 +364,32 @@ function cutoutOptionsFromStored(stored) {
 // stored: the record's current value for the asset (filename, may carry ?v=).
 // turns: +1 = 90° clockwise, -1 = 90° counter-clockwise.
 // Returns the same shape as uploadImageAsset ({ original, thumbnail, … }).
-export async function rotateUploadedImage(stored, turns, extraOptions = {}) {
+// Fetch an already-uploaded master back from R2 as a Blob (presigned GET —
+// see r2-get-url.js). Used by rotation and by game-box re-rendering.
+export async function fetchOriginalBlob(stored) {
   const name = String(stored).split("?")[0];
-  const base = name.replace(/\.[^./]+$/, "");
-
   const res = await fetch("/api/r2-get-url", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ key: `originals/${name}` }),
   });
   const data = await res.json().catch(() => null);
-  if (!data?.ok) throw new Error(data?.error || "Could not fetch the original for rotation");
-
+  if (!data?.ok) throw new Error(data?.error || "Could not fetch the original");
   const objRes = await fetch(data.url);
   if (!objRes.ok) throw new Error(`Original fetch failed: ${objRes.status}`);
-  const blob = await objRes.blob();
+  return objRes.blob();
+}
 
+// Load an uploaded master as an <img> (caller revokes img.src when done).
+export async function loadOriginalImage(stored) {
+  return loadImage(await fetchOriginalBlob(stored));
+}
+
+export async function rotateUploadedImage(stored, turns, extraOptions = {}) {
+  const name = String(stored).split("?")[0];
+  const base = name.replace(/\.[^./]+$/, "");
+
+  const blob = await fetchOriginalBlob(stored);
   const img = await loadImage(blob);
   let canvas;
   try {

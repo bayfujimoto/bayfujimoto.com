@@ -227,15 +227,23 @@ Optional:
 Required:
 - title
 - date played
-- platform
+- platform — controlled vocabulary, the hardware it was played on: Switch 2, Switch, PS3,
+  Wii U, Wii, GameCube, 3DS, DS, DS Lite, DSi, Steam (Steam covers any computer). Chooses
+  the box the cover is set into (`src/shared/game-box.js`).
 - status (completed, in-progress, abandoned)
 
 Optional:
 - developer
+- esrb — rating letter (E, E10+, T, M, AO, EC, RP); printed into the box's slot. Empty = no badge.
+- cover_fit — `{ zoom, x, y }`, only when the art was nudged in its window (default cover-fill)
 - genre
 - playtime
 - notes
 - tags
+
+Assets: `cover` is bare key art (the master); the box composite is a derivative baked at
+upload, rebuildable with `scripts/rebuild-game-boxes.js`. See `docs/admin-interface.md`
+→ "Game boxes".
 
 ## Creation records
 

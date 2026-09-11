@@ -40,6 +40,13 @@
   to   = "/.netlify/functions/r2-get-url"
   status = 200
 
+# SteamGridDB proxy for the admin's game intake (title search + image
+# passthrough; the API key stays server-side). Session-gated in the function.
+[[redirects]]
+  from = "/api/steamgriddb"
+  to   = "/.netlify/functions/steamgriddb"
+  status = 200
+
 [[redirects]]
   from = "/api/commit-all"
   to   = "/.netlify/functions/commit-all"

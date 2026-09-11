@@ -9,7 +9,7 @@ status: published
 display_date: 2021
 sort_date: "2021-06-01"
 developer: ZA/UM
-platform: mac
+platform: Steam
 year: "2019"
 play_status: completed
 assets:

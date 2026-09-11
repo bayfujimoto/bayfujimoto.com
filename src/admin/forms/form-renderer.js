@@ -3,6 +3,7 @@ import { isFoldableType } from "../../shared/field-schema.js";
 import { makeSelect } from "../components/select.js";
 import { makeDatePicker, formatDisplayDate } from "../components/date-picker.js";
 import { makeCutoutControl } from "./cutout-control.js";
+import { makeGameBoxControl } from "./game-box-control.js";
 import { assetFieldRow } from "./field-row.js";
 import { imageUrl } from "../../app/image-url.js";
 import { applyFieldChrome } from "./field-chrome.js";
@@ -98,7 +99,7 @@ function displayFilename(v) {
   return typeof v === "string" ? v.split("?")[0] : v;
 }
 
-function makeAssetUploadField(field, value, handleChange, getItemId) {
+function makeAssetUploadField(field, value, handleChange, getItemId, getValue) {
   // Tracks the current stored filename so a re-upload can tell the server which
   // old original to remove when the file type changes. Updated after each upload.
   let current = value;
@@ -157,8 +158,15 @@ function makeAssetUploadField(field, value, handleChange, getItemId) {
     fileInput.disabled = true;
     try {
       const { rotateUploadedImage } = await import("../lib/upload.js");
-      const result = await rotateUploadedImage(current, turns);
+      const extra = {};
+      if (gameBox) {
+        const b = gameBox.getBox();
+        if (!b) throw new Error("set a platform first");
+        extra.box = b;
+      }
+      const result = await rotateUploadedImage(current, turns, extra);
       current = result.original;
+      gameBox?.setCurrent(current);
       handleChange(field.id, result.original);
       // Same thumbnail-claim rule as a re-upload (see the change handler).
       if (!field.skipThumbnail && (handleChange._thumbField == null || handleChange._thumbField === field.id)) {
@@ -201,8 +209,49 @@ function makeAssetUploadField(field, value, handleChange, getItemId) {
   const cut = field.allowCutout ? makeCutoutControl() : null;
   if (cut) cut.rows.forEach((r) => group.appendChild(r));
 
-  fileInput.addEventListener("change", async () => {
-    const file = fileInput.files?.[0];
+  // Game box rows (cover of a game record): the art is set into the platform's
+  // case at upload; these rows carry the fit, a live preview, and a
+  // SteamGridDB search. See game-box-control.js.
+  let gameBox = null;
+  if (field.gameBox && getValue && handleChange.subscribe) {
+    gameBox = makeGameBoxControl({
+      getValue,
+      setField: handleChange,
+      subscribe: handleChange.subscribe,
+      onArtFile: (file) => doUpload(file),
+      onRerender: async (box) => {
+        const { rerenderGameBox } = await import("../lib/upload.js");
+        const result = await rerenderGameBox(current, box);
+        current = result.original;
+        gameBox.setCurrent(current);
+        handleChange(field.id, result.original);
+        if (!field.skipThumbnail && (handleChange._thumbField == null || handleChange._thumbField === field.id)) {
+          handleChange("assets.thumbnail", result.thumbnail);
+          handleChange._thumbField = field.id;
+        }
+        setPreview(result.original);
+      },
+    });
+    gameBox.rows.forEach((r) => group.appendChild(r));
+    gameBox.setCurrent(current);
+    // An existing cover: fetch the master back so the fit preview has pixels.
+    if (current) {
+      import("../lib/upload.js")
+        .then(({ loadOriginalImage }) => loadOriginalImage(current))
+        .then((img) => gameBox.setArt(img))
+        .catch(() => { /* preview stays the bare case */ });
+    }
+  }
+
+  // Draw a File to an <img> for the fit preview (independent of the upload).
+  const fileToImage = (file) => new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = URL.createObjectURL(file);
+  });
+
+  async function doUpload(file) {
     if (!file) return;
 
     const itemId = getItemId();
@@ -226,9 +275,17 @@ function makeAssetUploadField(field, value, handleChange, getItemId) {
         Object.assign(opts, cut.getOptions());
         status.textContent = opts.cutout ? "Cutting out & uploading…" : "Uploading…";
       }
+      if (gameBox) {
+        const b = gameBox.getBox();
+        if (!b) throw new Error("set a platform first — it chooses the box");
+        opts.box = b;
+        status.textContent = "Setting into box & uploading…";
+        fileToImage(file).then((img) => gameBox.setArt(img)).catch(() => {});
+      }
       const result = await uploadImageAsset(file, itemId, field.assetRole, opts);
 
       current = result.original;
+      gameBox?.setCurrent(current);
       handleChange(field.id, result.original);
       // Keep the record thumbnail in sync. The first eligible field claims it and
       // then refreshes it on every re-upload, so a replacement never leaves the
@@ -252,7 +309,9 @@ function makeAssetUploadField(field, value, handleChange, getItemId) {
       fileInput.disabled = false;
       status.classList.remove("is-busy");
     }
-  });
+  }
+
+  fileInput.addEventListener("change", () => doUpload(fileInput.files?.[0]));
 
   return group;
 }
@@ -844,9 +903,10 @@ function makeField(field, value, onChange, getValue) {
     const labelId = `label-${field.id.replace(/\./g, "-")}`;
     label.id = labelId;
 
+    const selectOptions = (field.options || []).map(o => (typeof o === "string" ? { value: o, label: o } : o));
     const handle = makeSelect(
-      (field.options || []).map(o => ({ value: o, label: o })),
-      value ?? field.options?.[0] ?? "",
+      selectOptions,
+      value ?? selectOptions[0]?.value ?? "",
       (v) => onChange(field.id, v),
       { className: field.statusColors ? "admin-select--status" : undefined }
     );
@@ -1016,10 +1076,15 @@ export function renderForm(container, groups, initialData, onChange) {
 
   const currentData = JSON.parse(JSON.stringify(initialData || {}));
 
+  // Fields that depend on other fields (a game's box follows its platform)
+  // subscribe here and are told about every change.
+  const listeners = [];
   function handleChange(fieldId, value) {
     setNestedValue(currentData, fieldId, value);
     onChange?.(fieldId, value, currentData);
+    for (const fn of listeners) fn(fieldId, value);
   }
+  handleChange.subscribe = (fn) => { listeners.push(fn); };
 
   function getItemId() {
     return currentData.id || "";
@@ -1049,7 +1114,7 @@ export function renderForm(container, groups, initialData, onChange) {
       const value = getNestedValue(currentData, field.id);
       let el;
       if (field.type === "asset-upload") {
-        el = makeAssetUploadField(field, value, handleChange, getItemId);
+        el = makeAssetUploadField(field, value, handleChange, getItemId, getValue);
       } else if (field.type === "gallery-upload") {
         el = makeGalleryUploadField(field, value, handleChange, getItemId);
       } else if (field.type === "model-upload") {
