@@ -29,12 +29,12 @@ Prefer:
 These requirements apply to every phase going forward. The mobile site must keep pace with the desktop version — mobile is not a deferred concern.
 
 - **Meta hidden on mobile:** On screens narrower than 600px, the `.layer-meta` (bottom-right) is hidden (`display: none`); the `.layer-breadcrumb` (bottom-left) carries location context alone. This avoids stacking two overlays in the same region rather than repositioning the meta layer.
-- **Touch scrolling:** The horizontal browse strip (`.browse-strip`) must be touch-scrollable with `-webkit-overflow-scrolling: touch` and `scroll-snap-type: x proximity`.
+- **Horizontal scrolling:** The item grid (`.item-grid-wrap`) is the site's horizontal scroller and must stay reachable by every input: touch-scrollable with `-webkit-overflow-scrolling: touch`, and a mouse wheel's vertical delta translated into horizontal scroll (`wheelToHorizontal` in `panels.js`, attached in `renderContent`). A wheel gesture that already carries horizontal intent — trackpad swipe, shift+wheel — is left to the browser, and the handler must not swallow the event at either edge of the run.
 - **No hover dependencies:** All interactions must be reachable by tap. Never rely on hover-only affordances to reveal navigation or content.
 - **Pinch-to-zoom:** Item images must support pinch-to-zoom via Pointer Events API (implemented in `panels.js` `makeItemSheet`).
 - **Minimum font size:** All overlay text must remain readable at 375px. Use `--overlay-padding: 1rem` at mobile breakpoint. Never set text below `0.65rem` on mobile.
 - **iOS input zoom prevention:** Admin form inputs must have `font-size: 16px` minimum to prevent iOS from zooming on focus. Apply in `src/admin/styles.css`.
-- **Touch targets:** All interactive overlay elements (breadcrumb segments, subnav buttons, prev/next arrows, browse strip buttons, admin mobile tabstrip) must have a minimum touch target of 44×44px. Use `min-height: 44px` with `display: inline-flex; align-items: center`.
+- **Touch targets:** All interactive overlay elements (breadcrumb segments, subnav buttons, prev/next arrows, grid cell buttons, admin mobile tabstrip) must have a minimum touch target of 44×44px. Use `min-height: 44px` with `display: inline-flex; align-items: center`.
 - **Desk on mobile:** The desk grid collapses to 2 columns at ≤600px. Labels remain legible.
 - **Item image on mobile:** `max-height: 60vh; max-width: 90vw` at ≤600px so the image doesn't fill the entire screen and leave no room for overlays.
 - **Admin on mobile:** At ≤700px the admin's three-pane shell collapses to a single visible pane controlled by a bottom tabstrip (`[e] [r] [l]`). Vim modality strictly disables — keyboard shortcuts, mode chip, and keymap legend all hide. Tap and native form focus carry the entire mobile interaction model. See `docs/admin-interface.md`.

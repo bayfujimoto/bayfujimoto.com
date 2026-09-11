@@ -59,19 +59,25 @@ function loadReproProgressive(img, filename, thumbFilename, onFail, variants = [
 // ?v= token records the cut-out mode (e.g. "…c20x2", from the tolerance/defringe);
 // the plate should then show that cut-out rather than the opaque, scan-derived
 // display. Non-cut-out assets keep the plain display → original chain.
+// A game cover set into its platform's box ("…bx<template>-<hash>", see
+// src/shared/game-box.js) keeps its composite in the same cutouts/ slot, so it
+// takes the same chain — the case's own corners are the silhouette.
 function isCutoutAsset(value) {
   const qi = value ? value.indexOf("?v=") : -1;
-  return qi !== -1 && /c\d+x\d+$/.test(value.slice(qi + 3));
+  if (qi === -1) return false;
+  const token = value.slice(qi + 3);
+  return /c\d+x\d+$/.test(token) || /bx[a-z0-9]+-[a-z0-9]+$/.test(token);
 }
 function fullVariants(value) {
   return isCutoutAsset(value) ? ["cutout", "display", "original"] : ["display", "original"];
 }
 
-// A game met as a plain rectangular scan of its box art stands in for the
-// physical edition, so its corners are rounded like a case. A cut-out cover
-// already carries its own silhouette — rounding would crop the artwork — so it
-// keeps square element edges. Both the grid thumbnail and the card's plate ask
-// this question of the same source asset.
+// A game met as a plain rectangular scan of its box art (a record from before
+// the box templates) stands in for the physical edition, so its corners are
+// rounded like a case. A cover set into its box, or a cut-out, already carries
+// its own silhouette — rounding would crop it — so it keeps square element
+// edges. Both the grid thumbnail and the card's plate ask this question of the
+// same source asset.
 function isBoxedEdition(item) {
   if (item?.item_type !== "game") return false;
   const asset = primaryAsset(item);
@@ -961,6 +967,9 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
     // height in CSS so the grid's overall height is unchanged.
     const GRID_ROWS = activeSubKey === "films" ? 4 : 3;
     const gridWrap = el("div", "item-grid-wrap");
+    // A mouse wheel has only a vertical axis, so over a horizontally scrolling
+    // grid it did nothing at all unless the visitor was on a trackpad.
+    wheelToHorizontal(gridWrap);
     const grid = el("div", "item-grid");
     // Books render their covers at (estimated) true physical scale, inset and
     // top-left aligned — scoped via this modifier so other grids are unaffected.
@@ -1216,17 +1225,20 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
             });
             lazyRegister(btn, () => { fadeInOnLoad(img); img.src = thumbSrc; });
             stack.appendChild(img);
-            // Title overlay on the cover print, revealed on hover/focus like
-            // the films grid (always visible on touch via the shared
-            // hover:none rule). The count is not shown in the grid — the
-            // card's extent row carries it.
+            // Title overlay anchored to the CELL, not the print (Bay,
+            // 2026-09-11): a tall portrait print squeezed the title into its
+            // own narrow width, so the overlay now spans the full cell and
+            // runs past the pile's edges — more room for a long title.
+            // Revealed on hover/focus like the films grid (always visible on
+            // touch via the shared hover:none rule). The count is not shown in
+            // the grid — the card's extent row carries it.
             const title = el("span", "item-grid__title");
             title.textContent = item.title;
-            stack.appendChild(title);
             if (gAssets.length > 1) {
               btn.setAttribute("aria-label", `${item.title}, ${gAssets.length} photos`);
             }
             btn.appendChild(stack);
+            btn.appendChild(title);
           } else {
             const ph = el("span", "item-grid__noimg");
             ph.textContent = "no reproduction";
@@ -3088,6 +3100,29 @@ export function galleryAssets(item) {
   // card's gallery machinery — whole-photo plate, contact strip, stepping —
   // treats them as the record's set.
   return (item.subitems || []).filter(si => si.file && (!si.type || si.type === "image"));
+}
+
+// Wheel → horizontal scroll for the column-major grids (Bay, 2026-09-11).
+// A plain mouse reports only deltaY, which a horizontal scroller ignores, so
+// the wheel was inert over every subcollection grid. A wheel that already
+// carries horizontal intent — a trackpad's two-finger swipe, shift+wheel — is
+// left to the browser, as is a ctrl+wheel pinch-zoom gesture. At either end of
+// the run the event is not swallowed, so it stays available to anything else
+// listening. Scrolling is instant (no smooth behaviour), which keeps wheel
+// momentum responsive and needs no reduced-motion exception.
+function wheelToHorizontal(scroller) {
+  scroller.addEventListener("wheel", (e) => {
+    if (e.ctrlKey) return;
+    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+    const max = scroller.scrollWidth - scroller.clientWidth;
+    if (max <= 1) return;
+    // deltaMode: 0 pixels, 1 lines, 2 pages.
+    const unit = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? scroller.clientWidth : 1;
+    const next = Math.max(0, Math.min(max, scroller.scrollLeft + e.deltaY * unit));
+    if (next === scroller.scrollLeft) return;
+    e.preventDefault();
+    scroller.scrollLeft = next;
+  }, { passive: false });
 }
 
 // Deterministic slight rotation per record id — a print laid down by hand.

@@ -495,88 +495,6 @@ body {
   opacity: 0.5;
 }
 
-/* ── Browse strip — horizontal filmstrip ─────────────────────────────────────── */
-:root { --browse-strip-height: 140px; }
-
-.browse-strip-wrap {
-  position: fixed;
-  top: 50%;
-  left: 0;
-  right: 0;
-  transform: translateY(-50%);
-  pointer-events: auto;
-  overflow-x: auto;
-  overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  text-align: center;
-}
-.browse-strip-wrap::-webkit-scrollbar { display: none; }
-
-.browse-strip {
-  display: inline-flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 1rem var(--overlay-padding);
-  padding-left: 4rem;
-  list-style: none;
-  margin: 0;
-  text-align: left;
-}
-.browse-strip::-webkit-scrollbar { display: none; }
-
-.browse-strip__item {
-  flex-shrink: 0;
-  cursor: pointer;
-}
-
-.browse-strip__btn {
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.4rem;
-  font-family: inherit;
-  color: var(--overlay-muted);
-  transition: color var(--dur-base), opacity var(--dur-base);
-  min-width: 44px;
-}
-.browse-strip__btn:hover { color: var(--overlay-text); }
-
-.browse-strip__thumb {
-  width: auto;
-  height: var(--browse-strip-height, 140px);
-  object-fit: contain;
-  display: block;
-}
-
-/* Text-only items (no image) */
-.browse-strip__text {
-  font-size: var(--text-xs);
-  max-width: 80px;
-  text-align: center;
-  word-break: break-word;
-  line-height: var(--leading-base);
-  color: var(--overlay-text);
-}
-
-/* Year label within the strip */
-.browse-strip__year {
-  flex-shrink: 0;
-  font-size: var(--text-xs);
-  color: var(--overlay-muted);
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-wider);
-  opacity: 0.4;
-  align-self: center;
-  padding: 0 0.5rem;
-  user-select: none;
-}
-
 /* ── Item grid — column-major, horizontally scrolling ───────────────────────── */
 :root { --item-grid-cell-height: 160px; }
 
@@ -588,7 +506,7 @@ body {
   transform: translateY(-50%);
   /* The scroll container itself must receive touch events, or it will not
      scroll — a child opting back in with pointer-events:auto does not restore
-     scrolling of its ancestor. Matches .browse-strip-wrap. */
+     scrolling of its ancestor. */
   pointer-events: auto;
   overflow-x: auto;
   overflow-y: hidden;   /* overflow-x:auto otherwise promotes overflow-y to auto → phantom vertical scrollbar */
@@ -749,6 +667,9 @@ body {
 .item-grid--photos .item-grid__btn--photo,
 .item-grid__cell--photos .item-grid__btn--photo {
   padding: 0.9rem;
+  /* Containing block for the title overlay, which is anchored to the cell
+     rather than the print so it gets the full cell width (Bay, 2026-09-11). */
+  position: relative;
 }
 .photo-pile {
   position: relative;
@@ -782,8 +703,10 @@ body {
   .item-grid__btn:hover .photo-pile__sheet--u1 { transform: rotate(-2.4deg) translate(-3px, 3px); }
   .item-grid__btn:hover .photo-pile__sheet--u2 { transform: rotate(1.8deg) translate(4px, -2px); }
 }
-/* Title overlay on the cover print, films-style: hidden until hover/focus
-   (the shared hover:none rule keeps it always visible on touch). */
+/* Title overlay across the whole cell, films-style: hidden until hover/focus
+   (the shared hover:none rule keeps it always visible on touch). It is a child
+   of the button, so the gradient band reaches the cell's edges and a long title
+   is no longer clamped to a narrow print's width. */
 .item-grid--photos .item-grid__btn:hover .item-grid__title,
 .item-grid--photos .item-grid__btn:focus-visible .item-grid__title,
 .item-grid__cell--photos .item-grid__btn:hover .item-grid__title,
@@ -1677,7 +1600,6 @@ body {
 @media (max-width: 600px) {
   :root {
     --overlay-padding: 1rem;
-    --browse-strip-height: 100px;
     --item-grid-cell-height: 120px;
   }
 
@@ -1691,8 +1613,6 @@ body {
   /* On small screens, the breadcrumb carries location context; hide the meta
      layer rather than stacking two overlays in the same corner. */
   .layer-meta { display: none; }
-
-  .browse-strip__thumb { height: var(--browse-strip-height, 100px); }
 
   .item-grid { padding-left: var(--overlay-padding); }
 

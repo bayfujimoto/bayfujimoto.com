@@ -114,6 +114,19 @@ export async function initDesk() {
   let renderer;
   try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: "high-performance" }); }
   catch (e) { dismissLoadingScreen(); return; }
+
+  // ── The fan, registered now, furnished later ──
+  // The series layer is the fan (the lifted bundle, in hand), and panels.js has
+  // to know that before it restores a deep link — which it does the moment its
+  // own archive fetch lands, i.e. while this function is still awaiting its
+  // first fetch below. Registered any later and a deep link's series layer is
+  // built from the fallback text list, so walking back up from the item to the
+  // collection shows the list instead of the documents. Only `ctx` is needed to
+  // hand back a sheet; the scene the sheet reads (camera, bundles, archive) is
+  // filled into `fanDeps` once it exists, and the sheet's setup() already waits
+  // on ctx.whenReady, which resolves after that.
+  const fanDeps = { ctx };
+  configureAltDesk({ seriesSheet: makeFanFactory(fanDeps) });
   // Budget: a phone renders at 1.5× at most; a desktop at 2× unless that is
   // more than ~6 MP, in which case the ratio comes down to meet it. Shadows
   // are 1K on a phone, 1.5K elsewhere, plain PCF, and only re-rendered when
@@ -599,8 +612,8 @@ export async function initDesk() {
     navigate({ layer: "series", series: p.id, subcollection: null, item: null });
   });
 
-  // ── The fan, in hand ──
-  configureAltDesk({ seriesSheet: makeFanFactory({ ctx, camera, bundleGroups, stageGroup, archive, reduceMotion, getMode: () => mode, wantShadows, wake }) });
+  // ── The fan, in hand — the scene it lifts from ──
+  Object.assign(fanDeps, { camera, bundleGroups, stageGroup, archive, reduceMotion, getMode: () => mode, wantShadows, wake });
 
   // ── Build ──
   buildFolder();
@@ -649,6 +662,11 @@ export async function initDesk() {
   window.addEventListener("pointerdown", () => wake(1400), { passive: true });
   window.addEventListener("keydown", () => wake(1400));
   document.addEventListener("visibilitychange", () => { if (!document.hidden) { wantShadows(); wake(600); } });
+  // If the context is ever lost anyway (a phone backgrounded, a driver reset),
+  // three re-uploads everything on restore — but the on-demand loop has no
+  // reason to draw, so the desk would sit there black with a perfectly good
+  // context. Ask for frames.
+  canvas.addEventListener("webglcontextrestored", () => { wantShadows(); wake(1500); });
 
   window.addEventListener("resize", () => {
     camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix();
@@ -680,7 +698,10 @@ export async function initDesk() {
 const LIFT_MS = 900, LOWER_MS = 340;
 const easeInOut = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
-function makeFanFactory({ ctx, camera, bundleGroups, stageGroup, archive, reduceMotion, getMode, wantShadows, wake }) {
+// `D` is filled in by initDesk once the scene exists (see fanDeps there), so
+// everything it carries is read inside setup(), which runs no earlier than
+// D.ctx.whenReady.
+function makeFanFactory(D) {
   return function makeFanSheet(seriesKey, H) {
     const veil = H.makeVeil(() => navigate({ layer: "desk" }));
     const content = H.makeContent(); content.classList.add("da-fan-content");
@@ -688,7 +709,8 @@ function makeFanFactory({ ctx, camera, bundleGroups, stageGroup, archive, reduce
     let teardown = () => {};
 
     function setup() {
-      const s = archive.series[seriesKey]; if (!s) return;
+      const { camera, bundleGroups, stageGroup, archive, reduceMotion, getMode, wantShadows, wake } = D;
+      const s = archive?.series[seriesKey]; if (!s) return;
       const entry = bundleGroups.get(seriesKey);
       // hand canvas + renderer + scene
       const hc = document.createElement("canvas"); hc.className = "desk-hand-canvas"; hc.setAttribute("aria-hidden", "true");
@@ -811,6 +833,25 @@ function makeFanFactory({ ctx, camera, bundleGroups, stageGroup, archive, reduce
       const start = performance.now();
       const rising = !reduceMotion && getState().layer === "series";
       let phase = "up", phaseStart = start, raf = 0;
+      // The hand is a SECOND WebGL context, made fresh every time a collection
+      // opens. `dispose()` frees three's own objects but leaves the context
+      // itself alive until the garbage collector happens to reach it, and a
+      // browser keeps only a handful (~8–16) — so opening and backing out
+      // enough times makes it drop the OLDEST context to make room, which is
+      // the desk. The desk then renders nothing (black) while the DOM, the
+      // raycaster and every click carry on as if nothing had happened, until a
+      // reload. So hand the context back explicitly the moment the fan is
+      // done with it, exactly as model-plate.js and desk-inspect.js do.
+      let handReleased = false;
+      function releaseHand() {
+        if (handReleased) return; handReleased = true;
+        cancelAnimationFrame(raf); raf = 0;
+        // only the fallback planes are the fan's own; a cloned sheet shares its
+        // geometry and material with the doc still sitting on the desk.
+        papers.forEach((p) => { if (!p.src) { p.mesh.geometry.dispose(); p.mesh.material.dispose(); } });
+        hc.remove(); hr.dispose(); hr.forceContextLoss?.();
+      }
+      const restoreDesk = () => { papers.forEach((p) => { if (p.src) p.src.mesh.visible = true; }); wantShadows(); wake(400); };
       function frame(now) {
         raf = requestAnimationFrame(frame);
         let a;
@@ -819,7 +860,7 @@ function makeFanFactory({ ctx, camera, bundleGroups, stageGroup, archive, reduce
         papers.forEach((p) => { pose(p, a); p.mesh.updateMatrixWorld(); });
         placeButtons();
         hr.render(hs, camera);
-        if (phase === "down" && a <= 0) { cancelAnimationFrame(raf); papers.forEach((p) => { if (p.src) p.src.mesh.visible = true; }); wantShadows(); wake(400); hc.remove(); hr.dispose(); }
+        if (phase === "down" && a <= 0) { restoreDesk(); releaseHand(); }
       }
       frame(start);
       const onResize = () => { hr.setSize(window.innerWidth, window.innerHeight); computeTo(); };
@@ -831,10 +872,10 @@ function makeFanFactory({ ctx, camera, bundleGroups, stageGroup, archive, reduce
         if (reduceMotion) { phaseStart -= LOWER_MS; }   // the phone lowers its sheets too
         setTimeout(() => meta.remove(), 400);
         // safety: if the frame loop never lands (tab hidden), restore
-        setTimeout(() => { papers.forEach((p) => { if (p.src) p.src.mesh.visible = true; }); wantShadows(); wake(400); if (hc.isConnected) { cancelAnimationFrame(raf); hc.remove(); hr.dispose(); } }, LOWER_MS + 200);
+        setTimeout(() => { restoreDesk(); releaseHand(); }, LOWER_MS + 200);
       };
     }
-    requestAnimationFrame(() => { if (ctx.ready) setup(); else ctx.whenReady.then(() => requestAnimationFrame(setup)); });
+    requestAnimationFrame(() => { if (D.ctx.ready) setup(); else D.ctx.whenReady.then(() => requestAnimationFrame(setup)); });
     return { veil, content, cleanup: () => { teardown(); escOff(); }, onHoist: () => {}, update: (state) => state.layer === "series" && state.series === seriesKey };
   };
 }

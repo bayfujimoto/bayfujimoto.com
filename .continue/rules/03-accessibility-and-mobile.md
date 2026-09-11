@@ -18,7 +18,7 @@ These requirements apply to every phase going forward. The mobile site must keep
 - Item image max-height: 60vh; max-width: 90vw at ≤600px
 
 ### Interaction Requirements:
-- Touch scrolling: The horizontal browse strip (`.browse-strip`) must be touch-scrollable with `-webkit-overflow-scrolling: touch` and `scroll-snap-type: x proximity`
+- Horizontal scrolling: The item grid (`.item-grid-wrap`) is the site's horizontal scroller and must stay reachable by every input — touch-scrollable with `-webkit-overflow-scrolling: touch`, and a mouse wheel's vertical delta translated into horizontal scroll (`wheelToHorizontal` in `panels.js`)
 - No hover dependencies: All interactions must be reachable by tap. Never rely on hover-only affordances to reveal navigation or content
 - Pinch-to-zoom: Item images must support pinch-to-zoom via Pointer Events API (implemented in `panels.js` `makeItemSheet`)
 - Touch targets: All interactive overlay elements must have a minimum touch target of 44×44px
