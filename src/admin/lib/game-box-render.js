@@ -12,11 +12,17 @@ const cache = new Map();
 
 function loadStatic(path) {
   if (!cache.has(path)) {
+    const url = `${BASE}/${path}`;
     cache.set(path, new Promise((resolve, reject) => {
       const img = new Image();
       img.onload = () => resolve(img);
-      img.onerror = () => reject(new Error(`could not load ${path}`));
-      img.src = `${BASE}/${path}`;
+      // A missing file is answered by the SPA catch-all with index.html, so the
+      // image simply fails to decode. The usual cause is that public/game-boxes/
+      // was never committed (the repo gitignores *.png — .gitignore carries an
+      // exception for this folder).
+      img.onerror = () => reject(new Error(
+        `could not load ${url} — is public/game-boxes/ committed and deployed?`));
+      img.src = url;
     }));
   }
   return cache.get(path);

@@ -1,6 +1,7 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync, unlinkSync } from "fs";
 import { resolve, dirname } from "path";
-import { S3Client, PutObjectCommand, DeleteObjectsCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, DeleteObjectsCommand, GetObjectCommand } from "@aws-sdk/client-s3";
+import { searchGames, allowedImageUrl, fetchGridImage } from "../../../netlify/lib/steamgriddb.js";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 function loadEnvLocal() {
@@ -321,6 +322,106 @@ export function githubWritePlugin() {
         } catch (e) {
           res.writeHead(500);
           res.end(JSON.stringify({ ok: false, error: e.message }));
+        }
+      });
+
+      // R2 presigned GET — the counterpart to r2-upload-url, mirroring the
+      // Netlify r2-get-url function. The admin needs an original's pixels back
+      // for anything that re-derives from the master: rotation, and re-rendering
+      // a game box after its platform, rating or fit changes. Without this the
+      // public bucket is a different origin and the canvas read would taint.
+      server.middlewares.use("/api/r2-get-url", async (req, res) => {
+        res.setHeader("Content-Type", "application/json");
+
+        if (req.method !== "POST") {
+          res.writeHead(405);
+          res.end(JSON.stringify({ ok: false, error: "Method not allowed" }));
+          return;
+        }
+
+        const ACCOUNT_ID    = process.env.CLOUDFLARE_ACCOUNT_ID;
+        const BUCKET        = process.env.R2_BUCKET_NAME;
+        const ACCESS_KEY_ID = process.env.R2_ACCESS_KEY_ID;
+        const SECRET_KEY    = process.env.R2_SECRET_ACCESS_KEY;
+
+        if (!ACCOUNT_ID || !BUCKET || !ACCESS_KEY_ID || !SECRET_KEY) {
+          res.writeHead(500);
+          res.end(JSON.stringify({ ok: false, error: "R2 env vars not configured — add CLOUDFLARE_ACCOUNT_ID, R2_BUCKET_NAME, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY to .env.local" }));
+          return;
+        }
+
+        let payload;
+        try {
+          payload = await readBody(req);
+        } catch {
+          res.writeHead(400);
+          res.end(JSON.stringify({ ok: false, error: "Invalid JSON body" }));
+          return;
+        }
+
+        const { key } = payload;
+        const slash = typeof key === "string" ? key.indexOf("/") : -1;
+        const prefix = slash > 0 ? key.slice(0, slash) : "";
+        if (!key || key.includes("..") || !["originals", "thumbnails", "display", "cutouts"].includes(prefix)) {
+          res.writeHead(400);
+          res.end(JSON.stringify({ ok: false, error: "Invalid key" }));
+          return;
+        }
+
+        try {
+          const client = new S3Client({
+            region: "auto",
+            endpoint: `https://${ACCOUNT_ID}.r2.cloudflarestorage.com`,
+            credentials: { accessKeyId: ACCESS_KEY_ID, secretAccessKey: SECRET_KEY },
+          });
+          const url = await getSignedUrl(client, new GetObjectCommand({ Bucket: BUCKET, Key: key }), { expiresIn: 300 });
+          res.writeHead(200);
+          res.end(JSON.stringify({ ok: true, url }));
+        } catch (e) {
+          res.writeHead(500);
+          res.end(JSON.stringify({ ok: false, error: `R2 presign failed: ${e.message}` }));
+        }
+      });
+
+      // SteamGridDB — key art search for the game intake, over the same shared
+      // module the Netlify function uses (netlify/lib/steamgriddb.js). The key
+      // comes from .env.local; no passkey session exists in local dev.
+      server.middlewares.use("/api/steamgriddb", async (req, res) => {
+        const params = new URL(req.url, "http://localhost").searchParams;
+        const sendJson = (code, body) => {
+          res.setHeader("Content-Type", "application/json");
+          res.writeHead(code);
+          res.end(JSON.stringify(body));
+        };
+
+        if (req.method !== "GET") { sendJson(405, { ok: false, error: "Method not allowed" }); return; }
+
+        const key = process.env.STEAMGRIDDB_API_KEY;
+        if (!key) { sendJson(500, { ok: false, error: "STEAMGRIDDB_API_KEY not set — add it to .env.local and restart the dev server" }); return; }
+
+        const image = params.get("image");
+        if (image) {
+          const u = allowedImageUrl(image);
+          if (!u) { sendJson(400, { ok: false, error: "image host not allowed" }); return; }
+          try {
+            const { buffer, contentType } = await fetchGridImage(u);
+            res.setHeader("Content-Type", contentType);
+            res.setHeader("Cache-Control", "private, max-age=300");
+            res.writeHead(200);
+            res.end(Buffer.from(buffer));
+          } catch (e) {
+            sendJson(502, { ok: false, error: e.message });
+          }
+          return;
+        }
+
+        const q = (params.get("q") || "").trim();
+        if (!q) { sendJson(400, { ok: false, error: "missing q" }); return; }
+
+        try {
+          sendJson(200, { ok: true, games: await searchGames(key, q) });
+        } catch (e) {
+          sendJson(502, { ok: false, error: e.message });
         }
       });
 

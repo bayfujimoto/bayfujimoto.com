@@ -26,6 +26,35 @@ import {
 
 const PREVIEW_HEIGHT = 260;
 
+// /api/steamgriddb is a Netlify function in production and a vite middleware in
+// local dev. When neither is serving it, the SPA catch-all answers with
+// index.html, and res.json() would fail with "Unexpected token '<'" — which
+// tells the archivist nothing. Name the real cause instead.
+const ENDPOINT_MISSING =
+  "/api/steamgriddb did not answer — check netlify/functions/steamgriddb.js is committed and deployed, " +
+  "or restart the dev server locally";
+
+async function apiSearch(url) {
+  const res = await fetch(url);
+  const text = await res.text();
+  let data = null;
+  try { data = JSON.parse(text); } catch { /* not JSON — the endpoint is missing */ }
+  if (!data) throw new Error(ENDPOINT_MISSING);
+  if (!data.ok) throw new Error(data.error || `search failed (${res.status})`);
+  return data;
+}
+
+async function apiImage(url) {
+  const res = await fetch(url);
+  const type = res.headers.get("content-type") || "";
+  if (res.ok && type.startsWith("image/")) return res.blob();
+  if (type.includes("json")) {
+    const data = await res.json().catch(() => null);
+    throw new Error(data?.error || `image fetch failed (${res.status})`);
+  }
+  throw new Error(ENDPOINT_MISSING);
+}
+
 export function makeGameBoxControl({ getValue, setField, subscribe, onArtFile, onRerender }) {
   let art = null;         // drawable of the current master (img or canvas)
   let current = null;     // stored asset value ("name?v=…") or null
@@ -224,9 +253,7 @@ export function makeGameBoxControl({ getValue, setField, subscribe, onArtFile, o
     findStatus.textContent = "Searching…";
     results.replaceChildren();
     try {
-      const res = await fetch(`/api/steamgriddb?q=${encodeURIComponent(term)}`);
-      const data = await res.json();
-      if (!data.ok) throw new Error(data.error || "search failed");
+      const data = await apiSearch(`/api/steamgriddb?q=${encodeURIComponent(term)}`);
       if (!data.games.length) { findStatus.textContent = "No matches."; return; }
       findStatus.textContent = `${data.games.length} match${data.games.length === 1 ? "" : "es"} — pick a cover`;
       for (const g of data.games) {
@@ -265,9 +292,7 @@ export function makeGameBoxControl({ getValue, setField, subscribe, onArtFile, o
   async function pick(game, grid) {
     findStatus.textContent = "Fetching art…";
     try {
-      const res = await fetch(`/api/steamgriddb?image=${encodeURIComponent(grid.url)}`);
-      if (!res.ok) throw new Error(`image fetch failed (${res.status})`);
-      const blob = await res.blob();
+      const blob = await apiImage(`/api/steamgriddb?image=${encodeURIComponent(grid.url)}`);
       const ext = (blob.type.split("/")[1] || "png").replace("jpeg", "jpg");
       const file = new File([blob], `steamgriddb-${grid.id}.${ext}`, { type: blob.type });
       // Prefill what the record lacks — never overwrite what's typed.
