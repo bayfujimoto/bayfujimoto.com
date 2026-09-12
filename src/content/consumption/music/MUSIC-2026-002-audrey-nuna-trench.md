@@ -6,8 +6,8 @@ series: consumption
 subcollection: music
 item_type: album
 status: published
-display_date: June 22, 2026
-sort_date: "2026-06-22"
+display_date: October 18, 2024
+sort_date: "2024-10-18"
 artist: Audrey Nuna
 year: "2024"
 music_label: Arista Records

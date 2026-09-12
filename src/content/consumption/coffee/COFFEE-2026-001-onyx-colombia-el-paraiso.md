@@ -16,11 +16,5 @@ acidity: 9.25
 body: 8
 finish: 8.5
 overall: 8.75
-tags: []
-assets:
-  front:
-  back:
-  thumbnail:
-context_note: >-
-  Hot pink on the bag. Acidity first.
+context_note: Stone fruit, jam
 ---
