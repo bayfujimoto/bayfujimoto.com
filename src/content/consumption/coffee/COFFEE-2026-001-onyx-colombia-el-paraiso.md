@@ -11,10 +11,16 @@ sort_date: "2025-03-01"
 roaster: Onyx Coffee Lab
 origin: Colombia
 process: Washed
+aroma: 8.75
+acidity: 9.25
+body: 8
+finish: 8.5
+overall: 8.75
 tags: []
 assets:
   front:
   back:
   thumbnail:
-context_note: >
+context_note: >-
+  Hot pink on the bag. Acidity first.
 ---

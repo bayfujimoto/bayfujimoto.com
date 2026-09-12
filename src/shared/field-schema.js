@@ -58,6 +58,16 @@ export const FIELDS = {
   rating:       { label: "rating",     example: "e.g. 4 / 5", adminSkip: true }, // OPEN cell #3: ingest-written, shown on card, not hand-edited
   origin:       { label: "origin",     example: "e.g. Huila, Colombia" },
   process:      { label: "process",    example: "e.g. washed, natural" },
+
+  // ── cupping (coffee) ──
+  // The five short scales the desk's cupping form plots, on the SCA's 6-10.
+  // Kept off the card (RECORD_ONLY): three slots are already spoken for, and a
+  // score reads as a form, not as a catalog row.
+  aroma:        { label: "aroma",      mono: true, example: "6-10, quarter steps, e.g. 8.75" },
+  acidity:      { label: "acidity",    mono: true, example: "6-10, quarter steps, e.g. 9" },
+  body:         { label: "body",       mono: true, example: "6-10, quarter steps, e.g. 8" },
+  finish:       { label: "finish",     mono: true, example: "6-10, quarter steps, e.g. 8.5" },
+  overall:      { label: "overall",    mono: true, example: "6-10, quarter steps, e.g. 8.75" },
   varietal:     { label: "varietal",   example: "e.g. Caturra" },
   platform:     { label: "platform",   example: "e.g. PC, Switch" },
   play_status:  { label: "status",     example: "completed / playing / abandoned" }, // NOTE: distinct from record `status`
@@ -132,7 +142,7 @@ export const TYPES = {
   film: { creator: { key: "director",  mode: "always" }, slots: ["year", "seen_via", "rating"], titleGiven: true },
   book: { creator: { key: "author",    mode: "always" }, slots: ["year", "edition", "rating"], titleGiven: true },
   album: MUSIC_RELEASE, ep: MUSIC_RELEASE, single: MUSIC_TRACK,
-  bag:  { creator: { key: "roaster",   mode: "always" }, slots: ["origin", "process", "varietal"], titleGiven: true }, // coffee
+  bag:  { creator: { key: "roaster",   mode: "always" }, slots: ["origin", "process", "varietal"], titleGiven: true, cupping: true }, // coffee
   game: { creator: { key: "developer", mode: "always" }, slots: ["platform", "play_status", "rating"], titleGiven: true },
 
   // ── Creation (creator self-default → suppressed unless overridden) ──
@@ -171,6 +181,7 @@ export const RECORD_ONLY = new Set([
   "slug", "sort_date", "created_date", "visibility", "inspection", "status",
   "approximate_date",                          // feeds date-certainty display, not its own row
   "brew_method", "grinder", "ratio", "dose",   // coffee log detail
+  "aroma", "acidity", "body", "finish", "overall",   // cupping scores: the desk's form plots them, the card does not
   "rewatch", "playtime", "tools", "collaborators",
   "isbn13", "isbn",                            // book identifiers; back cover lookup, not a card row
   "dimensions_estimated",                      // flags a format-estimated size (books), not measured
@@ -245,6 +256,18 @@ export function adminFields(itemType) {
   return keys
     .filter(k => !FIELDS[k]?.adminSkip)
     .map(k => ({ id: k, label: FIELDS[k]?.label ?? k, example: FIELDS[k]?.example }));
+}
+
+/** The five cupping scales, in the order the form prints them. */
+export const CUPPING_KEYS = ["aroma", "acidity", "body", "finish", "overall"];
+
+/** Admin: cupping scores for types that are cupped (coffee). Empty for the
+ *  rest. The desk's cupping form (desk-docs.js) plots whichever are filled in;
+ *  an unscored bag prints an unmarked form. */
+export function cuppingFields(itemType) {
+  const cfg = TYPES[itemType];
+  if (!cfg?.cupping) return [];
+  return CUPPING_KEYS.map(k => ({ id: k, label: FIELDS[k].label, example: FIELDS[k].example }));
 }
 
 /** Admin: physical fields (extent, dimensions) for types whose records carry a

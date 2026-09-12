@@ -36,6 +36,15 @@ export function imageUrl(filename, variant = "original") {
     // Full-resolution transparent cut-out (derived from the raw master).
     return `${BASE}/cutouts/${stripExt(filename)}-cut.png?v=${ver || DISPLAY_VERSION}`;
   }
+  if (variant === "art-desk") {
+    // A game's cover master is BARE key art — the picture, without its box —
+    // and every other derivative is made from the composite, the art already
+    // set into the case. The desk's cartridge wants the art itself, small, so
+    // this is its own desk-sized copy, cropped to the cartridge's label window
+    // (scripts/publish-desk-assets.js). Callers pass the master as a fallback,
+    // so a record without one still shows something.
+    return `${BASE}/display/${stripExt(filename)}-art-desk.webp?v=${ver || DISPLAY_VERSION}`;
+  }
   if (variant === "cutout-desk") {
     // The same cut-out at desk size (≤ 1000 px, WebP with alpha) — what the
     // desk draws onto its sheets; scripts/publish-desk-assets.js makes them.

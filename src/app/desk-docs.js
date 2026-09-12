@@ -64,6 +64,86 @@ function accumulationSlots(items) {
   };
 }
 
+// ── The games cartridge ──────────────────────────────────────────────────────
+// A Switch 2 card at true size: 21 x 31 mm, 3.4 mm thick, drawn at the desk's
+// own PX_PER_MM like the accumulation scans and the 4 x 6 print. The shell is
+// public/desk/switch2-cartridge.webp — a template rather than a picture, with
+// its label area cut out — so the face is composed the way a game box is:
+// key art set into the window, the shell over it, the accession number
+// overprinted on the serial strip. Its silhouette is geometry, not alpha
+// (desk-scene.js, cardGeometry), which is why the document is `bare`.
+// Fractions below are measured from the source (454 x 664), so they hold at
+// any resolution the shell is ever re-exported at.
+const CARD_W = Math.round(21 * PX_PER_MM);              // 32 stage px
+const CARD_H = Math.round(CARD_W / (454 / 664));        // 47, from the template's own aspect
+const CARD_T = +(3.4 * PX_PER_MM).toFixed(2);           // 5.1 — a card is thick for its size
+const CARD_R = 36 / 454;                                // corner radius, as a fraction of the width
+const CARD_WINDOW = { x: 0.0749, y: 0.2666, w: 0.8634, h: 0.5135 };   // the label, landscape at 1.15
+const CARD_STRIP  = { x: 0.0749, y: 0.7816, w: 0.8634, h: 0.0994 };   // the serial strip, printed black
+const CARD_RED = "#ec242e";                             // sampled from the shell
+const rectOf = (f) => ({ x: f.x * CARD_W, y: f.y * CARD_H, w: f.w * CARD_W, h: f.h * CARD_H });
+
+// ── The music disc ───────────────────────────────────────────────────────────
+// A compact disc at true size: 120 mm across, a 15 mm spindle, 1.2 mm thick,
+// drawn at the desk's own PX_PER_MM like the cartridge and the 4 x 6 print. The
+// album's art is printed on the ring from 36 to 118 mm; inside it the clear
+// mirror band, where a pressed disc stamps its matrix and catalogue codes,
+// carries the accession number. Its outline AND its hole are geometry rather
+// than alpha (desk-scene.js, discGeometry), which is why the document is
+// `bare`. `CD_HOLE` is a diameter, as the geometry wants; the layer's radii are
+// radii. Only the desk uses a CD: the grid, the card and `dimensions` keep the
+// 12" vocabulary of docs/music-display-plan.md.
+const CD_D = Math.round(120 * PX_PER_MM);               // 180 stage px
+const CD_T = +(1.2 * PX_PER_MM).toFixed(2);             // 1.8 — a hundredth of the width
+const CD_HOLE = 15 / 120;                               // spindle, as a fraction of the diameter
+const CD_R = { rHole: 7.5 / 120, rMirror: 18 / 120, rLabel: 59 / 120 };   // radii ÷ diameter
+
+// ── The due-date slip ────────────────────────────────────────────────────────
+// The books document is the slip pasted inside a library book's back cover, at
+// true size (75 × 125 mm) on soft yellow card: a DATE DUE heading over a ruled
+// grid — six lines, a column rule dividing them — with the last six books read
+// stamped with the date each was finished in the red date-stamp face and the
+// titles written in beside them in the log's own hand. A circulation record
+// rather than a receipt — the archive keeps its reading the way a library
+// keeps its lending.
+const SLIP_W = Math.round(75 * PX_PER_MM);              // 113 stage px
+const SLIP_H = Math.round(125 * PX_PER_MM);             // 188
+const SLIP_PAD = 9;                                     // the printed margin
+const SLIP_HEAD = 24;                                   // the rule under the heading, and the first row's line
+const SLIP_COL = 45;                                    // the rule between the date column and the title column
+// Six ruled lines are printed; the last one falls under the disc, so only five
+// are written on. A form is printed before it is used, and a slip that ran out
+// of lines exactly where the pile covers it would be a coincidence, not a form.
+const SLIP_ROWS = 6, SLIP_FILL = 5, SLIP_ROW_H = 25, SLIP_BOX = 8.5;
+// A date stamp prints the wheels it carries: 2024-11-04 → 11/04/24.
+const stampDate = (d) => { const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(d || "")); return m ? `${m[2]}/${m[3]}/${m[1].slice(2)}` : ""; };
+// A hand writing on a 55 px line drops the series parenthetical and runs out of
+// room at about two lines: Jurassic Park (Jurassic Park, #1) → Jurassic Park.
+const slipTitle = (t) => { const s = String(t || "").replace(/\s*[([][^)\]]*[)\]]\s*$/, "").trim(); return s.length > 22 ? `${s.slice(0, 21).trimEnd()}…` : s; };
+
+// ── The cupping form ─────────────────────────────────────────────────────────
+// The coffee document is the form a cupping is scored on, at true size
+// (90 × 115 mm): roaster and coffee in the head with origin, process and date
+// opposite, then five short scales — aroma, acidity, body, finish, overall —
+// on the SCA's 6 to 10, each with a pencilled mark and the score written
+// beside it. The ring is a REAL one, scanned and cut out, laid at the size a
+// saucer actually leaves: the cup came down on the corner of a form that was
+// already being filled in. It replaces the café receipt that priced three
+// coffees at 4.50 each.
+const FORM_W = Math.round(90 * PX_PER_MM);              // 135 stage px
+const FORM_H = Math.round(115 * PX_PER_MM);             // 173
+const FORM_PAD = 10;
+const CUP_X = 44;                                       // where the scales begin
+const CUP_W = FORM_W - CUP_X - 34;                      // and end, leaving room for the score
+const CUP_ROW0 = 64, CUP_ROW_H = 18, CUP_LO = 6, CUP_HI = 10;
+const CUP_SCALES = ["aroma", "acidity", "body", "finish", "overall"];
+const PENCIL = "rgba(50,44,38,0.7)";
+const cupAt = (v) => CUP_X + ((Math.min(CUP_HI, Math.max(CUP_LO, v)) - CUP_LO) / (CUP_HI - CUP_LO)) * CUP_W;
+// The ring spans this fraction of its cropped scan; the rest is the splatter
+// thrown when the cup was set down. `stainImage` scales by it so the diameter
+// given is the RING's, whatever the crop.
+const RING_SRC = "/desk/coffee-ring.webp", RING_FRAC = 0.9018, RING_D = Math.round(65 * PX_PER_MM);
+
 const head = (text, x = 10, y = 8, extra = {}) => ({ t: "text", x, y, text, font: "mono", size: 7, letterSpacing: "0.8px", uppercase: true, opacity: 0.8, ...extra });
 const headSerif = (text, x = 10, y = 8, extra = {}) => ({ t: "text", x, y, text, font: "serif", size: 10, italic: true, ...extra });
 const mono = (text, x, y, extra = {}) => ({ t: "text", x, y, text, font: "mono", size: 5.5, lineHeight: 8, opacity: 0.6, ...extra });
@@ -108,11 +188,73 @@ export function buildDocBundles(archive) {
   const titles = (arr, n) => arr.slice(0, n).map((i) => String(i.title || "").toLowerCase());
   const logText = [titles(films, 2).join(" — "), titles(books, 2).join(", "), [...titles(music, 1), year(films[0]?.sort_date)].filter(Boolean).join(" · ")].filter(Boolean).join("\n");
   const still = films.find((f) => f.assets?.backdrop)?.assets?.backdrop || "";
-  const receiptLines = (arr, n, price) => arr.slice(0, n).map((i) => `1  ${String(i.title || "").toLowerCase().slice(0, 16).padEnd(16)} ${price}`).join("\n");
-  const bookReceipt = receiptLines(books, 3, "12.00") || "1  —";
-  const coffeeReceipt = receiptLines(coffee, 3, " 4.50") || "1  coffee            4.50";
-  const record = music[0] ? String(music[0].title || "").toLowerCase() : "side a · side b";
-  const game = games[0] ? String(games[0].title || "").toLowerCase() : "slot 1";
+  // The five most recent books read, stamped and written in. Each stamp is set
+  // down by hand: its own nudge, its own tilt, its own speckle seed — the
+  // jitter cycles, so the rows never repeat within a card.
+  const NUDGE = [1, 3, 0, 2, 1, 3], TILT = [-6, 3, -2, 4, -3, 1], SPECK = [4, 19, 33, 51, 7, 26], SLANT = [-1.5, 0.8, -0.6, 1.2, -1, 0.4];
+  const slipRows = books.slice(0, SLIP_FILL).map((b) => ({ date: stampDate(b.date_read || b.sort_date), title: slipTitle(b.title) })).filter((r) => r.date || r.title);
+  const slipLayers = [
+    { t: "text", x: SLIP_PAD, y: 11, text: "date due", font: "mono", size: 5.5, uppercase: true, letterSpacing: "1.5px", opacity: 0.62 },
+    { t: "rect", x: SLIP_PAD, y: SLIP_HEAD, w: SLIP_W - SLIP_PAD * 2, h: 0.8, color: "rgba(42,34,24,0.42)" },
+    { t: "rect", x: SLIP_COL, y: SLIP_HEAD, w: 0.6, h: SLIP_ROWS * SLIP_ROW_H, color: "rgba(42,34,24,0.26)" },
+  ];
+  // the ruled lines: one under every row, whether or not a book has been
+  // written on it — a slip is printed before it is used
+  for (let i = 1; i <= SLIP_ROWS; i++) slipLayers.push({ t: "rect", x: SLIP_PAD, y: SLIP_HEAD + i * SLIP_ROW_H, w: SLIP_W - SLIP_PAD * 2, h: 0.5, color: "rgba(42,34,24,0.26)" });
+  slipRows.forEach((r, i) => {
+    const y = SLIP_HEAD + i * SLIP_ROW_H + 5;   // the stamp sits between two lines, not on one
+    if (r.date) slipLayers.push({ t: "stampBox", x: SLIP_PAD + NUDGE[i % NUDGE.length], y, text: r.date, size: 4.2, letterSpacing: "0.3px", padX: 3.5, boxH: SLIP_BOX, lineWidth: 0.9, rotate: TILT[i % TILT.length], seed: SPECK[i % SPECK.length] });
+    if (r.title) slipLayers.push(hand(r.title, SLIP_COL + 4, y - 3, { size: 6.8, lineHeight: 7.6, maxWidth: SLIP_W - SLIP_COL - SLIP_PAD - 4, rotate: SLANT[i % SLANT.length] }));
+  });
+  // The most recently logged bag fills the form. A bag with no scores prints an
+  // unmarked one — a blank form is a truthful document, an invented mark is not.
+  const cupRec = coffee[0] || null;
+  const cupLayers = [
+    { t: "text", x: FORM_PAD, y: 11, text: "cupping form", font: "mono", size: 5.5, uppercase: true, letterSpacing: "1.5px", opacity: 0.7 },
+    { t: "rect", x: FORM_PAD, y: 22, w: FORM_W - FORM_PAD * 2, h: 0.7, color: "rgba(42,34,24,0.4)" },
+    { t: "text", x: FORM_PAD, y: 28, text: `${cupRec?.roaster || "—"}\n${cupRec?.title || ""}`, font: "serif", size: 8, lineHeight: 10, color: "#2a2218" },
+    { t: "text", x: FORM_W - FORM_PAD, y: 28, text: [cupRec?.origin, cupRec?.process, cupRec?.display_date].filter(Boolean).join("\n"), font: "mono", size: 4.4, lineHeight: 6.4, align: "right", opacity: 0.6, uppercase: true, letterSpacing: "0.5px" },
+    { t: "rect", x: FORM_PAD, y: 52, w: FORM_W - FORM_PAD * 2, h: 0.5, color: "rgba(42,34,24,0.22)" },
+  ];
+  CUP_SCALES.forEach((key, i) => {
+    const y = CUP_ROW0 + i * CUP_ROW_H, score = Number(cupRec?.[key]);
+    cupLayers.push({ t: "text", x: FORM_PAD, y: y - 3, text: key, font: "mono", size: 4.6, opacity: 0.65, letterSpacing: "0.4px" });
+    cupLayers.push({ t: "rect", x: CUP_X, y, w: CUP_W, h: 0.5, color: "rgba(42,34,24,0.35)" });
+    for (let v = CUP_LO; v <= CUP_HI; v++) cupLayers.push({ t: "rect", x: cupAt(v), y: y - 2.4, w: 0.5, h: 5, color: `rgba(42,34,24,${v % 2 ? 0.22 : 0.35})` });
+    if (Number.isFinite(score)) {
+      cupLayers.push({ t: "text", x: cupAt(score), y: y - 7, text: "|", font: "note", size: 14, weight: 600, color: PENCIL, rotate: [-5, 4, -3, 6, -2][i] });
+      cupLayers.push({ t: "text", x: FORM_W - FORM_PAD, y: y - 7, text: String(score), font: "note", size: 10, color: PENCIL, align: "right", rotate: [2, -3, 1, -2, 3][i] });
+    }
+  });
+  cupLayers.push({ t: "text", x: FORM_PAD, y: 142, text: "notes", font: "mono", size: 4.2, uppercase: true, letterSpacing: "0.5px", opacity: 0.5 });
+  cupLayers.push({ t: "rect", x: FORM_PAD, y: 149, w: FORM_W - FORM_PAD * 2, h: 0.4, color: "rgba(42,34,24,0.2)" });
+  // two lines of pencil and no more: the form's foot is 20 px tall
+  if (cupRec?.context_note) cupLayers.push(note(String(cupRec.context_note).trim().slice(0, 44), FORM_PAD + 1, 152, { size: 9.5, lineHeight: 9, color: PENCIL, maxWidth: FORM_W - FORM_PAD * 2 - 2, rotate: -1.5 }));
+  // The cup came down on the bottom LEFT, running off that corner. On the desk
+  // the films log covers everything but the form's left edge, so the ring goes
+  // where it can be seen: a stain on a paper edge from across the room, the
+  // whole form when the bundle is opened.
+  cupLayers.push({ t: "stainImage", src: RING_SRC, ring: RING_FRAC, x: FORM_W * 0.16, y: FORM_H * 0.84, d: RING_D, rotate: -14, opacity: 1 });
+  cupLayers.push({ t: "crease", angle: 0, at: 46, strength: 0.5 });
+  // The disc carries the most recent album: its cover printed on the label ring,
+  // its accession number stamped in the mirror band. A music cover needs no
+  // special derivative the way a game's does — nothing is baked into a box, so
+  // the display copy IS the art.
+  const albumRec = music[0] || null;
+  const albumArt = albumRec?.assets?.cover ? imageUrl(albumRec.assets.cover, "display") : null;
+  const albumTitle = String(albumRec?.title || "").slice(0, 20).trim();
+  // the marker is one size of nib; the writing shrinks to fit the label, the
+  // way a hand does when it runs out of disc
+  const albumMarker = albumTitle.length <= 8 ? 24 : albumTitle.length <= 13 ? 18 : 14;
+  // The cartridge carries the most recent game: its key art on the label, its
+  // accession number on the serial strip. The art wanted is the BARE art — the
+  // master, since every derivative is made from the art already set into its
+  // box — so the desk-sized copy is asked for first and the master stands in
+  // until scripts/publish-desk-assets.js has made one.
+  const gameRec = games[0] || null;
+  const gameCover = gameRec?.assets?.cover || null;
+  const gameArt = gameCover ? imageUrl(gameCover, "art-desk") : null;
+  const gameArtFull = gameCover ? imageUrl(gameCover, "original") : null;
 
   // A 4 × 6 print of one of the photos, chosen afresh on every load: the first
   // gallery image of a random photo entry, at true size (PX_PER_MM), and
@@ -139,17 +281,60 @@ export function buildDocBundles(archive) {
       doc(null, 4, 282, 100, 11, { torn: "top", seed: 3, layers: [{ t: "rules", opacity: 0.3 }] }),
     ] },
 
-    { id: "consumption", title: labelOf("consumption"), sub: "log · receipts · sleeve · card", box: [S(170), S(160)], clips: [{ kind: "paperclip", x: S(222 - 78) + 10, y: S(12 + 8) + 24, r: 0 }], docs: [
-      doc("books", 135, 38, 62, 120, { stock: "thermal", rot: 3, layers: [mono(`books\n—\n${bookReceipt}\n—`, 6, 8), { t: "crease", angle: 0, at: 58, strength: 0.6 }] }),
-      doc("music", 107, 104, 72, 72, { stock: "white", rot: -2, layers: [head("record", 6, 6), note(record, 8, 30, { size: 13, maxWidth: 110 }), { t: "disc", x: S(72) - 44, y: S(72) - 44 }] }),
-      doc("coffee", -7, 78, 56, 100, { stock: "thermal", rot: -4, layers: [mono(`café\n—\n${coffeeReceipt}\n—\nthank you`, 6, 8), { t: "stain", x: -20, y: 50, w: 70, h: 60, ring: true, opacity: 0.6 }] }),
-      doc("games", 27, 126, 70, 44, { rot: 2, layers: [head(`save · ${game}`, 10, 6), mono("slot 1  ▸ 03:12:44\nslot 2  — empty", 8, 22, { opacity: 0.5 })] }),
+    { id: "consumption", title: labelOf("consumption"), sub: "log · slip · form · disc · cartridge", box: [S(170), S(160)], clips: [{ kind: "paperclip", x: S(222 - 78) + 10, y: S(12 + 8) + 24, r: 0 }], docs: [
+      {
+        // FIRST in the bundle, and that is the whole trick. A solid rides at
+        // its slot plus its full thickness, which is five documents' worth of
+        // stacking here — so from a later slot the disc would clear even the
+        // next bundle and sit on top of everything. From the first slot its top
+        // falls just under the creation sketches sheet, which runs over its
+        // lower left and takes about a third of it: the edge that makes it read
+        // as a disc slid under the papers rather than one laid on them. It
+        // still covers the sheets of its own bundle, clear of the log's
+        // handwritten titles and the books receipt's lines, and the fan shows
+        // it whole — obscured where it rests, entire where it is examined.
+        sub: "music", object: "disc", bare: true, gloss: true,
+        x: S(122), y: S(105), rot: -5, w: CD_D, h: CD_D, thickness: CD_T, hole: CD_HOLE, seed: 11,
+        layers: [
+          { t: "cd", src: albumArt, id: albumRec?.id || "", ...CD_R },
+          // the title in silver marker, the way a disc gets labelled by hand —
+          // skewed, and set off the spindle rather than around it. It runs up
+          // and to the left, so the creation sheet lying over the disc's upper
+          // left takes the head of the word on the desk and the fan shows it
+          // whole — obscured where it rests, entire where it is examined.
+          ...(albumTitle ? [{ t: "marker", x: CD_D * 0.33, y: CD_D * 0.30, rotate: -16, text: albumTitle, size: albumMarker, nib: albumMarker * 0.08, align: "center" }] : []),
+        ],
+      },
+      // The slip sits where the books receipt sat, its printed margin still
+      // under the log's edge. It cannot go further left: at 75 mm wide the two
+      // columns need the whole card, and a stamp half-covered by the log is a
+      // stamp that cannot be read. It rides high enough in the bundle that its
+      // three stamped rows clear the disc — a solid stands on its whole
+      // thickness, so the disc's face is above this sheet however early its
+      // slot is, and what it covers here is the slip's unused half.
+      { ...doc("books", 157, 22, SLIP_W / K, SLIP_H / K, { stock: "legal", rot: 3, seed: 21, layers: slipLayers }), texScale: 2 },
+      doc("coffee", -20, 78, FORM_W / K, FORM_H / K, { stock: "white", rough: true, rot: -4, seed: 17, layers: cupLayers }),
       doc("films", 7, 8, 155, 140, { stock: "white", rough: true, layers: [
         head("log · films books records", 44, 8), { t: "text", x: 44, y: 24, text: "Log", font: "serif", size: 44, color: "#2a3f66", letterSpacing: "-0.5px" },
         { t: "rules", top: 64, opacity: 0.3 }, hand(logText, 70, 120, { size: 9.5, lineHeight: 17 }),
         { t: "stain", x: 190, y: 170, w: 70, h: 62, ring: true }, note("again in sept.", 8, 200, { size: 16, color: "rgba(50,44,38,.7)" }), { t: "crease", angle: 90, at: 50, strength: 0.9 },
         { t: "photo", x: 200, y: 96, w: 40, h: 40, src: still || null, rotate: -1 }, tape(200 / K - 8, 96 / K - 5, 20, 7, -30),
       ] }),
+      {
+        sub: "games", object: "card", bare: true, gloss: true, texScale: 4,
+        x: S(74), y: S(48), rot: -7, w: CARD_W, h: CARD_H, thickness: CARD_T, radius: CARD_R, shell: CARD_RED, handDepth: 0.35, seed: 6,
+        layers: [
+          // the moulding first, so nothing behind the shell is ever bare canvas
+          { t: "rect", x: 0, y: 0, w: CARD_W, h: CARD_H, color: CARD_RED },
+          // an unprinted label, in case the art never arrives
+          { ...rectOf(CARD_WINDOW), t: "rect", color: "#2a2b30" },
+          { ...rectOf(CARD_WINDOW), t: "image", src: gameArt, fallback: gameArtFull, fit: "cover" },
+          { t: "image", src: "/desk/switch2-cartridge.webp", x: 0, y: 0, w: CARD_W, h: CARD_H },
+          // the serial strip is printed LB-XXXXX-XXX-0; overprint the record's own number
+          { ...rectOf(CARD_STRIP), t: "rect", color: "#0a0a0b" },
+          { t: "text", x: CARD_W / 2, y: CARD_STRIP.y * CARD_H + (CARD_STRIP.h * CARD_H - 3.4) / 2, text: gameRec?.id || "GAME-0000-000", font: "mono", size: 3.4, align: "center", color: "#e9e4d8", letterSpacing: "0.15px" },
+        ],
+      },
     ] },
 
     { id: "creation", title: labelOf("creation"), sub: "sketch · note · print · pattern · strip", box: [S(170), S(190)], clips: [], docs: [

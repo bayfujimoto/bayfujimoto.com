@@ -6,7 +6,7 @@
 // Labor and Identity keep bespoke groups — they use custom inspection views, not
 // the card.
 
-import { adminFields, physicalFields } from "../../shared/field-schema.js";
+import { adminFields, physicalFields, cuppingFields } from "../../shared/field-schema.js";
 import { PLATFORMS, ESRB_RATINGS } from "../../shared/game-box.js";
 
 const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
@@ -92,8 +92,14 @@ export function getTypeGroups(itemType) {
     case "single":
       return [schemaMetaGroup(itemType, "music-meta", "Music"), assetGroupWithThumb(["cover"])];
 
+    // Coffee: the five cupping scales get their own group, because they are a
+    // form the archivist fills in rather than catalog metadata — the desk's
+    // cupping form plots them and the card never shows them.
     case "bag":
-      return [schemaMetaGroup("bag", "coffee-meta", "Coffee"), assetGroupWithThumb([
+      return [schemaMetaGroup("bag", "coffee-meta", "Coffee"), {
+        id: "cupping", label: "Cupping",
+        fields: cuppingFields("bag").map(f => ({ id: f.id, label: f.label, type: "text", placeholder: f.example })),
+      }, assetGroupWithThumb([
         { role: "front", allowCutout: true },
         { role: "back", allowCutout: true, skipThumbnail: true }, // thumbnail is the front's
       ])];

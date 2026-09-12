@@ -34,6 +34,21 @@ archive's own images).
 
 The `mix` type is dropped — only `album`, `ep`, and `single` are supported.
 
+## The desk is the exception (2026-09-11)
+
+Everything below describes the browse grid, the catalog card and the data, and
+none of it changed. **The desk alone shows music as a compact disc**: the sleeve
+that stood for the subcollection there is now a CD at true size, carrying the
+most recent album's art on its label ring and its accession number in the mirror
+band (`docs/music-cd-plan.md`). Albums and EPs still read as 12″ sleeves and
+singles as picture discs everywhere else, and `build-data.js` still stamps
+`dimensions` 314 × 314 / 300 × 300.
+
+So a visitor may find a compact disc on the desk and 12″ sleeves in the
+collection behind it. That is deliberate — the desk is a set of objects standing
+for collections, not an inventory of the formats owned — and it is written down
+here so it does not read as an oversight.
+
 ## Decisions locked
 
 These were settled before drafting (see "Open cells" for what remains):

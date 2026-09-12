@@ -36,7 +36,7 @@ import { createModelLoader } from "./model-look.js";
 import { isSceneRenderPaused } from "./scene.js";
 import { configureAltDesk } from "./panels.js";
 import { REGIMES, buildDocBundles, PX_PER_MM } from "./desk-docs.js";
-import { renderPaper, paperNormal, ensureFonts, loadImage } from "./paper.js";
+import { renderPaper, renderSurface, paperNormal, ensureFonts, loadImage } from "./paper.js";
 import "../styles/desk.css";
 import "../styles/desk-dark.css";
 
@@ -251,21 +251,107 @@ export async function initDesk() {
       group.add(hit); hitPlanes.push(hit); entry.hit = hit;
       let i = 0;
       for (const d of b.docs) {
-        const { canvas: pc } = await renderPaper(d, scale);
+        const { canvas: pc } = await renderPaper(d, scale * (d.texScale || 1));   // a small document can ask for more texels: the cartridge is 32 px wide and still has to hold its accession number open in the fan
         const tex = new THREE.CanvasTexture(pc); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8; tex.generateMipmaps = true; tex.minFilter = THREE.LinearMipmapLinearFilter;
         const mat = d.gloss
           ? new THREE.MeshPhysicalMaterial({ map: tex, transparent: true, alphaTest: 0.5, roughness: 0.38, metalness: 0, clearcoat: 0.7, clearcoatRoughness: 0.2, normalMap: paperNormalTex, normalScale: new THREE.Vector2(0.12, 0.12), side: THREE.DoubleSide, emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: 0 }) // a glossy print: smooth, with a coat that catches the lamp
           : new THREE.MeshStandardMaterial({ map: tex, transparent: true, alphaTest: 0.5, roughness: 0.92, metalness: 0, normalMap: paperNormalTex, normalScale: new THREE.Vector2(0.55, 0.55), side: THREE.DoubleSide, emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: 0 }); // emissive = the hover lift, through the sheet's own image
-        const mesh = new THREE.Mesh(new THREE.PlaneGeometry(U(d.w), U(d.h)), mat);
-        mesh.rotation.x = -Math.PI / 2; mesh.rotation.z = -(d.rot || 0) * Math.PI / 180;
-        mesh.position.set(U(d.x + d.w / 2), 0.014 + i * 0.0028, U(d.y + d.h / 2));
-        mesh.castShadow = true; mesh.receiveShadow = true;
-        mesh.customDepthMaterial = new THREE.MeshDepthMaterial({ depthPacking: THREE.RGBADepthPacking, map: tex, alphaTest: 0.5 }); // the shadow follows the sheet's real outline (cutouts)
+        let mesh;
+        if (d.object === "card" || d.object === "disc") {
+          const disc = d.object === "disc";
+          const t = U(d.thickness || 3);
+          // The disc is smooth and only weakly specular: a rough coat spread the
+          // lamp's reflection into a wash across a third of the label, where a
+          // tight one keeps it a glint at the rim, which is what a lacquered
+          // disc actually does under a lamp.
+          const face = new THREE.MeshPhysicalMaterial({ map: tex, roughness: disc ? 0.2 : 0.34, metalness: 0, clearcoat: disc ? 0.5 : 0.85, clearcoatRoughness: disc ? 0.1 : 0.16, specularIntensity: disc ? 0.45 : 1, emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: 0 });
+          // A marker written on a solid is a different SURFACE, not just a
+          // different colour: silver paint leaves a smoother, more reflective
+          // film than the lacquer under it, so the letters take the lamp as a
+          // hard glint and flare as the flashlight crosses them while the
+          // printed label stays matte. The scalars move to 1 and the maps carry
+          // the real values, so the material away from the ink is unchanged.
+          const surf = renderSurface(d, scale * (d.texScale || 1), { baseRough: disc ? 0.2 : 0.34, inkRough: 0.06, baseSpec: disc ? 0.45 : 1, inkSpec: 1 });
+          if (surf) {
+            const rough = new THREE.CanvasTexture(surf.rough); rough.anisotropy = 8;   // data, not colour: no sRGB
+            const spec = new THREE.CanvasTexture(surf.spec); spec.colorSpace = THREE.SRGBColorSpace; spec.anisotropy = 8;
+            face.roughness = 1; face.roughnessMap = rough;
+            face.specularIntensity = 1; face.specularColorMap = spec;
+          }
+          // the card's walls are shell plastic; the disc's rim and the inside of
+          // its hole are the same silvered polycarbonate as its band
+          const shell = new THREE.MeshPhysicalMaterial({ color: new THREE.Color(d.shell || (disc ? "#c9ccd2" : "#d9202c")), roughness: disc ? 0.2 : 0.44, metalness: disc ? 0.5 : 0, clearcoat: 0.6, clearcoatRoughness: disc ? 0.12 : 0.28, emissive: 0xffffff, emissiveIntensity: 0 });
+          const geo = disc
+            ? discGeometry(U(d.w), U(d.w) * (d.hole ?? 0.125), t)
+            : cardGeometry(U(d.w), U(d.h), t, U(d.w) * (d.radius ?? 0.08));
+          mesh = new THREE.Mesh(geo, [face, shell]);
+          mesh.rotation.x = -Math.PI / 2; mesh.rotation.z = -(d.rot || 0) * Math.PI / 180;
+          // The geometry is centred through its thickness, so it is lifted by
+          // half of it to rest on its slot. What decides whether anything
+          // covers it, though, is its TOP face — slot + the whole thickness —
+          // which is a solid's real height in the pile and several documents'
+          // worth of stacking above its slot. A document that should lie under
+          // the next bundle's sheets has to take an early enough slot that
+          // slot + thickness still falls below them (see the music disc).
+          mesh.position.set(U(d.x + d.w / 2), 0.014 + i * 0.0028 + t / 2, U(d.y + d.h / 2));
+          mesh.castShadow = true; mesh.receiveShadow = true;   // an opaque solid: the default depth material already casts the right shadow
+        } else {
+          mesh = new THREE.Mesh(new THREE.PlaneGeometry(U(d.w), U(d.h)), mat);
+          mesh.rotation.x = -Math.PI / 2; mesh.rotation.z = -(d.rot || 0) * Math.PI / 180;
+          mesh.position.set(U(d.x + d.w / 2), 0.014 + i * 0.0028, U(d.y + d.h / 2));
+          mesh.castShadow = true; mesh.receiveShadow = true;
+          mesh.customDepthMaterial = new THREE.MeshDepthMaterial({ depthPacking: THREE.RGBADepthPacking, map: tex, alphaTest: 0.5 }); // the shadow follows the sheet's real outline (cutouts)
+        }
         mesh.userData = { bundle: b.id, sub: d.sub || null, spec: d };
         group.add(mesh); entry.docs.push({ mesh, spec: d }); i++;
       }
     }
   }
+  // A moulded card — the games cartridge. Every other document on the desk is a
+  // sheet, so its silhouette lives in its texture's alpha; a cartridge is an
+  // object, so its silhouette is geometry: a rounded rectangle extruded to the
+  // card's real thickness. It catches the lamp along its edges and casts the
+  // shadow of a solid thing, and in the fan it rises as a card among papers.
+  // Group 0 (the caps) takes the rendered face, group 1 (the walls) plain shell
+  // plastic — the split ExtrudeGeometry already provides.
+  function cardGeometry(w, h, t, r) {
+    const sh = new THREE.Shape();
+    sh.moveTo(r, 0);
+    sh.lineTo(w - r, 0); sh.quadraticCurveTo(w, 0, w, r);
+    sh.lineTo(w, h - r); sh.quadraticCurveTo(w, h, w - r, h);
+    sh.lineTo(r, h);     sh.quadraticCurveTo(0, h, 0, h - r);
+    sh.lineTo(0, r);     sh.quadraticCurveTo(0, 0, r, 0);
+    const g = new THREE.ExtrudeGeometry(sh, { depth: t, bevelEnabled: false, curveSegments: 8 });
+    g.translate(-w / 2, -h / 2, -t / 2);
+    // The cap UVs come out of the extruder in shape coordinates; bring them to
+    // 0..1 so the face samples the document the way a plane sheet does. The
+    // walls are untextured, so their UVs do not matter.
+    const pos = g.attributes.position, uv = g.attributes.uv;
+    for (let i = 0; i < pos.count; i++) uv.setXY(i, (pos.getX(i) + w / 2) / w, (pos.getY(i) + h / 2) / h);
+    uv.needsUpdate = true;
+    return g;   // no computeVertexNormals: the extruder's flat normals keep the edges crisp
+  }
+
+  // A disc — the music CD. The same trick as cardGeometry, with the spindle
+  // hole pushed into the shape so it is a real hole: the desk shows through it,
+  // and so does the background when the fan holds it up. At 1.2 mm the edge is
+  // a hundredth of the diameter, so unlike the card there is nothing to thin
+  // when it rises.
+  function discGeometry(d, hole, t) {
+    const R = d / 2;
+    const sh = new THREE.Shape();
+    sh.absarc(0, 0, R, 0, Math.PI * 2, false);
+    const h = new THREE.Path();
+    h.absarc(0, 0, hole / 2, 0, Math.PI * 2, true);
+    sh.holes.push(h);
+    const g = new THREE.ExtrudeGeometry(sh, { depth: t, bevelEnabled: false, curveSegments: 96 });
+    g.translate(0, 0, -t / 2);
+    const pos = g.attributes.position, uv = g.attributes.uv;
+    for (let i = 0; i < pos.count; i++) uv.setXY(i, (pos.getX(i) + R) / d, (pos.getY(i) + R) / d);
+    uv.needsUpdate = true;
+    return g;
+  }
+
   function placeBundle(entry, id) {
     const Rg = R(); const Fd = Rg.folder;
     const p = Rg.bundles[id]; if (!p) return;
@@ -588,7 +674,7 @@ export async function initDesk() {
     const lifted = liftSet(litBundle);
     bundleGroups.forEach((entry, id) => {
       const on = id === litBundle, target = on ? peak : 0;
-      for (const d of entry.docs) { const m = d.mesh.material; const v = m.emissiveIntensity + (target - m.emissiveIntensity) * 0.18; if (Math.abs(v - m.emissiveIntensity) > 1e-4) { m.emissiveIntensity = v; wake(120); } }
+      for (const d of entry.docs) for (const m of (Array.isArray(d.mesh.material) ? d.mesh.material : [d.mesh.material])) { const v = m.emissiveIntensity + (target - m.emissiveIntensity) * 0.18; if (Math.abs(v - m.emissiveIntensity) > 1e-4) { m.emissiveIntensity = v; wake(120); } }
       const y = entry.group.position.y + ((entry.baseY || 0) + (lifted.has(id) ? lift : 0) - entry.group.position.y) * 0.18;
       if (Math.abs(y - entry.group.position.y) > 1e-5) { entry.group.position.y = y; wantShadows(); wake(120); }
     });
@@ -811,10 +897,20 @@ function makeFanFactory(D) {
         const t = easeInOut(a);
         p.mesh.position.lerpVectors(p.from.pos, p.to.pos, t);
         p.mesh.quaternion.slerpQuaternions(p.from.quat, p.to.quat, t);
-        p.mesh.scale.setScalar(p.from.scale + (p.to.scale - p.from.scale) * t);
+        const s = p.from.scale + (p.to.scale - p.from.scale) * t;
+        // A solid document — the games cartridge — is the only thing in hand
+        // with any depth: every sheet beside it is a plane, and the fan holds
+        // them several times desk size, where a true 3.4 mm edge reads as a
+        // block rather than a card. So its thickness alone is eased down as it
+        // rises (`handDepth` on the document) and back as it lands. The face is
+        // untouched, and on the desk — where the sheets have their own stacking
+        // and the light rakes across them — the card keeps its real thickness.
+        const dz = p.src?.spec?.handDepth;
+        if (dz != null) p.mesh.scale.set(s, s, s * (1 + (dz - 1) * t));
+        else p.mesh.scale.setScalar(s);
       };
       // the DOM button over each paper: project the plane's corners
-      const corner = new THREE.Vector3();
+      const corner = new THREE.Vector3(), MIN_TAP = 44;
       function placeButtons() {
         papers.forEach((p) => {
           const wu = U(p.w), hu = U(p.h); let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
@@ -823,7 +919,15 @@ function makeFanFactory(D) {
             const px = (corner.x + 1) / 2 * window.innerWidth, py = (1 - corner.y) / 2 * window.innerHeight;
             minX = Math.min(minX, px); maxX = Math.max(maxX, px); minY = Math.min(minY, py); maxY = Math.max(maxY, py);
           }
-          p.btn.style.cssText = `position:fixed;left:${minX}px;top:${minY}px;width:${maxX - minX}px;height:${maxY - minY}px;transform:none;pointer-events:auto`;
+          // The sheets are laid out at one shared scale, so a small document —
+          // the games cartridge, the biography slip — projects to a button far
+          // under the 44 px a finger needs. The hit area alone is grown to that
+          // floor, centred on the sheet: the drawn document is untouched, and
+          // the one-scale rule with it.
+          let bw = maxX - minX, bh = maxY - minY;
+          if (bw < MIN_TAP) { minX -= (MIN_TAP - bw) / 2; bw = MIN_TAP; }
+          if (bh < MIN_TAP) { minY -= (MIN_TAP - bh) / 2; bh = MIN_TAP; }
+          p.btn.style.cssText = `position:fixed;left:${minX}px;top:${minY}px;width:${bw}px;height:${bh}px;transform:none;pointer-events:auto`;
         });
       }
 

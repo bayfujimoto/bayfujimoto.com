@@ -12,6 +12,12 @@
 // (src/admin/lib/game-box-render.js) and sharp in the rebuild script — so both
 // produce the same picture from the same numbers.
 //
+// A template's `version` is part of every box's ?v= token and of the URL the
+// admin loads the PNG from, so bump it whenever the PNG or the geometry changes
+// — that is what moves cached boxes and cached templates off the old render.
+// switch / switch2 are at 2: their printed block stopped a few px short of the
+// hinge edge, showing a sliver of art (fixed 2026-09-11).
+//
 // Template files: public/game-boxes/<id>.png (RGBA, art window transparent)
 // and public/game-boxes/esrb/<rating>.png. Geometry below is in template
 // pixels; renderers scale everything by OUTPUT_HEIGHT / size[1].
@@ -25,8 +31,8 @@ export const OUTPUT_HEIGHT = 1800;
 
 export const TEMPLATES = {
   // id: { size, art_window [x0,y0,x1,y1], esrb slot [x0,y0,x1,y1], real_mm, version }
-  switch2:  { size: [1165, 1886], art_window: [0, 41, 1107, 1844],  esrb: [41, 1586, 196, 1803], real_mm: [105, 170], version: 1, label: "Nintendo Switch 2" },
-  switch:   { size: [640, 1036],  art_window: [0, 22, 608, 1014],   esrb: [21, 885, 94, 992],    real_mm: [105, 170], version: 1, label: "Nintendo Switch" },
+  switch2:  { size: [1165, 1886], art_window: [0, 41, 1107, 1844],  esrb: [41, 1586, 196, 1803], real_mm: [105, 170], version: 2, label: "Nintendo Switch 2" },
+  switch:   { size: [640, 1036],  art_window: [0, 22, 608, 1014],   esrb: [21, 885, 94, 992],    real_mm: [105, 170], version: 2, label: "Nintendo Switch" },
   ps3:      { size: [600, 900],   art_window: [17, 132, 587, 885],  esrb: [18, 754, 102, 870],   real_mm: [135, 170], version: 1, label: "PlayStation 3" },
   wiiu:     { size: [600, 900],   art_window: [0, 47, 587, 890],    esrb: [20, 757, 105, 874],   real_mm: [135, 190], version: 1, label: "Wii U" },
   wii:      { size: [1585, 2220], art_window: [16, 121, 1517, 2181], esrb: [63, 1836, 267, 2146], real_mm: [135, 190], version: 1, label: "Wii" },

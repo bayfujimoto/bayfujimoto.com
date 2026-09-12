@@ -11,10 +11,16 @@ sort_date: "2025-01-01"
 roaster: Coava Coffee
 origin: Ethiopia
 process: Natural
+aroma: 9
+acidity: 8.75
+body: 7.5
+finish: 8.25
+overall: 8.5
 tags: []
 assets:
   front:
   back:
   thumbnail:
-context_note: >
+context_note: >-
+  Thin in the body, long in the finish.
 ---

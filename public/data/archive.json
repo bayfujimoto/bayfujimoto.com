@@ -16010,6 +16010,24 @@
               "dimensions": "314 x 314"
             },
             {
+              "id": "MUSIC-2026-018",
+              "slug": "audrey-nuna-i-try",
+              "series": "consumption",
+              "subcollection": "music",
+              "item_type": "single",
+              "status": "published",
+              "display_date": "June 2, 2024",
+              "sort_date": "2024-06-02",
+              "title": "I Try",
+              "artist": "Audrey Nuna",
+              "year": "2024",
+              "assets": {
+                "cover": "MUSIC-2026-018-cover.jpeg?v=32f6aaf8o",
+                "thumbnail": "MUSIC-2026-018-cover-thumb.jpg?v=32f6aaf8o"
+              },
+              "dimensions": "300 x 300"
+            },
+            {
               "id": "MUSIC-2026-016",
               "slug": "audrey-nuna-jokes-on-me",
               "series": "consumption",
@@ -16222,13 +16240,18 @@
               "roaster": "Onyx Coffee Lab",
               "origin": "Colombia",
               "process": "Washed",
+              "aroma": 8.75,
+              "acidity": 9.25,
+              "body": 8,
+              "finish": 8.5,
+              "overall": 8.75,
               "tags": [],
               "assets": {
                 "front": null,
                 "back": null,
                 "thumbnail": null
               },
-              "context_note": ""
+              "context_note": "Hot pink on the bag. Acidity first."
             },
             {
               "id": "COFFEE-2026-002",
@@ -16243,19 +16266,42 @@
               "roaster": "Coava Coffee",
               "origin": "Ethiopia",
               "process": "Natural",
+              "aroma": 9,
+              "acidity": 8.75,
+              "body": 7.5,
+              "finish": 8.25,
+              "overall": 8.5,
               "tags": [],
               "assets": {
                 "front": null,
                 "back": null,
                 "thumbnail": null
               },
-              "context_note": ""
+              "context_note": "Thin in the body, long in the finish."
             }
           ]
         },
         "games": {
           "label": "games",
           "items": [
+            {
+              "id": "GAME-2026-007",
+              "slug": "splatoon-raiders-2026-play",
+              "series": "consumption",
+              "subcollection": "games",
+              "item_type": "game",
+              "status": "published",
+              "display_date": "July 23, 2026",
+              "sort_date": "2026-07-23",
+              "title": "Splatoon Raiders",
+              "developer": "Nintendo",
+              "platform": "Switch 2",
+              "play_status": "playing",
+              "assets": {
+                "cover": "GAME-2026-007-cover.jpg?v=80a4dc61c20x2",
+                "thumbnail": "GAME-2026-007-cover-thumb.webp?v=80a4dc61c20x2"
+              }
+            },
             {
               "id": "GAME-2026-003",
               "slug": "indiana-jones-and-the-great-circle-2026-play",
@@ -16275,6 +16321,42 @@
               "assets": {
                 "cover": "GAME-2026-003-cover.jpg?v=cd1edc52c20x2",
                 "thumbnail": "GAME-2026-003-cover-thumb.webp?v=cd1edc52c20x2"
+              }
+            },
+            {
+              "id": "GAME-2026-008",
+              "slug": "pragmata-2026-play",
+              "series": "consumption",
+              "subcollection": "games",
+              "item_type": "game",
+              "status": "published",
+              "display_date": "April 17, 2026",
+              "sort_date": "2026-04-17",
+              "title": "Pragmata",
+              "developer": "Capcom",
+              "platform": "Switch 2",
+              "play_status": "abandoned",
+              "assets": {
+                "cover": "GAME-2026-008-cover.webp?v=479cad92o",
+                "thumbnail": "GAME-2026-008-cover-thumb.jpg?v=479cad92o"
+              }
+            },
+            {
+              "id": "GAME-2026-009",
+              "slug": "resident-evil-requiem-2026-play",
+              "series": "consumption",
+              "subcollection": "games",
+              "item_type": "game",
+              "status": "published",
+              "display_date": "February 27, 2026",
+              "sort_date": "2026-02-27",
+              "title": "Resident Evil: Requiem",
+              "developer": "Capcom",
+              "platform": "Switch 2",
+              "play_status": "completed",
+              "assets": {
+                "cover": "GAME-2026-009-cover.webp?v=548988aao",
+                "thumbnail": "GAME-2026-009-cover-thumb.jpg?v=548988aao"
               }
             },
             {
@@ -19016,7 +19098,7 @@
         "object": "key",
         "model": "desk-guide-key.glb",
         "thumbnail": "/thumbnails/desk/key.png",
-        "count": 794,
+        "count": 798,
         "subcollections": null,
         "description": ""
       },
@@ -19055,7 +19137,7 @@
         "object": "sphere",
         "model": "desk-consumption-sphere.glb",
         "thumbnail": "/thumbnails/desk/consumption.png",
-        "count": 728,
+        "count": 732,
         "subcollections": 5,
         "description": "A sphere, the one object without an inside. What was taken in: films logged as viewings, books as readings, music, coffee, games. Titles are transcribed as given; the ratings are the archivist's."
       },
@@ -20501,10 +20583,10 @@
   "_counters": {
     "EPH": 39,
     "FILM": 556,
-    "BOOK": 447,
-    "MUSIC": 17,
+    "BOOK": 461,
+    "MUSIC": 18,
     "COFFEE": 2,
-    "GAME": 6,
+    "GAME": 9,
     "SKETCH": 2,
     "PHOTO": 25,
     "PROTO": 2,
