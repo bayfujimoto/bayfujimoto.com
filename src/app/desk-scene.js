@@ -432,10 +432,12 @@ export async function initDesk() {
     objects.forEach((o) => {
       const a = o.anchor(); if (!a) return;
       o.model.scale.setScalar(o.base);
-      // turned about its own centre: the fit's centre offset is carried round with it
-      const ry = (a.ry ?? o.ry ?? 0) * Math.PI / 180;
-      if (ry !== o.model.rotation.y) { o.model.rotation.y = ry; refit(o); }
-      o.model.position.set(gx(a.x) - o.cx, o.posY + (o.onBundle ? topOfBundle(o.onBundle) : 0), gz(a.y) - o.cz);
+      // turned and tilted about its own centre: the fit's centre offset and
+      // base are re-measured whenever the pose changes, so it still rests on
+      // the desk (or floats above it by its z)
+      const rx = (a.rx || 0) * Math.PI / 180, ry = (a.ry ?? o.ry ?? 0) * Math.PI / 180, rz = (a.rz || 0) * Math.PI / 180;
+      if (rx !== o.model.rotation.x || ry !== o.model.rotation.y || rz !== o.model.rotation.z) { o.model.rotation.set(rx, ry, rz); refit(o); }
+      o.model.position.set(gx(a.x) - o.cx, o.posY + U(a.z || 0) + (o.onBundle ? topOfBundle(o.onBundle) : 0), gz(a.y) - o.cz);
     });
   }
   // a turned model's box is not the unturned one's: re-measure the centre and the base

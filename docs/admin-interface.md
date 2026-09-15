@@ -599,7 +599,7 @@ What it edits, per regime, in stage px and degrees:
 
 - **bundles** — x, y, turn; place in the pile (under / over)
 - **sheets** — x, y, turn within their bundle; place in the stack (under / over)
-- **objects** — the key, the amber, the stamp: x, y, turn
+- **objects** — the key, the amber, the stamp: x, y, lift (z, off the desk), turn (about the vertical), tilt x and tilt z (about the object's own centre; it is re-seated on the desk after each change)
 - **clips** — x, y, turn on their bundle
 - **accumulation** — which records lie on the bundle: add from every scan with a front image and known dimensions, remove; the desk redraws the bundle
 

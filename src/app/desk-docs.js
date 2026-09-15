@@ -35,6 +35,7 @@ export const OBJECT_DEFAULTS = { guide: { ry: 90 }, amber: { ry: -20 }, stamp: {
 // The regime's tables, from the layout: `bundles` id → { x, y, rot } (folder-
 // relative), `zorder`, `objects` id → { x, y, ry }, `docs` bundle → key → { x, y,
 // rot } overrides, `order` bundle → [keys], `clips` bundle → [{ x, y, r }].
+// Objects also carry rx/rz (tilt, degrees) and z (lift off the desk, stage px).
 export function regimeOf(name, layout = DEFAULT_LAYOUT) {
   const base = STAGES[name] || STAGES.wide;
   const L = (layout && layout[name]) || DEFAULT_LAYOUT[name] || {};
@@ -49,7 +50,8 @@ export function regimeOf(name, layout = DEFAULT_LAYOUT) {
   const objects = {};
   for (const id of Object.keys(OBJECT_DEFAULTS)) {
     const o = L.objects?.[id] || D.objects?.[id] || { x: 0, y: 0 };
-    objects[id] = { x: +o.x || 0, y: +o.y || 0, ry: o.ry == null ? OBJECT_DEFAULTS[id].ry : +o.ry };
+    // rx/rz tilt the object about its own centre (degrees); z lifts it off the desk (stage px)
+    objects[id] = { x: +o.x || 0, y: +o.y || 0, z: +o.z || 0, rx: +o.rx || 0, ry: o.ry == null ? OBJECT_DEFAULTS[id].ry : +o.ry, rz: +o.rz || 0 };
   }
   return { ...base, bundles, zorder, objects, docs: L.docs || {}, order: L.order || {}, clips: L.clips || {} };
 }

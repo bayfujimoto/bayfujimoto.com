@@ -116,7 +116,7 @@ export function renderDeskLayout(container, callbacks = {}) {
       if (!L.order[b.id]) L.order[b.id] = b.docs.map((d) => d.key);
       if (b.clips.length && !L.clips[b.id]) L.clips[b.id] = b.clips.map((c) => ({ x: c.x, y: c.y, r: c.r || 0 }));
     }
-    for (const o of desk.objects) L.objects[o.id] = { x: o.x, y: o.y, ry: o.ry };
+    for (const o of desk.objects) L.objects[o.id] = { x: o.x, y: o.y, z: o.z || 0, rx: o.rx || 0, ry: o.ry, rz: o.rz || 0 };
     if (!Array.isArray(layout.accumulation)) layout.accumulation = desk.accumulation.map((id) => ({ id }));
   }
 
@@ -187,7 +187,9 @@ export function renderDeskLayout(container, callbacks = {}) {
     } else if (sel.kind === "object") {
       const v = L.objects[sel.id];
       head.innerHTML = `<span class="admin-desk-insp-title">${esc(OBJECT_LABELS[sel.id] || sel.id)}</span><span class="admin-desk-insp-sub">object · stage ${st.w} × ${st.h} px</span>`;
-      body.append(slider("x", v, "x", 0, st.w, 1), slider("y", v, "y", 0, st.h, 1), slider("turn", v, "ry", -180, 180, 1, "°"));
+      body.append(slider("x", v, "x", 0, st.w, 1), slider("y", v, "y", 0, st.h, 1), slider("lift", v, "z", 0, 200, 1, "px"));
+      body.append(slider("turn", v, "ry", -180, 180, 1, "°"), slider("tilt x", v, "rx", -180, 180, 1, "°"), slider("tilt z", v, "rz", -180, 180, 1, "°"));
+      body.insertAdjacentHTML("beforeend", `<p class="admin-desk-hint">turn spins it on the desk; the tilts roll it about its own centre; lift raises it off the surface (stage px).</p>`);
     }
     if (sel.bundle === "accumulation") { insp.insertAdjacentHTML("beforeend", accumulationPanel()); wireAccumulation(); }
   }
