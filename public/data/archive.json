@@ -269,27 +269,6 @@
           "items": [
             {
               "id": "FILM-2026-558",
-              "slug": "hope-2026-2026-09-12",
-              "title": "Hope",
-              "series": "consumption",
-              "subcollection": "films",
-              "item_type": "film",
-              "status": "published",
-              "year": "2026",
-              "director": "",
-              "watch_date": "2026-09-12",
-              "display_date": "September 12, 2026",
-              "sort_date": "2026-09-12",
-              "rating": 5,
-              "rewatch": false,
-              "letterboxd_link": "https://letterboxd.com/bayf/film/hope-2026/",
-              "assets": {
-                "backdrop": "https://a.ltrbxd.com/resized/alternative-backdrop/9/5/4/6/6/3/tmdb/ujUwzNV8ZkOzZonvhhHsc9KOKDf-1200-1200-675-675-crop-000000.jpg?v=29a4b41fbd",
-                "poster": "https://a.ltrbxd.com/resized/film-poster/9/5/4/6/6/3/954663-hope-2026-0-600-0-900-crop.jpg?v=102a8bfda2"
-              }
-            },
-            {
-              "id": "FILM-2026-557",
               "slug": "predators-2025-2026-09-12",
               "title": "Predators",
               "series": "consumption",
@@ -307,6 +286,27 @@
               "assets": {
                 "backdrop": "https://a.ltrbxd.com/resized/alternative-backdrop/1/2/8/4/0/4/6/tmdb/lavj2c84oZ2JGpAT6C3ouDXidOk-1200-1200-675-675-crop-000000.jpg?v=ccda3ab76b",
                 "poster": "https://a.ltrbxd.com/resized/film-poster/1/2/8/4/0/4/6/1284046-predators-2025-0-600-0-900-crop.jpg?v=9e4cf695d7"
+              }
+            },
+            {
+              "id": "FILM-2026-557",
+              "slug": "hope-2026-2026-09-12",
+              "title": "Hope",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2026",
+              "director": "",
+              "watch_date": "2026-09-12",
+              "display_date": "September 12, 2026",
+              "sort_date": "2026-09-12",
+              "rating": 5,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/hope-2026/",
+              "assets": {
+                "backdrop": "https://a.ltrbxd.com/resized/alternative-backdrop/9/5/4/6/6/3/tmdb/ujUwzNV8ZkOzZonvhhHsc9KOKDf-1200-1200-675-675-crop-000000.jpg?v=29a4b41fbd",
+                "poster": "https://a.ltrbxd.com/resized/film-poster/9/5/4/6/6/3/954663-hope-2026-0-600-0-900-crop.jpg?v=102a8bfda2"
               }
             },
             {
@@ -15957,25 +15957,6 @@
           "label": "music",
           "items": [
             {
-              "id": "MUSIC-2026-002",
-              "slug": "audrey-nuna-trench",
-              "title": "Trench",
-              "series": "consumption",
-              "subcollection": "music",
-              "item_type": "album",
-              "status": "published",
-              "display_date": "June 22, 2026",
-              "sort_date": "2026-06-22",
-              "artist": "Audrey Nuna",
-              "year": "2024",
-              "music_label": "Arista Records",
-              "assets": {
-                "cover": "MUSIC-2026-002-cover.jpeg?v=a882b2fco",
-                "thumbnail": "MUSIC-2026-002-cover-thumb.jpg?v=a882b2fco"
-              },
-              "dimensions": "314 x 314"
-            },
-            {
               "id": "MUSIC-2026-010",
               "slug": "pinkpantheress-heaven-knows",
               "series": "consumption",
@@ -16048,6 +16029,25 @@
               "assets": {
                 "cover": "MUSIC-2026-015-cover.jpeg?v=1478cb4do",
                 "thumbnail": "MUSIC-2026-015-cover-thumb.jpg?v=1478cb4do"
+              },
+              "dimensions": "314 x 314"
+            },
+            {
+              "id": "MUSIC-2026-002",
+              "slug": "audrey-nuna-trench",
+              "title": "Trench",
+              "series": "consumption",
+              "subcollection": "music",
+              "item_type": "album",
+              "status": "published",
+              "display_date": "October 18, 2024",
+              "sort_date": "2024-10-18",
+              "artist": "Audrey Nuna",
+              "year": "2024",
+              "music_label": "Arista Records",
+              "assets": {
+                "cover": "MUSIC-2026-002-cover.jpeg?v=a882b2fco",
+                "thumbnail": "MUSIC-2026-002-cover-thumb.jpg?v=a882b2fco"
               },
               "dimensions": "314 x 314"
             },
@@ -16287,13 +16287,7 @@
               "body": 8,
               "finish": 8.5,
               "overall": 8.75,
-              "tags": [],
-              "assets": {
-                "front": null,
-                "back": null,
-                "thumbnail": null
-              },
-              "context_note": "Hot pink on the bag. Acidity first."
+              "context_note": "Stone fruit, jam"
             },
             {
               "id": "COFFEE-2026-002",
@@ -20655,7 +20649,7 @@
   "_counters": {
     "EPH": 39,
     "FILM": 558,
-    "BOOK": 468,
+    "BOOK": 475,
     "MUSIC": 18,
     "COFFEE": 2,
     "GAME": 9,
