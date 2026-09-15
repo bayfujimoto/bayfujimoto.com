@@ -35,7 +35,7 @@ import { DESK_OBJECTS, DESK_CLIPS, MODEL_BASE, WEB_BASE } from "../shared/desk-o
 import { createModelLoader } from "./model-look.js";
 import { isSceneRenderPaused } from "./scene.js";
 import { configureAltDesk } from "./panels.js";
-import { REGIMES, buildDocBundles, PX_PER_MM } from "./desk-docs.js";
+import { regimeOf, resolveDoc, orderedDocs, resolveClip, buildDocBundles, accumulationPool, DEFAULT_LAYOUT, DOC_LABELS, PX_PER_MM } from "./desk-docs.js";
 import { renderPaper, renderSurface, paperNormal, ensureFonts, loadImage } from "./paper.js";
 import "../styles/desk.css";
 import "../styles/desk-dark.css";
@@ -59,6 +59,12 @@ const TUNE = {
   dust: { count: 900, size: 0.01, box: [12, 2.6, 8] },
 };
 const regimeName = () => (window.innerWidth < 600 ? "vertical" : "wide");
+// The layout editor: the admin opens the desk in an iframe at /?edit=desk and
+// drives it over postMessage (src/admin/views/desk-layout.js). In that mode a
+// click picks a document instead of opening its collection, and the layout it
+// sends replaces the file's until the page is reloaded.
+const EDIT = (() => { try { return new URLSearchParams(window.location.search).get("edit") === "desk" && window.parent !== window; } catch (e) { return false; } })();
+const clone = (o) => JSON.parse(JSON.stringify(o));
 const HALF_FOV = Math.tan((75 / 2) * Math.PI / 180);
 const REF_STAGE_SCALE = 0.98;   // the wide stage's fitScale at 1440 × 900 — the flashlight's arc was tuned there
 const REF_PX_PER_UNIT = 900 / (2 * 5 * HALF_FOV);     // stage px per desk unit at the reference viewport
@@ -202,7 +208,9 @@ export async function initDesk() {
   // ── The composition: folder, papers, objects, in one group scaled per regime ──
   const stageGroup = new THREE.Group(); scene.add(stageGroup);
   let regime = regimeName();
-  const R = () => REGIMES[regime];
+  let layout = clone(DEFAULT_LAYOUT);
+  let Rc = null;   // the regime's tables, from the layout; dropped when either changes
+  const R = () => Rc || (Rc = regimeOf(regime, layout));
   const pxPerUnit = () => window.innerHeight / (2 * 5 * HALF_FOV);
   function fitScale() {
     const { w, h } = R().stage; const vertical = regime === "vertical";
@@ -215,7 +223,7 @@ export async function initDesk() {
 
   const res = await fetch("/data/archive.json");
   const archive = await res.json();
-  const bundles = buildDocBundles(archive);
+  let bundles = buildDocBundles(archive, layout);
   await ensureFonts();
 
   const paperNormalTex = new THREE.CanvasTexture(paperNormal()); paperNormalTex.wrapS = paperNormalTex.wrapT = THREE.RepeatWrapping;
@@ -223,6 +231,7 @@ export async function initDesk() {
   const bundleGroups = new Map();   // id → { group, hit, docs: [{ mesh, spec }] }
   const clickables = [];
   const hitPlanes = [];
+  const docMeshes = [];   // every sheet, for the editor's pick
 
   function buildFolder() {
     folderMeshes.forEach((m) => stageGroup.remove(m)); folderMeshes.length = 0;
@@ -236,11 +245,15 @@ export async function initDesk() {
     [under, folder, tab].forEach((m) => { m.material.polygonOffset = true; m.material.polygonOffsetFactor = -1; stageGroup.add(m); folderMeshes.push(m); });
   }
 
+  const TEX_SCALE = Math.min(3, Math.max(2, window.devicePixelRatio || 1) * 1.5);
   async function buildPapers() {
-    const scale = Math.min(3, Math.max(2, window.devicePixelRatio || 1) * 1.5);
     // every sheet's images in flight at once, so the pile isn't one round trip per sheet
     await Promise.all(bundles.flatMap((b) => b.docs.flatMap((d) => (d.layers || []).filter((L) => L.src).map((L) => loadImage(L.src)))));
-    for (const b of bundles) {
+    for (const b of bundles) await buildBundle(b);
+  }
+  async function buildBundle(b) {
+    const scale = TEX_SCALE;
+    {
       const group = new THREE.Group(); stageGroup.add(group);
       const entry = { group, docs: [], hit: null, b };
       bundleGroups.set(b.id, entry);
@@ -249,11 +262,14 @@ export async function initDesk() {
       const hit = new THREE.Mesh(new THREE.PlaneGeometry(U(b.box[0]), U(b.box[1])), new THREE.MeshBasicMaterial({ colorWrite: false, depthWrite: false, transparent: true, opacity: 0 }));
       hit.rotation.x = -Math.PI / 2; hit.position.set(U(b.box[0] / 2), 0.05, U(b.box[1] / 2)); hit.userData = { bundle: b.id }; hit.renderOrder = 10;
       group.add(hit); hitPlanes.push(hit); entry.hit = hit;
-      let i = 0;
       for (const d of b.docs) {
         const { canvas: pc } = await renderPaper(d, scale * (d.texScale || 1));   // a small document can ask for more texels: the cartridge is 32 px wide and still has to hold its accession number open in the fan
         const tex = new THREE.CanvasTexture(pc); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8; tex.generateMipmaps = true; tex.minFilter = THREE.LinearMipmapLinearFilter;
-        const mat = d.gloss
+        const mat = d.vellum
+          // translucent stock: the texture's alpha is the material, so no alphaTest, no depth write (it must not occlude the sheets under it in the depth pass),
+          // and neither transmission nor metalness — environmentIntensity is 0 under the lamp and both render wrong there; opacity is the whole effect
+          ? new THREE.MeshPhysicalMaterial({ map: tex, transparent: true, alphaTest: 0, depthWrite: false, roughness: 0.55, metalness: 0, sheen: 0.15, sheenRoughness: 0.6, normalMap: paperNormalTex, normalScale: new THREE.Vector2(0.3, 0.3), side: THREE.DoubleSide, emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: 0 })
+          : d.gloss
           ? new THREE.MeshPhysicalMaterial({ map: tex, transparent: true, alphaTest: 0.5, roughness: 0.38, metalness: 0, clearcoat: 0.7, clearcoatRoughness: 0.2, normalMap: paperNormalTex, normalScale: new THREE.Vector2(0.12, 0.12), side: THREE.DoubleSide, emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: 0 }) // a glossy print: smooth, with a coat that catches the lamp
           : new THREE.MeshStandardMaterial({ map: tex, transparent: true, alphaTest: 0.5, roughness: 0.92, metalness: 0, normalMap: paperNormalTex, normalScale: new THREE.Vector2(0.55, 0.55), side: THREE.DoubleSide, emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: 0 }); // emissive = the hover lift, through the sheet's own image
         let mesh;
@@ -285,27 +301,52 @@ export async function initDesk() {
             ? discGeometry(U(d.w), U(d.w) * (d.hole ?? 0.125), t)
             : cardGeometry(U(d.w), U(d.h), t, U(d.w) * (d.radius ?? 0.08));
           mesh = new THREE.Mesh(geo, [face, shell]);
-          mesh.rotation.x = -Math.PI / 2; mesh.rotation.z = -(d.rot || 0) * Math.PI / 180;
           // The geometry is centred through its thickness, so it is lifted by
-          // half of it to rest on its slot. What decides whether anything
-          // covers it, though, is its TOP face — slot + the whole thickness —
-          // which is a solid's real height in the pile and several documents'
-          // worth of stacking above its slot. A document that should lie under
-          // the next bundle's sheets has to take an early enough slot that
-          // slot + thickness still falls below them (see the music disc).
-          mesh.position.set(U(d.x + d.w / 2), 0.014 + i * 0.0028 + t / 2, U(d.y + d.h / 2));
+          // half of it to rest on its slot (placeDocs). What decides whether
+          // anything covers it, though, is its TOP face — slot + the whole
+          // thickness — which is a solid's real height in the pile and several
+          // documents' worth of stacking above its slot. A document that should
+          // lie under the next bundle's sheets has to take an early enough slot
+          // that slot + thickness still falls below them (see the music disc).
+          mesh.userData.lift = t / 2;
           mesh.castShadow = true; mesh.receiveShadow = true;   // an opaque solid: the default depth material already casts the right shadow
         } else {
           mesh = new THREE.Mesh(new THREE.PlaneGeometry(U(d.w), U(d.h)), mat);
-          mesh.rotation.x = -Math.PI / 2; mesh.rotation.z = -(d.rot || 0) * Math.PI / 180;
-          mesh.position.set(U(d.x + d.w / 2), 0.014 + i * 0.0028, U(d.y + d.h / 2));
-          mesh.castShadow = true; mesh.receiveShadow = true;
-          mesh.customDepthMaterial = new THREE.MeshDepthMaterial({ depthPacking: THREE.RGBADepthPacking, map: tex, alphaTest: 0.5 }); // the shadow follows the sheet's real outline (cutouts)
+          mesh.receiveShadow = true;
+          if (d.vellum) mesh.castShadow = false;   // a 62 % sheet with a black shadow under it reads as glass, not vellum
+          else { mesh.castShadow = true; mesh.customDepthMaterial = new THREE.MeshDepthMaterial({ depthPacking: THREE.RGBADepthPacking, map: tex, alphaTest: 0.5 }); } // the shadow follows the sheet's real outline (cutouts)
         }
-        mesh.userData = { bundle: b.id, sub: d.sub || null, spec: d };
-        group.add(mesh); entry.docs.push({ mesh, spec: d }); i++;
+        mesh.userData = { ...mesh.userData, bundle: b.id, sub: d.sub || null, key: d.key, spec: d };
+        group.add(mesh); entry.docs.push({ mesh, spec: d }); docMeshes.push(mesh);
       }
+      placeDocs(entry);
     }
+  }
+  // Every sheet of a bundle in its place: the layout's position and turn for
+  // this regime (else the spec's), stacked in the layout's order, a solid
+  // lifted by half its thickness so it rests on its slot.
+  function placeDocs(entry) {
+    const Rg = R();
+    entry.docs = orderedDocs(entry.docs.map((e) => ({ ...e, key: e.spec.key })), entry.b.id, Rg).map(({ key, ...e }) => e);
+    entry.docs.forEach(({ mesh, spec: d }, i) => {
+      const p = resolveDoc(d, entry.b.id, Rg);
+      mesh.rotation.x = -Math.PI / 2; mesh.rotation.z = -(p.rot || 0) * Math.PI / 180;
+      mesh.position.set(U(p.x + d.w / 2), 0.014 + i * 0.0028 + (mesh.userData.lift || 0), U(p.y + d.h / 2));
+    });
+  }
+  // The accumulation bundle rebuilt from the layout's list of records (the
+  // editor added or removed one): its sheets are dropped and drawn again.
+  async function rebuildBundle(id) {
+    const old = bundleGroups.get(id); if (!old) return;
+    bundles = buildDocBundles(archive, layout);
+    const b = bundles.find((x) => x.id === id); if (!b) return;
+    await Promise.all(b.docs.flatMap((d) => (d.layers || []).filter((L) => L.src).map((L) => loadImage(L.src))));
+    stageGroup.remove(old.group);
+    old.docs.forEach(({ mesh }) => { mesh.geometry.dispose(); (Array.isArray(mesh.material) ? mesh.material : [mesh.material]).forEach((m) => { m.map?.dispose(); m.dispose(); }); const k = docMeshes.indexOf(mesh); if (k !== -1) docMeshes.splice(k, 1); });
+    const hk = hitPlanes.indexOf(old.hit); if (hk !== -1) hitPlanes.splice(hk, 1);
+    bundleGroups.delete(id);
+    await buildBundle(b);
+    placeObjects(); wantShadows(); wake(600);
   }
   // A moulded card — the games cartridge. Every other document on the desk is a
   // sheet, so its silhouette lives in its texture's alpha; a cartridge is an
@@ -356,10 +397,11 @@ export async function initDesk() {
     const Rg = R(); const Fd = Rg.folder;
     const p = Rg.bundles[id]; if (!p) return;
     const z = Rg.zorder.indexOf(id);
-    entry.group.position.set(gx(Fd.x + p[0]), z * 0.012, gz(Fd.y + p[1])); entry.baseY = z * 0.012;
-    entry.rect = { x: Fd.x + p[0], y: Fd.y + p[1], w: entry.b.box[0], h: entry.b.box[1] }; // stage px, for "what lies on top of what"
+    entry.group.position.set(gx(Fd.x + p.x), z * 0.012, gz(Fd.y + p.y)); entry.baseY = z * 0.012;
+    entry.group.rotation.y = -(p.rot || 0) * Math.PI / 180;   // about the bundle's top-left corner
+    entry.rect = { x: Fd.x + p.x, y: Fd.y + p.y, w: entry.b.box[0], h: entry.b.box[1] }; // stage px, for "what lies on top of what"
   }
-  function layoutBundles() { bundleGroups.forEach(placeBundle); }
+  function layoutBundles() { bundleGroups.forEach((entry, id) => { placeBundle(entry, id); placeDocs(entry); }); }
 
   // ── Objects & clips ──
   const objects = [];   // { id, model, base, cx, cz, posY, anchor }
@@ -372,7 +414,7 @@ export async function initDesk() {
   }
   function addObject(id, model, cfg, anchor, clickable) {
     const f = fitModel(model, cfg); stageGroup.add(model);
-    objects.push({ id, model, ...f, anchor });
+    objects.push({ id, model, ...f, anchor, ry: cfg.ry || 0 });
     if (clickable) {
       // Hit-test a box around the object, not its meshes: the key is
       // thousands of shells, and a raycast through them on every pointer
@@ -390,8 +432,20 @@ export async function initDesk() {
     objects.forEach((o) => {
       const a = o.anchor(); if (!a) return;
       o.model.scale.setScalar(o.base);
+      // turned about its own centre: the fit's centre offset is carried round with it
+      const ry = (a.ry ?? o.ry ?? 0) * Math.PI / 180;
+      if (ry !== o.model.rotation.y) { o.model.rotation.y = ry; refit(o); }
       o.model.position.set(gx(a.x) - o.cx, o.posY + (o.onBundle ? topOfBundle(o.onBundle) : 0), gz(a.y) - o.cz);
     });
+  }
+  // a turned model's box is not the unturned one's: re-measure the centre and the base
+  function refit(o) {
+    // measured in the stage's own units: the world box is the group's scale times the local one
+    o.model.position.set(0, 0, 0); o.model.updateWorldMatrix(true, true);
+    const box = new THREE.Box3().setFromObject(o.model); const k = 1 / (stageGroup.scale.x || 1);
+    box.min.multiplyScalar(k); box.max.multiplyScalar(k);
+    const c = new THREE.Vector3(); box.getCenter(c);
+    o.cx = c.x; o.cz = c.z; o.posY = -box.min.y;
   }
   const objectAnchor = (id) => () => R().objects[id];
   const onKey = (gltf) => addObject("guide", gltf.scene, { w: 1, h: 1, d: 1, ry: 90 }, objectAnchor("guide"), true);
@@ -412,7 +466,7 @@ export async function initDesk() {
   const clipLoader = createModelLoader();
   bundles.forEach((b) => (b.clips || []).forEach((c, i) => {
     const len = U((DESK_CLIPS[c.kind]?.mm || 40) * PX_PER_MM) * (c.small ? 0.7 : 1);
-    const anchor = () => { const Rg = R(); const p = Rg.bundles[b.id]; return p ? { x: Rg.folder.x + p[0] + c.x, y: Rg.folder.y + p[1] + c.y } : null; };
+    const anchor = () => { const Rg = R(); const p = Rg.bundles[b.id]; if (!p) return null; const cp = resolveClip(c, i, b.id, Rg); return { x: Rg.folder.x + p.x + cp.x, y: Rg.folder.y + p.y + cp.y, ry: cp.r }; };
     clipLoader.load(`${WEB_BASE}${DESK_CLIPS[c.kind]?.file || `desk-clip-${c.kind}.glb`}`, (gltf) => {
       addObject(`clip:${b.id}:${i}`, gltf.scene, { w: len, h: len, d: len, ry: c.r }, anchor, false);
       objects[objects.length - 1].onBundle = b.id;
@@ -674,7 +728,7 @@ export async function initDesk() {
     const lifted = liftSet(litBundle);
     bundleGroups.forEach((entry, id) => {
       const on = id === litBundle, target = on ? peak : 0;
-      for (const d of entry.docs) for (const m of (Array.isArray(d.mesh.material) ? d.mesh.material : [d.mesh.material])) { const v = m.emissiveIntensity + (target - m.emissiveIntensity) * 0.18; if (Math.abs(v - m.emissiveIntensity) > 1e-4) { m.emissiveIntensity = v; wake(120); } }
+      for (const d of entry.docs) for (const m of (Array.isArray(d.mesh.material) ? d.mesh.material : [d.mesh.material])) { const sel = editSel && editSel.bundle === id && (editSel.kind === "bundle" || editSel.key === d.spec.key); const v = m.emissiveIntensity + ((sel ? Math.max(target, 0.34) : target) * (d.spec.vellum ? 0.7 : 1) - m.emissiveIntensity) * 0.18; /* vellum lifts at 0.7: the wood shows through it, full peak reads hot */ if (Math.abs(v - m.emissiveIntensity) > 1e-4) { m.emissiveIntensity = v; wake(120); } }
       const y = entry.group.position.y + ((entry.baseY || 0) + (lifted.has(id) ? lift : 0) - entry.group.position.y) * 0.18;
       if (Math.abs(y - entry.group.position.y) > 1e-5) { entry.group.position.y = y; wantShadows(); wake(120); }
     });
@@ -692,11 +746,60 @@ export async function initDesk() {
   }
   canvas.addEventListener("click", (e) => {
     if (getState().layer !== "desk") return;
+    if (EDIT) { editPick(e); return; }   // the editor's click chooses, it does not open
     const p = pick(e); if (!p) return;
     hideHover(); litBundle = null; hovered = null;
     if (p.kind === "object") { if (p.id === "guide") navigate({ layer: "guide" }); return; }
     navigate({ layer: "series", series: p.id, subcollection: null, item: null });
   });
+
+  // ── The layout editor's line in ──
+  // The admin (src/admin/views/desk-layout.js) holds this desk in an iframe at
+  // /?edit=desk. It asks for the state — the regime, every bundle's and sheet's
+  // place as the desk has it, the objects, the clips, the records the
+  // accumulation bundle could show — sends a whole layout back on every slider
+  // move, and is told what a click landed on. Same origin only.
+  let editSel = null;   // { kind: "bundle" | "doc" | "object" | "clip", bundle, key, id }
+  const postState = () => {
+    if (!EDIT) return;
+    const Rg = R();
+    const state = {
+      type: "desk-layout:state", regime, stage: Rg.stage, folder: Rg.folder, layout: clone(layout),
+      zorder: Rg.zorder.slice(),
+      bundles: bundles.map((b) => ({ id: b.id, title: b.title, box: b.box, ...Rg.bundles[b.id],
+        docs: (bundleGroups.get(b.id)?.docs || []).map(({ spec: d }) => ({ key: d.key, label: d.label || DOC_LABELS[d.key] || d.sub || d.key, sub: d.sub, id: d.id || null, w: d.w, h: d.h, ...resolveDoc(d, b.id, Rg) })),
+        clips: (b.clips || []).map((c, i) => ({ i, kind: c.kind, ...resolveClip(c, i, b.id, Rg) })) })),
+      objects: Object.entries(Rg.objects).map(([id, o]) => ({ id, ...o })),
+      accumulation: Array.isArray(layout.accumulation) ? layout.accumulation.map((e) => (typeof e === "string" ? e : e.id)) : (bundleGroups.get("accumulation")?.docs || []).map(({ spec }) => spec.id).filter(Boolean),
+      candidates: accumulationPool(archive.series?.accumulation?.items || []).map(({ id, title, w, h, cutout }) => ({ id, title, w, h, cutout })),
+    };
+    window.parent.postMessage(state, window.location.origin);
+  };
+  function editPick(e) {
+    pointer.set((e.clientX / window.innerWidth) * 2 - 1, -(e.clientY / window.innerHeight) * 2 + 1);
+    ray.setFromCamera(pointer, camera);
+    const h = ray.intersectObjects([...clickables, ...docMeshes], false).find((x) => x.object.userData.altId || x.object.visible);
+    let sel = null;
+    if (h?.object.userData.altId) sel = { kind: "object", id: h.object.userData.altId };
+    else if (h) sel = { kind: "doc", bundle: h.object.userData.bundle, key: h.object.userData.key };
+    editSel = sel; wake(600);
+    window.parent.postMessage({ type: "desk-layout:pick", sel }, window.location.origin);
+  }
+  if (EDIT) {
+    window.addEventListener("message", async (ev) => {
+      if (ev.origin !== window.location.origin || !ev.data || typeof ev.data.type !== "string") return;
+      const m = ev.data;
+      if (m.type === "desk-layout:hello") { postState(); return; }
+      if (m.type === "desk-layout:select") { editSel = m.sel || null; wake(600); return; }
+      if (m.type === "desk-layout:set" && m.layout) {
+        const before = JSON.stringify(layout.accumulation || null);
+        layout = clone(m.layout); Rc = null;
+        if (JSON.stringify(layout.accumulation || null) !== before) await rebuildBundle("accumulation");
+        layoutBundles(); placeObjects(); wantShadows(); wake(800);
+        if (m.reply) postState();
+      }
+    });
+  }
 
   // ── The fan, in hand — the scene it lifts from ──
   Object.assign(fanDeps, { camera, bundleGroups, stageGroup, archive, reduceMotion, getMode: () => mode, wantShadows, wake });
@@ -708,6 +811,9 @@ export async function initDesk() {
   layoutBundles();
   ctx.ready = true; readyResolve();
   papersIn = true; maybeDismiss();
+  if (EDIT) { document.documentElement.dataset.deskEdit = "1"; postState(); }
+  // dev: the layout file was saved from the admin — a desk on its own reloads to read it (the editor's iframe already shows it)
+  if (import.meta.hot && !EDIT) import.meta.hot.on("desk-layout:file", () => window.location.reload());
   awakeUntil = performance.now() + 3000; wantShadows();   // from here on, frames on demand
 
   // ── Render ──
@@ -759,7 +865,7 @@ export async function initDesk() {
     renderer.setPixelRatio(pixelRatio()); renderer.setSize(window.innerWidth, window.innerHeight); composer.setSize(window.innerWidth, window.innerHeight); wantShadows(); wake(600);
     dustMat.uniforms.uSize.value = TUNE.dust.size * renderer.getPixelRatio() * window.innerHeight;
     const next = regimeName();
-    if (next !== regime) { regime = next; buildFolder(); layoutBundles(); placeObjects(); }
+    if (next !== regime) { regime = next; Rc = null; buildFolder(); layoutBundles(); placeObjects(); if (EDIT) postState(); }
     stageGroup.scale.setScalar(fitScale());
     if (reduceMotion) render(performance.now());
   });

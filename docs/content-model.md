@@ -166,6 +166,8 @@ Required:
 - year
 - director if known
 - seen_via (where it was seen: theatrical, streaming, physical, festival)
+- venue (the cinema, when there was one) and format (70mm, IMAX, DCP…) — both
+  optional, blank on ingest; the desk's films ticket prints them when present
 
 Optional:
 - rating

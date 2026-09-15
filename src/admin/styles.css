@@ -3650,3 +3650,65 @@ body.admin-gutter-dragging.dragging-h {
 }
 .admin-import-message--saved { color: var(--accent-green); }
 .admin-import-message--error { color: var(--error); }
+
+/* ── Desk layout editor (Record pane) ──────────────────────────────────────
+   The desk in an iframe (a real 1440×900 or 390×844 viewport, scaled), the
+   list of what lies on it, and sliders for the selection. Same grammar as the
+   record form: mono labels, hairline rules, bracketed actions in the pane's
+   top border. src/admin/views/desk-layout.js. */
+.admin-desk { display: flex; flex-direction: column; gap: 10px; padding: 0 0 12px; }
+.admin-desk-toolbar { display: flex; align-items: center; gap: 12px; padding: 4px 8px 0; font-family: var(--font-mono); font-size: var(--text-xs); }
+.admin-desk-regimes { display: inline-flex; border: 1px solid var(--border-strong); }
+.admin-desk-regime { font: inherit; letter-spacing: 0.08em; text-transform: uppercase; padding: 0 12px; min-height: 32px; background: transparent; color: var(--fg-muted); border: 0; cursor: pointer; }
+.admin-desk-regime + .admin-desk-regime { border-left: 1px solid var(--border-strong); }
+.admin-desk-regime.is-active { background: var(--fg); color: var(--bg); }
+.admin-desk-status { color: var(--fg-muted); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.admin-desk-status[data-kind="dirty"] { color: var(--accent-orange, var(--fg)); }
+.admin-desk-status[data-kind="saved"] { color: var(--fg); }
+.admin-desk-reload { min-height: 32px; padding: 0 10px; }
+.admin-desk-stage { display: flex; justify-content: center; padding: 0 8px; }
+.admin-desk-frame { position: relative; overflow: hidden; border: 1px solid var(--border-strong); background: #0a0805; }
+.admin-desk-frame iframe { position: absolute; top: 0; left: 0; border: 0; transform-origin: 0 0; display: block; }
+.admin-desk-body { display: grid; grid-template-columns: minmax(180px, 34%) 1fr; gap: 0 12px; padding: 0 8px; align-items: start; }
+.admin-desk-list { border: 1px solid var(--border); max-height: 420px; overflow: auto; font-family: var(--font-mono); font-size: var(--text-xs); }
+.admin-desk-group { padding: 6px 8px 4px; color: var(--fg-muted); letter-spacing: 0.1em; text-transform: uppercase; font-size: var(--text-xs); border-bottom: 1px solid var(--border-faint); }
+.admin-desk-group:not(:first-child) { margin-top: 6px; }
+.admin-desk-row { display: flex; align-items: center; gap: 8px; min-height: 30px; padding: 0 8px 0 calc(8px + var(--depth, 0) * 14px); cursor: pointer; color: var(--fg-muted); }
+.admin-desk-row[style*="--depth:0"] { color: var(--fg); }
+.admin-desk-row:hover { background: var(--bg-elevated); color: var(--fg); }
+.admin-desk-row.is-selected { background: var(--bg-selected, var(--bg-elevated)); color: var(--fg); box-shadow: inset 2px 0 0 var(--fg); }
+.admin-desk-row:focus-visible { outline: 1px solid var(--fg); outline-offset: -1px; }
+.admin-desk-row-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.admin-desk-row-extra { color: var(--fg-muted); font-size: var(--text-xs); white-space: nowrap; }
+.admin-desk-inspector { font-family: var(--font-mono); font-size: var(--text-sm); min-width: 0; }
+.admin-desk-insp-head { display: flex; flex-direction: column; gap: 2px; padding: 4px 0 8px; border-bottom: 1px solid var(--border-faint); margin-bottom: 8px; }
+.admin-desk-insp-title { color: var(--fg); }
+.admin-desk-insp-sub { color: var(--fg-muted); font-size: var(--text-xs); }
+.admin-desk-slider { display: grid; grid-template-columns: 7ch 1fr 7ch 2ch; gap: 8px; align-items: center; min-height: 44px; }
+.admin-desk-slider-label { color: var(--fg-muted); text-transform: uppercase; letter-spacing: 0.08em; font-size: var(--text-xs); }
+.admin-desk-slider input[type="range"] { width: 100%; min-height: 44px; accent-color: var(--fg); background: transparent; }
+.admin-desk-slider input[type="number"] { font: inherit; font-size: 16px; width: 100%; min-height: 32px; background: var(--bg); color: var(--fg); border: 1px solid var(--border-strong); padding: 0 4px; }
+.admin-desk-slider-unit { color: var(--fg-muted); }
+.admin-desk-order { display: grid; grid-template-columns: 7ch auto auto auto; gap: 8px; align-items: center; min-height: 44px; }
+.admin-desk-order .admin-btn { min-height: 32px; padding: 0 10px; }
+.admin-desk-order .admin-btn[disabled] { opacity: 0.4; cursor: default; }
+.admin-desk-order-pos { color: var(--fg-muted); font-size: var(--text-xs); }
+.admin-desk-remove { margin-top: 10px; min-height: 32px; }
+.admin-desk-hint { color: var(--fg-muted); font-size: var(--text-xs); line-height: 1.6; margin: 0; padding: 4px 0 8px; }
+.admin-desk-acc { margin-top: 10px; border-top: 1px solid var(--border-faint); }
+.admin-desk-acc-list { list-style: none; margin: 0; padding: 0; }
+.admin-desk-acc-row { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: center; min-height: 36px; padding: 0 8px; border-bottom: 1px solid var(--border-faint); font-size: var(--text-xs); }
+.admin-desk-acc-id { color: var(--fg); white-space: nowrap; }
+.admin-desk-acc-title { color: var(--fg-muted); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.admin-desk-acc-btn { font: inherit; background: transparent; color: var(--fg-muted); border: 0; cursor: pointer; min-height: 36px; padding: 0 6px; text-transform: uppercase; letter-spacing: 0.08em; }
+.admin-desk-acc-btn::before { content: "["; } .admin-desk-acc-btn::after { content: "]"; }
+.admin-desk-acc-btn:hover { color: var(--fg); }
+.admin-desk-acc-add { display: flex; gap: 8px; align-items: center; padding: 8px; }
+.admin-desk-acc-add select { flex: 1; min-width: 0; font: inherit; font-size: 16px; min-height: 36px; background: var(--bg); color: var(--fg); border: 1px solid var(--border-strong); }
+.admin-desk-acc-add .admin-btn { min-height: 36px; padding: 0 12px; }
+.admin-desk-acc-add .admin-btn[disabled] { opacity: 0.4; cursor: default; }
+@media (max-width: 700px) {
+  .admin-desk-body { grid-template-columns: 1fr; gap: 10px; }
+  .admin-desk-list { max-height: 220px; }
+  .admin-desk-slider { grid-template-columns: 6ch 1fr 7ch 2ch; }
+}

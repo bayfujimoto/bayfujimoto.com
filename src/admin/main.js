@@ -15,6 +15,7 @@ import { renderEmptyState } from "./views/dashboard.js";
 import { renderEditItem }   from "./views/edit-item.js";
 import { renderNewItem }    from "./views/new-item.js";
 import { renderGuide }      from "./views/guide.js";
+import { renderDeskLayout } from "./views/desk-layout.js";
 import { renderConstellation } from "./views/constellation.js";
 import { renderImportLetterboxd } from "./views/import-letterboxd.js";
 import { initLog, setLogCallbacks, triggerCommit } from "./views/log.js";
@@ -323,6 +324,7 @@ function explorerCallbacks(archive, allItems) {
   return {
     onItemSelect: (it) => openItem(it, allItems, archive),
     onGuideSelect: () => openGuide(archive, allItems),
+    onDeskSelect: () => openDeskLayout(archive, allItems),
     onConstellationSelect: (slug) => openConstellation(slug, archive, allItems),
   };
 }
@@ -387,6 +389,19 @@ function openEmpty(archive, allItems) {
 function openGuide(archive, allItems) {
   openRecord((body) => {
     renderGuide(body, {
+      onClose: () => openEmpty(getState().archive || archive, getState().allItems || allItems),
+    });
+  });
+  setMobileActivePane('r');
+  setFocusedPane('r');
+}
+
+// Open the desk layout editor in the Record pane: the desk in an iframe, the
+// list of what lies on it, sliders for the selection. Saves stage
+// src/content/desk-layout.json (docs/admin-interface.md → "Desk layout").
+function openDeskLayout(archive, allItems) {
+  openRecord((body) => {
+    renderDeskLayout(body, {
       onClose: () => openEmpty(getState().archive || archive, getState().allItems || allItems),
     });
   });
@@ -468,6 +483,7 @@ async function init() {
         setMobileActivePane('r');
         setFocusedPane('r');
       },
+      on_desk: () => openDeskLayout(archive, allItems),
       on_nohl: () => clearExplorerMatched(),
       on_help: () => setHelpExpanded(!getHelpExpanded()),
       on_logout: async () => {

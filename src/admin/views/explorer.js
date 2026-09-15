@@ -33,6 +33,7 @@ let expanded         = null;
 let itemsByPath      = new Map();
 let onItemSelectFn   = null;
 let onGuideSelectFn  = null;
+let onDeskSelectFn   = null;
 let onConstellationSelectFn = null; // (slug | null) — null opens the new-constellation form
 let navRegistered    = false;
 
@@ -97,6 +98,7 @@ export function renderExplorer(archive, callbacks = {}) {
 
   onItemSelectFn  = callbacks.onItemSelect  || null;
   onGuideSelectFn = callbacks.onGuideSelect || null;
+  onDeskSelectFn  = callbacks.onDeskSelect  || null;
   onConstellationSelectFn = callbacks.onConstellationSelect || null;
   itemsByPath = new Map();
 
@@ -114,7 +116,11 @@ export function renderExplorer(archive, callbacks = {}) {
     label: archive?.guide?.label || 'Guide',
     path:  'guide',
   };
-  const forest = [model, constellationsNode, guideNode];
+  // A 'desk' node beside it — the layout editor for the desk itself (where
+  // every bundle, sheet, object and clip sits; which records lie on the
+  // accumulation bundle). Not content: composition.
+  const deskNode = { type: 'desk', label: 'Desk layout', path: 'desk' };
+  const forest = [model, constellationsNode, guideNode, deskNode];
 
   // First-time defaults: open the root and every series so the user lands on
   // a meaningful skeleton instead of a single collapsed line.
@@ -426,10 +432,11 @@ function registerExplorerNav() {
         row.classList.add('is-selected');
         const item = itemsByPath.get(path);
         if (item && onItemSelectFn) onItemSelectFn(item);
-      } else if (type === 'guide') {
+      } else if (type === 'guide' || type === 'desk') {
         wrap.querySelectorAll('.admin-tree-row.is-selected').forEach(r => r.classList.remove('is-selected'));
         row.classList.add('is-selected');
-        if (onGuideSelectFn) onGuideSelectFn();
+        if (type === 'desk') { if (onDeskSelectFn) onDeskSelectFn(); }
+        else if (onGuideSelectFn) onGuideSelectFn();
       } else if (type === 'constellation' || type === 'constellation-new') {
         wrap.querySelectorAll('.admin-tree-row.is-selected').forEach(r => r.classList.remove('is-selected'));
         row.classList.add('is-selected');
@@ -608,11 +615,12 @@ function onTreeClick(e) {
     return;
   }
 
-  if (type === 'guide') {
+  if (type === 'guide' || type === 'desk') {
     wrap.querySelectorAll('.admin-tree-row.is-selected')
       .forEach(r => r.classList.remove('is-selected'));
     row.classList.add('is-selected');
-    if (onGuideSelectFn) onGuideSelectFn();
+    if (type === 'desk') { if (onDeskSelectFn) onDeskSelectFn(); }
+    else if (onGuideSelectFn) onGuideSelectFn();
     return;
   }
 
@@ -729,7 +737,7 @@ function buildConstellationsModel(archive) {
 }
 
 function isLeafType(type) {
-  return type === 'item' || type === 'constellation' || type === 'constellation-new' || type === 'guide';
+  return type === 'item' || type === 'constellation' || type === 'constellation-new' || type === 'guide' || type === 'desk';
 }
 
 function itemNode(item, parentPath) {
@@ -770,13 +778,13 @@ function renderNode(node, depth) {
 
   // Guide: a top-level, clickable meta node (no children, no expansion). Reads
   // like the archive root (star + label) but opens the Markdown editor instead.
-  if (node.type === 'guide') {
+  if (node.type === 'guide' || node.type === 'desk') {
     let cls = 'admin-tree-row admin-tree-root admin-tree-guide';
     if (!filter && matchedPaths.has(node.path)) cls += ' is-matched';
     const pad = depth * INDENT_PX + ROW_PAD_LEFT_PX;
-    return `<div class="${cls}" data-path="${escapeAttr(node.path)}" data-type="guide" style="padding-left: ${pad}px">`
+    return `<div class="${cls}" data-path="${escapeAttr(node.path)}" data-type="${node.type}" style="padding-left: ${pad}px">`
       + `<span class="admin-tree-marker"> </span>`
-      + `<span class="admin-tree-star">*</span> `
+      + `<span class="admin-tree-star">${node.type === 'desk' ? '~' : '*'}</span> `
       + `<span class="admin-tree-label">${escapeHTML(node.label)}</span>`
       + `</div>`;
   }

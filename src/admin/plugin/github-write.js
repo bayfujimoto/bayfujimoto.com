@@ -154,6 +154,18 @@ export function githubWritePlugin() {
   loadEnvLocal();
   return {
     name: "github-write",
+    // A save from the Desk layout view rewrites src/content/desk-layout.json,
+    // which the desk imports. Left to Vite that is a full reload broadcast to
+    // EVERY client — the admin included, which would drop its staged changes
+    // and close the editor mid-save. So the change is swallowed here and sent
+    // on as a custom event; a desk open on its own (not the editor's iframe)
+    // reloads itself on it (desk-scene.js).
+    handleHotUpdate(ctx) {
+      if (/[\\/]src[\\/]content[\\/]desk-layout\.json$/.test(ctx.file)) {
+        ctx.server.ws.send({ type: "custom", event: "desk-layout:file" });
+        return [];
+      }
+    },
     configureServer(server) {
 
       // R2 presigned URL — mirrors the Netlify function for local dev
@@ -277,6 +289,23 @@ export function githubWritePlugin() {
           res.writeHead(500);
           res.end(JSON.stringify({ ok: false, error: `R2 delete failed: ${e.message}` }));
         }
+      });
+
+      // The desk layout — the admin's Desk layout view writes the whole file
+      // (src/content/desk-layout.json) so the dev desk reads it back at once;
+      // the same content is staged for :w. Dev only; on Netlify the commit is
+      // the only write.
+      server.middlewares.use("/api/save-desk-layout", async (req, res) => {
+        res.setHeader("Content-Type", "application/json");
+        if (req.method !== "POST") { res.writeHead(405); res.end(JSON.stringify({ ok: false, error: "Method not allowed" })); return; }
+        let payload;
+        try { payload = await readBody(req); } catch (e) { res.writeHead(400); res.end(JSON.stringify({ ok: false, error: "Invalid JSON body" })); return; }
+        if (!payload || typeof payload !== "object" || !payload.wide || !payload.vertical) { res.writeHead(400); res.end(JSON.stringify({ ok: false, error: "Not a desk layout (wide + vertical expected)" })); return; }
+        try {
+          const abs = resolve(process.cwd(), "src/content/desk-layout.json");
+          writeFileSync(abs, JSON.stringify(payload, null, 2) + "\n", "utf8");
+          res.writeHead(200); res.end(JSON.stringify({ ok: true, filePath: "src/content/desk-layout.json" }));
+        } catch (e) { res.writeHead(500); res.end(JSON.stringify({ ok: false, error: e.message })); }
       });
 
       // Local write — always writes to disk immediately, no GitHub call

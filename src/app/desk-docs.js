@@ -10,27 +10,71 @@
 // has none). Bundles: { id, title, sub, box: [w, h], clips, docs }.
 
 import { imageUrl } from "./image-url.js";
+import LAYOUT_FILE from "../content/desk-layout.json";
 
 const K = 1.8;
 export const S = (v) => Math.round(v * K);
 export const PX_PER_MM = 1.5;
 
-export const REGIMES = {
-  wide: {
-    stage: { w: 1200, h: 780 },
-    folder: { x: 200, y: 90, w: S(445), h: S(315), tab: { x: S(80), w: S(95) } },
-    bundles: { identity: [S(8), S(10)], consumption: [S(78), S(-8)], creation: [S(80), S(108)], labor: [S(232), S(36)], accumulation: [S(308), S(-2)] },
-    zorder: ["identity", "labor", "consumption", "creation", "accumulation"],
-    objects: { guide: { x: 130, y: 690 }, amber: { x: 1090, y: 620 }, stamp: { x: 200 + S(196), y: 90 + S(315) + 6 } },
-  },
-  vertical: {
-    stage: { w: 600, h: 1240 },
-    folder: { x: 40, y: 30, w: 520, h: 1060, tab: { x: 60, w: 150 } },
-    bundles: { identity: [20, 20], consumption: [200, 10], accumulation: [215, 300], creation: [20, 580], labor: [300, 610] },
-    zorder: ["identity", "consumption", "accumulation", "creation", "labor"],
-    objects: { guide: { x: 130, y: 1150 }, amber: { x: 500, y: 1140 }, stamp: { x: 300, y: 1096 } },
-  },
+// ── The layout ───────────────────────────────────────────────────────────────
+// The stage and the folder are fixed per regime; where every bundle, document,
+// object and clip sits is the layout — src/content/desk-layout.json, which the
+// admin's Desk layout view edits (and sends live into a desk opened with
+// ?edit=desk). What the file does not say falls back to the defaults below and
+// to the doc specs in buildDocBundles, so a document added in code appears
+// where the code puts it until it is moved.
+export const STAGES = {
+  wide:     { stage: { w: 1200, h: 780 },  folder: { x: 200, y: 90, w: S(445), h: S(315), tab: { x: S(80), w: S(95) } } },
+  vertical: { stage: { w: 600, h: 1240 },  folder: { x: 40, y: 30, w: 520, h: 1060, tab: { x: 60, w: 150 } } },
 };
+export const DEFAULT_LAYOUT = LAYOUT_FILE;
+export const LAYOUT_PATH = "src/content/desk-layout.json";
+export const BUNDLE_IDS = ["identity", "consumption", "creation", "labor", "accumulation"];
+export const OBJECT_DEFAULTS = { guide: { ry: 90 }, amber: { ry: -20 }, stamp: { ry: 0 } };
+
+// The regime's tables, from the layout: `bundles` id → { x, y, rot } (folder-
+// relative), `zorder`, `objects` id → { x, y, ry }, `docs` bundle → key → { x, y,
+// rot } overrides, `order` bundle → [keys], `clips` bundle → [{ x, y, r }].
+export function regimeOf(name, layout = DEFAULT_LAYOUT) {
+  const base = STAGES[name] || STAGES.wide;
+  const L = (layout && layout[name]) || DEFAULT_LAYOUT[name] || {};
+  const D = DEFAULT_LAYOUT[name] || {};
+  const bundles = {};
+  for (const id of BUNDLE_IDS) {
+    const p = L.bundles?.[id] || D.bundles?.[id] || { x: 0, y: 0 };
+    bundles[id] = { x: +p.x || 0, y: +p.y || 0, rot: +p.rot || 0 };
+  }
+  const zorder = Array.isArray(L.zorder) && L.zorder.length ? L.zorder.filter((id) => BUNDLE_IDS.includes(id)) : D.zorder.slice();
+  for (const id of BUNDLE_IDS) if (!zorder.includes(id)) zorder.push(id);
+  const objects = {};
+  for (const id of Object.keys(OBJECT_DEFAULTS)) {
+    const o = L.objects?.[id] || D.objects?.[id] || { x: 0, y: 0 };
+    objects[id] = { x: +o.x || 0, y: +o.y || 0, ry: o.ry == null ? OBJECT_DEFAULTS[id].ry : +o.ry };
+  }
+  return { ...base, bundles, zorder, objects, docs: L.docs || {}, order: L.order || {}, clips: L.clips || {} };
+}
+// kept for the fan and anything else that only needs the stage
+export const REGIMES = { wide: regimeOf("wide"), vertical: regimeOf("vertical") };
+
+// A document's place in this regime: the layout's override, else the spec's own.
+export function resolveDoc(spec, bundleId, Rg) {
+  const ov = Rg.docs?.[bundleId]?.[spec.key];
+  if (!ov) return { x: spec.x, y: spec.y, rot: spec.rot || 0 };
+  return { x: ov.x == null ? spec.x : +ov.x, y: ov.y == null ? spec.y : +ov.y, rot: ov.rot == null ? (spec.rot || 0) : +ov.rot };
+}
+// The bundle's documents in this regime's stacking order (first = lowest).
+export function orderedDocs(docs, bundleId, Rg) {
+  const order = Rg.order?.[bundleId];
+  if (!Array.isArray(order) || !order.length) return docs.slice();
+  const rank = new Map(order.map((k, i) => [k, i]));
+  return docs.slice().sort((a, b) => (rank.has(a.key) ? rank.get(a.key) : 1e3 + docs.indexOf(a)) - (rank.has(b.key) ? rank.get(b.key) : 1e3 + docs.indexOf(b)));
+}
+// A clip's place: the layout's, else the bundle spec's.
+export function resolveClip(clip, i, bundleId, Rg) {
+  const ov = Rg.clips?.[bundleId]?.[i];
+  if (!ov) return { x: clip.x, y: clip.y, r: clip.r || 0 };
+  return { x: ov.x == null ? clip.x : +ov.x, y: ov.y == null ? clip.y : +ov.y, r: ov.r == null ? (clip.r || 0) : +ov.r };
+}
 
 function byDateDesc(items) { return [...(items || [])].sort((a, b) => String(b.sort_date || "").localeCompare(String(a.sort_date || ""))); }
 function year(d) { return String(d || "").slice(0, 4); }
@@ -39,13 +83,19 @@ function mm(dim) { const m = /(\d+(?:\.\d+)?)\s*[x×]\s*(\d+(?:\.\d+)?)/.exec(St
 const RED_BACKGROUND = new Set(["EPH-2026-023", "EPH-2026-026"]);
 const BACKING_ID = "EPH-2026-029";
 
-function accumulationSlots(items) {
-  // A scan that was cut out carries its cut-out mode in the ?v= token of its
-  // front (…c20x2, as panels.js reads it); the cut-out PNG has the sheet's real
-  // silhouette, so the desk shows that rather than the rectangular display scan.
-  const isCut = (v) => { const qi = v ? v.indexOf("?v=") : -1; return qi !== -1 && /c\d+x\d+$/.test(v.slice(qi + 3)); };
+// A scan that was cut out carries its cut-out mode in the ?v= token of its
+// front (…c20x2, as panels.js reads it); the cut-out PNG has the sheet's real
+// silhouette, so the desk shows that rather than the rectangular display scan.
+const isCut = (v) => { const qi = v ? v.indexOf("?v=") : -1; return qi !== -1 && /c\d+x\d+$/.test(v.slice(qi + 3)); };
+// Every accumulation record the desk could show: a front scan with known
+// dimensions. The admin's Desk layout view lists these to add from.
+export function accumulationPool(items) {
   const usable = (i) => i.assets?.front && mm(i.dimensions) && (isCut(i.assets.front) || !RED_BACKGROUND.has(i.id));
-  const pool = byDateDesc(items).filter(usable).map((i) => { const [w, h] = mm(i.dimensions); const cut = isCut(i.assets.front); return { id: i.id, src: imageUrl(i.assets.front, cut ? "cutout-desk" : "display"), fallback: cut ? imageUrl(i.assets.front, "cutout") : null, cutout: cut, w, h, aspect: h / w, area: w * h }; });
+  return byDateDesc(items).filter(usable).map((i) => { const [w, h] = mm(i.dimensions); const cut = isCut(i.assets.front); return { id: i.id, title: i.title || i.id, src: imageUrl(i.assets.front, cut ? "cutout-desk" : "display"), fallback: cut ? imageUrl(i.assets.front, "cutout") : null, cutout: cut, w, h, aspect: h / w, area: w * h }; });
+}
+
+function accumulationSlots(items) {
+  const pool = accumulationPool(items);
   const take = (pred) => { let best = null, bs = Infinity; pool.forEach((c) => { const sc = pred(c); if (sc < bs) { bs = sc; best = c; } }); if (best) pool.splice(pool.indexOf(best), 1); return best; };
   // The backing sheet is pinned rather than auto-picked: the size rule would
   // take the largest sheet in the pool, and this is the one that belongs under
@@ -130,6 +180,15 @@ const slipTitle = (t) => { const s = String(t || "").replace(/\s*[([][^)\]]*[)\]
 // saucer actually leaves: the cup came down on the corner of a form that was
 // already being filled in. It replaces the café receipt that priced three
 // coffees at 4.50 each.
+// ── The films ticket ─────────────────────────────────────────────────────────
+// A box-office thermal, the way a kiosk prints one: an 80 mm roll fed sideways
+// and cut short — 150 x 62 mm — so it lies across the Log. Chosen from four
+// mockups (mockups/movie-ticket, docs/movies-ticket-plan.md). Typographic
+// only: film images live on Letterboxd's host and the canvas cannot draw them.
+const TKT_W = Math.round(150 * PX_PER_MM);              // 225 stage px
+const TKT_H = Math.round(62 * PX_PER_MM);               // 93
+const TKT_COL = Math.round(98 * PX_PER_MM);             // the stub end starts here
+const TKT_INK = "#232120";                              // thermal black, never quite black
 const FORM_W = Math.round(90 * PX_PER_MM);              // 135 stage px
 const FORM_H = Math.round(115 * PX_PER_MM);             // 173
 const FORM_PAD = 10;
@@ -151,7 +210,7 @@ const note = (text, x, y, extra = {}) => ({ t: "text", x, y, text, font: "note",
 const hand = (text, x, y, extra = {}) => ({ t: "text", x, y, text, font: "hand", size: 11, lineHeight: 19, color: "#25407a", ...extra });
 const tape = (x, y, w = 34, h = 11, rotate = -3) => ({ t: "tape", x: S(x), y: S(y), w: S(w), h: S(h), rotate });
 
-export function buildDocBundles(archive) {
+export function buildDocBundles(archive, layout = DEFAULT_LAYOUT) {
   const series = archive.series;
   const sub = (s, k) => series[s]?.subcollections?.[k]?.items || [];
   const labelOf = (k) => series[k]?.label || k;
@@ -193,6 +252,43 @@ export function buildDocBundles(archive) {
   // jitter cycles, so the rows never repeat within a card.
   const NUDGE = [1, 3, 0, 2, 1, 3], TILT = [-6, 3, -2, 4, -3, 1], SPECK = [4, 19, 33, 51, 7, 26], SLANT = [-1.5, 0.8, -0.6, 1.2, -1, 0.4];
   const slipRows = books.slice(0, SLIP_FILL).map((b) => ({ date: stampDate(b.date_read || b.sort_date), title: slipTitle(b.title) })).filter((r) => r.date || r.title);
+  // The films ticket, for the latest viewing. Thermal print is not clean: the
+  // title is printed inverse, the tally uses leader dots, a weak head fades in
+  // bands, and the roll's pink end-stripe shows along the top edge. Venue and
+  // format are optional record fields; the ticket says "cinema" and the
+  // seen_via value (or "digital") until they are filled in.
+  const film = films[0] || {};
+  const filmStars = (() => { const r = Number(film.rating) || 0; return r ? "★".repeat(Math.floor(r)) + (r % 1 ? "½" : "") + "☆".repeat(5 - Math.ceil(r)) : "—"; })();
+  const filmTxn = (film.id || "").replace(/\D/g, "").slice(-6) || "000000";
+  const tkt = (text, x, y, extra = {}) => ({ t: "text", x, y, text, font: "mono", size: 4.4, color: TKT_INK, opacity: 0.88, ...extra });
+  const tktDashed = (y, x0 = 10, x1 = TKT_COL - 10) => Array.from({ length: Math.floor((x1 - x0) / 3) }, (_, i) => ({ t: "rect", x: x0 + i * 3, y, w: 1.6, h: 0.5, color: "rgba(35,33,32,.7)" }));
+  const tktLeader = (label, value, y) => tkt(`${label}${".".repeat(Math.max(1, 34 - label.length - String(value).length))}${value}`, 10, y);
+  const tktFade = (y, h, a) => ({ t: "rect", x: -4, y, w: TKT_W + 8, h, color: `rgba(247,243,234,${a})` });   // a weak head: the stock shows back through the print
+  const tktBars = (() => { let v = [...String(film.id || "x")].reduce((acc, c) => (acc * 31 + c.charCodeAt(0)) % 9973, 7); const out = []; let cx = TKT_COL + 8; const x1 = TKT_W - 16; while (cx < x1) { v = (v * 9301 + 49297) % 233280; const bw = 0.5 + (v / 233280) * 1.4; out.push({ t: "rect", x: cx, y: 10, w: bw, h: 22, color: TKT_INK }); cx += bw + 0.6 + ((v >> 3) % 3) * 0.4; } return out; })();
+  const ticketLayers = [
+    { t: "rect", x: -4, y: -4, w: TKT_W + 8, h: 8, color: "rgba(214,112,140,.26)" },
+    tkt(String(film.venue || "cinema").toUpperCase(), 10, 9, { size: 6.4, weight: 600, letterSpacing: "0.6px" }),
+    tkt(`${String(film.display_date || film.watch_date || "").toUpperCase()}   TXN ${filmTxn}`, 10, 17, { size: 3.8, opacity: 0.7 }),
+    ...tktDashed(23.5),
+    { t: "rect", x: 10, y: 27, w: TKT_COL - 20, h: 12, color: TKT_INK },
+    { t: "text", x: 13, y: 29.6, text: String(film.title || "—").toUpperCase(), font: "mono", size: 6.6, weight: 600, color: "#f4f0e8", maxWidth: TKT_COL - 26, lineHeight: 8 },
+    tkt([year(film.year || film.sort_date), String(film.format || film.seen_via || "digital").toUpperCase(), film.rewatch ? "REWATCH" : "FIRST VIEWING"].filter(Boolean).join("  /  "), 10, 42, { size: 3.9, opacity: 0.8 }),
+    ...tktDashed(49),
+    tktLeader("ADULT", "1", 53),
+    tktLeader("RATING", filmStars, 59),
+    tktLeader("LOGGED", String(film.watch_date || film.sort_date || "").replace(/-/g, "/"), 65),
+    ...tktDashed(71),
+    tkt("NO REFUNDS OR EXCHANGES. RETAIN FOR RE-ENTRY.", 10, 74.5, { size: 3, opacity: 0.6, letterSpacing: "0.2px" }),
+    { t: "rect", x: TKT_COL, y: 6, w: 0.5, h: TKT_H - 12, color: "rgba(35,33,32,.35)" },
+    ...tktBars,
+    tkt(film.id || "FILM-0000-000", TKT_COL + 8 + (TKT_W - TKT_COL - 24) / 2, 35, { size: 3.8, align: "center", opacity: 0.75, letterSpacing: "0.5px" }),
+    tkt("ADMIT ONE", TKT_COL + 8, TKT_H - 16, { size: 4.6, letterSpacing: "2px", opacity: 0.8 }),
+    tkt(String(film.title || "").toUpperCase(), TKT_COL + 8, TKT_H - 9.5, { size: 3.4, opacity: 0.6, maxWidth: TKT_W - TKT_COL - 24 }),
+    tkt("1", TKT_W - 14, TKT_H - 17, { size: 8, weight: 600, align: "right" }),
+    tktFade(33.2, 0.8, 0.22), tktFade(57.5, 1.1, 0.3), tktFade(19, 1.4, 0.2),
+    { t: "crease", angle: 90, at: 63, strength: 0.4 },
+    { t: "crumple", count: 4, patches: 8, strength: 0.4 },   // two hours in a pocket, not a week
+  ];
   const slipLayers = [
     { t: "text", x: SLIP_PAD, y: 11, text: "date due", font: "mono", size: 5.5, uppercase: true, letterSpacing: "1.5px", opacity: 0.62 },
     { t: "rect", x: SLIP_PAD, y: SLIP_HEAD, w: SLIP_W - SLIP_PAD * 2, h: 0.8, color: "rgba(42,34,24,0.42)" },
@@ -264,10 +360,27 @@ export function buildDocBundles(archive) {
   const photoSrc = photoPick ? imageUrl(photoPick.assets.gallery[0].file, "display") : null;
   const PRINT_W = Math.round(152.4 * PX_PER_MM), PRINT_H = Math.round(101.6 * PX_PER_MM);
 
-  const A = accumulationSlots(series.accumulation?.items || []);
-  const scanDoc = (rec, x, y, rot, extra = {}) => rec ? { sub: null, x, y, rot, w: Math.round(rec.w * PX_PER_MM), h: Math.round(rec.h * PX_PER_MM), stock: "white", seed: 9, cutout: !!rec.cutout, layers: [{ t: "image", src: rec.src, fallback: rec.fallback, x: 0, y: 0, w: Math.round(rec.w * PX_PER_MM), h: Math.round(rec.h * PX_PER_MM) }], ...extra } : null;
+  // The accumulation bundle: the layout's explicit list of records when it has
+  // one (the admin's Desk layout view adds and removes them; positions come
+  // from the regime's doc overrides, keyed by record id), else the size-rule
+  // picker below. A listed record that has left the archive is skipped.
+  const accItems = series.accumulation?.items || [];
+  const listed = Array.isArray(layout?.accumulation) ? layout.accumulation : null;
+  const accumulationDocs = () => {
+    if (listed) {
+      const pool = new Map(accumulationPool(accItems).map((c) => [c.id, c]));
+      return listed.map((e, i) => { const id = typeof e === "string" ? e : e?.id; const rec = pool.get(id); return rec ? scanDoc(rec, 20 + (i % 3) * 60, 30 + Math.floor(i / 3) * 120, 0) : null; }).filter(Boolean);
+    }
+    const A = accumulationSlots(accItems);
+    return [
+      scanDoc(A.backing, 22, 44, 0.5), scanDoc(A.brochure, 34, 96, 0.6), scanDoc(A.receipt, 12, -4, -1), scanDoc(A.small, 40, 330, -1),
+      A.longTkt && { ...scanDoc(A.longTkt, 118, 262, 90), x: 118 + Math.round(A.longTkt.h * PX_PER_MM) / 2 - Math.round(A.longTkt.w * PX_PER_MM) / 2, y: 262 + Math.round(A.longTkt.w * PX_PER_MM) / 2 - Math.round(A.longTkt.h * PX_PER_MM) / 2 },
+      scanDoc(A.postcard, 297 - 96, 296, 1), scanDoc(A.bill, 126, 442, -1),
+    ].filter(Boolean);
+  };
+  const scanDoc = (rec, x, y, rot, extra = {}) => rec ? { key: rec.id, id: rec.id, label: rec.title, sub: null, x, y, rot, w: Math.round(rec.w * PX_PER_MM), h: Math.round(rec.h * PX_PER_MM), stock: "white", seed: 9, cutout: !!rec.cutout, layers: [{ t: "image", src: rec.src, fallback: rec.fallback, x: 0, y: 0, w: Math.round(rec.w * PX_PER_MM), h: Math.round(rec.h * PX_PER_MM) }], ...extra } : null;
 
-  const doc = (sub, x, y, w, h, o = {}) => ({ sub, x: S(x), y: S(y), rot: o.rot || 0, w: S(w), h: S(h), stock: o.stock || "cream", rough: !!o.rough, torn: o.torn || null, cutout: !!o.cutout, seed: o.seed || (x * 7 + y * 13) | 0, layers: o.layers || [] });
+  const doc = (sub, x, y, w, h, o = {}) => ({ key: o.key || sub, sub, x: S(x), y: S(y), rot: o.rot || 0, w: S(w), h: S(h), stock: o.stock || "cream", rough: !!o.rough, torn: o.torn || null, cutout: !!o.cutout, vellum: !!o.vellum, serrated: o.serrated || null, seed: o.seed || (x * 7 + y * 13) | 0, layers: o.layers || [] });
 
   return [
     { id: "identity", title: labelOf("identity"), sub: "cv · timetable · card", box: [S(90), S(300)], clips: [{ kind: "bulldog", x: -14, y: S(48), r: 90 }], docs: [
@@ -278,7 +391,7 @@ export function buildDocBundles(archive) {
       ] }),
       doc("biography", -1, -2, 82, 16, { rough: true, layers: [note(timetable, 8, 5, { size: 11, letterSpacing: "1px" }), tape(2, -3, 16, 9, -8), tape(70, -2, 16, 9, 6)] }),
       doc("contact", 10, 248, 64, 37, { stock: "white", layers: cardLayers }),
-      doc(null, 4, 282, 100, 11, { torn: "top", seed: 3, layers: [{ t: "rules", opacity: 0.3 }] }),
+      doc(null, 4, 282, 100, 11, { key: "scrap", torn: "top", seed: 3, layers: [{ t: "rules", opacity: 0.3 }] }),
     ] },
 
     { id: "consumption", title: labelOf("consumption"), sub: "log · slip · form · disc · cartridge", box: [S(170), S(160)], clips: [{ kind: "paperclip", x: S(222 - 78) + 10, y: S(12 + 8) + 24, r: 0 }], docs: [
@@ -293,7 +406,7 @@ export function buildDocBundles(archive) {
         // still covers the sheets of its own bundle, clear of the log's
         // handwritten titles and the books receipt's lines, and the fan shows
         // it whole — obscured where it rests, entire where it is examined.
-        sub: "music", object: "disc", bare: true, gloss: true,
+        key: "disc", sub: "music", object: "disc", bare: true, gloss: true,
         x: S(122), y: S(105), rot: -5, w: CD_D, h: CD_D, thickness: CD_T, hole: CD_HOLE, seed: 11,
         layers: [
           { t: "cd", src: albumArt, id: albumRec?.id || "", ...CD_R },
@@ -312,16 +425,23 @@ export function buildDocBundles(archive) {
       // three stamped rows clear the disc — a solid stands on its whole
       // thickness, so the disc's face is above this sheet however early its
       // slot is, and what it covers here is the slip's unused half.
-      { ...doc("books", 157, 22, SLIP_W / K, SLIP_H / K, { stock: "legal", rot: 3, seed: 21, layers: slipLayers }), texScale: 2 },
-      doc("coffee", -20, 78, FORM_W / K, FORM_H / K, { stock: "white", rough: true, rot: -4, seed: 17, layers: cupLayers }),
-      doc("films", 7, 8, 155, 140, { stock: "white", rough: true, layers: [
+      { ...doc("books", 157, 22, SLIP_W / K, SLIP_H / K, { key: "slip", stock: "legal", rot: 3, seed: 21, layers: slipLayers }), texScale: 2 },
+      doc("coffee", -20, 78, FORM_W / K, FORM_H / K, { key: "form", stock: "white", rough: true, rot: -4, seed: 17, layers: cupLayers }),
+      // The Log stays on the desk but is no longer the films sheet (sub: null
+      // keeps it out of the fan); the ticket below lies across its lower half
+      // and is what the fan lifts for films.
+      doc(null, 7, 8, 155, 140, { key: "log", stock: "white", rough: true, layers: [
         head("log · films books records", 44, 8), { t: "text", x: 44, y: 24, text: "Log", font: "serif", size: 44, color: "#2a3f66", letterSpacing: "-0.5px" },
         { t: "rules", top: 64, opacity: 0.3 }, hand(logText, 70, 120, { size: 9.5, lineHeight: 17 }),
         { t: "stain", x: 190, y: 170, w: 70, h: 62, ring: true }, note("again in sept.", 8, 200, { size: 16, color: "rgba(50,44,38,.7)" }), { t: "crease", angle: 90, at: 50, strength: 0.9 },
         { t: "photo", x: 200, y: 96, w: 40, h: 40, src: still || null, rotate: -1 }, tape(200 / K - 8, 96 / K - 5, 20, 7, -30),
       ] }),
+      // The ticket: across the Log's ruled half, its right end under the disc
+      // on the desk (the fan shows it whole). texScale 2, like the slip: the
+      // leader dots and the fine print are small type at desk size.
+      { ...doc("films", 10, 70, TKT_W / K, TKT_H / K, { key: "ticket", stock: "thermal", rot: -2.5, serrated: "right", seed: 43, layers: ticketLayers }), texScale: 2 },
       {
-        sub: "games", object: "card", bare: true, gloss: true, texScale: 4,
+        key: "cartridge", sub: "games", object: "card", bare: true, gloss: true, texScale: 4,
         x: S(74), y: S(48), rot: -7, w: CARD_W, h: CARD_H, thickness: CARD_T, radius: CARD_R, shell: CARD_RED, handDepth: 0.35, seed: 6,
         layers: [
           // the moulding first, so nothing behind the shell is ever bare canvas
@@ -339,39 +459,62 @@ export function buildDocBundles(archive) {
 
     { id: "creation", title: labelOf("creation"), sub: "sketch · note · print · pattern · strip", box: [S(170), S(190)], clips: [], docs: [
       doc("notes", -5, -10, 90, 70, { rough: true, rot: -3, layers: [hand("a note — kept for the sentence in it, not the page.", 8, 8, { size: 8, lineHeight: 14, maxWidth: 140 }), { t: "crease", angle: 12, at: 40, strength: 0.7 }, { t: "crease", angle: -70, at: 70, strength: 0.5 }] }),
-      doc("prototypes", 65, 152, 70, 50, { rot: 4, layers: [{ t: "pattern" }, head("pattern · fold on dashed", 6, 4)] }),
+      doc("prototypes", 65, 152, 70, 50, { key: "pattern", rot: 4, layers: [{ t: "pattern" }, head("pattern · fold on dashed", 6, 4)] }),
       // The strip is a scan of real film rather than a drawn one, and it is cut
       // out: the sprocket holes are transparent in the image, so the sheet is
       // punched through and the desk shows between them. Sized to the image's
       // own 691 × 1945 and hung from the same bottom edge (192) as the drawn
       // strip it replaces, so its stub still reads below the sketch sheet.
-      doc("videos", 123, 63, 46, 129, { rot: 1, cutout: true, layers: [{ t: "image", src: "/desk/filmstrip.webp", x: 0, y: 0, w: S(46), h: S(129) }] }),
-      doc("sketches", 5, 2, 155, 180, { rough: true, layers: [
-        hand("the surface remembers what the record forgets — a crease, a thumbprint, the place where the pen ran dry. keep the sheet. the note is only its excuse.", 14, 14, { maxWidth: S(155) - 28 }),
-        { t: "sketch", x: 0, y: 0, scale: S(155) / 279, paths: ["M40 275 L40 175 L140 140 L140 240 Z", "M140 140 L225 165 L225 265 L140 240", "M180 210 c-10 -40 20 -60 30 -30 c 10 -30 40 -10 22 20 c 30 5 20 40 -8 32 c 5 30 -35 30 -30 5 c -30 10 -40 -25 -14 -27", "M60 300 C100 288, 170 310, 250 292"], opacity: 0.7 },
-        { t: "sketch", x: 0, y: 0, scale: S(155) / 279, paths: ["M40 175 L78 152 L78 250 M78 152 L170 118"], dash: [3, 3], opacity: 0.6 },
-        { t: "seal", x: 212, y: 268, rotate: -4 }, mono(`untitled · graphite · ${thisYear}`, 12, 296, { opacity: 0.45 }), { t: "crease", angle: -8, at: 34, strength: 0.6 }, tape(-4, -4, 30, 10, -40),
-      ] }),
-      { sub: "photos", x: S(6), y: S(92), rot: -5, w: PRINT_W, h: PRINT_H, stock: "white", seed: 4, gloss: true, autoOrient: true, layers: [{ t: "photo", x: 0, y: 0, w: PRINT_W, h: PRINT_H, src: photoSrc, border: Math.round(3 * PX_PER_MM), fit: "cover" }] },
-      doc(null, 100, 167, 38, 15, { stock: "thermal", torn: "right", seed: 5, layers: [note("print ↑", 6, -2)] }),
+      doc("videos", 123, 63, 46, 129, { key: "strip", rot: 1, cutout: true, layers: [{ t: "image", src: "/desk/filmstrip.webp", x: 0, y: 0, w: S(46), h: S(129) }] }),
+      // Creation's sketches sheet is a tracing on vellum: an ink-only drawing
+      // after Ellsworth Kelly's Magnolia (public/desk/magnolia-ink.webp, made
+      // by scripts/prep-magnolia.js — luminance to alpha, signature erased; a
+      // tracing carries no signature). The stock is the `vellum` flag in
+      // paper.js (translucent, smooth) and desk-scene.js (a plane that does
+      // not cast a shadow). Same w/h/x/y as before: this sheet's y≈92 edge is
+      // what the cartridge and the disc are placed against.
+      (() => {
+        const w = S(155), h = S(180), inset = 0.06;
+        const aw = w * (1 - inset * 2), ah = h * (1 - inset * 2);
+        const iw = 546, ih = 984;                       // magnolia-ink.webp
+        const r = Math.min(aw / iw, ah / ih), dw = Math.round(iw * r), dh = Math.round(ih * r);
+        // a tracing is never centred: high and a little left
+        const x = Math.round(w * inset + (aw - dw) * 0.42), y = Math.round(h * inset + (ah - dh) * 0.40);
+        return doc("sketches", 5, 2, 155, 180, { key: "sketch", vellum: true, rough: true, layers: [
+          { t: "image", src: "/desk/magnolia-ink.webp", x, y, w: dw, h: dh, passes: 2 },   // the ink is a thin luminance-to-alpha line; a second pass so it holds under the lamp at desk scale
+          hand("after E. Kelly, Magnolia", Math.round(w * 0.60), Math.round(h * 0.40), { size: 11, rotate: -1.5, color: "#4a4744" }),   // pencil, not pen; beside the stem rather than at the foot, which the print covers on the desk
+          // handled, not pristine: a few soft creases in from the edges, one
+          // fold-line across a corner, and the corners themselves worn — laid
+          // over the ink, since a crease runs through whatever is drawn on it
+          { t: "crumple", count: 9, patches: 18, strength: 1, soften: 1.1 },
+          { t: "crease", angle: -34, at: 82, strength: 0.6 },
+          { t: "wearCorner" },
+        ] });
+      })(),
+      { key: "print", sub: "photos", x: S(6), y: S(92), rot: -5, w: PRINT_W, h: PRINT_H, stock: "white", seed: 4, gloss: true, autoOrient: true, layers: [{ t: "photo", x: 0, y: 0, w: PRINT_W, h: PRINT_H, src: photoSrc, border: Math.round(3 * PX_PER_MM), fit: "cover" }] },
+      doc(null, 100, 167, 38, 15, { key: "stub", stock: "thermal", torn: "right", seed: 5, layers: [note("print ↑", 6, -2)] }),
     ] },
 
     { id: "labor", title: labelOf("labor"), sub: "drawing · specification · transmittal", box: [S(140), S(262)], clips: [], docs: [
-      doc(null, 8, 4, 85, 65, { stock: "white", torn: "bottom", seed: 11, layers: [head("specification · 09 21 00"), mono("2.1  gypsum board assemblies\n2.2  metal framing, 20 ga\n2.3  acoustic insulation\n3.1  install per mfr. instr.", 10, 20, { opacity: 0.5 }), { t: "rules", top: 64, dense: true, opacity: 0.25 }, { t: "stampBox", x: S(85) - 70, y: 8, text: "ISSUED", rotate: -8 }] }),
-      doc(null, 3, 49, 110, 200, { stock: "diazo", rough: true, layers: [
+      doc(null, 8, 4, 85, 65, { key: "spec", stock: "white", torn: "bottom", seed: 11, layers: [head("specification · 09 21 00"), mono("2.1  gypsum board assemblies\n2.2  metal framing, 20 ga\n2.3  acoustic insulation\n3.1  install per mfr. instr.", 10, 20, { opacity: 0.5 }), { t: "rules", top: 64, dense: true, opacity: 0.25 }, { t: "stampBox", x: S(85) - 70, y: 8, text: "ISSUED", rotate: -8 }] }),
+      doc(null, 3, 49, 110, 200, { key: "drawing", stock: "diazo", rough: true, layers: [
         { t: "diazoLines" }, { t: "fold", dir: "h", at: S(100) }, { t: "fold", dir: "v", at: S(55) },
         { t: "sketch", x: 0, y: 0, scale: S(110) / 198, stroke: "rgba(205,220,240,.85)", width: 1, opacity: 0.9, paths: ["M30 30 h136 v120 h-136 z", "M30 90 H166 M96 30 V150 M60 30 V90 M132 90 V150", "M40 40 h20 M40 44 h14", "M30 200 H166 M30 200 L30 300 L166 300 L166 200", "M30 300 L98 250 L166 300", "M60 260 v40 M120 260 v40 M60 260 h20 v20 h-20 z M110 260 h20 v20 h-20 z"] },
         { t: "sketch", x: 0, y: 0, scale: S(110) / 198, stroke: "rgba(205,220,240,.85)", width: 0.6, opacity: 0.9, dash: [6, 3], paths: ["M20 330 H178"] },
         { t: "titleBlock", w: Math.round(S(110) * 0.44), h: Math.round(S(200) * 0.14), title: labelOf("labor"), sub: "a-101 · plan · record" },
         note("rev 2 — see transmittal", 14, 300, { color: "rgba(255,255,255,.7)", rotate: -2 }), { t: "wearCorner" }, tape(96, -3, 18, 8, 4),
       ] }),
-      doc(null, 48, 189, 85, 65, { stock: "thermal", rough: true, layers: [head("transmittal"), mono("1  a-101   plan\n2  a-201   elevations\n3  a-501   details\n—  issued for record", 10, 20), hand("bf", 70, 58, { size: 13, rotate: -8 }), { t: "crease", angle: 0, at: 46, strength: 0.5 }] }),
+      doc(null, 48, 189, 85, 65, { key: "transmittal", stock: "thermal", rough: true, layers: [head("transmittal"), mono("1  a-101   plan\n2  a-201   elevations\n3  a-501   details\n—  issued for record", 10, 20), hand("bf", 70, 58, { size: 13, rotate: -8 }), { t: "crease", angle: 0, at: 46, strength: 0.5 }] }),
     ] },
 
-    { id: "accumulation", title: labelOf("accumulation"), sub: "map · receipt · brochure · ticket · postcard · bill", box: [297, 540], clips: [{ kind: "bulldog", x: 24, y: 550, r: 0, small: true }, { kind: "paperclip", x: 36, y: 552, r: 0 }, { kind: "pin", x: 180, y: 6, r: -20 }], docs: [
-      scanDoc(A.backing, 22, 44, 0.5), scanDoc(A.brochure, 34, 96, 0.6), scanDoc(A.receipt, 12, -4, -1), scanDoc(A.small, 40, 330, -1),
-      A.longTkt && { ...scanDoc(A.longTkt, 118, 262, 90), x: 118 + Math.round(A.longTkt.h * PX_PER_MM) / 2 - Math.round(A.longTkt.w * PX_PER_MM) / 2, y: 262 + Math.round(A.longTkt.w * PX_PER_MM) / 2 - Math.round(A.longTkt.h * PX_PER_MM) / 2 },
-      scanDoc(A.postcard, 297 - 96, 296, 1), scanDoc(A.bill, 126, 442, -1),
-    ].filter(Boolean) },
+    { id: "accumulation", title: labelOf("accumulation"), sub: "map · receipt · brochure · ticket · postcard · bill", box: [297, 540], clips: [{ kind: "bulldog", x: 24, y: 550, r: 0, small: true }, { kind: "paperclip", x: 36, y: 552, r: 0 }, { kind: "pin", x: 180, y: 6, r: -20 }], docs: accumulationDocs() },
   ];
 }
+
+// Labels for the layout editor: what each document is called in the list.
+export const DOC_LABELS = {
+  cv: "curriculum vitae", biography: "biography slip", contact: "calling card", scrap: "ruled scrap",
+  disc: "music disc", slip: "date-due slip", form: "cupping form", log: "the Log", ticket: "films ticket", cartridge: "games cartridge",
+  notes: "note", pattern: "fold pattern", strip: "film strip", sketch: "magnolia tracing", print: "4×6 print", stub: "print stub",
+  spec: "specification", drawing: "diazo drawing", transmittal: "transmittal",
+};

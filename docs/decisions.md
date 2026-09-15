@@ -380,6 +380,25 @@ Its purpose is to prevent drift, repetition, and silent contradictions over time
 
 ---
 
+### Creation sketches — a tracing on vellum
+- status: confirmed
+- decision: The document standing for **sketches** in the creation bundle is a **sheet of vellum carrying a tracing after Ellsworth Kelly's *Magnolia*** — ink line only, no signature, a pencil caption "after E. Kelly, Magnolia" — in place of the procedural sketch sheet (the drawn box, the scribble, the seal). The drawing is an asset, `public/desk/magnolia-ink.webp`, made by `scripts/prep-magnolia.js` from a source photograph kept out of the repo: luminance to alpha, the signature block erased, because a tracing carries no signature. The sheet keeps the old sheet's size and place; its lower edge at y≈92 is what the print, the cartridge and the disc are set against.
+- reason: The sketches sheet was the one document in the bundle that was invented rather than reproduced — a made-up drawing on a made-up page. The other creation documents are the things themselves (a print, a strip of film). A tracing of a favourite drawing is a real act of the hand, and the record of one: the sheet is evidence of looking, not a portfolio piece.
+- how: `vellum` is a document flag beside `rough`, `torn`, `cutout`, `bare`. In `paper.js` it lays a cool off-white at 84 % alpha instead of a stock colour (a first cut at 62 % read as glass and lost the line) — the alpha IS the material — with the faint burnish drafting vellum has along its edges, then fine tooth and a faint fibre mottle (source-atop), no vignette; the sheet is handled, not pristine — a `crumple` of soft creases in from the edges, one fold across a corner, worn corners, a `rough` edge — and its material carries the shared paper normal map at a low scale so the raking light finds the tooth. The image layer composites source-over so the ink's own partial alpha survives above the stock's; pressed harder in the asset (prep gamma 0.6) and laid in two `passes`, so a 1-px line holds at desk scale under the lamp. No `inkDropout`, no cutout mask — both would punch holes through the stock. In `desk-scene.js` the sheet is a `MeshPhysicalMaterial` plane with `alphaTest: 0`, `depthWrite: false` (it must not occlude the sheets under it in the depth pass), a little sheen, **no transmission and no metalness** (environmentIntensity is 0 under the lamp; opacity is the whole effect), and it **casts no shadow** — a translucent sheet over a black slab reads as glass. Its hover lift is scaled to 0.7 of the peak, since the wood shows through.
+- consequence: The film strip's sprockets and the disc's left third read faintly through the sheet, on the desk and in the fan. The caption sits beside the stem rather than at the foot, which the print covers on the desk.
+- deferred: a museum loan-style tag with tombstone metadata was planned for this sheet and set aside — not rejected.
+- date: 2026-09-15
+
+### Films on the desk — a box-office ticket
+- status: confirmed
+- decision: The document standing for **films** in the consumption bundle is a **box-office thermal ticket** — an 80 mm roll fed sideways and cut short, 150 × 62 mm — lying across the lower half of the Log. The Log stays on the desk as it was but is no longer a subcollection's sheet (`sub: null`), so the fan lifts the ticket for films. Chosen from four live mockups (admission stub, thermal, strip of three, punch card — `mockups/movie-ticket/`, `docs/movies-ticket-plan.md`).
+- reason: The Log records everything consumed and did not say "films" when the fan opened it; its still was a placeholder besides, because film images live on Letterboxd's host and the canvas cannot draw them. The ticket is typographic only, so it needs no image plumbing, and it is landscape like the Log, the disc and the cartridge — the slip and the cupping form are the bundle's portrait sheets.
+- how: Thermal print is not clean, and the ticket says so: the title printed inverse (white on a thermal-black bar), leader-dotted tally lines (ADULT / RATING / LOGGED), a line of fine print, a header with the venue, the date and a transaction number taken from the record id, a barcode seeded from the id, ADMIT ONE and a large 1 at the stub end, a few faint bands where the print head faded, and the roll's pink end-stripe along the top edge. The right end is cut by the machine: a new `serrated` edge option in `paper.js` (a fine regular sawtooth, distinct from the ragged hand-`torn` edge; a sheet may have one of each). Drawn at `texScale: 2` like the slip, because the dots and the fine print are small type at desk size.
+- fields: film records gain two optional slots, **`venue`** and **`format`** (`src/shared/field-schema.js`, a split row on the card; the admin form picks them up through `schemaMetaGroup`; the Letterboxd ingests leave them blank). The ticket prints them when present and says "CINEMA" and the `seen_via` value (or "DIGITAL") until they are filled in.
+- consequence: On the desk the ticket covers the Log's handwritten line and its right end sits under the disc; the fan shows it whole. The Log's still stays as it was (a gradient placeholder) — a separate question.
+- not done: no poster or still on the ticket; no seat, screen or price, which are not recorded.
+- date: 2026-09-15
+
 ## Provisional decisions
 
 ### Tech stack
@@ -494,6 +513,13 @@ Its purpose is to prevent drift, repetition, and silent contradictions over time
 - status: open
 - question: How should the admin interface be authenticated?
 - why_it_matters: Affects Netlify setup, editing flow, and implementation complexity.
+
+### Desk layout as data (2026-09-15)
+- status: confirmed
+- decision: Where everything on the desk sits — each bundle's position, turn and place in the pile; each sheet's position, turn and place in its stack; the key, amber and stamp; the clips; and which records lie on the accumulation bundle — is data in `src/content/desk-layout.json`, per regime (`wide` ≥ 600 px, `vertical` below), in stage px and degrees. `desk-docs.js` reads it (`regimeOf`, `resolveDoc`, `orderedDocs`, `resolveClip`); what the file does not say falls back to the doc specs in code, so a document added in code appears where the code puts it until it is moved. The accumulation list, when present, replaces the size-rule picker.
+- how it is edited: the admin's Desk layout view (`[~] Desk layout` in the Explorer, or `:desk`) holds the real desk in an iframe at `/?edit=desk` — a 1440 × 900 or 390 × 844 viewport, scaled — and drives it over postMessage: sliders for position and turn, under/over for the pile and the stack, add/remove for accumulation records, a click on the desk to pick. Save writes the file (dev) and stages it for `:w` like the guide. The desk in production never listens for messages unless it is in an iframe on the same origin with `?edit=desk`.
+- reason: composition was constants in two files, tuned by eye and rebuilt to see; the desk and the phone desk are one design in two arrangements, and both should be adjustable by looking at them, not by editing S() arithmetic. Keeping stage/folder dimensions in code and everything movable in data keeps the file legible and the fallbacks safe.
+- revisit: if bundles ever gain per-regime document sets (they now share one, positioned per regime); clips are movable but not addable from the admin.
 
 ### Asset storage
 - status: confirmed

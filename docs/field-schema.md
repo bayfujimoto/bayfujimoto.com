@@ -80,7 +80,7 @@ qualifier. **These cells are the main thing to review and edit.**
 
 | item_type | slot 1 | slot 2 | slot 3 |
 |---|---|---|---|
-| film | year (released) | seen via (`seen_via`) | rating |
+| film | year (released) | seen via (`seen_via`) | venue + format (split row, optional) · rating |
 | book | year (published) | edition | rating |
 | music | year (released) | label / source | rating |
 | game | platform | status (done / playing / abandoned) | rating |
@@ -153,6 +153,8 @@ format-bearing fields. Starter examples — **edit freely**:
 | related_ids | `one per line, e.g. EPH-2025-001` |
 | year | `e.g. 2024` |
 | seen_via | `e.g. theatrical, streaming, Blu-ray` |
+| venue | `e.g. Alamo S. Lamar` |
+| format | `e.g. 70mm, IMAX, DCP` |
 | edition | `e.g. Penguin Classics, 1979` |
 | platform | `e.g. PC, Switch` |
 | status (game) | `completed / playing / abandoned` |

@@ -591,6 +591,20 @@ Definitions:
 
 The interface should not assume all items need inspection.
 
+## Desk layout
+
+The Explorer's `[~] Desk layout` node (and `:desk`) opens the desk's composition editor in the Record pane (`src/admin/views/desk-layout.js`). It is not a form over content: it is the desk itself, held in an iframe at `/?edit=desk` at a real viewport — desktop 1440 × 900 or mobile 390 × 844, toggled at the top and scaled to the pane — and driven live over postMessage (the desk's end is in `src/app/desk-scene.js`).
+
+What it edits, per regime, in stage px and degrees:
+
+- **bundles** — x, y, turn; place in the pile (under / over)
+- **sheets** — x, y, turn within their bundle; place in the stack (under / over)
+- **objects** — the key, the amber, the stamp: x, y, turn
+- **clips** — x, y, turn on their bundle
+- **accumulation** — which records lie on the bundle: add from every scan with a front image and known dimensions, remove; the desk redraws the bundle
+
+Click a sheet or an object on the desk to select it (it lights), or pick it from the list (top of the pile first). Every slider move sends the whole layout to the desk, which re-places itself at once. The status line reads `moved — not saved` until `[save]`, which serializes `src/content/desk-layout.json`, stages it for `:w` (it shows in the Log like any record), and in local dev writes it to disk as well; the dev server swallows that file's HMR so the admin is not reloaded mid-save (`handleHotUpdate` in the Vite plugin). `[reload]` reloads the desk and drops unsaved moves. On a phone the list stacks above the sliders; sliders and rows keep the 44 px target.
+
 ## Search and browse support
 
 Because the public archive relies on retrieval, the admin interface should encourage clean metadata entry for:

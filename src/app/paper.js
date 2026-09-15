@@ -58,21 +58,24 @@ function grain() {
 
 // The sheet's outline: a rectangle whose edges wander a little (rough) and
 // one of which may be torn.
-function edgePath(w, h, seed, rough, torn) {
+// `torn` names a side torn by hand (a ragged bite); `serrated` names a side cut
+// by a machine's blade — a fine, regular sawtooth, the way a kiosk or a till
+// cuts its roll. A sheet may have one of each.
+function edgePath(w, h, seed, rough, torn, serrated = null) {
   const r = rng(seed); const p = new Path2D();
   const amp = rough ? 1.6 : 0.35, step = 7;
-  const tornAmp = 5.5;
+  const tornAmp = 5.5, toothStep = 1.8, toothAmp = 1.1;
   const pts = [];
-  const side = (x0, y0, x1, y1, tornSide) => {
-    const len = Math.hypot(x1 - x0, y1 - y0); const n = Math.max(2, Math.round(len / step));
+  const side = (x0, y0, x1, y1, tornSide, sawSide) => {
+    const len = Math.hypot(x1 - x0, y1 - y0); const n = Math.max(2, Math.round(len / (sawSide ? toothStep : step)));
     for (let i = 0; i <= n; i++) {
       const t = i / n; let x = x0 + (x1 - x0) * t, y = y0 + (y1 - y0) * t;
-      const a = tornSide ? tornAmp * (0.3 + r()) : amp * (r() - 0.5);
-      if (x0 === x1) x += (x0 === 0 ? 1 : -1) * (tornSide ? a : -a) * (tornSide ? 1 : 1); else y += (y0 === 0 ? 1 : -1) * (tornSide ? a : -a);
+      const a = sawSide ? (i % 2 ? toothAmp : 0) + (r() - 0.5) * 0.15 : tornSide ? tornAmp * (0.3 + r()) : amp * (r() - 0.5);
+      if (x0 === x1) x += (x0 === 0 ? 1 : -1) * (tornSide || sawSide ? a : -a); else y += (y0 === 0 ? 1 : -1) * (tornSide || sawSide ? a : -a);
       pts.push([x, y]);
     }
   };
-  side(0, 0, w, 0, torn === "top"); side(w, 0, w, h, torn === "right"); side(w, h, 0, h, torn === "bottom"); side(0, h, 0, 0, torn === "left");
+  side(0, 0, w, 0, torn === "top", serrated === "top"); side(w, 0, w, h, torn === "right", serrated === "right"); side(w, h, 0, h, torn === "bottom", serrated === "bottom"); side(0, h, 0, 0, torn === "left", serrated === "left");
   p.moveTo(pts[0][0], pts[0][1]); for (let i = 1; i < pts.length; i++) p.lineTo(pts[i][0], pts[i][1]); p.closePath();
   return p;
 }
@@ -198,14 +201,22 @@ export async function renderPaper(spec, scale = 2) {
   }
   const w = spec.w, h = spec.h;
 
-  const outline = edgePath(w, h, seed, !!spec.rough, spec.torn || null);
+  const outline = edgePath(w, h, seed, !!spec.rough, spec.torn || null, spec.serrated || null);
   ctx.save(); ctx.clip(outline);
   // stock — a cutout scan brings its own shape, so it gets no sheet behind it,
   // and a `bare` document is not paper at all: the games cartridge is a moulded
   // object whose face is exactly what its layers draw, with its silhouette in
   // the geometry rather than in the alpha (desk-scene.js, cardGeometry).
-  if (!spec.cutout && !spec.bare) { ctx.fillStyle = STOCK[spec.stock || "cream"]; ctx.fillRect(-4, -4, w + 8, h + 8); }
-  if (!spec.cutout && !spec.bare && spec.stock !== "dark" && spec.stock !== "diazo") {
+  // …and a `vellum` sheet is translucent stock: a cool off-white laid at 84 %,
+  // so the alpha IS the material and whatever lies under it reads through.
+  // Layers composite source-over on top, so the ink's own partial alpha (the
+  // pencil pressure of a tracing) survives above the stock's. No inkDropout
+  // and no cutout on such a sheet — both would punch holes through the stock.
+  if (spec.vellum) {
+    ctx.fillStyle = "rgba(242,240,234,0.84)"; ctx.fillRect(-4, -4, w + 8, h + 8);
+    ctx.strokeStyle = "rgba(0,0,0,0.05)"; ctx.lineWidth = 1; ctx.strokeRect(0.5, 0.5, w - 1, h - 1);   // the faint burnish drafting vellum has along its edges
+  } else if (!spec.cutout && !spec.bare) { ctx.fillStyle = STOCK[spec.stock || "cream"]; ctx.fillRect(-4, -4, w + 8, h + 8); }
+  if (!spec.cutout && !spec.bare && !spec.vellum && spec.stock !== "dark" && spec.stock !== "diazo") {
     const g = ctx.createLinearGradient(0, 0, w, h); g.addColorStop(0, "rgba(255,255,255,.35)"); g.addColorStop(0.45, "rgba(255,255,255,0)"); g.addColorStop(1, "rgba(10,8,5,.06)");
     ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
   }
@@ -215,7 +226,7 @@ export async function renderPaper(spec, scale = 2) {
       case "rules": { ctx.save(); ctx.globalAlpha = L.opacity ?? 0.55; ctx.strokeStyle = INK.faint; ctx.lineWidth = 1; const gap = L.dense ? 6 : 10; for (let y = (L.top || 0) + gap; y < h; y += gap) { ctx.beginPath(); ctx.moveTo(0, y + 0.5); ctx.lineTo(w, y + 0.5); ctx.stroke(); } ctx.restore(); break; }
       case "grid": { ctx.save(); ctx.globalAlpha = 0.5; ctx.strokeStyle = INK.faint; ctx.lineWidth = 1; for (let y = (L.top || 0); y < h; y += 16) { ctx.beginPath(); ctx.moveTo(0, y + 0.5); ctx.lineTo(w, y + 0.5); ctx.stroke(); } for (let x = 0; x < w; x += 32) { ctx.beginPath(); ctx.moveTo(x + 0.5, L.top || 0); ctx.lineTo(x + 0.5, h); ctx.stroke(); } ctx.restore(); break; }
       case "text": drawText(ctx, L); break;
-      case "image": { const im = imgFor.get(L); if (!im) break; ctx.save(); ctx.translate(L.x, L.y); if (L.rotate) ctx.rotate(L.rotate * Math.PI / 180); if (L.fit === "cover") { const r = Math.max(L.w / im.naturalWidth, L.h / im.naturalHeight); const sw = L.w / r, sh = L.h / r; ctx.drawImage(im, (im.naturalWidth - sw) / 2, (im.naturalHeight - sh) / 2, sw, sh, 0, 0, L.w, L.h); } else ctx.drawImage(im, 0, 0, L.w, L.h); ctx.restore(); break; }
+      case "image": { const im = imgFor.get(L); if (!im) break; ctx.save(); ctx.translate(L.x, L.y); if (L.rotate) ctx.rotate(L.rotate * Math.PI / 180); if (L.fit === "cover") { const r = Math.max(L.w / im.naturalWidth, L.h / im.naturalHeight); const sw = L.w / r, sh = L.h / r; ctx.drawImage(im, (im.naturalWidth - sw) / 2, (im.naturalHeight - sh) / 2, sw, sh, 0, 0, L.w, L.h); } else for (let k = 0; k < (L.passes || 1); k++) ctx.drawImage(im, 0, 0, L.w, L.h); ctx.restore(); break; }   // `passes`: an ink-only image laid more than once — the same line, pressed harder
       case "photo": { ctx.save(); ctx.translate(L.x, L.y); if (L.rotate) ctx.rotate(L.rotate * Math.PI / 180); ctx.fillStyle = STOCK.white; ctx.fillRect(0, 0, L.w, L.h); const im = imgFor.get(L); const b = L.border ?? 4; if (im) { const iw = L.w - b * 2, ih = L.h - b * 2; if (L.fit === "cover") { const r = Math.max(iw / im.naturalWidth, ih / im.naturalHeight); const sw = iw / r, sh = ih / r; ctx.drawImage(im, (im.naturalWidth - sw) / 2, (im.naturalHeight - sh) / 2, sw, sh, b, b, iw, ih); } else ctx.drawImage(im, b, b, iw, ih); } else { const g = ctx.createLinearGradient(0, 0, L.w, L.h); g.addColorStop(0, "#7a6a52"); g.addColorStop(0.7, "#2f261c"); ctx.fillStyle = g; ctx.fillRect(b, b, L.w - b * 2, L.h - b * 2); } ctx.restore(); break; }
       case "sketch": { ctx.save(); ctx.translate(L.x || 0, L.y || 0); ctx.scale(L.scale || 1, L.scale || 1); ctx.strokeStyle = L.stroke || "#3a3128"; ctx.lineWidth = L.width || 1; ctx.globalAlpha = L.opacity ?? 0.7; ctx.lineCap = "round"; const r = rng(seed + 7); for (const d of L.paths) { const p = new Path2D(d); ctx.setLineDash(L.dash || []); ctx.stroke(p); ctx.save(); ctx.translate((r() - 0.5) * 1.2, (r() - 0.5) * 1.2); ctx.globalAlpha *= 0.45; ctx.stroke(p); ctx.restore(); } ctx.restore(); break; }
       case "stampCircle": {
@@ -371,6 +382,13 @@ export async function renderPaper(spec, scale = 2) {
   // foxing, and the faint darkening a sheet has toward its edges
   const dim = spec.stock === "diazo" || spec.stock === "dark" || spec.gloss; // a glossy print takes almost no grain
   if (spec.bare) { ctx.restore(); return { canvas: c, w, h, outline }; }   // moulded, not made of paper: no grain, no foxing, no vignette
+  if (spec.vellum) {   // a smooth stock, but a stock: fine tooth plus a faint fibre mottle, no vignette — source-atop, since multiply would darken the sheet's alpha, not its colour
+    ctx.save(); ctx.globalCompositeOperation = "source-atop";
+    ctx.globalAlpha = 0.16; ctx.fillStyle = ctx.createPattern(grain(), "repeat"); ctx.fillRect(0, 0, w, h);
+    ctx.globalAlpha = 0.06; ctx.save(); ctx.scale(3.7, 3.1); ctx.fillStyle = ctx.createPattern(grain(), "repeat"); ctx.fillRect(0, 0, w / 3.7, h / 3.1); ctx.restore();
+    ctx.restore();
+    ctx.restore(); return { canvas: c, w, h, outline };
+  }
   ctx.save(); ctx.globalCompositeOperation = "multiply";
   ctx.globalAlpha = dim ? 0.12 : 0.28; ctx.fillStyle = ctx.createPattern(grain(), "repeat"); ctx.fillRect(0, 0, w, h);
   ctx.globalAlpha = dim ? 0.05 : 0.12; ctx.save(); ctx.scale(3.7, 3.1); ctx.fillStyle = ctx.createPattern(grain(), "repeat"); ctx.fillRect(0, 0, w / 3.7, h / 3.1); ctx.restore();

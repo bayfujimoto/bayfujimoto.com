@@ -55,6 +55,7 @@ const COMMANDS = [
   { name: 'e',    fill: 'e ',    hint: 'open <id>',  needsArg: true },
   { name: 'new',  fill: 'new ',  hint: 'new <type>', needsArg: true },
   { name: 'tags', fill: 'tags',  hint: 'import Letterboxd CSV tags' },
+  { name: 'desk', fill: 'desk',  hint: 'lay out the desk'         },
   { name: 'nohl', fill: 'nohl',  hint: 'clear filter match tint' },
   { name: 'help', fill: 'help',  hint: 'expand keymap legend'   },
   { name: 'logout', fill: 'logout', hint: 'end session, return to gate' },
@@ -107,7 +108,7 @@ function isEditable(el) {
     const t = (el.type || '').toLowerCase();
     return t === 'text' || t === 'search' || t === 'email' || t === 'url' ||
            t === 'tel'  || t === 'number' || t === 'password' || t === 'date' ||
-           t === '';
+           t === 'range' || t === '';
   }
   return false;
 }

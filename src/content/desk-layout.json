@@ -1,0 +1,348 @@
+{
+  "wide": {
+    "bundles": {
+      "identity": {
+        "x": 14,
+        "y": 18,
+        "rot": 0
+      },
+      "consumption": {
+        "x": 140,
+        "y": -14,
+        "rot": 0
+      },
+      "creation": {
+        "x": 144,
+        "y": 194,
+        "rot": 0
+      },
+      "labor": {
+        "x": 418,
+        "y": 65,
+        "rot": 0
+      },
+      "accumulation": {
+        "x": 554,
+        "y": -4,
+        "rot": 0
+      }
+    },
+    "zorder": [
+      "identity",
+      "labor",
+      "consumption",
+      "creation",
+      "accumulation"
+    ],
+    "objects": {
+      "guide": {
+        "x": 130,
+        "y": 690,
+        "ry": 90
+      },
+      "amber": {
+        "x": 1090,
+        "y": 620,
+        "ry": -20
+      },
+      "stamp": {
+        "x": 553,
+        "y": 663,
+        "ry": 0
+      }
+    },
+    "docs": {
+      "identity": {
+        "cv": {
+          "x": -2,
+          "y": 63,
+          "rot": 0
+        },
+        "biography": {
+          "x": -2,
+          "y": -4,
+          "rot": 0
+        },
+        "contact": {
+          "x": 18,
+          "y": 446,
+          "rot": 0
+        },
+        "scrap": {
+          "x": 7,
+          "y": 508,
+          "rot": 0
+        }
+      },
+      "consumption": {
+        "disc": {
+          "x": 220,
+          "y": 189,
+          "rot": -5
+        },
+        "slip": {
+          "x": 283,
+          "y": 40,
+          "rot": 3
+        },
+        "form": {
+          "x": -36,
+          "y": 140,
+          "rot": -4
+        },
+        "log": {
+          "x": 13,
+          "y": 14,
+          "rot": 0
+        },
+        "ticket": {
+          "x": 18,
+          "y": 126,
+          "rot": -2.5
+        },
+        "cartridge": {
+          "x": 133,
+          "y": 86,
+          "rot": -7
+        }
+      },
+      "creation": {
+        "notes": {
+          "x": -9,
+          "y": -18,
+          "rot": -3
+        },
+        "pattern": {
+          "x": 117,
+          "y": 274,
+          "rot": 4
+        },
+        "strip": {
+          "x": 221,
+          "y": 113,
+          "rot": 1
+        },
+        "sketch": {
+          "x": 9,
+          "y": 4,
+          "rot": 0
+        },
+        "print": {
+          "x": 11,
+          "y": 166,
+          "rot": -5
+        },
+        "stub": {
+          "x": 180,
+          "y": 301,
+          "rot": 0
+        }
+      },
+      "labor": {
+        "spec": {
+          "x": 14,
+          "y": 7,
+          "rot": 0
+        },
+        "drawing": {
+          "x": 5,
+          "y": 88,
+          "rot": 0
+        },
+        "transmittal": {
+          "x": 86,
+          "y": 340,
+          "rot": 0
+        }
+      },
+      "accumulation": {
+        "EPH-2026-029": {
+          "x": 22,
+          "y": 44,
+          "rot": 0.5
+        },
+        "EPH-2026-023": {
+          "x": 34,
+          "y": 96,
+          "rot": 0.6
+        },
+        "EPH-2026-014": {
+          "x": 12,
+          "y": -4,
+          "rot": -1
+        },
+        "EPH-2026-016": {
+          "x": 40,
+          "y": 330,
+          "rot": -1
+        },
+        "EPH-2026-018": {
+          "x": 28,
+          "y": 352,
+          "rot": 90
+        },
+        "EPH-2026-031": {
+          "x": 201,
+          "y": 296,
+          "rot": 1
+        },
+        "EPH-2026-028": {
+          "x": 126,
+          "y": 442,
+          "rot": -1
+        }
+      }
+    },
+    "order": {
+      "identity": [
+        "cv",
+        "biography",
+        "contact",
+        "scrap"
+      ],
+      "consumption": [
+        "disc",
+        "slip",
+        "form",
+        "log",
+        "ticket",
+        "cartridge"
+      ],
+      "creation": [
+        "notes",
+        "pattern",
+        "strip",
+        "sketch",
+        "print",
+        "stub"
+      ],
+      "labor": [
+        "spec",
+        "drawing",
+        "transmittal"
+      ],
+      "accumulation": [
+        "EPH-2026-029",
+        "EPH-2026-023",
+        "EPH-2026-014",
+        "EPH-2026-016",
+        "EPH-2026-018",
+        "EPH-2026-031",
+        "EPH-2026-028"
+      ]
+    },
+    "clips": {
+      "identity": [
+        {
+          "x": -14,
+          "y": 86,
+          "r": 90
+        }
+      ],
+      "consumption": [
+        {
+          "x": 269,
+          "y": 60,
+          "r": 0
+        }
+      ],
+      "accumulation": [
+        {
+          "x": 24,
+          "y": 550,
+          "r": 0
+        },
+        {
+          "x": 36,
+          "y": 552,
+          "r": 0
+        },
+        {
+          "x": 180,
+          "y": 6,
+          "r": -20
+        }
+      ]
+    }
+  },
+  "vertical": {
+    "bundles": {
+      "identity": {
+        "x": 20,
+        "y": 20,
+        "rot": 0
+      },
+      "consumption": {
+        "x": 200,
+        "y": 10,
+        "rot": 0
+      },
+      "accumulation": {
+        "x": 215,
+        "y": 300,
+        "rot": 0
+      },
+      "creation": {
+        "x": 20,
+        "y": 580,
+        "rot": 0
+      },
+      "labor": {
+        "x": 300,
+        "y": 610,
+        "rot": 0
+      }
+    },
+    "zorder": [
+      "identity",
+      "consumption",
+      "accumulation",
+      "creation",
+      "labor"
+    ],
+    "objects": {
+      "guide": {
+        "x": 130,
+        "y": 1150,
+        "ry": 90
+      },
+      "amber": {
+        "x": 500,
+        "y": 1140,
+        "ry": -20
+      },
+      "stamp": {
+        "x": 300,
+        "y": 1096,
+        "ry": 0
+      }
+    },
+    "docs": {},
+    "order": {},
+    "clips": {}
+  },
+  "accumulation": [
+    {
+      "id": "EPH-2026-029"
+    },
+    {
+      "id": "EPH-2026-023"
+    },
+    {
+      "id": "EPH-2026-014"
+    },
+    {
+      "id": "EPH-2026-016"
+    },
+    {
+      "id": "EPH-2026-018"
+    },
+    {
+      "id": "EPH-2026-031"
+    },
+    {
+      "id": "EPH-2026-028"
+    }
+  ],
+  "_note": "The desk's composition, per regime (wide ≥ 600px, vertical < 600px). Stage px; turns in degrees. Edited in the admin's Desk layout view; read by src/app/desk-docs.js. `accumulation` lists the records on that bundle."
+}

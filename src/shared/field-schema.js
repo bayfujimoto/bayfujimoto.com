@@ -52,6 +52,8 @@ export const FIELDS = {
   // ── typed slots ──
   year:         { label: "year",       mono: true, example: "e.g. 2024" },
   seen_via:     { label: "seen via",   example: "e.g. theatrical, streaming, Blu-ray" },
+  venue:        { label: "venue",      example: "e.g. Alamo S. Lamar" },          // film: where it was seen — printed on the desk's ticket
+  format:       { label: "format",     example: "e.g. 70mm, IMAX, DCP" },          // film: how it was projected — printed on the desk's ticket
   edition:      { label: "edition",    example: "e.g. Penguin Classics, 1979" },
   music_label:  { label: "label",      example: "e.g. 4AD" },        // album/ep slot 2 (record label)
   album:        { label: "album",      example: "e.g. There Is Love in You" }, // single slot 2 (parent album title)
@@ -139,7 +141,7 @@ const EPHEMERA = {
 
 export const TYPES = {
   // ── Consumption ──
-  film: { creator: { key: "director",  mode: "always" }, slots: ["year", "seen_via", "rating"], titleGiven: true },
+  film: { creator: { key: "director",  mode: "always" }, slots: ["year", "seen_via", ["venue", "format"], "rating"], titleGiven: true },   // venue + format share a row; both optional, blank on ingest
   book: { creator: { key: "author",    mode: "always" }, slots: ["year", "edition", "rating"], titleGiven: true },
   album: MUSIC_RELEASE, ep: MUSIC_RELEASE, single: MUSIC_TRACK,
   bag:  { creator: { key: "roaster",   mode: "always" }, slots: ["origin", "process", "varietal"], titleGiven: true, cupping: true }, // coffee

@@ -6,7 +6,9 @@ export async function loadArchive() {
   // published-only public archive so the admin still loads — just without drafts.
   try {
     const res = await fetch("/api/archive-admin");
-    if (res.ok) return res.json();
+    // In local dev there is no function at this path, and Vite's SPA fallback
+    // answers 200 with index.html — so the body has to be JSON, not just ok.
+    if (res.ok && /json/i.test(res.headers.get("content-type") || "")) return await res.json();
   } catch { /* fall through to the public archive */ }
   return fetch("/data/archive.json").then(r => r.json());
 }

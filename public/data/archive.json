@@ -268,6 +268,48 @@
           "label": "films",
           "items": [
             {
+              "id": "FILM-2026-558",
+              "slug": "hope-2026-2026-09-12",
+              "title": "Hope",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2026",
+              "director": "",
+              "watch_date": "2026-09-12",
+              "display_date": "September 12, 2026",
+              "sort_date": "2026-09-12",
+              "rating": 5,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/hope-2026/",
+              "assets": {
+                "backdrop": "https://a.ltrbxd.com/resized/alternative-backdrop/9/5/4/6/6/3/tmdb/ujUwzNV8ZkOzZonvhhHsc9KOKDf-1200-1200-675-675-crop-000000.jpg?v=29a4b41fbd",
+                "poster": "https://a.ltrbxd.com/resized/film-poster/9/5/4/6/6/3/954663-hope-2026-0-600-0-900-crop.jpg?v=102a8bfda2"
+              }
+            },
+            {
+              "id": "FILM-2026-557",
+              "slug": "predators-2025-2026-09-12",
+              "title": "Predators",
+              "series": "consumption",
+              "subcollection": "films",
+              "item_type": "film",
+              "status": "published",
+              "year": "2025",
+              "director": "",
+              "watch_date": "2026-09-12",
+              "display_date": "September 12, 2026",
+              "sort_date": "2026-09-12",
+              "rating": 2.5,
+              "rewatch": false,
+              "letterboxd_link": "https://letterboxd.com/bayf/film/predators-2025/",
+              "assets": {
+                "backdrop": "https://a.ltrbxd.com/resized/alternative-backdrop/1/2/8/4/0/4/6/tmdb/lavj2c84oZ2JGpAT6C3ouDXidOk-1200-1200-675-675-crop-000000.jpg?v=ccda3ab76b",
+                "poster": "https://a.ltrbxd.com/resized/film-poster/1/2/8/4/0/4/6/1284046-predators-2025-0-600-0-900-crop.jpg?v=9e4cf695d7"
+              }
+            },
+            {
               "id": "FILM-2026-556",
               "slug": "the-evil-dead-1981-2026-09-06",
               "title": "The Evil Dead",
@@ -16298,8 +16340,8 @@
               "platform": "Switch 2",
               "play_status": "playing",
               "assets": {
-                "cover": "GAME-2026-007-cover.jpg?v=80a4dc61c20x2",
-                "thumbnail": "GAME-2026-007-cover-thumb.webp?v=80a4dc61c20x2"
+                "cover": "GAME-2026-007-cover.png?v=f010b981bxswitch2-9kiqvr",
+                "thumbnail": "GAME-2026-007-cover-thumb.webp?v=f010b981bxswitch2-9kiqvr"
               }
             },
             {
@@ -16319,8 +16361,14 @@
               "platform": "Switch 2",
               "play_status": "playing",
               "assets": {
-                "cover": "GAME-2026-003-cover.jpg?v=cd1edc52c20x2",
-                "thumbnail": "GAME-2026-003-cover-thumb.webp?v=cd1edc52c20x2"
+                "cover": "GAME-2026-003-cover.png?v=7502097ebxswitch2-156cjbp",
+                "thumbnail": "GAME-2026-003-cover-thumb.webp?v=7502097ebxswitch2-156cjbp"
+              },
+              "year": "2024",
+              "cover_fit": {
+                "zoom": 1,
+                "x": 0,
+                "y": 0.07
               }
             },
             {
@@ -16337,8 +16385,14 @@
               "platform": "Switch 2",
               "play_status": "abandoned",
               "assets": {
-                "cover": "GAME-2026-008-cover.webp?v=479cad92o",
-                "thumbnail": "GAME-2026-008-cover-thumb.jpg?v=479cad92o"
+                "cover": "GAME-2026-008-cover.png?v=445e76d6bxswitch2-1l7odvy",
+                "thumbnail": "GAME-2026-008-cover-thumb.webp?v=445e76d6bxswitch2-1l7odvy"
+              },
+              "year": "2026",
+              "cover_fit": {
+                "zoom": 1,
+                "x": 0,
+                "y": 0.09
               }
             },
             {
@@ -16355,8 +16409,14 @@
               "platform": "Switch 2",
               "play_status": "completed",
               "assets": {
-                "cover": "GAME-2026-009-cover.webp?v=548988aao",
-                "thumbnail": "GAME-2026-009-cover-thumb.jpg?v=548988aao"
+                "cover": "GAME-2026-009-cover.jpg?v=5fd2f1e0bxswitch2-1l7odvx",
+                "thumbnail": "GAME-2026-009-cover-thumb.webp?v=5fd2f1e0bxswitch2-1l7odvx"
+              },
+              "year": "2026",
+              "cover_fit": {
+                "zoom": 1,
+                "x": 0.01,
+                "y": 0.08
               }
             },
             {
@@ -16391,9 +16451,15 @@
               "developer": "Nintendo",
               "platform": "GameCube",
               "assets": {
-                "cover": "GAME-2026-006-cover.jpeg?v=6bfa7b02o",
-                "thumbnail": "GAME-2026-006-cover-thumb.jpg?v=6bfa7b02o"
-              }
+                "cover": "GAME-2026-006-cover.png?v=b5dbf2b7bxgamecube-1nv2c39",
+                "thumbnail": "GAME-2026-006-cover-thumb.webp?v=b5dbf2b7bxgamecube-1nv2c39"
+              },
+              "cover_fit": {
+                "zoom": 1.02,
+                "x": 0,
+                "y": 0.04
+              },
+              "year": "2001"
             },
             {
               "id": "GAME-2026-005",
@@ -16408,8 +16474,14 @@
               "developer": "Nintendo",
               "platform": "GameCube",
               "assets": {
-                "cover": "GAME-2026-005-cover.webp?v=980f46b2o",
-                "thumbnail": "GAME-2026-005-cover-thumb.jpg?v=980f46b2o"
+                "cover": "GAME-2026-005-cover.png?v=47dc6f76bxgamecube-rxpfa",
+                "thumbnail": "GAME-2026-005-cover-thumb.webp?v=47dc6f76bxgamecube-rxpfa"
+              },
+              "year": "2001",
+              "cover_fit": {
+                "zoom": 1.1,
+                "x": 0,
+                "y": -0.05
               }
             }
           ]
@@ -19098,7 +19170,7 @@
         "object": "key",
         "model": "desk-guide-key.glb",
         "thumbnail": "/thumbnails/desk/key.png",
-        "count": 798,
+        "count": 800,
         "subcollections": null,
         "description": ""
       },
@@ -19137,7 +19209,7 @@
         "object": "sphere",
         "model": "desk-consumption-sphere.glb",
         "thumbnail": "/thumbnails/desk/consumption.png",
-        "count": 732,
+        "count": 734,
         "subcollections": 5,
         "description": "A sphere, the one object without an inside. What was taken in: films logged as viewings, books as readings, music, coffee, games. Titles are transcribed as given; the ratings are the archivist's."
       },
@@ -20582,8 +20654,8 @@
   },
   "_counters": {
     "EPH": 39,
-    "FILM": 556,
-    "BOOK": 461,
+    "FILM": 558,
+    "BOOK": 468,
     "MUSIC": 18,
     "COFFEE": 2,
     "GAME": 9,
