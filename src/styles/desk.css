@@ -196,3 +196,53 @@
    positioned by projection each frame; the focus ring is the affordance. */
 .da-fan__paper--hand { background: none; border: 0; cursor: pointer; }
 .da-fan__paper--hand:focus-visible { outline: 2px solid var(--color-vellum); outline-offset: 6px; }
+
+/* ── The fan's callouts ──────────────────────────────────────────────────────
+   A composed fan (src/content/fan-layouts.json) names each sheet the way a
+   drawing does: a leader starting just off the sheet, rising at 45° or 58°,
+   turning flat under its label in the margin. desk-scene.js places both in the
+   layout's own stage px and scales the whole layer to the viewport, so type and
+   line scale with the composition. Desktop shows the hovered one; a phone has
+   no hover, so there they all stay (.da-callouts--always). */
+.da-callouts { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
+.da-callouts[hidden] { display: none; }
+.da-callouts__lines { overflow: visible; }
+.da-ld path {
+  fill: none; stroke: var(--color-vellum); stroke-width: 1;
+  stroke-dasharray: var(--len) var(--len); stroke-dashoffset: var(--len); opacity: 0;
+  transition: stroke-dashoffset 0.42s var(--ease-out), opacity 0.2s;
+}
+.da-ld circle { fill: var(--color-vellum); opacity: 0; transition: opacity 0.15s; }
+.da-callouts.is-up .da-ld.is-on path { stroke-dashoffset: 0; opacity: 1; }
+.da-callouts.is-up .da-ld.is-on circle { opacity: 1; }
+.da-callouts--always.is-up .da-ld path { stroke-dashoffset: 0; opacity: 1; }
+.da-callouts--always.is-up .da-ld circle { opacity: 1; }
+.da-callouts--always .da-ld path { stroke-width: 0.9; }
+.da-callouts--always .da-ld circle { r: 2; }
+
+.da-callout {
+  position: absolute; opacity: 0; pointer-events: none; cursor: pointer;
+  transition: opacity 0.25s var(--ease-out) 0.16s;
+}
+.da-callout[hidden] { display: none; }
+.da-callout--right { text-align: right; }
+.da-callout__hd { display: flex; align-items: baseline; gap: 0.6rem; height: 26px; }
+.da-callout--right .da-callout__hd { justify-content: flex-end; }
+.da-callout__key {
+  font-family: var(--font-mono); font-size: 0.65rem; font-weight: var(--weight-semi);
+  letter-spacing: 0.14em; border: 1px solid var(--color-vellum); padding: 4px 6px; line-height: 1;
+}
+.da-callout__name { font-size: var(--text-xl); letter-spacing: var(--tracking-base); white-space: nowrap; text-transform: capitalize; }   /* the archive's labels are lower case; a callout names the collection */
+.da-callout__meta {
+  font-family: var(--font-mono); font-size: 0.65rem; line-height: 1.5;
+  letter-spacing: 0.06em; text-transform: uppercase; color: var(--overlay-muted);
+  margin: 0.75rem 0 0; white-space: nowrap; visibility: hidden;
+}
+.da-callouts.is-up .da-callout.is-on { opacity: 1; pointer-events: auto; }
+.da-callouts.is-up .da-callout.is-on .da-callout__meta { visibility: visible; }
+.da-callouts--always.is-up .da-callout { opacity: 1; pointer-events: auto; }
+.da-callouts--always.is-up .da-callout .da-callout__meta { visibility: visible; }
+.da-callouts--always .da-callout__hd { height: 18px; gap: 0.44rem; }
+.da-callouts--always .da-callout__key { font-size: 0.53rem; padding: 3px 4px; }
+.da-callouts--always .da-callout__name { font-size: 1.05rem; }
+.da-callouts--always .da-callout__meta { font-size: 0.53rem; margin-top: 0.5rem; }

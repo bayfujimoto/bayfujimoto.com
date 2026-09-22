@@ -30,6 +30,7 @@ import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPa
 import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 import { navigate } from "./router.js";
 import { getState } from "./state.js";
+import FAN_LAYOUTS from "../content/fan-layouts.json";
 import { dismissLoadingScreen } from "./loading.js";
 import { DESK_OBJECTS, DESK_CLIPS, MODEL_BASE, WEB_BASE } from "../shared/desk-objects.js";
 import { createModelLoader } from "./model-look.js";
@@ -726,12 +727,12 @@ export async function initDesk() {
   }
   function tickHighlight() {
     const dark = mode === "dark";
-    const peak = dark ? 0.12 : 0.26, lift = 0.006;
+    const { peak, lift } = hoverLook(dark);
     const lifted = liftSet(litBundle);
     bundleGroups.forEach((entry, id) => {
       const on = id === litBundle, target = on ? peak : 0;
-      for (const d of entry.docs) for (const m of (Array.isArray(d.mesh.material) ? d.mesh.material : [d.mesh.material])) { const sel = editSel && editSel.bundle === id && (editSel.kind === "bundle" || editSel.key === d.spec.key); const v = m.emissiveIntensity + ((sel ? Math.max(target, 0.34) : target) * (d.spec.vellum ? 0.7 : 1) - m.emissiveIntensity) * 0.18; /* vellum lifts at 0.7: the wood shows through it, full peak reads hot */ if (Math.abs(v - m.emissiveIntensity) > 1e-4) { m.emissiveIntensity = v; wake(120); } }
-      const y = entry.group.position.y + ((entry.baseY || 0) + (lifted.has(id) ? lift : 0) - entry.group.position.y) * 0.18;
+      for (const d of entry.docs) for (const m of (Array.isArray(d.mesh.material) ? d.mesh.material : [d.mesh.material])) { const sel = editSel && editSel.bundle === id && (editSel.kind === "bundle" || editSel.key === d.spec.key); const v = m.emissiveIntensity + (glowOf(d.spec, sel ? Math.max(target, 0.34) : target) - m.emissiveIntensity) * HOVER_EASE; /* vellum lifts at 0.7: the wood shows through it, full peak reads hot */ if (Math.abs(v - m.emissiveIntensity) > 1e-4) { m.emissiveIntensity = v; wake(120); } }
+      const y = entry.group.position.y + ((entry.baseY || 0) + (lifted.has(id) ? lift : 0) - entry.group.position.y) * HOVER_EASE;
       if (Math.abs(y - entry.group.position.y) > 1e-5) { entry.group.position.y = y; wantShadows(); wake(120); }
     });
   }
@@ -890,6 +891,12 @@ export async function initDesk() {
 // front of the camera, drawn in a hand canvas above the veil; DOM buttons
 // laid over them carry the clicks, the hover, keyboard focus and labels.
 const LIFT_MS = 900, LOWER_MS = 340;
+// The desk's hover, in one place so the fan can wear the same one: the sheets
+// glow through their own image (vellum at 0.7 of it) and rise a hair, both
+// eased 0.18 of the way per frame.
+const HOVER_EASE = 0.18;
+const hoverLook = (dark) => ({ peak: dark ? 0.12 : 0.26, lift: 0.006 });
+const glowOf = (spec, peak) => peak * (spec?.vellum ? 0.7 : 1);
 const easeInOut = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
 // `D` is filled in by initDesk once the scene exists (see fanDeps there), so
@@ -928,22 +935,72 @@ function makeFanFactory(D) {
       const setSubtitle = (t) => { const p = meta.querySelector(".overlay-subtitle"); if (p) p.textContent = t; };
       content.appendChild(H.makeBreadcrumb([{ label: "desk", onClick: () => navigate({ layer: "desk" }) }, { label: s.label, current: true }]));
 
+      // ── The callout layer ──────────────────────────────────────────────
+      // The composed fan doesn't read as a menu, so each sheet carries a
+      // keynote callout the way a drawing does: a line starting just off the
+      // sheet, rising at 45° or 58°, turning flat under a label in the margin.
+      // The geometry is chosen once, per collection and per stage, and lives in
+      // src/content/fan-layouts.json — none of it is computed here.
+      const NSVG = "http://www.w3.org/2000/svg";
+      const calls = document.createElement("div"); calls.className = "da-callouts";
+      const cSvg = document.createElementNS(NSVG, "svg"); cSvg.setAttribute("class", "da-callouts__lines"); cSvg.setAttribute("aria-hidden", "true");
+      const notes = document.createElement("div"); notes.className = "da-callouts__notes";
+      calls.append(cSvg, notes); content.appendChild(calls);
+      const latestOf = (k) => {
+        const items = (s.subcollections?.[k]?.items || []).slice().sort((a, b) => String(b.sort_date || "").localeCompare(String(a.sort_date || "")));
+        return items[0] || null;
+      };
+
       const subs = Object.keys(s.subcollections || {});
       const papers = subs.map((k) => {
         const src = entry?.docs.find((d) => d.spec.sub === k) || null;
         const label = s.subcollections[k].label || k, count = H.subcollectionCount(seriesKey, k);
         let mesh;
-        if (src) { mesh = new THREE.Mesh(src.mesh.geometry, src.mesh.material); }
-        else { const g = new THREE.PlaneGeometry(1, 1.3); mesh = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ color: 0xf3efe6 })); }
+        // The clone wears its OWN copy of the sheet's material (textures still
+        // shared): the desk's highlight loop eases every desk material back to
+        // unlit each frame it runs, and would put out the fan's hover glow.
+        // The copy starts at whatever glow the click left on the desk sheet.
+        if (src) { const m = src.mesh.material; mesh = new THREE.Mesh(src.mesh.geometry, Array.isArray(m) ? m.map((x) => x.clone()) : m.clone()); }
+        else { const g = new THREE.PlaneGeometry(1, 1.3); mesh = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ color: 0xf3efe6, emissive: 0xf3efe6, emissiveIntensity: 0 })); }
         hs.add(mesh);
         const btn = document.createElement("button"); btn.type = "button"; btn.className = "da-fan__paper da-fan__paper--hand"; btn.setAttribute("aria-label", `${label} — ${count}`);
         btn.addEventListener("click", () => navigate({ layer: "browse", series: seriesKey, subcollection: k, view: "all", item: null }));
-        btn.addEventListener("pointerenter", () => setSubtitle(`${label} · ${count}`)); btn.addEventListener("focus", () => setSubtitle(`${label} · ${count}`));
-        btn.addEventListener("pointerleave", () => setSubtitle(subtitleRest)); btn.addEventListener("blur", () => setSubtitle(subtitleRest));
+        const on = () => { setSubtitle(`${label} · ${count}`); litPaper = paper; lightCallout(paper); };
+        const off = () => { setSubtitle(subtitleRest); if (litPaper === paper) { litPaper = null; lightCallout(null); } };
+        btn.addEventListener("pointerenter", on); btn.addEventListener("focus", on);
+        btn.addEventListener("pointerleave", off); btn.addEventListener("blur", off);
         content.appendChild(btn);
+        // the sheet's callout: one leader and one label, both placed from the layout
+        const cg = document.createElementNS(NSVG, "g"); cg.setAttribute("class", "da-ld");
+        const cPath = document.createElementNS(NSVG, "path");
+        const cDot = document.createElementNS(NSVG, "circle"); cDot.setAttribute("r", 2.5);   // the leader ends in a dot, just off the sheet
+        cg.append(cPath, cDot); cSvg.appendChild(cg);
+        const note = document.createElement("div"); note.className = "da-callout";
+        const newest = latestOf(k);
+        const line2 = newest ? `<br>latest — ${esc(newest.title || newest.slug || "")}` : "";
+        note.innerHTML = `<span class="da-callout__hd"><span class="da-callout__key">${String(subs.indexOf(k) + 1).padStart(2, "0")}</span><span class="da-callout__name">${esc(label)}</span></span><p class="da-callout__meta">${count} ${esc(label)}${line2}</p>`;
+        note.addEventListener("click", () => navigate({ layer: "browse", series: seriesKey, subcollection: k, view: "all", item: null }));
+        note.addEventListener("pointerenter", () => on()); note.addEventListener("pointerleave", () => off());
+        notes.appendChild(note);
         const w = src ? src.spec.w : 120, h = src ? src.spec.h : 160;
-        return { k, src, mesh, btn, w, h, from: null, to: null };
+        const paper = { k, src, mesh, btn, w, h, from: null, to: null, rise: 0, cg, cPath, cDot, note };
+        return paper;
       });
+      // the desk's hover, in hand: the lit sheet glows as it does on the desk and
+      // rises toward the camera by the desk's lift, magnified as much as the
+      // sheet is (to.scale / from.scale) — the same lift, at hand size
+      let litPaper = null;
+      const { peak: hoverPeak, lift: hoverLift } = hoverLook(dark);
+      const towardCam = new THREE.Vector3();
+      function applyHover(p, a) {
+        const on = p === litPaper && phase === "up";
+        const mats = Array.isArray(p.mesh.material) ? p.mesh.material : [p.mesh.material];
+        const glow = on ? glowOf(p.src?.spec, hoverPeak) : 0;
+        for (const m of mats) if ("emissiveIntensity" in m) m.emissiveIntensity += (glow - m.emissiveIntensity) * HOVER_EASE;
+        const mag = p.from && p.to && p.from.scale ? p.to.scale / p.from.scale : 1;
+        p.rise += ((on ? hoverLift * mag : 0) - p.rise) * HOVER_EASE;
+        if (p.rise > 1e-6) p.mesh.position.addScaledVector(towardCam, p.rise * easeInOut(a));
+      }
 
       // poses: from = the sheet on the desk (world), to = a slot in front of the camera
       const tmpQ = new THREE.Quaternion(), tmpP = new THREE.Vector3(), tmpS = new THREE.Vector3();
@@ -952,6 +1009,11 @@ function makeFanFactory(D) {
         p.src.mesh.updateWorldMatrix(true, false); p.src.mesh.matrixWorld.decompose(tmpP, tmpQ, tmpS);
         p.from = { pos: tmpP.clone(), quat: tmpQ.clone(), scale: tmpS.x };
       }
+      const layoutOf = () => {
+        const f = FAN_LAYOUTS[seriesKey]; if (!f) return null;
+        return (window.innerWidth < 600 ? f.phone || f.desk : f.desk) || null;
+      };
+      let fitted = null;                                        // { L, s, ox, oy } — the layout, fitted to this viewport
       function computeTo() {
         const n = papers.length, D = 2.6;                       // distance in front of the camera
         if (!n) return;
@@ -969,6 +1031,9 @@ function makeFanFactory(D) {
         // Each sheet keeps the depth order it has on the desk: the top sheet
         // ends nearest the camera, the next a hair behind, and so on — so the
         // sheets never pass through one another on the way up or down.
+        const L = layoutOf();
+        if (L) { composeTo(L, { vh, right, up, centre, faceQ }); return; }
+        fitted = null; placeCallouts();
         const order = papers.slice().sort((a, b) => (b.from?.pos.y || 0) - (a.from?.pos.y || 0));
         const step = 0.012, dOf = new Map(); order.forEach((p, k) => dOf.set(p, D + k * step));
         const depthOf = (p) => dOf.get(p) || D;
@@ -1001,6 +1066,48 @@ function makeFanFactory(D) {
           papers.forEach((p) => { const wu = U(p.w) * sc, cx = x + wu / 2; x += wu + gap; const k = depthOf(p) / D; p.to = { pos: centre.clone().addScaledVector(forward, depthOf(p) - D).addScaledVector(right, cx * k).addScaledVector(up, -0.04 * k), quat: faceQ, scale: sc * k }; });
         }
       }
+      // The stage the composition was chosen on (1440 × 900, or 390 × 844 on a
+      // phone) is fitted to the viewport as ONE uniform scale, so the sheets'
+      // sizes, the gutters between them and the callouts all hold their
+      // proportions. Every sheet takes the same scale — the layout's own
+      // px-per-unit (its sheet widths over the documents' true widths) times
+      // that fit — so a calling card stays a calling card beside the CV.
+      function composeTo(L, C) {
+        const W = window.innerWidth, Hp = window.innerHeight;
+        const s = Math.min(W / L.stage.w, Hp / L.stage.h);
+        const ox = (W - L.stage.w * s) / 2, oy = (Hp - L.stage.h * s) / 2;
+        const upp = C.vh / Hp;                                  // world units per screen px
+        const rs = papers.map((p) => (L.sheets[p.k]?.w || 0) / U(p.w)).filter((v) => v > 0).sort((a, b) => a - b);
+        const sc = (rs[rs.length >> 1] || 1) * s * upp;
+        papers.forEach((p) => {
+          const q = L.sheets[p.k]; if (!q) return;
+          const cx = ox + (q.x + q.w / 2) * s, cy = oy + (q.y + q.h / 2) * s;
+          p.to = { pos: C.centre.clone().addScaledVector(C.right, (cx - W / 2) * upp).addScaledVector(C.up, (Hp / 2 - cy) * upp), quat: C.faceQ, scale: sc };
+        });
+        fitted = { L, s, ox, oy };
+        placeCallouts();
+      }
+      // the leaders and labels, drawn in the layout's own stage px and scaled with it
+      function placeCallouts() {
+        calls.hidden = !fitted;
+        if (!fitted) return;
+        const { L, s, ox, oy } = fitted;
+        calls.classList.toggle("da-callouts--always", window.innerWidth < 600);   // no hover on a phone: the callouts stay
+        cSvg.setAttribute("viewBox", `0 0 ${L.stage.w} ${L.stage.h}`);
+        cSvg.style.cssText = `position:absolute;left:${ox}px;top:${oy}px;width:${L.stage.w * s}px;height:${L.stage.h * s}px`;
+        notes.style.cssText = `position:absolute;left:${ox}px;top:${oy}px;width:${L.stage.w}px;height:${L.stage.h}px;transform:scale(${s});transform-origin:0 0`;
+        papers.forEach((p) => {
+          const c = L.callouts?.[p.k];
+          p.cg.style.display = c ? "" : "none"; p.note.hidden = !c;
+          if (!c) return;
+          p.cPath.setAttribute("d", `M${c.from[0]} ${c.from[1]} L${c.knee[0]} ${c.knee[1]} L${c.end[0]} ${c.end[1]}`);
+          p.cPath.style.setProperty("--len", String(Math.round(Math.hypot(c.knee[0] - c.from[0], c.knee[1] - c.from[1]) + Math.abs(c.end[0] - c.knee[0]) + 2)));
+          p.cDot.setAttribute("cx", String(c.from[0])); p.cDot.setAttribute("cy", String(c.from[1]));
+          p.note.classList.toggle("da-callout--right", c.label.align === "right");
+          p.note.style.left = `${c.label.x}px`; p.note.style.top = `${c.label.y}px`; p.note.style.width = `${c.label.w}px`;
+        });
+      }
+      function lightCallout(p) { papers.forEach((q) => { q.cg.classList.toggle("is-on", q === p); q.note.classList.toggle("is-on", q === p); }); }
       const pose = (p, a) => {
         const t = easeInOut(a);
         p.mesh.position.lerpVectors(p.from.pos, p.to.pos, t);
@@ -1058,9 +1165,12 @@ function makeFanFactory(D) {
       function releaseHand() {
         if (handReleased) return; handReleased = true;
         cancelAnimationFrame(raf); raf = 0;
-        // only the fallback planes are the fan's own; a cloned sheet shares its
-        // geometry and material with the doc still sitting on the desk.
-        papers.forEach((p) => { if (!p.src) { p.mesh.geometry.dispose(); p.mesh.material.dispose(); } });
+        // a cloned sheet shares its geometry (and textures) with the doc still
+        // on the desk; only its material copy and the fallback planes are ours.
+        papers.forEach((p) => {
+          (Array.isArray(p.mesh.material) ? p.mesh.material : [p.mesh.material]).forEach((m) => m.dispose());   // the fan's own material copies (textures stay with the desk)
+          if (!p.src) p.mesh.geometry.dispose();
+        });
         hc.remove(); hr.dispose(); hr.forceContextLoss?.();
       }
       const restoreDesk = () => { papers.forEach((p) => { if (p.src) p.src.mesh.visible = true; }); wantShadows(); wake(400); };
@@ -1069,7 +1179,9 @@ function makeFanFactory(D) {
         let a;
         if (phase === "up") a = rising ? Math.min(1, (now - phaseStart) / LIFT_MS) : 1;
         else a = 1 - Math.min(1, (now - phaseStart) / LOWER_MS);
-        papers.forEach((p) => { pose(p, a); p.mesh.updateMatrixWorld(); });
+        towardCam.set(0, 0, 1).applyQuaternion(camera.quaternion);
+        papers.forEach((p) => { pose(p, a); applyHover(p, a); p.mesh.updateMatrixWorld(); });
+        calls.classList.toggle("is-up", phase === "up" && a >= 1);   // the callouts wait until the sheets have landed
         placeButtons();
         hr.render(hs, camera);
         if (phase === "down" && a <= 0) { restoreDesk(); releaseHand(); }
