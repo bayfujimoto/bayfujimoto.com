@@ -199,8 +199,11 @@ async function main() {
   try {
     feed = await parser.parseURL(url);
   } catch (err) {
-    console.error(`[ingest-goodreads] Failed to fetch RSS: ${err.message}`);
-    process.exit(1);
+    // Non-fatal: the committed book records are the source of truth, so an
+    // unreachable feed (Goodreads has returned 404 since late Oct 2026) must not
+    // block the deploy. Skip ingest and build with the records already here.
+    console.warn(`[ingest-goodreads] Failed to fetch RSS: ${err.message} — skipping ingest, building with existing book records`);
+    process.exit(0);
   }
 
   console.log(`[ingest-goodreads] ${feed.items.length} entries in feed`);
