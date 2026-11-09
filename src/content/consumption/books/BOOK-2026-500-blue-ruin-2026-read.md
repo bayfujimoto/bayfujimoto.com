@@ -16,6 +16,8 @@ goodreads_link: "https://www.goodreads.com/book/show/196845471"
 isbn13: "9780593801376"
 isbn: "0593801377"
 
+dimensions: 165 x 250
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9780593801376-L.jpg"
 ---

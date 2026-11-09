@@ -16,6 +16,8 @@ goodreads_link: "https://www.goodreads.com/book/show/49011"
 isbn13: "9780140178210"
 isbn: "014017821X"
 
+dimensions: 134 x 210
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9780140178210-L.jpg"
 ---

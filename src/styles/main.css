@@ -617,6 +617,44 @@ body {
 .item-grid__cell--books .item-grid__thumb {
   object-position: center;
 }
+/* A book with no cover reproduction: an outlined blank at the volume's trim
+   (sized inline by bookBlank in panels.js), title and author set inside it. */
+.item-grid__blank {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 0.25rem;
+  padding: 9% 9%;
+  border: 1px solid var(--border-strong, currentColor);
+  color: var(--overlay-text);
+  text-align: left;
+  overflow: hidden;
+}
+.item-grid__blank-title {
+  font-size: 0.65rem;
+  line-height: 1.25;
+  min-height: 0;
+  word-break: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.item-grid__blank-author {
+  margin-top: auto;
+  font-size: 0.65rem;
+  line-height: 1.25;
+  opacity: 0.6;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.item-grid__btn:hover .item-grid__blank,
+.item-grid__btn:focus-visible .item-grid__blank {
+  border-color: var(--fg, currentColor);
+}
+
 /* Games grid: box art reads as a cover, so it is inset and centred the same way
    a book's is — without the padding the thumbnail runs edge-to-edge into the
    cell's rules. Scoped to games; the shared dimension scaling in panels.js

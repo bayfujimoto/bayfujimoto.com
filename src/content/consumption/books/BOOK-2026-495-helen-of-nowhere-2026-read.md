@@ -16,6 +16,8 @@ goodreads_link: "https://www.goodreads.com/book/show/222826591"
 isbn13: "9781566897358"
 isbn: "1566897351"
 
+dimensions: 131 x 197
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/id/15243727-L.jpg"
 ---

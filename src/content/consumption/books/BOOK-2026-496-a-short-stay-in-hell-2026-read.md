@@ -15,6 +15,8 @@ goodreads_link: "https://www.goodreads.com/book/show/13456414"
 isbn13: "9780983748427"
 isbn: "098374842X"
 
+dimensions: 167 x 240
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9780983748427-L.jpg"
 ---

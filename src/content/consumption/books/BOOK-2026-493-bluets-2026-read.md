@@ -16,6 +16,8 @@ goodreads_link: "https://www.goodreads.com/book/show/6798263"
 isbn13: "9781933517407"
 isbn: "1933517409"
 
+dimensions: 129 x 210
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9781933517407-L.jpg"
 ---

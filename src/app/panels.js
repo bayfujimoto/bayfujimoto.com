@@ -84,6 +84,31 @@ function isBoxedEdition(item) {
   return !!asset && !isCutoutAsset(asset);
 }
 
+// A book with no cover reproduction is drawn as an outlined blank at its trim
+// size, the title set inside it — the volume's place on the shelf is kept and
+// its absence is stated, rather than collapsing to loose text. Size comes from
+// the record's dimensions, scaled against the grid's largest item like a
+// cover; a book with no dimensions takes a standard trade trim (140 × 210 mm).
+const BLANK_TRIM_MM = [140, 210];
+function bookBlank(item, maxDim) {
+  let [wMm, hMm] = (item.dimensions || "").split("x").map(s => parseFloat(s));
+  if (!(wMm && hMm)) [wMm, hMm] = BLANK_TRIM_MM;
+  const ref = maxDim > 0 ? maxDim : Math.max(wMm, hMm);
+  const unit = 0.9 / ref * 100;
+  const blank = el("span", "item-grid__blank");
+  blank.style.width = `${(wMm * unit).toFixed(2)}%`;
+  blank.style.height = `${(hMm * unit).toFixed(2)}%`;
+  const t = el("span", "item-grid__blank-title");
+  t.textContent = item.title;
+  blank.appendChild(t);
+  if (item.author) {
+    const a = el("span", "item-grid__blank-author");
+    a.textContent = item.author;
+    blank.appendChild(a);
+  }
+  return blank;
+}
+
 // Film backdrops are external Letterboxd URLs scraped at 1200×675 — roughly five
 // times the pixels a grid cell (~213px wide) can show, so each cell waits on an
 // oversized download before it paints. Letterboxd serves on-demand resized
@@ -1295,10 +1320,31 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
             } else {
               btn.appendChild(img);
             }
+          } else if (item.item_type === "book") {
+            btn.appendChild(bookBlank(item, maxDim));
+            cell.classList.add("item-grid__cell--blank");
           } else {
             const txt = el("span", "item-grid__text");
             txt.textContent = item.title;
             btn.appendChild(txt);
+          }
+        }
+
+        // A recorded cover can still fail: the link is dead, or Open Library
+        // answers a missing cover with a 1×1 blank. Either way the book falls
+        // back to its outlined blank rather than an empty, invisible cell.
+        if (item.item_type === "book") {
+          const im = btn.querySelector("img.item-grid__thumb");
+          if (im) {
+            const toBlank = () => {
+              const target = im.closest(".item-grid__vol") || im;
+              if (!target.isConnected) return;
+              target.replaceWith(bookBlank(item, maxDim));
+              cell.classList.remove("item-grid__cell--undimensioned");
+              cell.classList.add("item-grid__cell--blank");
+            };
+            im.addEventListener("error", toBlank, { once: true });
+            im.addEventListener("load", () => { if (im.naturalWidth <= 1) toBlank(); });
           }
         }
 

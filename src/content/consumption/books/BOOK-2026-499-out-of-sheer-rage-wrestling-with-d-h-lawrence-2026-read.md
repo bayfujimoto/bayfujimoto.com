@@ -16,6 +16,9 @@ goodreads_link: "https://www.goodreads.com/book/show/23253177"
 isbn13: "9781466869868"
 isbn: "1466869860"
 
+dimensions: 139 x 210
+dimensions_estimated: true
+dimensions_source: binding
 assets:
   cover: "https://covers.openlibrary.org/b/id/656224-L.jpg"
 ---

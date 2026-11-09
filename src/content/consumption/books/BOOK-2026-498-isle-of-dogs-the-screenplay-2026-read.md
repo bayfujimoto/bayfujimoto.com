@@ -15,6 +15,9 @@ goodreads_link: "https://www.goodreads.com/book/show/33245717"
 isbn13: "9780571336449"
 isbn: "0571336442"
 
+dimensions: 149 x 235
+dimensions_estimated: true
+dimensions_source: binding
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9780571336449-L.jpg"
 ---

@@ -16,6 +16,9 @@ goodreads_link: "https://www.goodreads.com/book/show/219874871"
 isbn13: "9781951971250"
 isbn: "1951971256"
 
+dimensions: 157 x 210
+dimensions_estimated: true
+dimensions_source: binding
 assets:
   cover: "https://covers.openlibrary.org/b/id/10979880-L.jpg"
 ---

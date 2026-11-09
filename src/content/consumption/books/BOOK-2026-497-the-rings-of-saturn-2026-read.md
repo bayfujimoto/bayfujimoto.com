@@ -15,6 +15,8 @@ goodreads_link: "https://www.goodreads.com/book/show/29082615"
 isbn13: "9780811226158"
 isbn: "0811226158"
 
+dimensions: 136 x 210
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9780811226158-L.jpg"
 ---
