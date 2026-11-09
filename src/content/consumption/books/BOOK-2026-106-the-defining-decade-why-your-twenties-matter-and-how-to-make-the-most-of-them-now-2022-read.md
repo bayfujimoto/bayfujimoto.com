@@ -13,7 +13,7 @@ display_date: "November 1, 2022"
 sort_date: "2022-11-01"
 goodreads_link: "https://www.goodreads.com/book/show/40603783"
 dimensions: 135 x 210
-dimensions_estimated: true
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/id/8443905-L.jpg"
 ---

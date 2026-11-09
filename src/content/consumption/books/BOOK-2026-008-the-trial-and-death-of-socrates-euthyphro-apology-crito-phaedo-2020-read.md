@@ -16,6 +16,7 @@ isbn13: "9780872205543"
 isbn: "0872205541"
 dimensions: 135 x 210
 dimensions_estimated: true
+dimensions_source: binding
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9780872205543-L.jpg"
 ---

@@ -15,8 +15,8 @@ rating: 4
 goodreads_link: "https://www.goodreads.com/book/show/31370662"
 isbn13: "9781489214621"
 isbn: "1489214623"
-dimensions: 154 x 235
-dimensions_estimated: true
+dimensions: 155 x 237
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/id/14175764-L.jpg"
 ---

@@ -14,8 +14,8 @@ sort_date: "2024-07-21"
 goodreads_link: "https://www.goodreads.com/book/show/25387716"
 isbn13: "9781590517406"
 isbn: "1590517406"
-dimensions: 151 x 235
-dimensions_estimated: true
+dimensions: 128 x 200
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9781590517406-L.jpg"
 ---

@@ -15,8 +15,8 @@ rating: 2
 goodreads_link: "https://www.goodreads.com/book/show/52180399"
 isbn13: "9781982136451"
 isbn: "1982136456"
-dimensions: 152 x 235
-dimensions_estimated: true
+dimensions: 138 x 213
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9781982136451-L.jpg"
 ---

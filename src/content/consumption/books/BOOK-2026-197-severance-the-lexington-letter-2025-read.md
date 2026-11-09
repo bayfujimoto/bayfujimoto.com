@@ -12,6 +12,9 @@ date_read: "2025-03-06"
 display_date: March 6, 2025
 sort_date: "2025-03-06"
 goodreads_link: https://www.goodreads.com/book/show/60644263
+dimensions: 169 x 210
+dimensions_source: binding
+dimensions_estimated: true
 assets:
   cover: BOOK-2026-197-cover.jpg?v=bc26e411o
   thumbnail: BOOK-2026-197-cover-thumb.jpg?v=bc26e411o

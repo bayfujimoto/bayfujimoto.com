@@ -16,6 +16,7 @@ isbn13: "9781524759780"
 isbn: "1524759783"
 dimensions: 155 x 235
 dimensions_estimated: true
+dimensions_source: binding
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9781524759780-L.jpg"
 ---

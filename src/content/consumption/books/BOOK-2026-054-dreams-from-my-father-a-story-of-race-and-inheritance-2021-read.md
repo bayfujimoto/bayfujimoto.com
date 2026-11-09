@@ -15,8 +15,8 @@ rating: 3
 goodreads_link: "https://www.goodreads.com/book/show/88061"
 isbn13: "9781921351433"
 isbn: "1921351438"
-dimensions: 135 x 210
-dimensions_estimated: true
+dimensions: 128 x 198
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9781921351433-L.jpg"
 ---

@@ -14,8 +14,8 @@ sort_date: "2021-04-12"
 goodreads_link: "https://www.goodreads.com/book/show/41880609"
 isbn13: "9780525562023"
 isbn: "0525562028"
-dimensions: 157 x 235
-dimensions_estimated: true
+dimensions: 147 x 220
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9780525562023-L.jpg"
 ---

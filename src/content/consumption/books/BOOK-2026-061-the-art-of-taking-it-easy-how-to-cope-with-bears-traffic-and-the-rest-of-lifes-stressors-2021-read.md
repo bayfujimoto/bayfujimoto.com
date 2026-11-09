@@ -15,8 +15,8 @@ rating: 5
 goodreads_link: "https://www.goodreads.com/book/show/52655061"
 isbn13: "9781948062473"
 isbn: "194806247X"
-dimensions: 137 x 210
-dimensions_estimated: true
+dimensions: 140 x 216
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/id/12003763-L.jpg"
 ---

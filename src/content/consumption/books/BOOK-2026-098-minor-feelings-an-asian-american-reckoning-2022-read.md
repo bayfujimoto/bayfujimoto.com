@@ -14,8 +14,8 @@ sort_date: "2022-08-23"
 goodreads_link: "https://www.goodreads.com/book/show/52845775"
 isbn13: "9781984820365"
 isbn: "1984820362"
-dimensions: 156 x 235
-dimensions_estimated: true
+dimensions: 146 x 220
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9781984820365-L.jpg"
 ---

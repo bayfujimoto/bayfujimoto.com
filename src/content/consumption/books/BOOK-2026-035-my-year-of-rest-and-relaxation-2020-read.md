@@ -15,8 +15,8 @@ rating: 3
 goodreads_link: "https://www.goodreads.com/book/show/44279110"
 isbn13: "9780525522133"
 isbn: "0525522131"
-dimensions: 136 x 210
-dimensions_estimated: true
+dimensions: 129 x 200
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9780525522133-L.jpg"
 ---

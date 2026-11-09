@@ -15,8 +15,9 @@ rating: 4
 goodreads_link: "https://www.goodreads.com/book/show/25899336"
 isbn13: "9780812988413"
 isbn: "0812988418"
-dimensions: 142 x 210
+dimensions: 132 x 195
 dimensions_estimated: true
+dimensions_source: marc
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9780812988413-L.jpg"
 ---

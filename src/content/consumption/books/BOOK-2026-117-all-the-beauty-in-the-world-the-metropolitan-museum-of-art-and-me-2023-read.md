@@ -16,6 +16,7 @@ isbn13: "9781982163327"
 isbn: "1982163321"
 dimensions: 140 x 210
 dimensions_estimated: true
+dimensions_source: binding
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9781982163327-L.jpg"
 ---

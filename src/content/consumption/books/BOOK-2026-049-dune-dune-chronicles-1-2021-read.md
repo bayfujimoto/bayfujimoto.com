@@ -14,8 +14,8 @@ sort_date: "2021-01-05"
 goodreads_link: "https://www.goodreads.com/book/show/29889255"
 isbn13: "9780143111580"
 isbn: "0143111582"
-dimensions: 147 x 235
-dimensions_estimated: true
+dimensions: 137 x 220
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9780143111580-L.jpg"
 ---

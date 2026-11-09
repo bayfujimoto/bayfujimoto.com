@@ -16,6 +16,7 @@ isbn13: "9781476753836"
 isbn: "1476753830"
 dimensions: 187 x 235
 dimensions_estimated: true
+dimensions_source: binding
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9781476753836-L.jpg"
 ---

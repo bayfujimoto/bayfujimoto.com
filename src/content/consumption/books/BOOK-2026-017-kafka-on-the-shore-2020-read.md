@@ -13,6 +13,9 @@ display_date: June 6, 2020
 sort_date: "2020-06-06"
 rating: 2
 goodreads_link: https://www.goodreads.com/book/show/4929
+dimensions: 136 x 210
+dimensions_source: binding
+dimensions_estimated: true
 assets:
   cover: BOOK-2026-017-cover.jpg?v=3f237e57o
   thumbnail: BOOK-2026-017-cover-thumb.jpg?v=3f237e57o

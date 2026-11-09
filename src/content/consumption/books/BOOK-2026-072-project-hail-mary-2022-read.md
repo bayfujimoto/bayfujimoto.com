@@ -15,8 +15,8 @@ rating: 4
 goodreads_link: "https://www.goodreads.com/book/show/54493401"
 isbn13: "9780593135204"
 isbn: "0593135202"
-dimensions: 156 x 235
-dimensions_estimated: true
+dimensions: 166 x 250
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9780593135204-L.jpg"
 ---

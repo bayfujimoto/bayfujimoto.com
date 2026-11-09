@@ -15,8 +15,8 @@ rating: 4
 goodreads_link: "https://www.goodreads.com/book/show/43868109"
 isbn13: "9780385545686"
 isbn: "0385545681"
-dimensions: 155 x 235
-dimensions_estimated: true
+dimensions: 158 x 240
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9780385545686-L.jpg"
 ---

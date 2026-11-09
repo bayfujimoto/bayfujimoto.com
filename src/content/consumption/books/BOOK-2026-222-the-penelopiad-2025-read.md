@@ -15,8 +15,8 @@ rating: 4
 goodreads_link: "https://www.goodreads.com/book/show/17645"
 isbn13: "9781841957173"
 isbn: "1841957178"
-dimensions: 155 x 235
-dimensions_estimated: true
+dimensions: 138 x 210
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9781841957173-L.jpg"
 ---

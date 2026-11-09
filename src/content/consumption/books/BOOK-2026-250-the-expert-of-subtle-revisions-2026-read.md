@@ -13,6 +13,9 @@ display_date: April 13, 2026
 sort_date: "2026-04-13"
 rating: 3
 goodreads_link: https://www.goodreads.com/book/show/214986234
+dimensions: 155 x 235
+dimensions_source: binding
+dimensions_estimated: true
 assets:
   cover: BOOK-2026-250-cover.jpg?v=ab41b780o
   thumbnail: BOOK-2026-250-cover-thumb.jpg?v=ab41b780o

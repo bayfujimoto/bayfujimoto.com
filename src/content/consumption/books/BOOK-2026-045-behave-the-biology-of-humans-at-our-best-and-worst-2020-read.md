@@ -14,8 +14,8 @@ sort_date: "2020-11-10"
 goodreads_link: "https://www.goodreads.com/book/show/33516538"
 isbn13: "9780735222786"
 isbn: "0735222789"
-dimensions: 137 x 210
-dimensions_estimated: true
+dimensions: 143 x 220
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/id/8814831-L.jpg"
 ---

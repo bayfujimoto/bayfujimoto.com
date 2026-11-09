@@ -17,6 +17,7 @@ isbn13: "9781984825025"
 isbn: "198482502X"
 dimensions: 154 x 235
 dimensions_estimated: true
+dimensions_source: binding
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9781984825025-L.jpg"
 ---

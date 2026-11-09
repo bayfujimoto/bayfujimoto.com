@@ -17,6 +17,7 @@ isbn13: "9781250819345"
 isbn: "1250819342"
 dimensions: 156 x 235
 dimensions_estimated: true
+dimensions_source: binding
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9781250819345-L.jpg"
 ---

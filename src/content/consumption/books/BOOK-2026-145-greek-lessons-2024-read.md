@@ -14,8 +14,8 @@ sort_date: "2024-06-18"
 goodreads_link: "https://www.goodreads.com/book/show/61686012"
 isbn13: "9780593595275"
 isbn: "0593595270"
-dimensions: 156 x 235
-dimensions_estimated: true
+dimensions: 146 x 220
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9780593595275-L.jpg"
 ---

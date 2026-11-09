@@ -14,8 +14,9 @@ sort_date: "2023-11-11"
 rating: 4
 goodreads_link: "https://www.goodreads.com/book/show/9361589"
 isbn13: "9780385534635"
-dimensions: 152 x 235
+dimensions: 159 x 245
 dimensions_estimated: true
+dimensions_source: marc
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9780385534635-L.jpg"
 ---

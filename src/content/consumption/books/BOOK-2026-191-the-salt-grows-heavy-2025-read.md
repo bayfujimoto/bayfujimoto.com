@@ -15,8 +15,8 @@ rating: 4
 goodreads_link: "https://www.goodreads.com/book/show/61884779"
 isbn13: "9781250830913"
 isbn: "1250830915"
-dimensions: 153 x 235
-dimensions_estimated: true
+dimensions: 143 x 220
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9781250830913-L.jpg"
 ---

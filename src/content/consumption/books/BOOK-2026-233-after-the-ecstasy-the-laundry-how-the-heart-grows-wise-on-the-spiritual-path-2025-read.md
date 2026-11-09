@@ -16,6 +16,7 @@ goodreads_link: "https://www.goodreads.com/book/show/341631"
 isbn13: "9780553378290"
 isbn: "0553378295"
 dimensions: 139 x 210
+dimensions_source: binding
 dimensions_estimated: true
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9780553378290-L.jpg"

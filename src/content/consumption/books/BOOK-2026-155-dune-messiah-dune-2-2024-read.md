@@ -12,8 +12,9 @@ date_read: "2024-08-18"
 display_date: August 18, 2024
 sort_date: "2024-08-18"
 goodreads_link: https://www.goodreads.com/book/show/34326633
-dimensions: 139 x 210
+dimensions: 137 x 210
 dimensions_estimated: true
+dimensions_source: binding
 assets:
   cover: BOOK-2026-155-cover.jpg?v=2c0becedo
   thumbnail: BOOK-2026-155-cover-thumb.jpg?v=2c0becedo

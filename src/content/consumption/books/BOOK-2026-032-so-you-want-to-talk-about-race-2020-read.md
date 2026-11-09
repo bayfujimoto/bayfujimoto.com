@@ -15,7 +15,7 @@ goodreads_link: "https://www.goodreads.com/book/show/41717572"
 isbn13: "9781580058827"
 isbn: "1580058825"
 dimensions: 140 x 210
-dimensions_estimated: true
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9781580058827-L.jpg"
 ---

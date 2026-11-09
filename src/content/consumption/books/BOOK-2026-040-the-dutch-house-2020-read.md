@@ -15,8 +15,8 @@ rating: 2
 goodreads_link: "https://www.goodreads.com/book/show/44318414"
 isbn13: "9780062963673"
 isbn: "0062963678"
-dimensions: 156 x 235
-dimensions_estimated: true
+dimensions: 159 x 240
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9780062963673-L.jpg"
 ---

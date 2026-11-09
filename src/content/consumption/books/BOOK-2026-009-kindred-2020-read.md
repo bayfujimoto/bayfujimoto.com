@@ -16,7 +16,7 @@ goodreads_link: "https://www.goodreads.com/book/show/60931"
 isbn13: "9780807083697"
 isbn: "0807083690"
 dimensions: 142 x 210
-dimensions_estimated: true
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9780807083697-L.jpg"
 ---

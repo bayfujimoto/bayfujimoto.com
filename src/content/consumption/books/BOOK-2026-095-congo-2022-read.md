@@ -16,6 +16,7 @@ isbn13: "9780060541835"
 isbn: "0060541830"
 dimensions: 108 x 174
 dimensions_estimated: true
+dimensions_source: binding
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9780060541835-L.jpg"
 ---

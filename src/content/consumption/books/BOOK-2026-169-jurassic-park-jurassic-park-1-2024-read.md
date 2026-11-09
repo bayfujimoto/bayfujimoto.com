@@ -15,6 +15,7 @@ rating: 0
 goodreads_link: https://www.goodreads.com/book/show/40604658
 dimensions: 118 x 210
 dimensions_estimated: true
+dimensions_source: binding
 assets:
   cover: https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1529604411l/40604658.jpg
 constellations:

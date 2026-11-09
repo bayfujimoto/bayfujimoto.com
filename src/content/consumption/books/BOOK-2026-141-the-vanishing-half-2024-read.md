@@ -15,8 +15,8 @@ rating: 4
 goodreads_link: "https://www.goodreads.com/book/show/51791252"
 isbn13: "9780525536291"
 isbn: "0525536299"
-dimensions: 156 x 235
-dimensions_estimated: true
+dimensions: 159 x 240
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9780525536291-L.jpg"
 ---

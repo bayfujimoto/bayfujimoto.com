@@ -13,6 +13,9 @@ display_date: May 11, 2025
 sort_date: "2025-05-11"
 rating: 4
 goodreads_link: https://www.goodreads.com/book/show/195450005
+dimensions: 160 x 235
+dimensions_source: binding
+dimensions_estimated: true
 assets:
   cover: BOOK-2026-208-cover.jpg?v=6862de81o
   thumbnail: BOOK-2026-208-cover-thumb.jpg?v=6862de81o

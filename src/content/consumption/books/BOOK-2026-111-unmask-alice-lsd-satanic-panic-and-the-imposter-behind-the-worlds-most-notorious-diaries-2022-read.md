@@ -14,8 +14,8 @@ sort_date: "2022-11-27"
 goodreads_link: "https://www.goodreads.com/book/show/60041102"
 isbn13: "9781637740422"
 isbn: "1637740425"
-dimensions: 157 x 235
-dimensions_estimated: true
+dimensions: 161 x 240
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9781637740422-L.jpg"
 ---

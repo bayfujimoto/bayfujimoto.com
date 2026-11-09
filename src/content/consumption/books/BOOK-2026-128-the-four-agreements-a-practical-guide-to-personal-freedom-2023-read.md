@@ -14,8 +14,8 @@ sort_date: "2023-11-22"
 goodreads_link: "https://www.goodreads.com/book/show/6596"
 isbn13: "9781878424501"
 isbn: "1878424505"
-dimensions: 161 x 235
-dimensions_estimated: true
+dimensions: 126 x 184
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9781878424501-L.jpg"
 ---

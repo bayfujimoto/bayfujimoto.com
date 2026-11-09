@@ -17,6 +17,7 @@ isbn13: "9780316055437"
 isbn: "0316055433"
 dimensions: 152 x 235
 dimensions_estimated: true
+dimensions_source: binding
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9780316055437-L.jpg"
 ---

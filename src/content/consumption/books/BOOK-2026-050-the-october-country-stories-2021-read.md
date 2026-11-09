@@ -16,7 +16,7 @@ goodreads_link: "https://www.goodreads.com/book/show/1091582"
 isbn13: "9780345407856"
 isbn: "0345407857"
 dimensions: 140 x 210
-dimensions_estimated: true
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9780345407856-L.jpg"
 ---

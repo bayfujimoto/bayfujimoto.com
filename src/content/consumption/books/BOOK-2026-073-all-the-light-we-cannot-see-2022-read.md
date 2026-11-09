@@ -15,8 +15,8 @@ rating: 4
 goodreads_link: "https://www.goodreads.com/book/show/18143977"
 isbn13: "9781476746586"
 isbn: "1476746583"
-dimensions: 151 x 235
-dimensions_estimated: true
+dimensions: 155 x 240
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9781476746586-L.jpg"
 ---

@@ -13,6 +13,9 @@ display_date: July 8, 2020
 sort_date: "2020-07-08"
 rating: 4
 goodreads_link: https://www.goodreads.com/book/show/35664645
+dimensions: 136 x 210
+dimensions_source: binding
+dimensions_estimated: true
 assets:
   cover: BOOK-2026-029-cover.jpg?v=ea930e27o
   thumbnail: BOOK-2026-029-cover-thumb.jpg?v=ea930e27o

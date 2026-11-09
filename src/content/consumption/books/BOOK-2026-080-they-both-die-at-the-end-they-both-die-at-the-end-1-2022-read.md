@@ -15,8 +15,8 @@ rating: 4
 goodreads_link: "https://www.goodreads.com/book/show/33385229"
 isbn13: "9780062457790"
 isbn: "0062457799"
-dimensions: 140 x 235
-dimensions_estimated: true
+dimensions: 131 x 220
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9780062457790-L.jpg"
 ---

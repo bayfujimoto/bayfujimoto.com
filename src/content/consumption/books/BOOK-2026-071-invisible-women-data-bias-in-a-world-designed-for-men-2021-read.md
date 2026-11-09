@@ -16,6 +16,7 @@ isbn13: "9781419729072"
 isbn: "1419729071"
 dimensions: 156 x 235
 dimensions_estimated: true
+dimensions_source: marc
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9781419729072-L.jpg"
 ---

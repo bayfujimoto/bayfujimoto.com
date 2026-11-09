@@ -15,8 +15,8 @@ rating: 1
 goodreads_link: "https://www.goodreads.com/book/show/17887932"
 isbn13: "9781440567674"
 isbn: "1440567670"
-dimensions: 165 x 235
-dimensions_estimated: true
+dimensions: 127 x 181
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9781440567674-L.jpg"
 ---

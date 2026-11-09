@@ -15,8 +15,8 @@ rating: 4
 goodreads_link: "https://www.goodreads.com/book/show/51166519"
 isbn13: "9780062913197"
 isbn: "0062913190"
-dimensions: 155 x 235
-dimensions_estimated: true
+dimensions: 158 x 240
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9780062913197-L.jpg"
 ---

@@ -17,6 +17,7 @@ isbn13: "9781508503736"
 isbn: "1508503737"
 dimensions: 140 x 210
 dimensions_estimated: true
+dimensions_source: binding
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9781508503736-L.jpg"
 ---

@@ -16,7 +16,7 @@ goodreads_link: "https://www.goodreads.com/book/show/17665637"
 isbn13: "9780811220071"
 isbn: "0811220079"
 dimensions: 134 x 210
-dimensions_estimated: true
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/id/14611513-L.jpg"
 ---

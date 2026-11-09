@@ -15,8 +15,8 @@ rating: 5
 goodreads_link: https://www.goodreads.com/book/show/472331
 isbn13: "9780930289232"
 isbn: "0930289234"
-dimensions: 142 x 210
-dimensions_estimated: true
+dimensions: 176 x 260
+dimensions_source: google
 assets:
   cover: https://covers.openlibrary.org/b/isbn/9780930289232-L.jpg
 constellations:

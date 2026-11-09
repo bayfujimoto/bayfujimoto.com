@@ -17,6 +17,7 @@ isbn13: "9780618002238"
 isbn: "0618002235"
 dimensions: 138 x 210
 dimensions_estimated: true
+dimensions_source: binding
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9780618002238-L.jpg"
 ---

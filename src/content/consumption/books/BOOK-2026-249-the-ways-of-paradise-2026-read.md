@@ -12,6 +12,9 @@ date_read: "2026-03-13"
 display_date: March 13, 2026
 sort_date: "2026-03-13"
 goodreads_link: https://www.goodreads.com/book/show/205978602
+dimensions: 137 x 210
+dimensions_source: binding
+dimensions_estimated: true
 assets:
   cover: BOOK-2026-249-cover.jpg?v=06eafb37o
   thumbnail: BOOK-2026-249-cover-thumb.jpg?v=06eafb37o

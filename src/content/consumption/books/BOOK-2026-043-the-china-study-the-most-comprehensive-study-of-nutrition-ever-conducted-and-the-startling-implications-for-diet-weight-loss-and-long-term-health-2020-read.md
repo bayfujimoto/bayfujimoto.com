@@ -15,6 +15,7 @@ rating: 4
 goodreads_link: "https://www.goodreads.com/book/show/32331524"
 dimensions: 140 x 210
 dimensions_estimated: true
+dimensions_source: binding
 assets:
   cover: "https://covers.openlibrary.org/b/id/7254516-L.jpg"
 ---

@@ -15,8 +15,8 @@ rating: 4
 goodreads_link: "https://www.goodreads.com/book/show/53345896"
 isbn13: "9781846276989"
 isbn: "1846276985"
-dimensions: 141 x 210
-dimensions_estimated: true
+dimensions: 121 x 180
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9781846276989-L.jpg"
 ---

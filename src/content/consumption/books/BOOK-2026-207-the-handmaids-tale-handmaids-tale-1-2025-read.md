@@ -15,6 +15,7 @@ rating: 0
 goodreads_link: "https://www.goodreads.com/book/show/50885244"
 dimensions: 137 x 210
 dimensions_estimated: true
+dimensions_source: binding
 assets:
   cover: "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1651677426l/50885244.jpg"
 ---

@@ -17,6 +17,7 @@ isbn13: "9780060786502"
 isbn: "0060786507"
 dimensions: 142 x 210
 dimensions_estimated: true
+dimensions_source: binding
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9780060786502-L.jpg"
 ---

@@ -15,8 +15,8 @@ rating: 4
 goodreads_link: "https://www.goodreads.com/book/show/44146682"
 isbn13: "9781593765804"
 isbn: "1593765800"
-dimensions: 140 x 210
-dimensions_estimated: true
+dimensions: 107 x 160
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9781593765804-L.jpg"
 ---

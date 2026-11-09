@@ -17,6 +17,7 @@ isbn13: "9780062913487"
 isbn: "0062913484"
 dimensions: 139 x 210
 dimensions_estimated: true
+dimensions_source: binding
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9780062913487-L.jpg"
 ---

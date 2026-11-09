@@ -16,7 +16,7 @@ goodreads_link: https://www.goodreads.com/book/show/350540
 isbn13: "9780307387899"
 isbn: "0307387895"
 dimensions: 136 x 210
-dimensions_estimated: true
+dimensions_source: google
 assets:
   cover: https://covers.openlibrary.org/b/isbn/9780307387899-L.jpg
 constellations:

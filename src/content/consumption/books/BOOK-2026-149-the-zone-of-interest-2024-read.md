@@ -15,8 +15,8 @@ rating: 4
 goodreads_link: "https://www.goodreads.com/book/show/20447658"
 isbn13: "9780385353496"
 isbn: "0385353499"
-dimensions: 152 x 235
-dimensions_estimated: true
+dimensions: 162 x 250
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9780385353496-L.jpg"
 ---

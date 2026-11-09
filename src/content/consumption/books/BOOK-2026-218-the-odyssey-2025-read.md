@@ -14,8 +14,8 @@ sort_date: "2025-07-19"
 goodreads_link: "https://www.goodreads.com/book/show/34068470"
 isbn13: "9780393089059"
 isbn: "0393089053"
-dimensions: 154 x 235
-dimensions_estimated: true
+dimensions: 164 x 250
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9780393089059-L.jpg"
 ---

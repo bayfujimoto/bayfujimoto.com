@@ -15,8 +15,8 @@ rating: 5
 goodreads_link: https://www.goodreads.com/book/show/17934530
 isbn13: "9780374104092"
 isbn: "0374104093"
-dimensions: 143 x 210
-dimensions_estimated: true
+dimensions: 129 x 190
+dimensions_source: google
 assets:
   cover: https://covers.openlibrary.org/b/isbn/9780374104092-L.jpg
 constellations:

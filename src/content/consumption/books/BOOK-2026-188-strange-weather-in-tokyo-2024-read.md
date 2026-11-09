@@ -12,6 +12,9 @@ date_read: "2024-12-29"
 display_date: December 29, 2024
 sort_date: "2024-12-29"
 goodreads_link: https://www.goodreads.com/book/show/18283207
+dimensions: 128 x 210
+dimensions_source: binding
+dimensions_estimated: true
 assets:
   cover: BOOK-2026-188-cover.jpg?v=e900db8bo
   thumbnail: BOOK-2026-188-cover-thumb.jpg?v=e900db8bo

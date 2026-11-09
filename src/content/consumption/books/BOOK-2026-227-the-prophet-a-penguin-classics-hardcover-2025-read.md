@@ -15,8 +15,8 @@ rating: 2
 goodreads_link: https://www.goodreads.com/book/show/39945240
 isbn13: "9780143133582"
 isbn: "0143133586"
-dimensions: 177 x 235
-dimensions_estimated: true
+dimensions: 131 x 202
+dimensions_source: google
 assets:
   cover: BOOK-2026-227-cover.jpeg?v=a6d7ecdeo
   thumbnail: BOOK-2026-227-cover-thumb.jpg?v=a6d7ecdeo

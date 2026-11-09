@@ -14,8 +14,8 @@ sort_date: "2021-01-21"
 goodreads_link: "https://www.goodreads.com/book/show/51178017"
 isbn13: "9781250209283"
 isbn: "1250209285"
-dimensions: 152 x 235
-dimensions_estimated: true
+dimensions: 143 x 220
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9781250209283-L.jpg"
 ---

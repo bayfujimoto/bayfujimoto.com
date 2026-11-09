@@ -17,6 +17,7 @@ isbn13: "9781101967805"
 isbn: "1101967803"
 dimensions: 121 x 210
 dimensions_estimated: true
+dimensions_source: binding
 assets:
   cover: "https://covers.openlibrary.org/b/id/14875135-L.jpg"
 ---

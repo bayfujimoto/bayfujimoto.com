@@ -16,7 +16,7 @@ goodreads_link: "https://www.goodreads.com/book/show/40180098"
 isbn13: "9780393356687"
 isbn: "039335668X"
 dimensions: 140 x 210
-dimensions_estimated: true
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9780393356687-L.jpg"
 ---

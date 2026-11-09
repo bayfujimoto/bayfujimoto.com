@@ -13,6 +13,9 @@ display_date: June 22, 2021
 sort_date: "2021-06-22"
 rating: 4
 goodreads_link: https://www.goodreads.com/book/show/42946966
+dimensions: 139 x 210
+dimensions_source: binding
+dimensions_estimated: true
 assets:
   cover: BOOK-2026-060-cover.jpg?v=e6e3a729o
   thumbnail: BOOK-2026-060-cover-thumb.jpg?v=e6e3a729o

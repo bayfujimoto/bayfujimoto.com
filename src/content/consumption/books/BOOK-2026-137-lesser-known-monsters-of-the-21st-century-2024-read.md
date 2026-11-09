@@ -14,8 +14,8 @@ sort_date: "2024-02-04"
 goodreads_link: "https://www.goodreads.com/book/show/58476152"
 isbn13: "9781951142995"
 isbn: "1951142993"
-dimensions: 136 x 210
-dimensions_estimated: true
+dimensions: 142 x 220
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9781951142995-L.jpg"
 ---

@@ -17,6 +17,7 @@ isbn13: "9780063337879"
 isbn: "0063337878"
 dimensions: 157 x 235
 dimensions_estimated: true
+dimensions_source: binding
 assets:
   cover: "https://covers.openlibrary.org/b/id/14845882-L.jpg"
 ---

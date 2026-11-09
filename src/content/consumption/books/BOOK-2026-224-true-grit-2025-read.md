@@ -14,7 +14,7 @@ sort_date: "2025-08-16"
 rating: 3
 goodreads_link: "https://www.goodreads.com/book/show/43612456"
 dimensions: 136 x 210
-dimensions_estimated: true
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/id/488237-L.jpg"
 ---

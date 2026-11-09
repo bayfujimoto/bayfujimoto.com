@@ -17,6 +17,7 @@ isbn13: "9780062041265"
 isbn: "0062041266"
 dimensions: 156 x 235
 dimensions_estimated: true
+dimensions_source: binding
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9780062041265-L.jpg"
 ---

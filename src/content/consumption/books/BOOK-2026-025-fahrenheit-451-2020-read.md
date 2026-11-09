@@ -15,8 +15,8 @@ rating: 3
 goodreads_link: "https://www.goodreads.com/book/show/16280156"
 isbn13: "9780345342966"
 isbn: "0345342968"
-dimensions: 105 x 174
-dimensions_estimated: true
+dimensions: 109 x 180
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9780345342966-L.jpg"
 ---

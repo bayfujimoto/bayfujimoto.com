@@ -15,8 +15,8 @@ rating: 3
 goodreads_link: "https://www.goodreads.com/book/show/26312997"
 isbn13: "9780544456259"
 isbn: "0544456254"
-dimensions: 139 x 210
-dimensions_estimated: true
+dimensions: 135 x 203
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/id/8138393-L.jpg"
 ---

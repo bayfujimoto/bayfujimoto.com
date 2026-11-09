@@ -12,8 +12,9 @@ date_read: "2025-01-15"
 display_date: January 15, 2025
 sort_date: "2025-01-15"
 goodreads_link: https://www.goodreads.com/book/show/339472
-dimensions: 120 x 210
+dimensions: 134 x 210
 dimensions_estimated: true
+dimensions_source: binding
 assets:
   cover: BOOK-2026-192-cover.jpg?v=86c6ba97o
   thumbnail: BOOK-2026-192-cover-thumb.jpg?v=86c6ba97o

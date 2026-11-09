@@ -14,6 +14,7 @@ sort_date: "2025-11-05"
 goodreads_link: "https://www.goodreads.com/book/show/8889448"
 dimensions: 136 x 210
 dimensions_estimated: true
+dimensions_source: binding
 assets:
   cover: "https://covers.openlibrary.org/b/id/419991-L.jpg"
 ---

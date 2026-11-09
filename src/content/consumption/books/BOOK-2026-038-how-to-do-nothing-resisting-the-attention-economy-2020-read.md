@@ -15,8 +15,8 @@ rating: 4
 goodreads_link: "https://www.goodreads.com/book/show/42973186"
 isbn13: "9781612197500"
 isbn: "1612197507"
-dimensions: 139 x 210
-dimensions_estimated: true
+dimensions: 145 x 220
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/id/8750439-L.jpg"
 ---

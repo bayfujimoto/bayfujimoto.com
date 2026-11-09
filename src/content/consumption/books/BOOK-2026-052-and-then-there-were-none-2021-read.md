@@ -15,8 +15,8 @@ rating: 4
 goodreads_link: "https://www.goodreads.com/book/show/16299"
 isbn13: "9780312330873"
 isbn: "0312330871"
-dimensions: 134 x 210
-dimensions_estimated: true
+dimensions: 140 x 220
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9780312330873-L.jpg"
 ---

@@ -15,8 +15,8 @@ rating: 4
 goodreads_link: "https://www.goodreads.com/book/show/123008485"
 isbn13: "9781804710449"
 isbn: "180471044X"
-dimensions: 134 x 210
-dimensions_estimated: true
+dimensions: 154 x 240
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/id/13190092-L.jpg"
 ---

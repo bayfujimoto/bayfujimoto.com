@@ -15,8 +15,9 @@ rating: 4
 goodreads_link: https://www.goodreads.com/book/show/32277642
 isbn13: "9781539053446"
 isbn: 153905344X
-dimensions: 122 x 210
+dimensions: 140 x 210
 dimensions_estimated: true
+dimensions_source: binding
 assets:
   cover: BOOK-2026-220-cover.jpg?v=74a7a20ao
   thumbnail: BOOK-2026-220-cover-thumb.jpg?v=74a7a20ao

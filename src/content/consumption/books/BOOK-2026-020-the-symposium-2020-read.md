@@ -16,6 +16,7 @@ isbn13: "9780140449273"
 isbn: "0140449272"
 dimensions: 133 x 210
 dimensions_estimated: true
+dimensions_source: binding
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9780140449273-L.jpg"
 ---

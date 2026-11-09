@@ -15,8 +15,8 @@ rating: 4
 goodreads_link: "https://www.goodreads.com/book/show/55643292"
 isbn13: "9780316542159"
 isbn: "0316542156"
-dimensions: 156 x 235
-dimensions_estimated: true
+dimensions: 162 x 245
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9780316542159-L.jpg"
 ---

@@ -17,6 +17,7 @@ isbn13: "9780008173067"
 isbn: "0008173060"
 dimensions: 133 x 210
 dimensions_estimated: true
+dimensions_source: binding
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9780008173067-L.jpg"
 ---

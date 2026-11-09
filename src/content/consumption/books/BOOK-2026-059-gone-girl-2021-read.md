@@ -16,7 +16,7 @@ goodreads_link: "https://www.goodreads.com/book/show/19288043"
 isbn13: "9780307588371"
 isbn: "0307588378"
 dimensions: 137 x 210
-dimensions_estimated: true
+dimensions_source: google
 assets:
   cover: "https://covers.openlibrary.org/b/isbn/9780307588371-L.jpg"
 ---

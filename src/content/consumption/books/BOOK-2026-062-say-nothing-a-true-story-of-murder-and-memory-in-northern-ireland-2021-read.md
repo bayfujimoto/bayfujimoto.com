@@ -17,6 +17,7 @@ isbn13: "9780385521314"
 isbn: "0385521316"
 dimensions: 157 x 235
 dimensions_estimated: true
+dimensions_source: binding
 assets:
   cover: https://covers.openlibrary.org/b/isbn/9780385521314-L.jpg
 constellations:
