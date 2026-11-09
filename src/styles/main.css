@@ -617,6 +617,108 @@ body {
 .item-grid__cell--books .item-grid__thumb {
   object-position: center;
 }
+
+/* ── Books as bound volumes ──────────────────────────────────────────────────
+   A hardcover's depth is light falling across the board, not geometry beside
+   it: the overlay shades the cover's own pixels, so the artwork keeps its true
+   trim and the grid's mm scaling is unaffected. Structure at the left edge,
+   outermost in — the spine roll, the JOINT (the seam that makes it a case
+   binding rather than a printed rectangle), the board edge catching the lamp,
+   then a FLAT face. A fall-off across the face reads as a puff sticker, so
+   there isn't one; the only other shading is the tail, where the board turns
+   away at the bottom.
+
+   Two blended passes, because one alpha wash disappears on artwork of the
+   opposite value: ::before multiplies (bites on a pale board like The
+   Goldfinch), ::after screens (carries on a near-black one like Gratitude).
+   `isolation: isolate` confines both to the volume so neither blends with the
+   scene behind it.
+
+   One treatment for every book — no per-binding variant, no thickness-derived
+   gutter. After Apple Books; see mockups/book-hardcover/ and panels.js
+   (isVolume / volumeWrap), which sizes the wrapper to the cover's true aspect.
+   Corners are square at the spine and lightly rounded at the fore-edge. */
+.item-grid__vol {
+  position: relative;
+  isolation: isolate;
+  --gutter: 5.7%;   /* width of the left structure, as a share of the cover */
+  --lift: 1;        /* how far the volume sits off the shelf */
+  border-radius: 0 2.5px 2.5px 0;
+}
+.item-grid__vol .item-grid__thumb {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  border-radius: inherit;
+  /* A dark cover has no edge against the scene's black; the shadow below can't
+     supply one, so the rim does. */
+  box-shadow: 0 0 0 1px rgba(232, 224, 208, 0.14);
+}
+/* The contact shadow, its own layer behind the board rather than a box-shadow:
+   a pool under the tail where the book meets the shelf, plus a softer body. */
+.item-grid__vol__cast {
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  left: calc(-2px - var(--lift) * 1.2px);
+  right: calc(-2px - var(--lift) * 1.2px);
+  top: calc(1px + var(--lift) * 0.6px);
+  bottom: calc(-3px - var(--lift) * 2.4px);
+  border-radius: 0 3px 4px 3px;
+  background:
+    radial-gradient(70% 58% at 50% 100%,
+      rgba(0, 0, 0, calc(0.34 + var(--lift) * 0.05)) 0%, rgba(0, 0, 0, 0) 72%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, calc(0.14 + var(--lift) * 0.03)) 55%, rgba(0, 0, 0, 0) 100%);
+  filter: blur(calc(1.5px + var(--lift) * 1.6px));
+}
+/* shadow pass — the roll, the joint, the tail */
+.item-grid__vol::before,
+.item-card__repro--volume::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  border-radius: inherit;
+  mix-blend-mode: multiply;
+  background:
+    linear-gradient(90deg,
+      rgba(0, 0, 0, 0.22) 0,
+      rgba(0, 0, 0, 0.08) calc(var(--gutter) * 0.22),
+      rgba(0, 0, 0, 0.17) calc(var(--gutter) * 0.42),
+      rgba(0, 0, 0, 0.46) calc(var(--gutter) * 0.55),
+      rgba(0, 0, 0, 0.46) calc(var(--gutter) * 0.61),
+      rgba(0, 0, 0, 0.09) calc(var(--gutter) * 0.74),
+      rgba(0, 0, 0, 0.02) calc(var(--gutter) * 0.96),
+      rgba(0, 0, 0, 0)    calc(var(--gutter) * 1.30)),
+    linear-gradient(0deg,   rgba(0, 0, 0, 0.30) 0, rgba(0, 0, 0, 0.09) 1.6%, rgba(0, 0, 0, 0) 4.5%),
+    linear-gradient(270deg, rgba(0, 0, 0, 0.12) 0, rgba(0, 0, 0, 0) 2.4%);
+}
+/* light pass — the crest of the roll, the board edge beside the joint */
+.item-grid__vol::after,
+.item-card__repro--volume::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  border-radius: inherit;
+  mix-blend-mode: screen;
+  background:
+    linear-gradient(90deg,
+      rgba(255, 255, 255, 0.07) 0,
+      rgba(255, 255, 255, 0.13) calc(var(--gutter) * 0.20),
+      rgba(255, 255, 255, 0.02) calc(var(--gutter) * 0.36),
+      rgba(255, 255, 255, 0)    calc(var(--gutter) * 0.52),
+      rgba(255, 255, 255, 0)    calc(var(--gutter) * 0.64),
+      rgba(255, 255, 255, 0.15) calc(var(--gutter) * 0.72),
+      rgba(255, 255, 255, 0.03) calc(var(--gutter) * 0.88),
+      rgba(255, 255, 255, 0)    calc(var(--gutter) * 1.15)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0, rgba(255, 255, 255, 0) 2%);
+}
 /* A book with no cover reproduction: an outlined blank at the volume's trim
    (sized inline by bookBlank in panels.js), title and author set inside it. */
 .item-grid__blank {
@@ -1238,6 +1340,22 @@ body {
   max-width: 100%;
   max-height: 100%;
   border-radius: 10px;
+}
+
+/* Books on the plate: the same volume overlay. Unlike a game, a book records
+   its dimensions, so the foreignObject is already the cover's true trim and the
+   reproduction fills it edge to edge — the shading can sit on .item-card__repro
+   itself and no wrapper is needed. The two passes are shared with the grid
+   rules above; only the container and its radius are declared here. No contact
+   shadow: the plate is a measuring field, not a shelf. */
+.item-card__repro--volume {
+  position: relative;
+  isolation: isolate;
+  --gutter: 5.7%;
+  border-radius: 0 2px 2px 0;
+}
+.item-card__repro--volume img {
+  border-radius: inherit;
 }
 
 /* Plain image cell (no dimensions recorded) */

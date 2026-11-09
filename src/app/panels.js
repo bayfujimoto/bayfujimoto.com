@@ -109,6 +109,38 @@ function bookBlank(item, maxDim) {
   return blank;
 }
 
+// A book is a bound volume, not a picture of one: the cover carries a shading
+// overlay reading as light falling across a case binding — the spine roll, the
+// joint, the board edge, a flat face, a tail shadow — plus a contact shadow
+// behind it. After Apple Books, which shades the artwork's own pixels rather
+// than drawing geometry beside it, so the cover keeps its true trim and both
+// the grid's mm scaling and the plate's ruler are untouched.
+//
+// One overlay for every book: no per-binding variant and no thickness-derived
+// gutter. A paperback given a weaker, jointless treatment simply read as a
+// worse hardcover next to a cased one (Bay, 2026-09-30), and the binding is
+// already stated on the card. See mockups/book-hardcover/.
+//
+// A cut-out cover carries its own silhouette and often a photographed spine,
+// which the overlay would shade twice — same exclusion the games treatment
+// makes, and asked of the same source asset.
+function isVolume(item) {
+  if (item?.item_type !== "book") return false;
+  const asset = primaryAsset(item);
+  return !!asset && !isCutoutAsset(asset);
+}
+
+// The overlay needs an element of its own: an <img> carries no pseudo-element,
+// and the plate's letterbox gotcha applies here too — the wrapper has to hug
+// the artwork or the shading falls on empty field. Callers size the wrapper
+// (true aspect, not a square) and let the image fill it.
+function volumeWrap(img) {
+  const vol = el("div", "item-grid__vol");
+  vol.appendChild(el("div", "item-grid__vol__cast"));
+  vol.appendChild(img);
+  return vol;
+}
+
 // Film backdrops are external Letterboxd URLs scraped at 1200×675 — roughly five
 // times the pixels a grid cell (~213px wide) can show, so each cell waits on an
 // oversized download before it paints. Letterboxd serves on-demand resized
@@ -1292,6 +1324,10 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
             if (item.item_type === "single") cell.classList.add("item-grid__cell--disc");
             // Games read as the boxed edition: round the box-art scan's corners.
             if (isBoxedEdition(item)) img.classList.add("item-grid__thumb--edition");
+            // Books read as bound volumes: the cover gets the hardcover overlay,
+            // which hangs off a wrapper rather than the image (see volumeWrap).
+            const volume = isVolume(item) ? volumeWrap(img) : null;
+            const sized = volume || img;
 
             let scaled = false;
             if (item.dimensions && maxDim > 0) {
@@ -1299,13 +1335,41 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
               if (wMm && hMm) {
                 // Scale relative to the largest item: largest fills ~90% of cell, others shrink proportionally
                 const scale = Math.max(wMm, hMm) / maxDim * 0.9;
-                img.style.width = `${Math.round(scale * 100)}%`;
-                img.style.height = `${Math.round(scale * 100)}%`;
+                if (volume) {
+                  // The volume's box is the cover's true aspect, not a square:
+                  // object-fit would otherwise letterbox the artwork inside the
+                  // wrapper and the overlay would shade the empty margin. The
+                  // cell is square, so a percentage means the same on both axes.
+                  const unit = 0.9 / maxDim * 100;
+                  volume.style.width = `${(wMm * unit).toFixed(2)}%`;
+                  volume.style.height = `${(hMm * unit).toFixed(2)}%`;
+                } else {
+                  img.style.width = `${Math.round(scale * 100)}%`;
+                  img.style.height = `${Math.round(scale * 100)}%`;
+                }
                 scaled = true;
               }
             }
             // Items with no usable dimensions aren't scaled, so their thumbnail fills
             // the cell edge-to-edge. Inset them with padding (see CSS) for a calmer grid.
+            // A volume with no recorded dimensions has nothing to size its
+            // wrapper by, and an unsized wrapper lets the cover render at its
+            // natural pixel size, spilling out of the cell. Give it the blank's
+            // standard trade height (BLANK_TRIM_MM) at the artwork's own aspect,
+            // starting from the standard trim until the image reports its size.
+            if (volume && !scaled) {
+              const ref = maxDim > 0 ? maxDim : BLANK_TRIM_MM[1];
+              const unit = 0.9 / ref * 100;
+              const fit = (aspect) => {
+                const hMm = BLANK_TRIM_MM[1];
+                volume.style.height = `${(hMm * unit).toFixed(2)}%`;
+                volume.style.width = `${(hMm * aspect * unit).toFixed(2)}%`;
+              };
+              fit(BLANK_TRIM_MM[0] / BLANK_TRIM_MM[1]);
+              const onSize = () => { if (img.naturalWidth > 1) fit(img.naturalWidth / img.naturalHeight); };
+              if (img.complete) onSize(); else img.addEventListener("load", onSize, { once: true });
+              scaled = true;
+            }
             if (!scaled) cell.classList.add("item-grid__cell--undimensioned");
 
             if (backdrop) {
@@ -1318,7 +1382,7 @@ function makeBrowseSheet(seriesKey, subKey, viewSlug, openItemId) {
               still.appendChild(title);
               btn.appendChild(still);
             } else {
-              btn.appendChild(img);
+              btn.appendChild(sized);
             }
           } else if (item.item_type === "book") {
             btn.appendChild(bookBlank(item, maxDim));
@@ -1649,6 +1713,10 @@ function buildPlate(item, dims, sidePx, img, zoom = 1, panX = 0, panY = 0, opts 
     if (item.item_type === "single") repro.classList.add("item-card__repro--disc");
     // Games read as the boxed edition: rounded corners on the box-art scan.
     if (isBoxedEdition(item)) repro.classList.add("item-card__repro--edition");
+    // Books read as bound volumes. A book records its dimensions, so the
+    // foreignObject is already the cover's true trim and the reproduction fills
+    // it — the overlay can sit on .item-card__repro itself, no wrapper needed.
+    if (isVolume(item)) repro.classList.add("item-card__repro--volume");
     if (img.parentElement) img.parentElement.removeChild(img);
     repro.appendChild(img);
     fo.appendChild(repro);
